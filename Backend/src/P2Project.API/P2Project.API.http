@@ -1,0 +1,6 @@
+@P2Project.API_HostAddress = http://localhost:5190
+
+GET {{P2Project.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
