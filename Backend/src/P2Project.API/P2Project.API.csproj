@@ -11,10 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\P2Project.Application\P2Project.Application.csproj" />
     <ProjectReference Include="..\P2Project.Domain\P2Project.Domain.csproj" />
     <ProjectReference Include="..\P2Project.Infrastructure\P2Project.Infrastructure.csproj" />
