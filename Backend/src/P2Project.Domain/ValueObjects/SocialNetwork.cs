@@ -4,13 +4,13 @@ namespace P2Project.Domain.ValueObjects
 {
     public class SocialNetwork : ValueObject
     {
-        public string Name { get; set; }
-        public string Link { get; set; }
         private SocialNetwork(string name, string link)
         {
             Name = name;
             Link = link;
         }
+        public string Name { get; set; }
+        public string Link { get; set; }
         public static Result<SocialNetwork> Create(string name, string link)
         {
             if (string.IsNullOrEmpty(name))
