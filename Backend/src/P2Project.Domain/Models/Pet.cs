@@ -8,42 +8,23 @@ namespace P2Project.Domain.Models
     {
         private Pet(PetId id) : base(id) { }
         private readonly List<AssistanceDetail> _assistanceDetails = [];
-
-        public PetId PetId { get; private set; }
-        public string NickName { get; private set; } = default!;
-        public string Species { get; private set; } = default!;
-        public string Description { get; private set; } = default!;
-        public string Breed { get; private set; } = default!;
-        public string Color { get; private set; } = default!;
-        public string HealthInfo { get; private set; } = default!;
-        public Address Address { get; private set; } = default!;
-        public double Weight { get; private set; }
-        public double Height { get; private set; }
-        public string OwnerPhoneNumber { get; private set; } = default!;
-        public bool IsCastrated { get; private set; }
-        public bool IsVaccinated { get; private set; }
-        public DateTime DateOfBirth { get; private set; }
-        public AssistanceStatus Status { get; private set; }
-        public IReadOnlyList<AssistanceDetail> AssistanceDetails => _assistanceDetails;
-        public DateTime CreatedAt { get; private set; }
-
-        private Pet (PetId petId,
-                     string nickName,
-                     string species,
-                     string description,
-                     string breed,
-                     string color,
-                     string healthInfo,
-                     Address address,
-                     double weight,
-                     double height,
-                     string ownerPhoneNumber,
-                     bool isCastrated,
-                     bool isVaccinated,
-                     DateTime dateOfBirth,
-                     AssistanceStatus status,
-                     AssistanceDetail assistanceDetails,
-                     DateTime createdAt) : base(petId)
+        private readonly List<PetPhoto> _petPhotos = [];
+        private Pet(PetId petId,
+                    string nickName,
+                    string species,
+                    string description,
+                    string breed,
+                    string color,
+                    string healthInfo,
+                    Address address,
+                    double weight,
+                    double height,
+                    string ownerPhoneNumber,
+                    bool isCastrated,
+                    bool isVaccinated,
+                    DateTime dateOfBirth,
+                    AssistanceStatus status,
+                    DateTime createdAt) : base(petId)
         {
             NickName = nickName;
             Species = species;
@@ -61,24 +42,40 @@ namespace P2Project.Domain.Models
             Status = status;
             CreatedAt = createdAt;
         }
-        public static Result<Pet> Create(
-                     PetId petId,
-                     string nickName,
-                     string species,
-                     string description,
-                     string breed,
-                     string color,
-                     string healthInfo,
-                     Address address,
-                     double weight,
-                     double height,
-                     string ownerPhoneNumber,
-                     bool isCastrated,
-                     bool isVaccinated,
-                     DateTime dateOfBirth,
-                     AssistanceStatus status,
-                     AssistanceDetail aidDetails,
-                     DateTime createdAt)
+        public PetId PetId { get; private set; }
+        public string NickName { get; private set; } = default!;
+        public string Species { get; private set; } = default!;
+        public string Description { get; private set; } = default!;
+        public string Breed { get; private set; } = default!;
+        public string Color { get; private set; } = default!;
+        public string HealthInfo { get; private set; } = default!;
+        public Address Address { get; private set; } = default!;
+        public double Weight { get; private set; }
+        public double Height { get; private set; }
+        public string OwnerPhoneNumber { get; private set; } = default!;
+        public bool IsCastrated { get; private set; }
+        public bool IsVaccinated { get; private set; }
+        public DateTime DateOfBirth { get; private set; }
+        public AssistanceStatus Status { get; private set; }
+        public IReadOnlyList<AssistanceDetail> AssistanceDetails => _assistanceDetails;
+        public IReadOnlyList<PetPhoto> PetPhotos => _petPhotos;
+        public DateTime CreatedAt { get; private set; }
+        public static Result<Pet> Create(PetId petId,
+                                         string nickName,
+                                         string species,
+                                         string description,
+                                         string breed,
+                                         string color,
+                                         string healthInfo,
+                                         Address address,
+                                         double weight,
+                                         double height,
+                                         string ownerPhoneNumber,
+                                         bool isCastrated,
+                                         bool isVaccinated,
+                                         DateTime dateOfBirth,
+                                         AssistanceStatus status,
+                                         DateTime createdAt)
         {
             if (string.IsNullOrWhiteSpace(nickName))
             {
@@ -89,8 +86,9 @@ namespace P2Project.Domain.Models
                 return Result.Failure<Pet>("Species of the pet can't be empty");
             }
 
-            var pet = new Pet(petId, nickName, species, description, breed, color, healthInfo, address, weight, height, ownerPhoneNumber,
-                              isCastrated, isVaccinated, dateOfBirth, status, aidDetails,createdAt);
+            var pet = new Pet(petId, nickName, species, description, breed, color,
+                              healthInfo, address, weight, height, ownerPhoneNumber,
+                              isCastrated, isVaccinated, dateOfBirth, status, createdAt);
 
             return Result.Success(pet);
         }
