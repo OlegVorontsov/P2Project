@@ -1,9 +1,8 @@
-﻿
-using CSharpFunctionalExtensions;
+﻿using P2Project.Domain.Shared;
 
 namespace P2Project.Domain.ValueObjects
 {
-    public class PetPhoto : ValueObject
+    public class PetPhoto
     {
         private PetPhoto(string path, bool isMain)
         {
@@ -15,15 +14,11 @@ namespace P2Project.Domain.ValueObjects
         public static Result<PetPhoto> Create(string path, bool isMain)
         {
             if (string.IsNullOrWhiteSpace(path))
-                return Result.Failure<PetPhoto>("Path can't be empty");
+                return "Path can't be empty";
 
             var newPetPhoto = new PetPhoto(path, isMain);
 
-            return Result.Success<PetPhoto>(newPetPhoto);
-        }
-        protected override IEnumerable<object> GetEqualityComponents()
-        {
-            throw new NotImplementedException();
+            return newPetPhoto;
         }
     }
 }

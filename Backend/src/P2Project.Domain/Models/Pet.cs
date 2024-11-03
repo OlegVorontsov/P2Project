@@ -1,5 +1,5 @@
-﻿using CSharpFunctionalExtensions;
-using P2Project.Domain.IDs;
+﻿using P2Project.Domain.IDs;
+using P2Project.Domain.Shared;
 using P2Project.Domain.ValueObjects;
 
 namespace P2Project.Domain.Models
@@ -22,7 +22,7 @@ namespace P2Project.Domain.Models
                     string ownerPhoneNumber,
                     bool isCastrated,
                     bool isVaccinated,
-                    DateTime dateOfBirth,
+                    DateTime? dateOfBirth,
                     AssistanceStatus status,
                     DateTime createdAt) : base(petId)
         {
@@ -49,13 +49,13 @@ namespace P2Project.Domain.Models
         public string Breed { get; private set; } = default!;
         public string Color { get; private set; } = default!;
         public string HealthInfo { get; private set; } = default!;
-        public Address Address { get; private set; } = default!;
+        public Address Address { get; private set; }
         public double Weight { get; private set; }
         public double Height { get; private set; }
         public string OwnerPhoneNumber { get; private set; } = default!;
         public bool IsCastrated { get; private set; }
         public bool IsVaccinated { get; private set; }
-        public DateTime DateOfBirth { get; private set; }
+        public DateTime? DateOfBirth { get; private set; }
         public AssistanceStatus Status { get; private set; }
         public IReadOnlyList<AssistanceDetail> AssistanceDetails => _assistanceDetails;
         public IReadOnlyList<PetPhoto> PetPhotos => _petPhotos;
@@ -73,24 +73,24 @@ namespace P2Project.Domain.Models
                                          string ownerPhoneNumber,
                                          bool isCastrated,
                                          bool isVaccinated,
-                                         DateTime dateOfBirth,
+                                         DateTime? dateOfBirth,
                                          AssistanceStatus status,
                                          DateTime createdAt)
         {
             if (string.IsNullOrWhiteSpace(nickName))
             {
-                return Result.Failure<Pet>("Nickame of the pet can't be empty");
+                return "Nickame can't be empty";
             }
             if (string.IsNullOrWhiteSpace(species))
             {
-                return Result.Failure<Pet>("Species of the pet can't be empty");
+                return "Species can't be empty";
             }
 
             var pet = new Pet(petId, nickName, species, description, breed, color,
                               healthInfo, address, weight, height, ownerPhoneNumber,
                               isCastrated, isVaccinated, dateOfBirth, status, createdAt);
 
-            return Result.Success(pet);
+            return pet;
         }
         public void AddAssistanceDetail(AssistanceDetail assistanceDetail)
         {

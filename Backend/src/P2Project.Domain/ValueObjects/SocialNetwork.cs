@@ -1,8 +1,8 @@
-﻿using CSharpFunctionalExtensions;
+﻿using P2Project.Domain.Shared;
 
 namespace P2Project.Domain.ValueObjects
 {
-    public class SocialNetwork : ValueObject
+    public class SocialNetwork
     {
         private SocialNetwork(string name, string link)
         {
@@ -14,17 +14,13 @@ namespace P2Project.Domain.ValueObjects
         public static Result<SocialNetwork> Create(string name, string link)
         {
             if (string.IsNullOrEmpty(name))
-                return Result.Failure<SocialNetwork>("Name can't be empty");
+                return "Name can't be empty";
             if (string.IsNullOrEmpty(link))
-                return Result.Failure<SocialNetwork>("Link can't be empty");
+                return "Link can't be empty";
 
             var newSocialNetwork = new SocialNetwork(name, link);
 
-            return Result.Success(newSocialNetwork);
-        }
-        protected override IEnumerable<object> GetEqualityComponents()
-        {
-            throw new NotImplementedException();
+            return newSocialNetwork;
         }
     }
 }

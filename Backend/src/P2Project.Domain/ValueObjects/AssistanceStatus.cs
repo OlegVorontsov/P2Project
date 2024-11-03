@@ -1,9 +1,8 @@
-﻿using CSharpFunctionalExtensions;
-using System.Linq;
+﻿using P2Project.Domain.Shared;
 
 namespace P2Project.Domain.ValueObjects
 {
-    public class AssistanceStatus : ValueObject
+    public class AssistanceStatus
     {
         private readonly List<AssistanceStatus> _statusList = [NeedsHelp,
                                                                NeedsFood,
@@ -25,15 +24,11 @@ namespace P2Project.Domain.ValueObjects
         public static Result<AssistanceStatus> Create(string status)
         {
             if (string.IsNullOrWhiteSpace(status))
-                return Result.Failure<AssistanceStatus>("Status can't be empty");
+                return "Status can't be empty";
 
             var newStatus = new AssistanceStatus(status);
 
-            return Result.Success(newStatus);
-        }
-        protected override IEnumerable<object> GetEqualityComponents()
-        {
-            throw new NotImplementedException();
+            return newStatus;
         }
     }
 }

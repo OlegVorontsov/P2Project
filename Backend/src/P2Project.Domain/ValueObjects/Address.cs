@@ -1,8 +1,8 @@
-﻿using CSharpFunctionalExtensions;
+﻿using P2Project.Domain.Shared;
 
 namespace P2Project.Domain.ValueObjects
 {
-    public class Address : ValueObject
+    public class Address
     {
         private Address(string region,
                         string city,
@@ -32,16 +32,12 @@ namespace P2Project.Domain.ValueObjects
                                              string apartment)
         {
             if (string.IsNullOrEmpty(region))
-                return Result.Failure<Address>("Region can't be empty");
+                return "Region can't be empty";
 
             var newAddress = new Address(region, city, street, house,
                                          floor, apartment);
 
-            return Result.Success(newAddress);
-        }
-        protected override IEnumerable<object> GetEqualityComponents()
-        {
-            throw new NotImplementedException();
+            return newAddress;
         }
     }
 }

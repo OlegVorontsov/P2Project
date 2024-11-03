@@ -1,6 +1,5 @@
-﻿
-using CSharpFunctionalExtensions;
-using P2Project.Domain.IDs;
+﻿using P2Project.Domain.IDs;
+using P2Project.Domain.Shared;
 using P2Project.Domain.ValueObjects;
 
 namespace P2Project.Domain.Models
@@ -10,7 +9,7 @@ namespace P2Project.Domain.Models
         Male,
         Female
     }
-    public class Volunteer : Shared.Entity<VolunteerId>
+    public sealed class Volunteer : Shared.Entity<VolunteerId>
     {
         private Volunteer(VolunteerId id) : base(id) { }
         private readonly List<Pet> _pets = [];
@@ -71,21 +70,21 @@ namespace P2Project.Domain.Models
         {
             if (string.IsNullOrWhiteSpace(firstName))
             {
-                return Result.Failure<Volunteer>("FirstName can't be empty");
+                return "FirstName can't be empty";
             }
             if (string.IsNullOrWhiteSpace(secondName))
             {
-                return Result.Failure<Volunteer>("SecondName can't be empty");
+                return "SecondName can't be empty";
             }
             if (string.IsNullOrWhiteSpace(lastName))
             {
-                return Result.Failure<Volunteer>("LastName can't be empty");
+                return "LastName can't be empty";
             }
 
             var volunteer = new Volunteer(volunteerId, firstName, secondName, lastName,
                                           age, gender, email, description, registeredDate);
 
-            return Result.Success(volunteer);
+            return volunteer;
         }
         private double GetYearsOfExperience()
         {
