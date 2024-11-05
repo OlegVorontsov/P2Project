@@ -13,35 +13,34 @@ namespace P2Project.Domain.Models
     {
         private Volunteer(VolunteerId id) : base(id) { }
         private readonly List<Pet> _pets = [];
-        private readonly List<SocialNetwork> _socialNetworks = [];
-        private readonly List<AssistanceDetail> _assistanceDetails = [];
+
         private Volunteer(VolunteerId volunteerId,
-                          string firstName,
-                          string secondName,
-                          string lastName,
+                          FullName fullName,
                           int age,
                           Gender gender,
-                          string email,
-                          string description,
-                          DateTime registeredDate) : base(volunteerId)
+                          Email email,
+                          Description description,
+                          DateTime registeredDate,
+                          VolunteerPhoneNumbers phoneNumbers,
+                          VolunteerSocialNetworks? socialNetworks,
+                          VolunteerAssistanceDetails? assistanceDetails) : base(volunteerId)
         {
-            FirstName = firstName;
-            SecondName = secondName;
-            LastName = lastName;
+            FullName = fullName;
             Age = age;
             Gender = gender;
             Email = email;
             Description = description;
             RegisteredDate = registeredDate;
+            PhoneNumbers = phoneNumbers;
+            SocialNetworks = socialNetworks;
+            AssistanceDetails = assistanceDetails;
         }
         public VolunteerId VolunteerId { get; private set; }
-        public string FirstName { get; private set; } = default!;
-        public string SecondName { get; private set; } = default!;
-        public string LastName { get; private set; } = default!;
+        public FullName FullName { get; private set; }
         public int Age { get; private set; }
         public Gender Gender { get; private set; }
-        public string Email { get; private set; } = default!;
-        public string Description { get; private set; } = default!;
+        public Email Email { get; private set; } = default!;
+        public Description Description { get; private set; } = default!;
         public DateTime RegisteredDate { get; private set; }
         public double YearsOfExperience => GetYearsOfExperience();
         public IReadOnlyList<Pet> Pets => _pets;
@@ -55,34 +54,23 @@ namespace P2Project.Domain.Models
             _pets.Count(p => p.Status == AssistanceStatus.LooksForHome);
         public int FoundHomePets =>
             _pets.Count(p => p.Status == AssistanceStatus.FoundHome);
-        public string PhoneNumber {  get; private set; } = default!;
-        public IReadOnlyList<SocialNetwork> SocialNetworks => _socialNetworks;
-        public IReadOnlyList<AssistanceDetail> AssistanceDetails => _assistanceDetails;
+        public VolunteerPhoneNumbers PhoneNumbers { get; private set; } = default!;
+        public VolunteerSocialNetworks? SocialNetworks { get; private set; } = default!;
+        public VolunteerAssistanceDetails? AssistanceDetails { get; private set; } = default!;
         public static Result<Volunteer> Create(VolunteerId volunteerId,
-                                               string firstName,
-                                               string secondName,
-                                               string lastName,
+                                               FullName fullName,
                                                int age,
                                                Gender gender,
-                                               string email,
-                                               string description,
-                                               DateTime registeredDate)
+                                               Email email,
+                                               Description description,
+                                               DateTime registeredDate,
+                                               VolunteerPhoneNumbers phoneNumbers,
+                                               VolunteerSocialNetworks? socialNetworks,
+                                               VolunteerAssistanceDetails? assistanceDetails)
         {
-            if (string.IsNullOrWhiteSpace(firstName))
-            {
-                return "FirstName can't be empty";
-            }
-            if (string.IsNullOrWhiteSpace(secondName))
-            {
-                return "SecondName can't be empty";
-            }
-            if (string.IsNullOrWhiteSpace(lastName))
-            {
-                return "LastName can't be empty";
-            }
-
-            var volunteer = new Volunteer(volunteerId, firstName, secondName, lastName,
-                                          age, gender, email, description, registeredDate);
+            var volunteer = new Volunteer(volunteerId, fullName, age, gender,
+                                          email, description, registeredDate,
+                                          phoneNumbers, socialNetworks, assistanceDetails);
 
             return volunteer;
         }

@@ -14,6 +14,7 @@ namespace P2Project.Infrastructure.Configurations
             builder.ToTable("Pets");
 
             builder.HasKey(p => p.Id);
+
             builder.Property(p => p.Id)
                     .HasConversion(
                     id => id.Value,
@@ -64,11 +65,11 @@ namespace P2Project.Infrastructure.Configurations
                   .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH);
 
                 ab.Property(a => a.Floor)
-                  .IsRequired()
+                  .IsRequired(false)
                   .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH);
 
                 ab.Property(a => a.Apartment)
-                  .IsRequired()
+                  .IsRequired(false)
                   .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH);
             });
 
@@ -85,7 +86,12 @@ namespace P2Project.Infrastructure.Configurations
 
             // bool IsVaccinated
 
-            // DateTime DateOfBirth
+            builder.Property(p => p.DateOfBirth)
+                   .IsRequired()
+                   .HasColumnName("date_of_birth")
+                   .HasConversion(
+                        d => d.ToUniversalTime(),
+                        d => DateTime.SpecifyKind(d, DateTimeKind.Local));
 
             // AssistanceStatus Status
 
@@ -93,7 +99,12 @@ namespace P2Project.Infrastructure.Configurations
 
             // IReadOnlyList<PetPhoto> PetPhotos => _petPhotos;
 
-            // DateTime CreatedAt
+            builder.Property(p => p.CreatedAt)
+                   .IsRequired()
+                   .HasColumnName("ceated_at")
+                   .HasConversion(
+                        d => d.ToUniversalTime(),
+                        d => DateTime.SpecifyKind(d, DateTimeKind.Local));
         }
     }
 }

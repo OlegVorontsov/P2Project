@@ -1,7 +1,7 @@
 ﻿
 namespace P2Project.Domain.IDs
 {
-    public class PetId
+    public record PetId
     {
         private PetId(Guid value)
         {
@@ -11,5 +11,10 @@ namespace P2Project.Domain.IDs
         public static PetId NewPetId => new(Guid.NewGuid());
         public static PetId EmptyPetId => new(Guid.Empty);
         public static PetId CreatePetId(Guid id) => new(id);
+        public static implicit operator Guid(PetId petId)
+        {
+            ArgumentNullException.ThrowIfNull(petId);
+            return petId.Value;
+        }
     }
 }

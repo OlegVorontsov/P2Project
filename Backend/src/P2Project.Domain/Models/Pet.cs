@@ -6,9 +6,14 @@ namespace P2Project.Domain.Models
 {
     public class Pet : Shared.Entity<PetId>
     {
+        // ef core
         private Pet(PetId id) : base(id) { }
+        
         private readonly List<AssistanceDetail> _assistanceDetails = [];
         private readonly List<PetPhoto> _petPhotos = [];
+        
+        // ef navigation
+        public Volunteer Volunteer { get; private set; } = null!;
         private Pet(PetId petId,
                     string nickName,
                     string species,
@@ -22,7 +27,7 @@ namespace P2Project.Domain.Models
                     string ownerPhoneNumber,
                     bool isCastrated,
                     bool isVaccinated,
-                    DateTime? dateOfBirth,
+                    DateTime dateOfBirth,
                     AssistanceStatus status,
                     DateTime createdAt) : base(petId)
         {
@@ -55,7 +60,7 @@ namespace P2Project.Domain.Models
         public string OwnerPhoneNumber { get; private set; } = default!;
         public bool IsCastrated { get; private set; }
         public bool IsVaccinated { get; private set; }
-        public DateTime? DateOfBirth { get; private set; }
+        public DateTime DateOfBirth { get; private set; }
         public AssistanceStatus Status { get; private set; }
         public IReadOnlyList<AssistanceDetail> AssistanceDetails => _assistanceDetails;
         public IReadOnlyList<PetPhoto> PetPhotos => _petPhotos;
@@ -73,7 +78,7 @@ namespace P2Project.Domain.Models
                                          string ownerPhoneNumber,
                                          bool isCastrated,
                                          bool isVaccinated,
-                                         DateTime? dateOfBirth,
+                                         DateTime dateOfBirth,
                                          AssistanceStatus status,
                                          DateTime createdAt)
         {

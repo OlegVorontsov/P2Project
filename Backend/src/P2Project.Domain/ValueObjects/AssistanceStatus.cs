@@ -2,7 +2,7 @@
 
 namespace P2Project.Domain.ValueObjects
 {
-    public class AssistanceStatus
+    public record AssistanceStatus
     {
         private readonly List<AssistanceStatus> _statusList = [NeedsHelp,
                                                                NeedsFood,

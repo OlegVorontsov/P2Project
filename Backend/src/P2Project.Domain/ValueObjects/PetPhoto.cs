@@ -2,15 +2,15 @@
 
 namespace P2Project.Domain.ValueObjects
 {
-    public class PetPhoto
+    public record PetPhoto
     {
         private PetPhoto(string path, bool isMain)
         {
             Path = path;
             IsMain = isMain;
         }
-        public string Path { get; set; }
-        public bool IsMain { get; set; }
+        public string Path { get; }
+        public bool IsMain { get; }
         public static Result<PetPhoto> Create(string path, bool isMain)
         {
             if (string.IsNullOrWhiteSpace(path))

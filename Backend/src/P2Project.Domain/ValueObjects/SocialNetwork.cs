@@ -9,13 +9,13 @@ namespace P2Project.Domain.ValueObjects
             Name = name;
             Link = link;
         }
-        public string Name { get; set; }
-        public string Link { get; set; }
+        public string Name { get; } = default!;
+        public string Link { get; } = default!;
         public static Result<SocialNetwork> Create(string name, string link)
         {
-            if (string.IsNullOrEmpty(name))
+            if (string.IsNullOrWhiteSpace(name))
                 return "Name can't be empty";
-            if (string.IsNullOrEmpty(link))
+            if (string.IsNullOrWhiteSpace(link))
                 return "Link can't be empty";
 
             var newSocialNetwork = new SocialNetwork(name, link);

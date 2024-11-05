@@ -2,7 +2,7 @@
 
 namespace P2Project.Domain.ValueObjects
 {
-    public class AssistanceDetail
+    public record AssistanceDetail
     {
         private AssistanceDetail(string name,
                                  string description,
@@ -19,10 +19,12 @@ namespace P2Project.Domain.ValueObjects
                                                       string description,
                                                       string accountNumber)
         {
-            if(string.IsNullOrWhiteSpace(name))
-            {
+            if (string.IsNullOrWhiteSpace(name))
                 return "Name can't be empty";
-            }
+            if (string.IsNullOrWhiteSpace(description))
+                return "Description can't be empty";
+            if (string.IsNullOrWhiteSpace(accountNumber))
+                return "AccountNumber can't be empty";
 
             var newAssistanceDetail = new AssistanceDetail(name, description,
                                                            accountNumber);
