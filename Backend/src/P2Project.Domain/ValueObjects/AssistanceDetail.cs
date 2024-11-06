@@ -1,8 +1,8 @@
-﻿using CSharpFunctionalExtensions;
+﻿using P2Project.Domain.Shared;
 
 namespace P2Project.Domain.ValueObjects
 {
-    public class AssistanceDetail : ValueObject
+    public record AssistanceDetail
     {
         private AssistanceDetail(string name,
                                  string description,
@@ -19,20 +19,17 @@ namespace P2Project.Domain.ValueObjects
                                                       string description,
                                                       string accountNumber)
         {
-            if(string.IsNullOrWhiteSpace(name))
-            {
-                return Result.Failure<AssistanceDetail>("Name can't be empty");
-            }
+            if (string.IsNullOrWhiteSpace(name))
+                return "Name can't be empty";
+            if (string.IsNullOrWhiteSpace(description))
+                return "Description can't be empty";
+            if (string.IsNullOrWhiteSpace(accountNumber))
+                return "AccountNumber can't be empty";
 
             var newAssistanceDetail = new AssistanceDetail(name, description,
                                                            accountNumber);
 
-            return Result.Success(newAssistanceDetail);
-        }
-
-        protected override IEnumerable<object> GetEqualityComponents()
-        {
-            throw new NotImplementedException();
+            return newAssistanceDetail;
         }
     }
 }

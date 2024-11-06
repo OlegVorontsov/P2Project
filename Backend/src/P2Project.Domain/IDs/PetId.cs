@@ -1,8 +1,7 @@
-﻿using CSharpFunctionalExtensions;
-
+﻿
 namespace P2Project.Domain.IDs
 {
-    public class PetId : ValueObject
+    public record PetId
     {
         private PetId(Guid value)
         {
@@ -11,10 +10,11 @@ namespace P2Project.Domain.IDs
         public Guid Value { get; }
         public static PetId NewPetId => new(Guid.NewGuid());
         public static PetId EmptyPetId => new(Guid.Empty);
-
-        protected override IEnumerable<object> GetEqualityComponents()
+        public static PetId CreatePetId(Guid id) => new(id);
+        public static implicit operator Guid(PetId petId)
         {
-            throw new NotImplementedException();
+            ArgumentNullException.ThrowIfNull(petId);
+            return petId.Value;
         }
     }
 }
