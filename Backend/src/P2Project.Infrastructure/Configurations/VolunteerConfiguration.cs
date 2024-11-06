@@ -79,21 +79,6 @@ namespace P2Project.Infrastructure.Configurations
                    .IsRequired();
             builder.Navigation(v => v.Pets).AutoInclude();
 
-            builder.Property(v => v.NeedsHelpPets)
-                   .HasColumnName("needs_help_pets_count");
-
-            builder.Property(v => v.NeedsHelpPets)
-                   .HasColumnName("needs_food_pets_count");
-
-            builder.Property(v => v.NeedsHelpPets)
-                   .HasColumnName("on_medication_pets_count");
-
-            builder.Property(v => v.NeedsHelpPets)
-                   .HasColumnName("looks_for_home_pets_count");
-
-            builder.Property(v => v.NeedsHelpPets)
-                   .HasColumnName("found_home_pets_count");
-
             builder.OwnsOne(v => v.PhoneNumbers, vb =>
             {
                 vb.ToJson();
