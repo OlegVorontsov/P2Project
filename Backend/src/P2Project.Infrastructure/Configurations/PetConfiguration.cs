@@ -28,7 +28,7 @@ namespace P2Project.Infrastructure.Configurations
                   .HasColumnName("nick_name");
             });
 
-            // Species todo in 4.4
+            // Species to do in 4.4
 
             builder.ComplexProperty(p => p.Description, db =>
             {
@@ -38,7 +38,7 @@ namespace P2Project.Infrastructure.Configurations
                   .HasColumnName("description");
             });
 
-            // Breed todo in 4.4
+            // Breed to do in 4.4
 
             builder.ComplexProperty(p => p.Color, cb =>
             {
