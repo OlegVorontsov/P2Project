@@ -79,6 +79,5 @@ namespace P2Project.Domain.Models
             var timeSpan = DateTime.Now - RegisteredDate;
             return timeSpan.TotalDays / 365.25;
         }
-        // test ID-B-4.2
     }
 }
