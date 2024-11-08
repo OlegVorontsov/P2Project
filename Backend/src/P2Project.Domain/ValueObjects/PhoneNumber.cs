@@ -4,14 +4,14 @@ namespace P2Project.Domain.ValueObjects
 {
     public record PhoneNumber
     {
-        private PhoneNumber(string value, bool isMain)
+        private PhoneNumber(string value, bool? isMain)
         {
             Value = value;
             IsMain = isMain;
         }
         public string Value { get; } = default!;
-        public bool IsMain { get; } = default!;
-        public static Result<PhoneNumber> Create(string value, bool isMain)
+        public bool? IsMain { get; } = default!;
+        public static Result<PhoneNumber> Create(string value, bool? isMain)
         {
             if (string.IsNullOrWhiteSpace(value))
                 return "PhoneNumber can't be empty";

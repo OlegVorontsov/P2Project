@@ -45,15 +45,15 @@ namespace P2Project.Domain.Models
         public double YearsOfExperience => GetYearsOfExperience();
         public IReadOnlyList<Pet> Pets => _pets;
         public int NeedsHelpPets =>
-            _pets.Count(p => p.Status == AssistanceStatus.NeedsHelp);
+            _pets.Count(p => p.AssistanceStatus == AssistanceStatus.NeedsHelp);
         public int NeedsFoodPets =>
-            _pets.Count(p => p.Status == AssistanceStatus.NeedsFood);
+            _pets.Count(p => p.AssistanceStatus == AssistanceStatus.NeedsFood);
         public int OnMedicationPets =>
-            _pets.Count(p => p.Status == AssistanceStatus.OnMedication);
+            _pets.Count(p => p.AssistanceStatus == AssistanceStatus.OnMedication);
         public int LooksForHomePets =>
-            _pets.Count(p => p.Status == AssistanceStatus.LooksForHome);
+            _pets.Count(p => p.AssistanceStatus == AssistanceStatus.LooksForHome);
         public int FoundHomePets =>
-            _pets.Count(p => p.Status == AssistanceStatus.FoundHome);
+            _pets.Count(p => p.AssistanceStatus == AssistanceStatus.FoundHome);
         public VolunteerPhoneNumbers PhoneNumbers { get; private set; } = default!;
         public VolunteerSocialNetworks? SocialNetworks { get; private set; } = default!;
         public VolunteerAssistanceDetails? AssistanceDetails { get; private set; } = default!;
@@ -79,5 +79,6 @@ namespace P2Project.Domain.Models
             var timeSpan = DateTime.Now - RegisteredDate;
             return timeSpan.TotalDays / 365.25;
         }
+        // test ID-B-4.2
     }
 }

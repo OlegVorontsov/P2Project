@@ -2,21 +2,21 @@
 
 namespace P2Project.Domain.ValueObjects
 {
-    public class Description : ValueObject
+    public class HealthInfo : ValueObject
     {
-        private Description(string? value)
+        private HealthInfo(string? value)
         {
             Value = value;
         }
         public string? Value { get; } = default!;
-        public static Result<Description,string> Create(string? value)
+        public static Result<HealthInfo, string> Create(string? value)
         {
             if (string.IsNullOrWhiteSpace(value))
-                return "Description can't be empty";
+                return "HealthInfo can't be empty";
 
-            var newDescription = new Description(value);
+            var newHealthInfo = new HealthInfo(value);
 
-            return newDescription;
+            return newHealthInfo;
         }
         protected override IEnumerable<IComparable> GetEqualityComponents()
         {

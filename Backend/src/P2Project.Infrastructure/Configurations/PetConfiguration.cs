@@ -20,29 +20,41 @@ namespace P2Project.Infrastructure.Configurations
                     id => id.Value,
                     value => PetId.CreatePetId(value));
 
-            builder.Property(p => p.NickName)
-                   .IsRequired()
-                   .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH);
+            builder.ComplexProperty(p => p.NickName, nb =>
+            {
+                nb.Property(n => n.Value)
+                  .IsRequired()
+                  .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH)
+                  .HasColumnName("nick_name");
+            });
 
-            builder.Property(p => p.Species)
-                   .IsRequired()
-                   .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH);
+            // Species todo in 4.4
 
-            builder.Property(p => p.Description)
-                   .IsRequired()
-                   .HasMaxLength(Constants.MAX_BIG_TEXT_LENGTH);
+            builder.ComplexProperty(p => p.Description, db =>
+            {
+                db.Property(d => d.Value)
+                  .IsRequired(false)
+                  .HasMaxLength(Constants.MAX_BIG_TEXT_LENGTH)
+                  .HasColumnName("description");
+            });
 
-            builder.Property(p => p.Breed)
-                   .IsRequired()
-                   .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH);
+            // Breed todo in 4.4
 
-            builder.Property(p => p.Color)
-                   .IsRequired()
-                   .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH);
+            builder.ComplexProperty(p => p.Color, cb =>
+            {
+                cb.Property(c => c.Value)
+                  .IsRequired()
+                  .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH)
+                  .HasColumnName("color");
+            });
 
-            builder.Property(p => p.HealthInfo)
-                   .IsRequired()
-                   .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH);
+            builder.ComplexProperty(p => p.HealthInfo, hib =>
+            {
+                hib.Property(hi => hi.Value)
+                  .IsRequired(false)
+                  .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH)
+                  .HasColumnName("health_info");
+            });
 
             builder.OwnsOne(p => p.Address, ab =>
             {
@@ -73,9 +85,15 @@ namespace P2Project.Infrastructure.Configurations
                   .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH);
             });
 
-            // double Weight
+            builder.Property(p => p.Weight)
+                   .IsRequired()
+                   .HasMaxLength(Constants.MAX_TINY_TEXT_LENGTH)
+                   .HasColumnName("weight");
 
-            // double Height
+            builder.Property(p => p.Height)
+                   .IsRequired()
+                   .HasMaxLength(Constants.MAX_TINY_TEXT_LENGTH)
+                   .HasColumnName("height");
 
             builder.Property(p => p.OwnerPhoneNumber)
                    .IsRequired()
@@ -84,7 +102,8 @@ namespace P2Project.Infrastructure.Configurations
             builder.Property(p => p.IsCastrated)
                    .HasColumnName("is_castrated");
 
-            // bool IsVaccinated
+            builder.Property(p => p.IsVaccinated)
+                   .HasColumnName("is_vaccinated");
 
             builder.Property(p => p.DateOfBirth)
                    .IsRequired()
@@ -93,11 +112,39 @@ namespace P2Project.Infrastructure.Configurations
                         d => d.ToUniversalTime(),
                         d => DateTime.SpecifyKind(d, DateTimeKind.Local));
 
-            // AssistanceStatus Status
+            builder.ComplexProperty(p => p.AssistanceStatus, asb =>
+            {
+                asb.Property(a => a.Status)
+                   .IsRequired()
+                   .HasColumnName("assistance_status");
+            });
 
-            // IReadOnlyList<AssistanceDetail> AssistanceDetails
+            builder.OwnsOne(p => p.AssistanceDetails, adb =>
+            {
+                adb.ToJson();
 
-            // IReadOnlyList<PetPhoto> PetPhotos => _petPhotos;
+                adb.OwnsMany(ad => ad.AssistanceDetails, ab =>
+                {
+                    ab.Property(a => a.Name)
+                      .IsRequired()
+                      .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH);
+
+                    ab.Property(a => a.Description)
+                      .IsRequired()
+                      .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH);
+
+                    ab.Property(a => a.AccountNumber)
+                      .IsRequired()
+                      .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH);
+                });
+            });
+
+            builder.HasMany(p => p.PetPhotos)
+                   .WithOne(pp => pp.Pet)
+                   .HasForeignKey("pet_id")
+                   .OnDelete(DeleteBehavior.Cascade)
+                   .IsRequired();
+            builder.Navigation(p => p.PetPhotos).AutoInclude();
 
             builder.Property(p => p.CreatedAt)
                    .IsRequired()
