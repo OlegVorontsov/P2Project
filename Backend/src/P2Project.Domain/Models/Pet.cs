@@ -9,26 +9,26 @@ namespace P2Project.Domain.Models
         // ef core
         private Pet(PetId id) : base(id) { }
         
-        private readonly List<AssistanceDetail> _assistanceDetails = [];
         private readonly List<PetPhoto> _petPhotos = [];
         
         // ef navigation
         public Volunteer Volunteer { get; private set; } = null!;
         private Pet(PetId petId,
-                    string nickName,
+                    NickName nickName,
                     string species,
-                    string description,
+                    Description description,
                     string breed,
-                    string color,
-                    string healthInfo,
+                    Color color,
+                    HealthInfo healthInfo,
                     Address address,
                     double weight,
                     double height,
-                    string ownerPhoneNumber,
+                    PhoneNumber ownerPhoneNumber,
                     bool isCastrated,
                     bool isVaccinated,
                     DateTime dateOfBirth,
-                    AssistanceStatus status,
+                    AssistanceStatus assistanceStatus,
+                    PetAssistanceDetails? assistanceDetails,
                     DateTime createdAt) : base(petId)
         {
             NickName = nickName;
@@ -44,62 +44,51 @@ namespace P2Project.Domain.Models
             IsCastrated = isCastrated;
             IsVaccinated = isVaccinated;
             DateOfBirth = dateOfBirth;
-            Status = status;
+            AssistanceStatus = assistanceStatus;
+            AssistanceDetails = assistanceDetails;
             CreatedAt = createdAt;
         }
         public PetId PetId { get; private set; }
-        public string NickName { get; private set; } = default!;
+        public NickName NickName { get; private set; } = default!;
         public string Species { get; private set; } = default!;
-        public string Description { get; private set; } = default!;
+        public Description Description { get; private set; } = default!;
         public string Breed { get; private set; } = default!;
-        public string Color { get; private set; } = default!;
-        public string HealthInfo { get; private set; } = default!;
+        public Color Color { get; private set; } = default!;
+        public HealthInfo HealthInfo { get; private set; } = default!;
         public Address Address { get; private set; }
         public double Weight { get; private set; }
         public double Height { get; private set; }
-        public string OwnerPhoneNumber { get; private set; } = default!;
+        public PhoneNumber OwnerPhoneNumber { get; private set; } = default!;
         public bool IsCastrated { get; private set; }
         public bool IsVaccinated { get; private set; }
         public DateTime DateOfBirth { get; private set; }
-        public AssistanceStatus Status { get; private set; }
-        public IReadOnlyList<AssistanceDetail> AssistanceDetails => _assistanceDetails;
+        public AssistanceStatus AssistanceStatus { get; private set; }
+        public PetAssistanceDetails? AssistanceDetails { get; private set; } = default!;
         public IReadOnlyList<PetPhoto> PetPhotos => _petPhotos;
         public DateTime CreatedAt { get; private set; }
         public static Result<Pet> Create(PetId petId,
-                                         string nickName,
+                                         NickName nickName,
                                          string species,
-                                         string description,
+                                         Description description,
                                          string breed,
-                                         string color,
-                                         string healthInfo,
+                                         Color color,
+                                         HealthInfo healthInfo,
                                          Address address,
                                          double weight,
                                          double height,
-                                         string ownerPhoneNumber,
+                                         PhoneNumber ownerPhoneNumber,
                                          bool isCastrated,
                                          bool isVaccinated,
                                          DateTime dateOfBirth,
-                                         AssistanceStatus status,
+                                         AssistanceStatus assistanceStatus,
+                                         PetAssistanceDetails assistanceDetails,
                                          DateTime createdAt)
         {
-            if (string.IsNullOrWhiteSpace(nickName))
-            {
-                return "Nickame can't be empty";
-            }
-            if (string.IsNullOrWhiteSpace(species))
-            {
-                return "Species can't be empty";
-            }
-
             var pet = new Pet(petId, nickName, species, description, breed, color,
                               healthInfo, address, weight, height, ownerPhoneNumber,
-                              isCastrated, isVaccinated, dateOfBirth, status, createdAt);
-
+                              isCastrated, isVaccinated, dateOfBirth,
+                              assistanceStatus, assistanceDetails, createdAt);
             return pet;
-        }
-        public void AddAssistanceDetail(AssistanceDetail assistanceDetail)
-        {
-            _assistanceDetails.Add(assistanceDetail);
         }
     }
 }

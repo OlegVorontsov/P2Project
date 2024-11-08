@@ -1,9 +1,12 @@
-﻿using P2Project.Domain.Shared;
+﻿using P2Project.Domain.Models;
+using P2Project.Domain.Shared;
 
 namespace P2Project.Domain.ValueObjects
 {
     public record PetPhoto
     {
+        // ef navigation
+        public Pet Pet { get; private set; } = null!;
         private PetPhoto(string path, bool isMain)
         {
             Path = path;

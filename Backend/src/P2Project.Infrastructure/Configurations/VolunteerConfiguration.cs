@@ -41,7 +41,8 @@ namespace P2Project.Infrastructure.Configurations
 
             builder.Property(v => v.Age)
                    .IsRequired()
-                   .HasMaxLength(Constants.MAX_TINY_TEXT_LENGTH);
+                   .HasMaxLength(Constants.MAX_TINY_TEXT_LENGTH)
+                   .HasColumnName("age");
 
             builder.Property(v => v.Gender)
                    .IsRequired()
@@ -90,6 +91,7 @@ namespace P2Project.Infrastructure.Configurations
                       .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH);
 
                     pb.Property(p => p.IsMain)
+                      .IsRequired(false)
                       .IsRequired();
                 });
             });
