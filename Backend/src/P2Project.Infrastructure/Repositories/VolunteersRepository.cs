@@ -5,7 +5,7 @@ using P2Project.Domain.Shared;
 
 namespace P2Project.Infrastructure.Repositories
 {
-    public class VolunteersRepository
+    public class VolunteersRepository : IVolunteersRepository
     {
         private readonly ApplicationDBContext _dbContext;
         public VolunteersRepository(ApplicationDBContext dbContext)
@@ -24,12 +24,13 @@ namespace P2Project.Infrastructure.Repositories
                                                      CancellationToken cancellationToken = default)
         {
             var volunteer = await _dbContext.Volunteers
-                .Include(v => v.Pets)
-                .ThenInclude(p => p.PetPhotos)
-                .FirstOrDefaultAsync(v => v.Id == volunteerId, cancellationToken);
+                                            .Include(v => v.Pets)
+                                            .ThenInclude(p => p.PetPhotos)
+                                            .FirstOrDefaultAsync(v => v.Id == volunteerId,
+                                                                              cancellationToken);
             if (volunteer is null)
                 return "Volunteer not found";
-            return volunteer;   
+            return volunteer;
         }
     }
 }

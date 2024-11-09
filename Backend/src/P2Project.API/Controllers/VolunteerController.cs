@@ -8,28 +8,33 @@ namespace P2Project.API.Controllers
     [Route("[controller]")]
     public class VolunteerController : ControllerBase
     {
-        [HttpGet]
-        public IActionResult Get()
+        //[HttpGet]
+        //public IActionResult Get()
+        //{
+        //    var petPhoto = PetPhoto.Create("path", false).Value;
+        //    List<PetPhoto> petPhotos = [pet, pet, pet];
+        //    return Ok(petPhotos);
+        //}
+        [HttpPost]
+        public IActionResult Create()
         {
-            var petPhoto = PetPhoto.Create("path", false).Value;
-            List<PetPhoto> petPhotos = [pet, pet, pet];
-            return Ok(petPhotos);
+            return Ok();
         }
 
-        [HttpGet("{id:guid}")]
-        public IActionResult Get(Guid id)
-        {
-            return Ok(id);
-        }
+    //    [HttpGet("{id:guid}")]
+    //    public IActionResult Get(Guid id)
+    //    //{
+    //    //    return Ok(id);
+    //    }
 
-        [HttpPut("{id:guid}")]
-        public IActionResult Update([FromRoute] Guid id, [FromBody] UpdatePetPhotoDto dto)
-        {
-            var request = new UpdatePetPhotoCommand(id, dto);
-            return Ok(request);
-        }
+    //    [HttpPut("{id:guid}")]
+    //    public IActionResult Update([FromRoute] Guid id, [FromBody] UpdatePetPhotoDto dto)
+    //    {
+    //        var request = new UpdatePetPhotoCommand(id, dto);
+    //        return Ok(request);
+    //    }
     }
 
-    public record UpdatePetPhotoCommand(Guid id, UpdatePetPhotoDto updatePetPhotoDto);
-    public record UpdatePetPhotoDto(string path, bool isMain);
+    //public record UpdatePetPhotoCommand(Guid id, UpdatePetPhotoDto updatePetPhotoDto);
+    //public record UpdatePetPhotoDto(string path, bool isMain);
 }
