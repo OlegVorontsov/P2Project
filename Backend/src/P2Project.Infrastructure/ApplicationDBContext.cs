@@ -21,5 +21,6 @@ namespace P2Project.Infrastructure
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDBContext).Assembly);
         }
         public DbSet<Volunteer> Volunteers => Set<Volunteer>();
+        public DbSet<Species> Species => Set<Species>();
     }
 }

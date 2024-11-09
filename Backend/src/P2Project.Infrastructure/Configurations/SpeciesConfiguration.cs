@@ -1,0 +1,37 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using P2Project.Domain.IDs;
+using P2Project.Domain.Models;
+using P2Project.Domain.Shared;
+
+namespace P2Project.Infrastructure.Configurations
+{
+    public class SpeciesConfiguration : IEntityTypeConfiguration<Species>
+    {
+        public void Configure(EntityTypeBuilder<Species> builder)
+        {
+            builder.ToTable("species");
+
+            builder.HasKey(s => s.Id);
+
+            builder.Property(s => s.Id)
+                   .HasConversion(
+                        id => id.Value,
+                        value => SpeciesId.CreateSpeciesId(value));
+
+            builder.ComplexProperty(s => s.Name, snb =>
+            {
+                snb.Property(sn => sn.Value)
+                   .IsRequired()
+                   .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH)
+                   .HasColumnName("name");
+            });
+
+            builder.HasMany(s => s.Breeds)
+                   .WithOne()
+                   .HasForeignKey("breed_id")
+                   .IsRequired();
+            builder.Navigation(v => v.Breeds).AutoInclude();
+        }
+    }
+}
