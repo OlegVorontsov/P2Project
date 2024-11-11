@@ -1,10 +1,13 @@
-﻿using P2Project.Domain.Shared;
+﻿using CSharpFunctionalExtensions;
+using P2Project.Domain.Shared;
 
 namespace P2Project.Domain.ValueObjects
 {
     public record FullName
     {
-        private FullName(string firstName, string secondName, string? lastName)
+        private FullName(string firstName,
+                         string secondName,
+                         string? lastName)
         {
             FirstName = firstName;
             SecondName = secondName;
@@ -13,14 +16,14 @@ namespace P2Project.Domain.ValueObjects
         public string FirstName { get; } = default!;
         public string SecondName { get; } = default!;
         public string? LastName { get; }
-        public static Result<FullName>Create(string firstName,
+        public static Result<FullName, Error>Create(string firstName,
                                              string secondName,
                                              string? lastName)
         {
             if (string.IsNullOrWhiteSpace(firstName))
-                return "FirstName can't be empty";
+                return Errors.General.ValueIsInvalid(nameof(FirstName));
             if (string.IsNullOrWhiteSpace(secondName))
-                return "SecondName can't be empty";
+                return Errors.General.ValueIsInvalid(nameof(SecondName));
             var newFullName = new FullName(firstName, secondName, lastName);
             return newFullName;
         }

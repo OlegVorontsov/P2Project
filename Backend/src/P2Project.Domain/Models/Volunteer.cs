@@ -14,7 +14,7 @@ namespace P2Project.Domain.Models
         private Volunteer(VolunteerId id) : base(id) { }
         private readonly List<Pet> _pets = [];
 
-        private Volunteer(VolunteerId volunteerId,
+        private Volunteer(VolunteerId id,
                           FullName fullName,
                           int age,
                           Gender gender,
@@ -23,7 +23,7 @@ namespace P2Project.Domain.Models
                           DateTime registeredDate,
                           VolunteerPhoneNumbers phoneNumbers,
                           VolunteerSocialNetworks? socialNetworks,
-                          VolunteerAssistanceDetails? assistanceDetails) : base(volunteerId)
+                          VolunteerAssistanceDetails? assistanceDetails) : base(id)
         {
             FullName = fullName;
             Age = age;
@@ -35,14 +35,17 @@ namespace P2Project.Domain.Models
             SocialNetworks = socialNetworks;
             AssistanceDetails = assistanceDetails;
         }
-        public VolunteerId VolunteerId { get; private set; }
         public FullName FullName { get; private set; }
         public int Age { get; private set; }
         public Gender Gender { get; private set; }
         public Email Email { get; private set; } = default!;
         public Description Description { get; private set; } = default!;
         public DateTime RegisteredDate { get; private set; }
-        public double YearsOfExperience => GetYearsOfExperience();
+        public double YearsOfExperience
+        {
+            get => GetYearsOfExperience();
+            private set { }
+        }
         public IReadOnlyList<Pet> Pets => _pets;
         public int NeedsHelpPets =>
             _pets.Count(p => p.AssistanceStatus == AssistanceStatus.NeedsHelp);
@@ -57,7 +60,7 @@ namespace P2Project.Domain.Models
         public VolunteerPhoneNumbers PhoneNumbers { get; private set; } = default!;
         public VolunteerSocialNetworks? SocialNetworks { get; private set; } = default!;
         public VolunteerAssistanceDetails? AssistanceDetails { get; private set; } = default!;
-        public static Result<Volunteer> Create(VolunteerId volunteerId,
+        public static Result<Volunteer> Create(VolunteerId id,
                                                FullName fullName,
                                                int age,
                                                Gender gender,
@@ -68,7 +71,7 @@ namespace P2Project.Domain.Models
                                                VolunteerSocialNetworks? socialNetworks,
                                                VolunteerAssistanceDetails? assistanceDetails)
         {
-            var volunteer = new Volunteer(volunteerId, fullName, age, gender,
+            var volunteer = new Volunteer(id, fullName, age, gender,
                                           email, description, registeredDate,
                                           phoneNumbers, socialNetworks, assistanceDetails);
 

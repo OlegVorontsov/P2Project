@@ -8,18 +8,17 @@ namespace P2Project.Domain.Models
     {
         private Species(SpeciesId id) : base(id) { }
         private readonly List<Breed> _breeds = [];
-        private Species(SpeciesId speciesId,
-                        Name name) : base(speciesId)
+        private Species(SpeciesId id,
+                        Name name) : base(id)
         {
             Name = name;
         }
-        public SpeciesId SpeciesId { get; private set; }
         public Name Name { get; private set; }
         public IReadOnlyList<Breed> Breeds => _breeds;
-        public static Result<Species> Create(SpeciesId speciesId,
+        public static Result<Species> Create(SpeciesId id,
                                              Name name)
         {
-            var species = new Species(speciesId, name);
+            var species = new Species(id, name);
 
             return species;
         }

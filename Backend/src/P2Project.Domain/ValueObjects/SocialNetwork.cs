@@ -1,4 +1,5 @@
-﻿using P2Project.Domain.Shared;
+﻿using CSharpFunctionalExtensions;
+using P2Project.Domain.Shared;
 
 namespace P2Project.Domain.ValueObjects
 {
@@ -11,12 +12,12 @@ namespace P2Project.Domain.ValueObjects
         }
         public string Name { get; } = default!;
         public string Link { get; } = default!;
-        public static Result<SocialNetwork> Create(string name, string link)
+        public static Result<SocialNetwork, Error> Create(string name, string link)
         {
             if (string.IsNullOrWhiteSpace(name))
-                return "Name can't be empty";
+                return Errors.General.ValueIsInvalid(nameof(Name));
             if (string.IsNullOrWhiteSpace(link))
-                return "Link can't be empty";
+                return Errors.General.ValueIsInvalid(nameof(Link));
 
             var newSocialNetwork = new SocialNetwork(name, link);
 

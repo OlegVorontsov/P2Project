@@ -7,5 +7,8 @@ namespace P2Project.Domain.Shared
         public const int MAX_SMALL_TEXT_LENGTH = 100;
         public const int MAX_MEDIUM_TEXT_LENGTH = 300;
         public const int MAX_BIG_TEXT_LENGTH = 1000;
+
+        public const int MIN_AGE = 14;
+        public const int MAX_AGE = 90;
     }
 }

@@ -13,7 +13,7 @@ namespace P2Project.Domain.Models
         
         // ef navigation
         public Volunteer Volunteer { get; private set; } = null!;
-        private Pet(PetId petId,
+        private Pet(PetId id,
                     NickName nickName,
                     SpeciesBreed speciesBreed,
                     Description description,
@@ -28,7 +28,7 @@ namespace P2Project.Domain.Models
                     DateTime dateOfBirth,
                     AssistanceStatus assistanceStatus,
                     PetAssistanceDetails? assistanceDetails,
-                    DateTime createdAt) : base(petId)
+                    DateTime createdAt) : base(id)
         {
             NickName = nickName;
             SpeciesBreed = speciesBreed;
@@ -46,7 +46,6 @@ namespace P2Project.Domain.Models
             AssistanceDetails = assistanceDetails;
             CreatedAt = createdAt;
         }
-        public PetId PetId { get; private set; }
         public NickName NickName { get; private set; } = default!;
         public SpeciesBreed SpeciesBreed { get; private set; } = default!;
         public Description Description { get; private set; } = default!;
@@ -63,7 +62,7 @@ namespace P2Project.Domain.Models
         public PetAssistanceDetails? AssistanceDetails { get; private set; } = default!;
         public IReadOnlyList<PetPhoto> PetPhotos => _petPhotos;
         public DateTime CreatedAt { get; private set; }
-        public static Result<Pet> Create(PetId petId,
+        public static Result<Pet> Create(PetId id,
                                          NickName nickName,
                                          SpeciesBreed speciesBreed,
                                          Description description,
@@ -80,7 +79,7 @@ namespace P2Project.Domain.Models
                                          PetAssistanceDetails assistanceDetails,
                                          DateTime createdAt)
         {
-            var pet = new Pet(petId, nickName, speciesBreed, description, color,
+            var pet = new Pet(id, nickName, speciesBreed, description, color,
                               healthInfo, address, weight, height, ownerPhoneNumber,
                               isCastrated, isVaccinated, dateOfBirth,
                               assistanceStatus, assistanceDetails, createdAt);

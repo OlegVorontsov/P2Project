@@ -1,20 +1,13 @@
-﻿using P2Project.Domain.Models;
-using P2Project.Domain.ValueObjects;
+﻿using P2Project.Application.Dtos;
 
 namespace P2Project.Application.Volunteers.CreateVolunteer
 {
-    public record CreateVolunteerRequest(string firstName,
-                                         string secondName,
-                                         string? lastName,
+    public record CreateVolunteerRequest(FullNameDto fullName,
                                          int age,
-                                         int gender,
+                                         string gender,
                                          string Email,
-                                         string Description,
-                                         string registeredDate,
-                                         string phoneNumbers,
-                                         string? socialNetworks,
-                                         string? assistanceDetails)
-    {
-
-    }
+                                         string? Description,
+                                         IEnumerable<PhoneNumberDto> phoneNumbers,
+                                         IEnumerable<SocialNetworkDto>? socialNetworks,
+                                         IEnumerable<AssistanceDetailDto>? assistanceDetails);
 }

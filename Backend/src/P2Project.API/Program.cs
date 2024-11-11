@@ -1,3 +1,4 @@
+using P2Project.Application;
 using P2Project.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,7 +7,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<ApplicationDBContext>();
+builder.Services.AddInfrastructure()
+                .AddApplication();
 
 var app = builder.Build();
 

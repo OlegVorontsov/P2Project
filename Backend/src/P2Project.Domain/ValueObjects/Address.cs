@@ -1,4 +1,5 @@
-﻿using P2Project.Domain.Shared;
+﻿using CSharpFunctionalExtensions;
+using P2Project.Domain.Shared;
 
 namespace P2Project.Domain.ValueObjects
 {
@@ -24,7 +25,7 @@ namespace P2Project.Domain.ValueObjects
         public string House { get; } = default!;
         public string? Floor { get; }
         public string? Apartment { get; }
-        public static Result<Address> Create(string region,
+        public static Result<Address, Error> Create(string region,
                                              string city,
                                              string street,
                                              string house,
@@ -32,13 +33,13 @@ namespace P2Project.Domain.ValueObjects
                                              string? apartment)
         {
             if (string.IsNullOrEmpty(region))
-                return "Region can't be empty";
+                return Errors.General.ValueIsInvalid(nameof(Region));
             if (string.IsNullOrEmpty(city))
-                return "City can't be empty";
+                return Errors.General.ValueIsInvalid(nameof(City));
             if (string.IsNullOrEmpty(street))
-                return "Street can't be empty";
+                return Errors.General.ValueIsInvalid(nameof(Street));
             if (string.IsNullOrEmpty(house))
-                return "House can't be empty";
+                return Errors.General.ValueIsInvalid(nameof(House));
 
             var newAddress = new Address(region, city, street, house,
                                          floor, apartment);
