@@ -28,7 +28,17 @@ namespace P2Project.Infrastructure.Configurations
                   .HasColumnName("nick_name");
             });
 
-            // Species to do in 4.4
+            builder.ComplexProperty(p => p.SpeciesBreed, sbb =>
+            {
+                sbb.Property(si => si.SpeciesId)
+                   .HasConversion(
+                        id => id.Value,
+                        value => SpeciesId.CreateSpeciesId(value))
+                   .HasColumnName("species_id");
+
+                sbb.Property(bi => bi.BreedId)
+                   .HasColumnName("breed_id");
+            });
 
             builder.ComplexProperty(p => p.Description, db =>
             {
@@ -37,8 +47,6 @@ namespace P2Project.Infrastructure.Configurations
                   .HasMaxLength(Constants.MAX_BIG_TEXT_LENGTH)
                   .HasColumnName("description");
             });
-
-            // Breed to do in 4.4
 
             builder.ComplexProperty(p => p.Color, cb =>
             {

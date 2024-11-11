@@ -15,9 +15,8 @@ namespace P2Project.Domain.Models
         public Volunteer Volunteer { get; private set; } = null!;
         private Pet(PetId petId,
                     NickName nickName,
-                    string species,
+                    SpeciesBreed speciesBreed,
                     Description description,
-                    string breed,
                     Color color,
                     HealthInfo healthInfo,
                     Address address,
@@ -32,9 +31,8 @@ namespace P2Project.Domain.Models
                     DateTime createdAt) : base(petId)
         {
             NickName = nickName;
-            Species = species;
+            SpeciesBreed = speciesBreed;
             Description = description;
-            Breed = breed;
             Color = color;
             HealthInfo = healthInfo;
             Address = address;
@@ -50,9 +48,8 @@ namespace P2Project.Domain.Models
         }
         public PetId PetId { get; private set; }
         public NickName NickName { get; private set; } = default!;
-        public string Species { get; private set; } = default!;
+        public SpeciesBreed SpeciesBreed { get; private set; } = default!;
         public Description Description { get; private set; } = default!;
-        public string Breed { get; private set; } = default!;
         public Color Color { get; private set; } = default!;
         public HealthInfo HealthInfo { get; private set; } = default!;
         public Address Address { get; private set; }
@@ -68,9 +65,8 @@ namespace P2Project.Domain.Models
         public DateTime CreatedAt { get; private set; }
         public static Result<Pet> Create(PetId petId,
                                          NickName nickName,
-                                         string species,
+                                         SpeciesBreed speciesBreed,
                                          Description description,
-                                         string breed,
                                          Color color,
                                          HealthInfo healthInfo,
                                          Address address,
@@ -84,7 +80,7 @@ namespace P2Project.Domain.Models
                                          PetAssistanceDetails assistanceDetails,
                                          DateTime createdAt)
         {
-            var pet = new Pet(petId, nickName, species, description, breed, color,
+            var pet = new Pet(petId, nickName, speciesBreed, description, color,
                               healthInfo, address, weight, height, ownerPhoneNumber,
                               isCastrated, isVaccinated, dateOfBirth,
                               assistanceStatus, assistanceDetails, createdAt);
