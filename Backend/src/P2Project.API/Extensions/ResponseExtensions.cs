@@ -7,25 +7,13 @@ namespace P2Project.API.Extensions
 {
     public static class ResponseExtensions
     {
-        public static ActionResult ToResponse(this UnitResult<Error> result)
+        public static ActionResult ToResponse(this Error error)
         {
-            if (result.IsSuccess)
-                return new OkResult();
-            var statusCode = GetStatusCodeForError(result.Error);
-            var envelope = Envelope.Error(result.Error);
-            return new ObjectResult(envelope)
-            {
-                StatusCode = statusCode
-            };
-        }
-        public static ActionResult<T> ToResponse<T>(this Result<T, Error> result)
-        {
-            if(result.IsSuccess)
-                return new OkObjectResult(Envelope.Ok(result.Value));
+            var statusCode = GetStatusCodeForError(error);
 
-            var statusCode = GetStatusCodeForError(result.Error);
+            var responseError = new ResponseError(error.Code, error.Message, null);
 
-            var envelope = Envelope.Error(result.Error);
+            var envelope = Envelope.Error([responseError]);
             return new ObjectResult(envelope)
             {
                 StatusCode = statusCode

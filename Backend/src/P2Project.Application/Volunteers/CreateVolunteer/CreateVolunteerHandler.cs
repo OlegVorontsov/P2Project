@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using FluentValidation;
 using P2Project.Domain.IDs;
 using P2Project.Domain.Models;
 using P2Project.Domain.Shared;
@@ -9,7 +10,9 @@ namespace P2Project.Application.Volunteers.CreateVolunteer
     public class CreateVolunteerHandler
     {
         private readonly IVolunteersRepository _volunteersRepository;
-        public CreateVolunteerHandler(IVolunteersRepository volunteersRepository)
+
+        public CreateVolunteerHandler(
+            IVolunteersRepository volunteersRepository)
         {
             _volunteersRepository = volunteersRepository;
         }
@@ -19,42 +22,31 @@ namespace P2Project.Application.Volunteers.CreateVolunteer
         {
             var volunteerId = VolunteerId.NewVolunteerId();
 
-            var fullNameResult = FullName.Create(command.fullName.FirstName,
-                                                 command.fullName.SecondName,
-                                                 command.fullName.LastName);
-            if (fullNameResult.IsFailure)
-                return fullNameResult.Error;
+            var fullName = FullName.Create(
+                                   command.FullName.FirstName,
+                                   command.FullName.SecondName,
+                                   command.FullName.LastName).Value;
 
-            var volunteerByFullName = await _volunteersRepository.GetByFullName(fullNameResult.Value);
+            var volunteerByFullName = await _volunteersRepository.GetByFullName(fullName);
             if (volunteerByFullName.IsSuccess)
                 return Errors.Volunteer.AlreadyExist();
 
-            var age = command.age;
-            if (age < Constants.MIN_AGE || age > Constants.MAX_AGE)
-                return Errors.General.ValueIsInvalid("age");
+            var gender = Enum.Parse<Gender>(command.Gender);
 
-            var genderResult = Enum.Parse<Gender>(command.gender);
-            if (genderResult != Gender.Male && genderResult != Gender.Female)
-                return Errors.General.ValueIsInvalid("gender");
+            var email = Email.Create(command.Email).Value;
 
-            var emailResult = Email.Create(command.Email);
-            if (emailResult.IsFailure)
-                return emailResult.Error;
-
-            var volunteerByEmail = await _volunteersRepository.GetByEmail(emailResult.Value);
+            var volunteerByEmail = await _volunteersRepository.GetByEmail(email);
             if (volunteerByEmail.IsSuccess)
                 return Errors.Volunteer.AlreadyExist();
 
-            var descriptionResult = Description.Create(command.Description);
-            if (descriptionResult.IsFailure)
-                return descriptionResult.Error;
+            var description = Description.Create(command.Description).Value;
 
             var registeredDate = DateTime.Now;
 
             var phoneNumbers = new List<PhoneNumber>();
-            if (command.phoneNumbers != null)
+            if (command.PhoneNumbers != null)
             {
-                foreach (var number in command.phoneNumbers)
+                foreach (var number in command.PhoneNumbers)
                 {
                     var phoneNumberResult = PhoneNumber.Create(number.Value, number.IsMain);
                     if (phoneNumberResult.IsFailure)
@@ -65,12 +57,13 @@ namespace P2Project.Application.Volunteers.CreateVolunteer
             var volunteerPhoneNumbers = new VolunteerPhoneNumbers(phoneNumbers);
 
             var socialNetworks = new List<SocialNetwork>();
-            if (command.socialNetworks != null)
+            if (command.SocialNetworks != null)
             {
-                foreach (var socialNetwork in command.socialNetworks)
+                foreach (var socialNetwork in command.SocialNetworks)
                 {
-                    var socialNetworkResult = SocialNetwork.Create(socialNetwork.Name,
-                                                                   socialNetwork.Link);
+                    var socialNetworkResult = SocialNetwork.Create(
+                                                            socialNetwork.Name,
+                                                            socialNetwork.Link);
                     if (socialNetworkResult.IsFailure)
                         return socialNetworkResult.Error;
                     socialNetworks.Add(socialNetworkResult.Value);
@@ -79,13 +72,14 @@ namespace P2Project.Application.Volunteers.CreateVolunteer
             var volunteerSocialNetworks = new VolunteerSocialNetworks(socialNetworks);
 
             var assistanceDetails = new List<AssistanceDetail>();
-            if (command.assistanceDetails != null)
+            if (command.AssistanceDetails != null)
             {
-                foreach (var assistanceDetail in command.assistanceDetails)
+                foreach (var assistanceDetail in command.AssistanceDetails)
                 {
-                    var assistanceDetailResult = AssistanceDetail.Create(assistanceDetail.Name,
-                                                                         assistanceDetail.Description,
-                                                                         assistanceDetail.AccountNumber);
+                    var assistanceDetailResult = AssistanceDetail.Create(
+                                                 assistanceDetail.Name,
+                                                 assistanceDetail.Description,
+                                                 assistanceDetail.AccountNumber);
                     if (assistanceDetailResult.IsFailure)
                         return assistanceDetailResult.Error;
                     assistanceDetails.Add(assistanceDetailResult.Value);
@@ -95,11 +89,11 @@ namespace P2Project.Application.Volunteers.CreateVolunteer
 
             var volunteer = new Volunteer(
                             volunteerId,
-                            fullNameResult.Value,
-                            age,
-                            genderResult,
-                            emailResult.Value,
-                            descriptionResult.Value,
+                            fullName,
+                            command.Age,
+                            gender,
+                            email,
+                            description,
                             registeredDate,
                             volunteerPhoneNumbers,
                             volunteerSocialNetworks,
