@@ -11,14 +11,7 @@ namespace P2Project.API.Extensions
         {
             if (result.IsSuccess)
                 return new OkResult();
-            var statusCode = result.Error.Type switch
-            {
-                ErrorType.Validation => StatusCodes.Status400BadRequest,
-                ErrorType.NotFound => StatusCodes.Status404NotFound,
-                ErrorType.Conflict => StatusCodes.Status409Conflict,
-                ErrorType.Failure => StatusCodes.Status500InternalServerError,
-                _ => StatusCodes.Status500InternalServerError
-            };
+            var statusCode = GetStatusCodeForError(result.Error);
             var envelope = Envelope.Error(result.Error);
             return new ObjectResult(envelope)
             {
@@ -29,7 +22,18 @@ namespace P2Project.API.Extensions
         {
             if(result.IsSuccess)
                 return new OkObjectResult(Envelope.Ok(result.Value));
-            var statusCode = result.Error.Type switch
+
+            var statusCode = GetStatusCodeForError(result.Error);
+
+            var envelope = Envelope.Error(result.Error);
+            return new ObjectResult(envelope)
+            {
+                StatusCode = statusCode
+            };
+        }
+        public static int GetStatusCodeForError(Error error)
+        {
+            var statusCode = error.Type switch
             {
                 ErrorType.Validation => StatusCodes.Status400BadRequest,
                 ErrorType.NotFound => StatusCodes.Status404NotFound,
@@ -37,11 +41,7 @@ namespace P2Project.API.Extensions
                 ErrorType.Failure => StatusCodes.Status500InternalServerError,
                 _ => StatusCodes.Status500InternalServerError
             };
-            var envelope = Envelope.Error(result.Error);
-            return new ObjectResult(envelope)
-            {
-                StatusCode = statusCode
-            };
+            return statusCode;
         }
     }
 }

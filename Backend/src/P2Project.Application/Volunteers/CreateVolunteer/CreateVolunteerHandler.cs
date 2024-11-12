@@ -14,16 +14,14 @@ namespace P2Project.Application.Volunteers.CreateVolunteer
             _volunteersRepository = volunteersRepository;
         }
         public async Task<Result<Guid, Error>> Handle(
-            CreateVolunteerRequest request,
+            CreateCommand command,
             CancellationToken cancellationToken = default)
         {
-            // create newVolunteer and validation
             var volunteerId = VolunteerId.NewVolunteerId();
 
-            // fullName
-            var fullNameResult = FullName.Create(request.fullName.FirstName,
-                                                 request.fullName.SecondName,
-                                                 request.fullName.LastName);
+            var fullNameResult = FullName.Create(command.fullName.FirstName,
+                                                 command.fullName.SecondName,
+                                                 command.fullName.LastName);
             if (fullNameResult.IsFailure)
                 return fullNameResult.Error;
 
@@ -31,18 +29,15 @@ namespace P2Project.Application.Volunteers.CreateVolunteer
             if (volunteerByFullName.IsSuccess)
                 return Errors.Volunteer.AlreadyExist();
 
-            // age
-            var age = request.age;
+            var age = command.age;
             if (age < Constants.MIN_AGE || age > Constants.MAX_AGE)
                 return Errors.General.ValueIsInvalid("age");
 
-            // gender
-            var genderResult = Enum.Parse<Gender>(request.gender);
+            var genderResult = Enum.Parse<Gender>(command.gender);
             if (genderResult != Gender.Male && genderResult != Gender.Female)
                 return Errors.General.ValueIsInvalid("gender");
 
-            // email
-            var emailResult = Email.Create(request.Email);
+            var emailResult = Email.Create(command.Email);
             if (emailResult.IsFailure)
                 return emailResult.Error;
 
@@ -50,19 +45,16 @@ namespace P2Project.Application.Volunteers.CreateVolunteer
             if (volunteerByEmail.IsSuccess)
                 return Errors.Volunteer.AlreadyExist();
 
-            // description
-            var descriptionResult = Description.Create(request.Description);
+            var descriptionResult = Description.Create(command.Description);
             if (descriptionResult.IsFailure)
                 return descriptionResult.Error;
 
-            // RegisteredDate
             var registeredDate = DateTime.Now;
 
-            // phoneNumbers
             var phoneNumbers = new List<PhoneNumber>();
-            if (request.phoneNumbers != null)
+            if (command.phoneNumbers != null)
             {
-                foreach (var number in request.phoneNumbers)
+                foreach (var number in command.phoneNumbers)
                 {
                     var phoneNumberResult = PhoneNumber.Create(number.Value, number.IsMain);
                     if (phoneNumberResult.IsFailure)
@@ -72,11 +64,10 @@ namespace P2Project.Application.Volunteers.CreateVolunteer
             }
             var volunteerPhoneNumbers = new VolunteerPhoneNumbers(phoneNumbers);
 
-            // socialNetworks
             var socialNetworks = new List<SocialNetwork>();
-            if (request.socialNetworks != null)
+            if (command.socialNetworks != null)
             {
-                foreach (var socialNetwork in request.socialNetworks)
+                foreach (var socialNetwork in command.socialNetworks)
                 {
                     var socialNetworkResult = SocialNetwork.Create(socialNetwork.Name,
                                                                    socialNetwork.Link);
@@ -87,11 +78,10 @@ namespace P2Project.Application.Volunteers.CreateVolunteer
             }
             var volunteerSocialNetworks = new VolunteerSocialNetworks(socialNetworks);
 
-            // assistanceDetails
             var assistanceDetails = new List<AssistanceDetail>();
-            if (request.assistanceDetails != null)
+            if (command.assistanceDetails != null)
             {
-                foreach (var assistanceDetail in request.assistanceDetails)
+                foreach (var assistanceDetail in command.assistanceDetails)
                 {
                     var assistanceDetailResult = AssistanceDetail.Create(assistanceDetail.Name,
                                                                          assistanceDetail.Description,
@@ -103,20 +93,21 @@ namespace P2Project.Application.Volunteers.CreateVolunteer
             }
             var volunteerAssistanceDetails = new VolunteerAssistanceDetails(assistanceDetails);
 
-            var volunteer = Volunteer.Create(volunteerId,
-                                                     fullNameResult.Value,
-                                                     age,
-                                                     genderResult,
-                                                     emailResult.Value,
-                                                     descriptionResult.Value,
-                                                     registeredDate,
-                                                     volunteerPhoneNumbers,
-                                                     volunteerSocialNetworks,
-                                                     volunteerAssistanceDetails);
+            var volunteer = new Volunteer(
+                            volunteerId,
+                            fullNameResult.Value,
+                            age,
+                            genderResult,
+                            emailResult.Value,
+                            descriptionResult.Value,
+                            registeredDate,
+                            volunteerPhoneNumbers,
+                            volunteerSocialNetworks,
+                            volunteerAssistanceDetails);
 
-            await _volunteersRepository.Add(volunteer.Value, cancellationToken);
+            await _volunteersRepository.Add(volunteer, cancellationToken);
 
-            return (Guid)volunteer.Value.Id;
+            return (Guid)volunteer.Id;
         }
     }
 }

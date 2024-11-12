@@ -9,21 +9,22 @@ namespace P2Project.Domain.Models
         Male,
         Female
     }
-    public sealed class Volunteer : Shared.Entity<VolunteerId>
+    public sealed class Volunteer : Entity<VolunteerId>
     {
         private Volunteer(VolunteerId id) : base(id) { }
         private readonly List<Pet> _pets = [];
 
-        private Volunteer(VolunteerId id,
-                          FullName fullName,
-                          int age,
-                          Gender gender,
-                          Email email,
-                          Description description,
-                          DateTime registeredDate,
-                          VolunteerPhoneNumbers phoneNumbers,
-                          VolunteerSocialNetworks? socialNetworks,
-                          VolunteerAssistanceDetails? assistanceDetails) : base(id)
+        public Volunteer(
+                VolunteerId id,
+                FullName fullName,
+                int age,
+                Gender gender,
+                Email email,
+                Description description,
+                DateTime registeredDate,
+                VolunteerPhoneNumbers phoneNumbers,
+                VolunteerSocialNetworks? socialNetworks,
+                VolunteerAssistanceDetails? assistanceDetails) : base(id)
         {
             FullName = fullName;
             Age = age;
@@ -60,23 +61,6 @@ namespace P2Project.Domain.Models
         public VolunteerPhoneNumbers PhoneNumbers { get; private set; } = default!;
         public VolunteerSocialNetworks? SocialNetworks { get; private set; } = default!;
         public VolunteerAssistanceDetails? AssistanceDetails { get; private set; } = default!;
-        public static Result<Volunteer> Create(VolunteerId id,
-                                               FullName fullName,
-                                               int age,
-                                               Gender gender,
-                                               Email email,
-                                               Description description,
-                                               DateTime registeredDate,
-                                               VolunteerPhoneNumbers phoneNumbers,
-                                               VolunteerSocialNetworks? socialNetworks,
-                                               VolunteerAssistanceDetails? assistanceDetails)
-        {
-            var volunteer = new Volunteer(id, fullName, age, gender,
-                                          email, description, registeredDate,
-                                          phoneNumbers, socialNetworks, assistanceDetails);
-
-            return volunteer;
-        }
         private double GetYearsOfExperience()
         {
             var timeSpan = DateTime.Now - RegisteredDate;

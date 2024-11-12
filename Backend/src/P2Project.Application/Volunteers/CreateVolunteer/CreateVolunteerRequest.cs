@@ -2,12 +2,13 @@
 
 namespace P2Project.Application.Volunteers.CreateVolunteer
 {
-    public record CreateVolunteerRequest(FullNameDto fullName,
-                                         int age,
-                                         string gender,
-                                         string Email,
-                                         string? Description,
-                                         IEnumerable<PhoneNumberDto> phoneNumbers,
-                                         IEnumerable<SocialNetworkDto>? socialNetworks,
-                                         IEnumerable<AssistanceDetailDto>? assistanceDetails);
+    public record CreateVolunteerRequest(
+            FullNameDto FullName,
+            int Age,
+            string Gender,
+            string Email,
+            string? Description,
+            IEnumerable<PhoneNumberDto> PhoneNumbers,
+            IEnumerable<SocialNetworkDto>? SocialNetworks,
+            IEnumerable<AssistanceDetailDto>? AssistanceDetails);
 }
