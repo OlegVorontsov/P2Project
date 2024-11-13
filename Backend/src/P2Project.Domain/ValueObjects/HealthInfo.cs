@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using P2Project.Domain.Shared;
 
 namespace P2Project.Domain.ValueObjects
 {
@@ -9,10 +10,10 @@ namespace P2Project.Domain.ValueObjects
             Value = value;
         }
         public string? Value { get; } = default!;
-        public static Result<HealthInfo, string> Create(string? value)
+        public static Result<HealthInfo, Error> Create(string? value)
         {
             if (string.IsNullOrWhiteSpace(value))
-                return "HealthInfo can't be empty";
+                return Errors.General.ValueIsInvalid(nameof(HealthInfo));
 
             var newHealthInfo = new HealthInfo(value);
 

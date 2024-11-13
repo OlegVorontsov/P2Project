@@ -11,7 +11,7 @@ namespace P2Project.Infrastructure.Configurations
     {
         public void Configure(EntityTypeBuilder<Pet> builder)
         {
-            builder.ToTable("Pets");
+            builder.ToTable("pets");
 
             builder.HasKey(p => p.Id);
 
@@ -103,14 +103,32 @@ namespace P2Project.Infrastructure.Configurations
                    .HasMaxLength(Constants.MAX_TINY_TEXT_LENGTH)
                    .HasColumnName("height");
 
-            builder.Property(p => p.OwnerPhoneNumber)
+            builder.ComplexProperty(p => p.OwnerPhoneNumber, pnb =>
+            {
+                pnb.Property(pn => pn.Value)
                    .IsRequired()
-                   .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH);
+                   .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH)
+                   .HasColumnName("owner_phone_number");
+
+                pnb.Property(pn => pn.IsMain)
+                   .IsRequired(false)
+                   .HasColumnName("is_main");
+            });
+
+            builder.ComplexProperty(p => p.HealthInfo, hib =>
+            {
+                hib.Property(hi => hi.Value)
+                  .IsRequired(false)
+                  .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH)
+                  .HasColumnName("health_info");
+            });
 
             builder.Property(p => p.IsCastrated)
+                   .IsRequired()
                    .HasColumnName("is_castrated");
 
             builder.Property(p => p.IsVaccinated)
+                   .IsRequired()
                    .HasColumnName("is_vaccinated");
 
             builder.Property(p => p.DateOfBirth)
@@ -148,7 +166,7 @@ namespace P2Project.Infrastructure.Configurations
             });
 
             builder.HasMany(p => p.PetPhotos)
-                   .WithOne(pp => pp.Pet)
+                   .WithOne()
                    .HasForeignKey("pet_id")
                    .OnDelete(DeleteBehavior.Cascade)
                    .IsRequired();

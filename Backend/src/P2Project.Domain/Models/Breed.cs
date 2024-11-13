@@ -5,13 +5,14 @@ namespace P2Project.Domain.Models
 {
     public class Breed
     {
-        public Breed(Guid breedId,
+        private Breed(Guid id) { }
+        public Breed(Guid id,
                       Name name)
         {
-            BreedId = breedId;
+            Id = id;
             Name = name;
         }
-        public Guid BreedId { get; private set; }
+        public Guid Id { get; private set; }
         public Name Name { get; private set; }
     }
 }

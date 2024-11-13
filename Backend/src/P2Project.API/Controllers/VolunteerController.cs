@@ -1,35 +1,64 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using P2Project.Domain.Models;
-using P2Project.Domain.ValueObjects;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
+using P2Project.API.Extensions;
+using P2Project.API.Response;
+using P2Project.Application.Volunteers.CreateVolunteer;
+using P2Project.Domain.Shared;
 
 namespace P2Project.API.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class VolunteerController : ControllerBase
+    public class VolunteerController : ApplicationController
     {
-        [HttpGet]
-        public IActionResult Get()
+        [HttpPost]
+        public async Task<ActionResult<Guid>> Create(
+            [FromServices] CreateVolunteerHandler handler,
+            [FromServices] IValidator<CreateCommand> validator,
+            [FromBody] CreateVolunteerRequest request,
+            CancellationToken cancellationToken)
         {
-            var petPhoto = PetPhoto.Create("path", false).Value;
-            List<PetPhoto> petPhotos = [pet, pet, pet];
-            return Ok(petPhotos);
-        }
+            var command = new CreateCommand(
+                    request.FullName,
+                    request.Age,
+                    request.Gender,
+                    request.Email,
+                    request?.Description,
+                    request.PhoneNumbers,
+                    request?.SocialNetworks,
+                    request?.AssistanceDetails);
 
-        [HttpGet("{id:guid}")]
-        public IActionResult Get(Guid id)
-        {
-            return Ok(id);
-        }
+            var validationResult = await validator.ValidateAsync(
+                                        command,
+                                        cancellationToken);
 
-        [HttpPut("{id:guid}")]
-        public IActionResult Update([FromRoute] Guid id, [FromBody] UpdatePetPhotoDto dto)
-        {
-            var request = new UpdatePetPhotoCommand(id, dto);
-            return Ok(request);
+            if (validationResult.IsValid == false)
+            {
+                var validationErrors = validationResult.Errors;
+
+                List<ResponseError> errors = [];
+
+                foreach (var validationError in validationErrors)
+                {
+                    var error = Error.Validation(
+                                      validationError.ErrorCode,
+                                      validationError.ErrorMessage);
+
+                    var responseError = new ResponseError(
+                                            error.Code,
+                                            error.Message,
+                                            validationError.PropertyName);
+                    errors.Add(responseError);
+                };
+                var envelope = Envelope.Error(errors);
+
+                return BadRequest(envelope);
+            }
+
+            var result = await handler.Handle(command, cancellationToken);
+
+            if (result.IsFailure)
+                return result.Error.ToResponse();
+
+            return Ok(result.Value);
         }
     }
-
-    public record UpdatePetPhotoCommand(Guid id, UpdatePetPhotoDto updatePetPhotoDto);
-    public record UpdatePetPhotoDto(string path, bool isMain);
 }

@@ -4,7 +4,7 @@ using P2Project.Domain.ValueObjects;
 
 namespace P2Project.Domain.Models
 {
-    public class Pet : Shared.Entity<PetId>
+    public class Pet : Entity<PetId>
     {
         // ef core
         private Pet(PetId id) : base(id) { }
@@ -13,7 +13,7 @@ namespace P2Project.Domain.Models
         
         // ef navigation
         public Volunteer Volunteer { get; private set; } = null!;
-        private Pet(PetId petId,
+        public Pet(PetId id,
                     NickName nickName,
                     SpeciesBreed speciesBreed,
                     Description description,
@@ -28,7 +28,7 @@ namespace P2Project.Domain.Models
                     DateTime dateOfBirth,
                     AssistanceStatus assistanceStatus,
                     PetAssistanceDetails? assistanceDetails,
-                    DateTime createdAt) : base(petId)
+                    DateTime createdAt) : base(id)
         {
             NickName = nickName;
             SpeciesBreed = speciesBreed;
@@ -46,7 +46,6 @@ namespace P2Project.Domain.Models
             AssistanceDetails = assistanceDetails;
             CreatedAt = createdAt;
         }
-        public PetId PetId { get; private set; }
         public NickName NickName { get; private set; } = default!;
         public SpeciesBreed SpeciesBreed { get; private set; } = default!;
         public Description Description { get; private set; } = default!;
@@ -63,28 +62,5 @@ namespace P2Project.Domain.Models
         public PetAssistanceDetails? AssistanceDetails { get; private set; } = default!;
         public IReadOnlyList<PetPhoto> PetPhotos => _petPhotos;
         public DateTime CreatedAt { get; private set; }
-        public static Result<Pet> Create(PetId petId,
-                                         NickName nickName,
-                                         SpeciesBreed speciesBreed,
-                                         Description description,
-                                         Color color,
-                                         HealthInfo healthInfo,
-                                         Address address,
-                                         double weight,
-                                         double height,
-                                         PhoneNumber ownerPhoneNumber,
-                                         bool isCastrated,
-                                         bool isVaccinated,
-                                         DateTime dateOfBirth,
-                                         AssistanceStatus assistanceStatus,
-                                         PetAssistanceDetails assistanceDetails,
-                                         DateTime createdAt)
-        {
-            var pet = new Pet(petId, nickName, speciesBreed, description, color,
-                              healthInfo, address, weight, height, ownerPhoneNumber,
-                              isCastrated, isVaccinated, dateOfBirth,
-                              assistanceStatus, assistanceDetails, createdAt);
-            return pet;
-        }
     }
 }

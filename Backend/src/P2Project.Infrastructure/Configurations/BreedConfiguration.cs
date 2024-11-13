@@ -9,7 +9,7 @@ namespace P2Project.Infrastructure.Configurations
     {
         public void Configure(EntityTypeBuilder<Breed> builder)
         {
-            builder.HasKey(b => b.BreedId);
+            builder.HasKey(b => b.Id);
 
             builder.ComplexProperty(b => b.Name, nb =>
             {
