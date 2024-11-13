@@ -1,5 +1,4 @@
-﻿using P2Project.Domain.Shared;
-
+﻿
 namespace P2Project.API.Response
 {
     public record ResponseError(
@@ -12,8 +11,9 @@ namespace P2Project.API.Response
         public List<ResponseError> Errors { get; }
         public DateTime TimeGenerated { get; }
 
-        private Envelope(object? result,
-                        IEnumerable<ResponseError> errors)
+        private Envelope(
+                object? result,
+                IEnumerable<ResponseError> errors)
         {
             Result = result;
             Errors = errors.ToList();

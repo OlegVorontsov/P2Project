@@ -1,9 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using P2Project.API.Extensions;
-using P2Project.API.Response;
 using P2Project.Application.Volunteers.CreateVolunteer;
-using P2Project.Domain.Shared;
 
 namespace P2Project.API.Controllers
 {
@@ -31,27 +29,7 @@ namespace P2Project.API.Controllers
                                         cancellationToken);
 
             if (validationResult.IsValid == false)
-            {
-                var validationErrors = validationResult.Errors;
-
-                List<ResponseError> errors = [];
-
-                foreach (var validationError in validationErrors)
-                {
-                    var error = Error.Validation(
-                                      validationError.ErrorCode,
-                                      validationError.ErrorMessage);
-
-                    var responseError = new ResponseError(
-                                            error.Code,
-                                            error.Message,
-                                            validationError.PropertyName);
-                    errors.Add(responseError);
-                };
-                var envelope = Envelope.Error(errors);
-
-                return BadRequest(envelope);
-            }
+                return validationResult.ToValidarionErrorResponse();
 
             var result = await handler.Handle(command, cancellationToken);
 

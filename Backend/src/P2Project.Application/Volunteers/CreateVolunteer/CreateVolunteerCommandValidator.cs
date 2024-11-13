@@ -7,7 +7,7 @@ using P2Project.Domain.Shared;
 namespace P2Project.Application.Volunteers.CreateVolunteer
 {
     public class CreateVolunteerCommandValidator :
-    AbstractValidator<CreateCommand>
+                 AbstractValidator<CreateCommand>
     {
         public CreateVolunteerCommandValidator()
         {
