@@ -17,8 +17,8 @@ namespace P2Project.Domain.PetManagment.ValueObjects
             if (string.IsNullOrWhiteSpace(value))
                 return Errors.General.ValueIsInvalid(nameof(Email));
 
-            if (Regex.IsMatch(value, EMAIL_CHECK_REGEX) == false)
-                return Errors.General.ValueIsInvalid(nameof(Email));
+            //if (Regex.IsMatch(value, EMAIL_CHECK_REGEX) == false)
+            //    return Errors.General.ValueIsInvalid(nameof(Email));
 
             var newEmail = new Email(value);
 

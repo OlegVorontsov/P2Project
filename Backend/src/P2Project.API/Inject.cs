@@ -5,13 +5,13 @@ namespace P2Project.API
 {
     public static class Inject
     {
-        public static IServiceCollection AddValidation(this IServiceCollection services)
-        {
-            services.AddFluentValidationAutoValidation(configuration => {
+        //public static IServiceCollection AddValidation(this IServiceCollection services)
+        //{
+        //    services.AddFluentValidationAutoValidation(configuration => {
 
-                configuration.OverrideDefaultResultFactoryWith<CustomResultFactory>();
-            });
-            return services;
-        }
+        //        configuration.OverrideDefaultResultFactoryWith<CustomResultFactory>();
+        //    });
+        //    return services;
+        //}
     }
 }
