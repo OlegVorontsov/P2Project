@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "P2Project.API", "src\P2Project.API\P2Project.API.csproj", "{4003E0B1-5719-44A3-9D68-5378B9CBA188}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "P2Project.API", "src\P2Project.API\P2Project.API.csproj", "{4003E0B1-5719-44A3-9D68-5378B9CBA188}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "P2Project.Infrastructure", "src\P2Project.Infrastructure\P2Project.Infrastructure.csproj", "{85486F11-E11C-4D22-82F2-6E3FA8397E70}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "P2Project.Infrastructure", "src\P2Project.Infrastructure\P2Project.Infrastructure.csproj", "{85486F11-E11C-4D22-82F2-6E3FA8397E70}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "P2Project.Application", "src\P2Project.Application\P2Project.Application.csproj", "{E3250B2D-CCDE-4CB3-910C-A95EF3BA5EE4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "P2Project.Application", "src\P2Project.Application\P2Project.Application.csproj", "{E3250B2D-CCDE-4CB3-910C-A95EF3BA5EE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "P2Project.Domain", "src\P2Project.Domain\P2Project.Domain.csproj", "{5061241B-1B1F-4D64-B909-C3F686A46BD9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "P2Project.Domain", "src\P2Project.Domain\P2Project.Domain.csproj", "{5061241B-1B1F-4D64-B909-C3F686A46BD9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{4EDABDD0-D3C7-4AD4-8A36-38C68B2E3E14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,6 +38,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4003E0B1-5719-44A3-9D68-5378B9CBA188} = {4EDABDD0-D3C7-4AD4-8A36-38C68B2E3E14}
+		{85486F11-E11C-4D22-82F2-6E3FA8397E70} = {4EDABDD0-D3C7-4AD4-8A36-38C68B2E3E14}
+		{E3250B2D-CCDE-4CB3-910C-A95EF3BA5EE4} = {4EDABDD0-D3C7-4AD4-8A36-38C68B2E3E14}
+		{5061241B-1B1F-4D64-B909-C3F686A46BD9} = {4EDABDD0-D3C7-4AD4-8A36-38C68B2E3E14}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CDE875A3-0719-41D9-802B-AF45CA477C09}

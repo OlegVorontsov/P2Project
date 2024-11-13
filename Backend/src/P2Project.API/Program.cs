@@ -1,5 +1,6 @@
-using P2Project.Application;
-using P2Project.Infrastructure;
+using P2Project.API;
+using P2Project.Application.Shared;
+using P2Project.Infrastructure.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddInfrastructure()
                 .AddApplication();
+
+builder.Services.AddValidation();
 
 var app = builder.Build();
 

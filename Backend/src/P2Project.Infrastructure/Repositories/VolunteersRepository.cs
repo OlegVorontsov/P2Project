@@ -1,11 +1,10 @@
 ﻿using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 using P2Project.Application.Volunteers;
-using P2Project.Domain.IDs;
-using P2Project.Domain.Models;
+using P2Project.Domain.PetManagment;
+using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;
-using P2Project.Domain.ValueObjects;
-using System.Threading;
+using P2Project.Domain.Shared.IDs;
 
 namespace P2Project.Infrastructure.Repositories
 {
@@ -27,9 +26,8 @@ namespace P2Project.Infrastructure.Repositories
         public async Task<Result<Volunteer, Error>> GetById(VolunteerId volunteerId)
         {
             var volunteer = await _dbContext.Volunteers
-                                            .Include(v => v.Pets)
-                                            .ThenInclude(p => p.PetPhotos)
-                                            .FirstOrDefaultAsync(v => v.Id == volunteerId);
+                                            .FirstOrDefaultAsync(v =>
+                                            v.Id == volunteerId);
             if (volunteer is null)
                 return Errors.General.NotFound(volunteerId);
             return volunteer;
@@ -37,8 +35,6 @@ namespace P2Project.Infrastructure.Repositories
         public async Task<Result<Volunteer, Error>> GetByFullName(FullName fullName)
         {
             var volunteer = await _dbContext.Volunteers
-                                            .Include(v => v.Pets)
-                                            .ThenInclude(p => p.PetPhotos)
                                             .FirstOrDefaultAsync(v =>
                                             v.FullName == fullName);
             if (volunteer is null)
@@ -48,8 +44,6 @@ namespace P2Project.Infrastructure.Repositories
         public async Task<Result<Volunteer, Error>> GetByEmail(Email email)
         {
             var volunteer = await _dbContext.Volunteers
-                                            .Include(v => v.Pets)
-                                            .ThenInclude(p => p.PetPhotos)
                                             .FirstOrDefaultAsync(v =>
                                             v.Email == email);
             if (volunteer is null)

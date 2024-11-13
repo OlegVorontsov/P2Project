@@ -14,9 +14,11 @@ namespace P2Project.Application.Validation
             return ruleBuilder.Custom((value, context) =>
             {
                 Result<TValueObject, Error> result = factoryMethod(value);
+
                 if (result.IsSuccess)
                     return;
-                context.AddFailure(result.Error.Message);
+
+                context.AddFailure(result.Error.Serialize());
             });
         }
     }

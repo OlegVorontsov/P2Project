@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using P2Project.Domain.Models;
+using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;
-using P2Project.Domain.ValueObjects;
 
 namespace P2Project.Infrastructure.Configurations
 {

@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using P2Project.Domain.IDs;
-using P2Project.Domain.Models;
 using P2Project.Domain.Shared;
+using P2Project.Domain.Shared.IDs;
+using P2Project.Domain.SpeciesManagment;
 
 namespace P2Project.Infrastructure.Configurations
 {

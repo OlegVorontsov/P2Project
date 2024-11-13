@@ -1,9 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
-using FluentValidation;
-using P2Project.Domain.IDs;
-using P2Project.Domain.Models;
+using P2Project.Domain.PetManagment;
+using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;
-using P2Project.Domain.ValueObjects;
+using P2Project.Domain.Shared.IDs;
 
 namespace P2Project.Application.Volunteers.CreateVolunteer
 {
@@ -26,7 +25,6 @@ namespace P2Project.Application.Volunteers.CreateVolunteer
                                    command.FullName.FirstName,
                                    command.FullName.SecondName,
                                    command.FullName.LastName).Value;
-
             var volunteerByFullName = await _volunteersRepository.GetByFullName(fullName);
             if (volunteerByFullName.IsSuccess)
                 return Errors.Volunteer.AlreadyExist();
@@ -46,44 +44,34 @@ namespace P2Project.Application.Volunteers.CreateVolunteer
             var phoneNumbers = new List<PhoneNumber>();
             if (command.PhoneNumbers != null)
             {
-                foreach (var number in command.PhoneNumbers)
-                {
-                    var phoneNumberResult = PhoneNumber.Create(number.Value, number.IsMain);
-                    if (phoneNumberResult.IsFailure)
-                        return phoneNumberResult.Error;
-                    phoneNumbers.Add(phoneNumberResult.Value);
-                }
+                var phones = command.PhoneNumbers.Select(pn =>
+                                                  PhoneNumber.Create(
+                                                      pn.Value,
+                                                      pn.IsMain).Value);
+                phoneNumbers.AddRange(phones);
             }
             var volunteerPhoneNumbers = new VolunteerPhoneNumbers(phoneNumbers);
 
             var socialNetworks = new List<SocialNetwork>();
             if (command.SocialNetworks != null)
             {
-                foreach (var socialNetwork in command.SocialNetworks)
-                {
-                    var socialNetworkResult = SocialNetwork.Create(
-                                                            socialNetwork.Name,
-                                                            socialNetwork.Link);
-                    if (socialNetworkResult.IsFailure)
-                        return socialNetworkResult.Error;
-                    socialNetworks.Add(socialNetworkResult.Value);
-                }
+                var networks = command.SocialNetworks.Select(sn =>
+                                                      SocialNetwork.Create(
+                                                         sn.Name,
+                                                         sn.Link).Value);
+                socialNetworks.AddRange(networks);
             }
             var volunteerSocialNetworks = new VolunteerSocialNetworks(socialNetworks);
 
             var assistanceDetails = new List<AssistanceDetail>();
             if (command.AssistanceDetails != null)
             {
-                foreach (var assistanceDetail in command.AssistanceDetails)
-                {
-                    var assistanceDetailResult = AssistanceDetail.Create(
-                                                 assistanceDetail.Name,
-                                                 assistanceDetail.Description,
-                                                 assistanceDetail.AccountNumber);
-                    if (assistanceDetailResult.IsFailure)
-                        return assistanceDetailResult.Error;
-                    assistanceDetails.Add(assistanceDetailResult.Value);
-                }
+                var details = command.AssistanceDetails.Select(ad =>
+                                                        AssistanceDetail.Create(
+                                                            ad.Name,
+                                                            ad.Description,
+                                                            ad.AccountNumber).Value);
+                assistanceDetails.AddRange(details);
             }
             var volunteerAssistanceDetails = new VolunteerAssistanceDetails(assistanceDetails);
 
