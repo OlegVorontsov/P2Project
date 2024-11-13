@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using P2Project.Domain.Models;
+using P2Project.Domain.PetManagment;
+using P2Project.Domain.SpeciesManagment;
 
 namespace P2Project.Infrastructure
 {

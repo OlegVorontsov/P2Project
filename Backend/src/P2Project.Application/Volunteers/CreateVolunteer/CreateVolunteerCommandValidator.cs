@@ -1,8 +1,8 @@
 ﻿using FluentValidation;
 using P2Project.Application.Validation;
-using P2Project.Domain.Models;
+using P2Project.Domain.PetManagment;
+using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;
-using P2Project.Domain.ValueObjects;
 
 namespace P2Project.Application.Volunteers.CreateVolunteer
 {
@@ -15,7 +15,7 @@ namespace P2Project.Application.Volunteers.CreateVolunteer
                                     FullName.Create(
                                         fn.FirstName,
                                         fn.SecondName,
-                                        fn.LastName)); 
+                                        fn.LastName));
 
             RuleFor(c => c.Age).InclusiveBetween(
                 Constants.MIN_AGE, Constants.MAX_AGE);

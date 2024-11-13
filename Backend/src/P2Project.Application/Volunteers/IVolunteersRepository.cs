@@ -1,8 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
-using P2Project.Domain.IDs;
-using P2Project.Domain.Models;
+using P2Project.Domain.PetManagment;
+using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;
-using P2Project.Domain.ValueObjects;
+using P2Project.Domain.Shared.IDs;
 
 namespace P2Project.Application.Volunteers
 {

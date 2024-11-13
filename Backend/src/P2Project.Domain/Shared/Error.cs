@@ -3,6 +3,10 @@ namespace P2Project.Domain.Shared
 {
     public record Error
     {
+        public static readonly Error None = new(
+                string.Empty,
+                string.Empty,
+                ErrorType.None);
         private Error(string code, string message, ErrorType type)
         {
             Code = code;
@@ -26,6 +30,7 @@ namespace P2Project.Domain.Shared
         Validation,
         NotFound,
         Failure,
-        Conflict
+        Conflict,
+        None
     }
 }

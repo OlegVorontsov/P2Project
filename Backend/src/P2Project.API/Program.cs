@@ -1,5 +1,5 @@
-using P2Project.Application;
-using P2Project.Infrastructure;
+using P2Project.Application.Shared;
+using P2Project.Infrastructure.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 
