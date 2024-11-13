@@ -10,7 +10,6 @@ namespace P2Project.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Guid>> Create(
             [FromServices] CreateVolunteerHandler handler,
-            [FromServices] IValidator<CreateCommand> validator,
             [FromBody] CreateVolunteerRequest request,
             CancellationToken cancellationToken)
         {
@@ -23,13 +22,6 @@ namespace P2Project.API.Controllers
                     request.PhoneNumbers,
                     request?.SocialNetworks,
                     request?.AssistanceDetails);
-
-            var validationResult = await validator.ValidateAsync(
-                                        command,
-                                        cancellationToken);
-
-            if (validationResult.IsValid == false)
-                return validationResult.ToValidarionErrorResponse();
 
             var result = await handler.Handle(command, cancellationToken);
 

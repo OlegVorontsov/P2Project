@@ -18,7 +18,7 @@ namespace P2Project.API.Extensions
                 StatusCode = statusCode
             };
         }
-        public static ActionResult ToValidarionErrorResponse(
+        public static ActionResult ToValidationErrorResponse(
             this FluentValidation.Results.ValidationResult result)
         {
             if (result.IsValid)
