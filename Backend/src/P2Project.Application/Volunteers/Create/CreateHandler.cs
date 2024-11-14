@@ -39,7 +39,9 @@ namespace P2Project.Application.Volunteers.CreateVolunteer
                                    command.FullName.FirstName,
                                    command.FullName.SecondName,
                                    command.FullName.LastName).Value;
-            var volunteerByFullName = await _volunteersRepository.GetByFullName(fullName);
+            var volunteerByFullName = await _volunteersRepository.GetByFullName(
+                                                                  fullName,
+                                                                  cancellationToken);
             if (volunteerByFullName.IsSuccess)
                 return Errors.Volunteer.AlreadyExist();
 
@@ -47,7 +49,9 @@ namespace P2Project.Application.Volunteers.CreateVolunteer
 
             var email = Email.Create(command.Email).Value;
 
-            var volunteerByEmail = await _volunteersRepository.GetByEmail(email);
+            var volunteerByEmail = await _volunteersRepository.GetByEmail(
+                                                               email,
+                                                               cancellationToken);
             if (volunteerByEmail.IsSuccess)
                 return Errors.Volunteer.AlreadyExist();
 
@@ -104,8 +108,8 @@ namespace P2Project.Application.Volunteers.CreateVolunteer
             await _volunteersRepository.Add(volunteer, cancellationToken);
 
             _logger.LogInformation(
-                "Volunteer created with ID: {volunteerId}",
-                volunteerId);
+                "Volunteer created with ID: {id}",
+                volunteerId.Value);
 
             return (Guid)volunteer.Id;
         }

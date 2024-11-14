@@ -62,6 +62,13 @@ namespace P2Project.Domain.PetManagment
         public VolunteerPhoneNumbers PhoneNumbers { get; private set; } = default!;
         public VolunteerSocialNetworks? SocialNetworks { get; private set; } = default!;
         public VolunteerAssistanceDetails? AssistanceDetails { get; private set; } = default!;
+        public void UpdateMainInfo(
+                    FullName fullName,
+                    Description description)
+        {
+            FullName = fullName;
+            Description = description;
+        }
         private double GetYearsOfExperience()
         {
             var timeSpan = DateTime.Now - RegisteredDate;

@@ -33,13 +33,16 @@ namespace P2Project.API.Controllers
         [HttpPatch("{id:guid}/main-info")]
         public async Task<ActionResult<Guid>> UpdateMainInfo(
             [FromRoute] Guid id,
+            [FromBody] UpdateMainInfoDto dto,
             [FromServices] UpdateMainInfoHandler handler,
             [FromServices] IValidator<UpdateMainInfoRequest> validator,
             CancellationToken cancellationToken)
         {
-            var request = new UpdateMainInfoRequest(id);
-            var validationResult = await validator.ValidateAsync(request, cancellationToken);
+            var request = new UpdateMainInfoRequest(id, dto);
 
+            var validationResult = await validator.ValidateAsync(
+                                                  request,
+                                                  cancellationToken);
             if (validationResult.IsValid == false)
                 return validationResult.ToValidationErrorResponse();
 

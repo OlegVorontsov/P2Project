@@ -15,37 +15,57 @@ namespace P2Project.Infrastructure.Repositories
         {
             _dbContext = dbContext;
         }
-        public async Task<Guid> Add(Volunteer volunteer,
-                                    CancellationToken cancellationToken = default)
+        public async Task<Guid> Add(
+                                Volunteer volunteer,
+                                CancellationToken cancellationToken = default)
         {
             await _dbContext.Volunteers.AddAsync(volunteer, cancellationToken);
             await _dbContext.SaveChangesAsync(cancellationToken);
-            return volunteer.Id;
+            return volunteer.Id.Value;
         }
 
-        public async Task<Result<Volunteer, Error>> GetById(VolunteerId volunteerId)
+        public async Task<Guid> Save(
+                        Volunteer volunteer,
+                        CancellationToken cancellationToken = default)
+        {
+            _dbContext.Volunteers.Attach(volunteer);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+            return volunteer.Id.Value;
+        }
+
+        public async Task<Result<Volunteer, Error>> GetById(
+                                 VolunteerId volunteerId,
+                                 CancellationToken cancellationToken = default)
         {
             var volunteer = await _dbContext.Volunteers
                                             .FirstOrDefaultAsync(v =>
-                                            v.Id == volunteerId);
+                                            v.Id == volunteerId,
+                                            cancellationToken);
             if (volunteer is null)
                 return Errors.General.NotFound(volunteerId);
             return volunteer;
         }
-        public async Task<Result<Volunteer, Error>> GetByFullName(FullName fullName)
+
+        public async Task<Result<Volunteer, Error>> GetByFullName(
+                                FullName fullName,
+                                CancellationToken cancellationToken = default)
         {
             var volunteer = await _dbContext.Volunteers
                                             .FirstOrDefaultAsync(v =>
-                                            v.FullName == fullName);
+                                            v.FullName == fullName,
+                                            cancellationToken);
             if (volunteer is null)
                 return Errors.General.NotFound();
             return volunteer;
         }
-        public async Task<Result<Volunteer, Error>> GetByEmail(Email email)
+        public async Task<Result<Volunteer, Error>> GetByEmail(
+                                Email email,
+                                CancellationToken cancellationToken = default)
         {
             var volunteer = await _dbContext.Volunteers
                                             .FirstOrDefaultAsync(v =>
-                                            v.Email == email);
+                                            v.Email == email,
+                                            cancellationToken);
             if (volunteer is null)
                 return Errors.General.NotFound();
             return volunteer;
