@@ -14,7 +14,8 @@ namespace P2Project.API.Validation
                     ValidationProblemDetails? validationProblemDetails)
         {
             if (validationProblemDetails is null)
-                throw new InvalidOperationException("ValidationProblemDetails is null");
+                throw new InvalidOperationException(
+                    "ValidationProblemDetails is null");
 
             List<ResponseError> responseErrors = [];
 
