@@ -18,9 +18,11 @@ namespace P2Project.Application.Volunteers.CreateVolunteer
                                         fn.LastName));
 
             RuleFor(c => c.Age).InclusiveBetween(
-                Constants.MIN_AGE, Constants.MAX_AGE);
+                 Constants.MIN_AGE, Constants.MAX_AGE)
+                .WithError(Errors.General.ValueIsInvalid("Age"));
 
-            RuleFor(c => c.Gender).IsEnumName(typeof(Gender));
+            RuleFor(c => c.Gender).IsEnumName(typeof(Gender))
+                .WithError(Errors.General.ValueIsInvalid("Gender"));
 
             RuleFor(c => c.Email).MustBeValueObject(Email.Create);
 

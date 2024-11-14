@@ -6,7 +6,7 @@ namespace P2Project.Domain.PetManagment.ValueObjects
 {
     public class PhoneNumber : ValueObject
     {
-        private const string PHONE_CHECK_REGEX = @"^((8|+7)[- ]?)?((?\d{3})?[- ]?)?[\d- ]{7,10}$";
+        private const string PHONE_CHECK_REGEX = @"^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$";
         private PhoneNumber() { }
         private PhoneNumber(string value, bool? isMain)
         {

@@ -6,7 +6,8 @@ namespace P2Project.Infrastructure.Shared
 {
     public static class Inject
     {
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services)
+        public static IServiceCollection AddInfrastructure(
+            this IServiceCollection services)
         {
             services.AddScoped<ApplicationDBContext>();
             services.AddScoped<IVolunteersRepository, VolunteersRepository>();

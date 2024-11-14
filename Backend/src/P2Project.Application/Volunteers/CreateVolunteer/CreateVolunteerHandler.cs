@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using Microsoft.Extensions.Logging;
 using P2Project.Domain.PetManagment;
 using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;
@@ -9,11 +10,14 @@ namespace P2Project.Application.Volunteers.CreateVolunteer
     public class CreateVolunteerHandler
     {
         private readonly IVolunteersRepository _volunteersRepository;
+        private readonly ILogger<CreateVolunteerHandler> _logger;
 
         public CreateVolunteerHandler(
-            IVolunteersRepository volunteersRepository)
+            IVolunteersRepository volunteersRepository,
+            ILogger<CreateVolunteerHandler> logger)
         {
             _volunteersRepository = volunteersRepository;
+            _logger = logger;
         }
         public async Task<Result<Guid, Error>> Handle(
             CreateCommand command,
@@ -88,6 +92,10 @@ namespace P2Project.Application.Volunteers.CreateVolunteer
                             volunteerAssistanceDetails);
 
             await _volunteersRepository.Add(volunteer, cancellationToken);
+
+            _logger.LogInformation(
+                "Volunteer created with ID: {volunteerId}",
+                volunteerId);
 
             return (Guid)volunteer.Id;
         }
