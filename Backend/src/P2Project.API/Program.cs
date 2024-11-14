@@ -1,5 +1,7 @@
+using Microsoft.EntityFrameworkCore;
 using P2Project.API;
 using P2Project.Application.Shared;
+using P2Project.Infrastructure;
 using P2Project.Infrastructure.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +21,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    await app.ApplyMigrations();
 }
 
 app.UseHttpsRedirection();
