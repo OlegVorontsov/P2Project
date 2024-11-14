@@ -13,6 +13,8 @@ namespace P2Project.API.Controllers
             [FromBody] CreateVolunteerRequest request,
             CancellationToken cancellationToken)
         {
+            throw new ApplicationException("Volunteer can't be created");
+
             var command = new CreateCommand(
                     request.FullName,
                     request.Age,

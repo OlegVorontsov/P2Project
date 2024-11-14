@@ -1,7 +1,6 @@
-using Microsoft.EntityFrameworkCore;
 using P2Project.API;
+using P2Project.API.Middlewares;
 using P2Project.Application.Shared;
-using P2Project.Infrastructure;
 using P2Project.Infrastructure.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +15,8 @@ builder.Services.AddInfrastructure()
 builder.Services.AddValidation();
 
 var app = builder.Build();
+
+app.UseExceptionMiddleware();
 
 if (app.Environment.IsDevelopment())
 {
