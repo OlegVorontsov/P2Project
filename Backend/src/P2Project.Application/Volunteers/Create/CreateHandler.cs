@@ -7,22 +7,32 @@ using P2Project.Domain.Shared.IDs;
 
 namespace P2Project.Application.Volunteers.CreateVolunteer
 {
-    public class CreateVolunteerHandler
+    public class CreateHandler
     {
         private readonly IVolunteersRepository _volunteersRepository;
-        private readonly ILogger<CreateVolunteerHandler> _logger;
+        private readonly ILogger<CreateHandler> _logger;
 
-        public CreateVolunteerHandler(
+        public CreateHandler(
             IVolunteersRepository volunteersRepository,
-            ILogger<CreateVolunteerHandler> logger)
+            ILogger<CreateHandler> logger)
         {
             _volunteersRepository = volunteersRepository;
             _logger = logger;
         }
         public async Task<Result<Guid, Error>> Handle(
-            CreateCommand command,
+            CreateRequest request,
             CancellationToken cancellationToken = default)
         {
+            var command = new CreateCommand(
+                              request.FullName,
+                              request.Age,
+                              request.Gender,
+                              request.Email,
+                              request?.Description,
+                              request.PhoneNumbers,
+                              request?.SocialNetworks,
+                              request?.AssistanceDetails);
+
             var volunteerId = VolunteerId.NewVolunteerId();
 
             var fullName = FullName.Create(

@@ -2,7 +2,7 @@
 
 namespace P2Project.Application.Volunteers.CreateVolunteer
 {
-    public record CreateVolunteerRequest(
+    public record CreateRequest(
             FullNameDto FullName,
             int Age,
             string Gender,

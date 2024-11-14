@@ -9,7 +9,7 @@ namespace P2Project.Application.Shared
         public static IServiceCollection AddApplication(
             this IServiceCollection services)
         {
-            services.AddScoped<CreateVolunteerHandler>();
+            services.AddScoped<CreateHandler>();
             services.AddValidatorsFromAssembly(typeof(Inject).Assembly);
             return services;
         }

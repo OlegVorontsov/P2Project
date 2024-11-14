@@ -1,4 +1,3 @@
-using P2Project.API;
 using P2Project.API.Middlewares;
 using P2Project.Application.Shared;
 using P2Project.Infrastructure.Shared;
@@ -23,8 +22,6 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddInfrastructure()
                 .AddApplication();
-
-builder.Services.AddValidation();
 
 builder.Services.AddSerilog();
 

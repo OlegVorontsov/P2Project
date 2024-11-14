@@ -6,10 +6,10 @@ using P2Project.Domain.Shared;
 
 namespace P2Project.Application.Volunteers.CreateVolunteer
 {
-    public class CreateVolunteerCommandValidator :
-                 AbstractValidator<CreateCommand>
+    public class CreateValidator :
+                 AbstractValidator<CreateRequest>
     {
-        public CreateVolunteerCommandValidator()
+        public CreateValidator()
         {
             RuleFor(c => c.FullName).MustBeValueObject(fn => 
                                     FullName.Create(

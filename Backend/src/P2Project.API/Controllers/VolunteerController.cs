@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using P2Project.API.Extensions;
 using P2Project.Application.Volunteers.CreateVolunteer;
+using P2Project.Application.Volunteers.UpdateMainInfo;
 
 namespace P2Project.API.Controllers
 {
@@ -9,21 +10,40 @@ namespace P2Project.API.Controllers
     {
         [HttpPost]
         public async Task<ActionResult<Guid>> Create(
-            [FromServices] CreateVolunteerHandler handler,
-            [FromBody] CreateVolunteerRequest request,
+            [FromServices] CreateHandler handler,
+            [FromBody] CreateRequest request,
+            [FromServices] IValidator<CreateRequest> validator,
             CancellationToken cancellationToken)
         {
-            var command = new CreateCommand(
-                    request.FullName,
-                    request.Age,
-                    request.Gender,
-                    request.Email,
-                    request?.Description,
-                    request.PhoneNumbers,
-                    request?.SocialNetworks,
-                    request?.AssistanceDetails);
+            var validationResult = await validator.ValidateAsync(
+                                                  request,
+                                                  cancellationToken);
 
-            var result = await handler.Handle(command, cancellationToken);
+            if (validationResult.IsValid == false)
+                return validationResult.ToValidationErrorResponse();
+
+            var result = await handler.Handle(request, cancellationToken);
+
+            if (result.IsFailure)
+                return result.Error.ToResponse();
+
+            return Ok(result.Value);
+        }
+
+        [HttpPatch("{id:guid}/main-info")]
+        public async Task<ActionResult<Guid>> UpdateMainInfo(
+            [FromRoute] Guid id,
+            [FromServices] UpdateMainInfoHandler handler,
+            [FromServices] IValidator<UpdateMainInfoRequest> validator,
+            CancellationToken cancellationToken)
+        {
+            var request = new UpdateMainInfoRequest(id);
+            var validationResult = await validator.ValidateAsync(request, cancellationToken);
+
+            if (validationResult.IsValid == false)
+                return validationResult.ToValidationErrorResponse();
+
+            var result = await handler.Handle(request, cancellationToken);
 
             if (result.IsFailure)
                 return result.Error.ToResponse();
