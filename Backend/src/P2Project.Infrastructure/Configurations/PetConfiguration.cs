@@ -177,6 +177,10 @@ namespace P2Project.Infrastructure.Configurations
                    .HasConversion(
                         d => d.ToUniversalTime(),
                         d => DateTime.SpecifyKind(d, DateTimeKind.Local));
+
+            builder.Property<bool>("_isDeleted")
+                   .UsePropertyAccessMode(PropertyAccessMode.Field)
+                   .HasColumnName("is_deleted");
         }
     }
 }

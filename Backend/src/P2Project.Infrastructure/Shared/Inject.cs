@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using P2Project.Application.Volunteers;
+using P2Project.Infrastructure.Interceptor;
 using P2Project.Infrastructure.Repositories;
 
 namespace P2Project.Infrastructure.Shared
@@ -11,6 +12,7 @@ namespace P2Project.Infrastructure.Shared
         {
             services.AddScoped<ApplicationDBContext>();
             services.AddScoped<IVolunteersRepository, VolunteersRepository>();
+            services.AddSingleton<SoftDeleteInterceptor>();
             return services;
         }
     }

@@ -10,10 +10,11 @@ namespace P2Project.Domain.PetManagment
         Male,
         Female
     }
-    public sealed class Volunteer : Entity<VolunteerId>
+    public sealed class Volunteer : Entity<VolunteerId>, ISoftDeletable
     {
         private Volunteer(VolunteerId id) : base(id) { }
         private readonly List<Pet> _pets = [];
+        private bool _isDeleted = false;
 
         public Volunteer(
                 VolunteerId id,
@@ -68,6 +69,16 @@ namespace P2Project.Domain.PetManagment
         {
             FullName = fullName;
             Description = description;
+        }
+        public void Deleted()
+        {
+            if(_isDeleted == false)
+                _isDeleted = true;
+        }
+        public void Restored()
+        {
+            if (_isDeleted == true)
+                _isDeleted = false;
         }
         private double GetYearsOfExperience()
         {

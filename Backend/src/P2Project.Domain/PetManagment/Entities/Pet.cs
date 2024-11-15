@@ -4,13 +4,13 @@ using P2Project.Domain.Shared.IDs;
 
 namespace P2Project.Domain.PetManagment.Entities
 {
-    public class Pet : Entity<PetId>
+    public class Pet : Entity<PetId>, ISoftDeletable
     {
         // ef core
         private Pet(PetId id) : base(id) { }
 
         private readonly List<PetPhoto> _petPhotos = [];
-
+        private bool _isDeleted = false;
         // ef navigation
         public Volunteer Volunteer { get; private set; } = null!;
         public Pet(
@@ -63,5 +63,16 @@ namespace P2Project.Domain.PetManagment.Entities
         public PetAssistanceDetails? AssistanceDetails { get; private set; } = default!;
         public DateTime CreatedAt { get; private set; }
         public IReadOnlyList<PetPhoto> PetPhotos => _petPhotos;
+
+        public void Deleted()
+        {
+            if (_isDeleted == false)
+                _isDeleted = true;
+        }
+        public void Restored()
+        {
+            if (_isDeleted == true)
+                _isDeleted = false;
+        }
     }
 }

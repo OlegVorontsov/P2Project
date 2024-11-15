@@ -4,7 +4,6 @@ using P2Project.Domain.Extensions;
 using P2Project.Domain.PetManagment;
 using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.IDs;
-using System.ComponentModel;
 
 namespace P2Project.Infrastructure.Configurations
 {
@@ -131,6 +130,10 @@ namespace P2Project.Infrastructure.Configurations
                       .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH);
                 });
             });
+
+            builder.Property<bool>("_isDeleted")
+                .UsePropertyAccessMode(PropertyAccessMode.Field)
+                .HasColumnName("is_deleted");
         }
     }
 }
