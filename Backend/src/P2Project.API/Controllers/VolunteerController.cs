@@ -4,7 +4,7 @@ using P2Project.API.Extensions;
 using P2Project.Application.Volunteers.CreateVolunteer;
 using P2Project.Application.Volunteers.Delete;
 using P2Project.Application.Volunteers.UpdateMainInfo;
-using P2Project.Domain.Shared.IDs;
+using P2Project.Application.Volunteers.UpdatePhoneNumbers;
 
 namespace P2Project.API.Controllers
 {
@@ -44,16 +44,23 @@ namespace P2Project.API.Controllers
             [FromRoute] Guid id,
             [FromBody] UpdateMainInfoDto dto,
             [FromServices] UpdateMainInfoHandler handler,
-            [FromServices] IValidator<UpdateMainInfoRequest> validator,
+            [FromServices] IValidator<UpdateMainInfoRequest> requestValidator,
+            [FromServices] IValidator<UpdateMainInfoDto> dtoValidator,
             CancellationToken cancellationToken)
         {
             var request = new UpdateMainInfoRequest(id, dto);
 
-            var validationResult = await validator.ValidateAsync(
+            var requestValidationResult = await requestValidator.ValidateAsync(
                                                   request,
                                                   cancellationToken);
-            if (validationResult.IsValid == false)
-                return validationResult.ToValidationErrorResponse();
+            if (requestValidationResult.IsValid == false)
+                return requestValidationResult.ToValidationErrorResponse();
+
+            var dtoValidationResult = await dtoValidator.ValidateAsync(
+                                      dto,
+                                      cancellationToken);
+            if (dtoValidationResult.IsValid == false)
+                return dtoValidationResult.ToValidationErrorResponse();
 
             var result = await handler.Handle(new UpdateMainInfoCommand(
                 request.VolunteerId,
@@ -61,6 +68,40 @@ namespace P2Project.API.Controllers
                 request.MainInfoDto.Age,
                 request.MainInfoDto.Gender,
                 request?.MainInfoDto.Description), cancellationToken);
+
+            if (result.IsFailure)
+                return result.Error.ToResponse();
+
+            return Ok(result.Value);
+        }
+
+        [HttpPatch("{id:guid}/phone-numbers")]
+        public async Task<ActionResult<Guid>> UpdatePhoneNumbers(
+            [FromRoute] Guid id,
+            [FromBody] UpdatePhoneNumbersDto dto,
+            [FromServices] UpdatePhoneNumbersHandler handler,
+            [FromServices] IValidator<UpdatePhoneNumbersRequest> requestValidator,
+            [FromServices] IValidator<UpdatePhoneNumbersDto> dtoValidator,
+            CancellationToken cancellationToken)
+        {
+            var request = new UpdatePhoneNumbersRequest(id, dto);
+
+            var requestValidationResult = await requestValidator.ValidateAsync(
+                                                  request,
+                                                  cancellationToken);
+            if (requestValidationResult.IsValid == false)
+                return requestValidationResult.ToValidationErrorResponse();
+
+            var dtoValidationResult = await dtoValidator.ValidateAsync(
+                                      dto,
+                                      cancellationToken);
+            if (dtoValidationResult.IsValid == false)
+                return dtoValidationResult.ToValidationErrorResponse();
+
+            var result = await handler.Handle(
+                new UpdatePhoneNumbersCommand(
+                    request.VolunteerId,
+                    request.PhoneNumbersDto), cancellationToken);
 
             if (result.IsFailure)
                 return result.Error.ToResponse();

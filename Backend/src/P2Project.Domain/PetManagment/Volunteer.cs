@@ -74,6 +74,10 @@ namespace P2Project.Domain.PetManagment
             Gender = gender;
             Description = description;
         }
+        public void UpdatePhoneNumbers(VolunteerPhoneNumbers phoneNumbers)
+        {
+            PhoneNumbers = phoneNumbers;
+        }
         public void Deleted()
         {
             if(_isDeleted == false)

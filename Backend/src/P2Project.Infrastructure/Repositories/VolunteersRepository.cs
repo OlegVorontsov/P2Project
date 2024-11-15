@@ -21,7 +21,7 @@ namespace P2Project.Infrastructure.Repositories
         {
             await _dbContext.Volunteers.AddAsync(volunteer, cancellationToken);
             await _dbContext.SaveChangesAsync(cancellationToken);
-            return volunteer.Id.Value;
+            return volunteer.Id;
         }
 
         public async Task<Guid> Save(
@@ -30,7 +30,7 @@ namespace P2Project.Infrastructure.Repositories
         {
             _dbContext.Volunteers.Attach(volunteer);
             await _dbContext.SaveChangesAsync(cancellationToken);
-            return volunteer.Id.Value;
+            return volunteer.Id;
         }
 
         public async Task<Guid> Delete(
@@ -39,7 +39,7 @@ namespace P2Project.Infrastructure.Repositories
         {
             _dbContext.Volunteers.Remove(volunteer);
             await _dbContext.SaveChangesAsync(cancellationToken);
-            return volunteer.Id.Value;
+            return volunteer.Id;
         }
 
         public async Task<Result<Volunteer, Error>> GetById(

@@ -15,13 +15,14 @@ namespace P2Project.Infrastructure.Interceptor
                 return await base.SavedChangesAsync(eventData, result, cancellationToken);
 
             var entries = eventData.Context.ChangeTracker
-                .Entries<ISoftDeletable>()
+                .Entries()
                 .Where(v => v.State == EntityState.Deleted);
 
             foreach (var entry in entries)
             {
                 entry.State = EntityState.Modified;
-                entry.Entity.Deleted();
+                if (entry.Entity is ISoftDeletable item)
+                    item.Deleted();
             }
 
             return await base.SavedChangesAsync(eventData, result, cancellationToken);
