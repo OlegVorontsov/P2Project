@@ -4,6 +4,7 @@ using P2Project.API.Extensions;
 using P2Project.Application.Volunteers.CreateVolunteer;
 using P2Project.Application.Volunteers.Delete;
 using P2Project.Application.Volunteers.UpdateMainInfo;
+using P2Project.Domain.Shared.IDs;
 
 namespace P2Project.API.Controllers
 {
@@ -19,11 +20,18 @@ namespace P2Project.API.Controllers
             var validationResult = await validator.ValidateAsync(
                                                   request,
                                                   cancellationToken);
-
             if (validationResult.IsValid == false)
                 return validationResult.ToValidationErrorResponse();
 
-            var result = await handler.Handle(request, cancellationToken);
+            var result = await handler.Handle(new CreateCommand(
+                request.FullName,
+                request.Age,
+                request.Gender,
+                request.Email,
+                request?.Description,
+                request.PhoneNumbers,
+                request?.SocialNetworks,
+                request?.AssistanceDetails), cancellationToken);
 
             if (result.IsFailure)
                 return result.Error.ToResponse();
@@ -47,7 +55,10 @@ namespace P2Project.API.Controllers
             if (validationResult.IsValid == false)
                 return validationResult.ToValidationErrorResponse();
 
-            var result = await handler.Handle(request, cancellationToken);
+            var result = await handler.Handle(new UpdateMainInfoCommand(
+                request.VolunteerId,
+                request.MainInfoDto.FullName,
+                request?.MainInfoDto.Description), cancellationToken);
 
             if (result.IsFailure)
                 return result.Error.ToResponse();
@@ -70,7 +81,8 @@ namespace P2Project.API.Controllers
             if (validationResult.IsValid == false)
                 return validationResult.ToValidationErrorResponse();
 
-            var result = await handler.Handle(request, cancellationToken);
+            var result = await handler.Handle(new DeleteCommand(
+                request.VolunteerId), cancellationToken);
 
             if (result.IsFailure)
                 return result.Error.ToResponse();

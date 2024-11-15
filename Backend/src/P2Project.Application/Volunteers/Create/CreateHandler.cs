@@ -20,19 +20,9 @@ namespace P2Project.Application.Volunteers.CreateVolunteer
             _logger = logger;
         }
         public async Task<Result<Guid, Error>> Handle(
-            CreateRequest request,
+            CreateCommand command,
             CancellationToken cancellationToken = default)
         {
-            var command = new CreateCommand(
-                              request.FullName,
-                              request.Age,
-                              request.Gender,
-                              request.Email,
-                              request?.Description,
-                              request.PhoneNumbers,
-                              request?.SocialNetworks,
-                              request?.AssistanceDetails);
-
             var volunteerId = VolunteerId.NewVolunteerId();
 
             var fullName = FullName.Create(

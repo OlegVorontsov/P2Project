@@ -19,22 +19,17 @@ namespace P2Project.Application.Volunteers.UpdateMainInfo
             _logger = logger;
         }
         public async Task<Result<Guid, Error>> Handle(
-            UpdateMainInfoRequest request,
+            UpdateMainInfoCommand command,
             CancellationToken cancellationToken = default)
         {
             var volunteerId = VolunteerId.CreateVolunteerId(
-                                          request.VolunteerId);
+                                          command.VolunteerId);
 
             var volunteerResult = await _volunteersRepository.GetById(
                                         volunteerId,
                                         cancellationToken);
             if (volunteerResult.IsFailure)
-                return Errors.General.NotFound(request.VolunteerId);
-
-            var command = new UpdateMainInfoCommand(
-                              volunteerId,
-                              request.MainInfoDto.FullName,
-                              request?.MainInfoDto.Description);
+                return Errors.General.NotFound(command.VolunteerId);
 
             var fullName = FullName.Create(
                                     command.FullName.FirstName,
@@ -51,13 +46,14 @@ namespace P2Project.Application.Volunteers.UpdateMainInfo
 
             _logger.LogInformation(
                     "For volunteer with ID: {id} was updated main info to " +
-                    "full name: {} {} {} " +
-                    "description: {}",
-                    volunteerId.Value,
+                    "full name: {SecondName} {FirstName} " +
+                    "{LastName} " +
+                    "description: {Value}",
+                    id,
                     fullName.SecondName,
                     fullName.FirstName,
                     fullName.LastName,
-                    description);
+                    description.Value);
 
             return id;
         }
