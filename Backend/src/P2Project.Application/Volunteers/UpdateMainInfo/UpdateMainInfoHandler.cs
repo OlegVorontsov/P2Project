@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
+using P2Project.Domain.PetManagment;
 using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.IDs;
@@ -36,9 +37,15 @@ namespace P2Project.Application.Volunteers.UpdateMainInfo
                                     command.FullName.SecondName,
                                     command.FullName.LastName).Value;
 
+            var gender = Enum.Parse<Gender>(command.Gender);
+
             var description = Description.Create(command.Description).Value;
 
-            volunteerResult.Value.UpdateMainInfo(fullName, description);
+            volunteerResult.Value.UpdateMainInfo(
+                fullName,
+                command.Age,
+                gender,
+                description);
 
             var id = await _volunteersRepository.Save(
                                         volunteerResult.Value,
@@ -46,13 +53,15 @@ namespace P2Project.Application.Volunteers.UpdateMainInfo
 
             _logger.LogInformation(
                     "For volunteer with ID: {id} was updated main info to " +
-                    "full name: {SecondName} {FirstName} " +
-                    "{LastName} " +
+                    "full name: {SecondName} {FirstName} {LastName} " +
+                    "age: {Age} gender: {gender} " +
                     "description: {Value}",
                     id,
                     fullName.SecondName,
                     fullName.FirstName,
                     fullName.LastName,
+                    command.Age,
+                    gender,
                     description.Value);
 
             return id;

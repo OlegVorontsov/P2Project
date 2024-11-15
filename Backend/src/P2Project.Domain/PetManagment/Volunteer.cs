@@ -65,9 +65,13 @@ namespace P2Project.Domain.PetManagment
         public VolunteerAssistanceDetails? AssistanceDetails { get; private set; } = default!;
         public void UpdateMainInfo(
                     FullName fullName,
+                    int age,
+                    Gender gender,
                     Description description)
         {
             FullName = fullName;
+            Age = age;
+            Gender = gender;
             Description = description;
         }
         public void Deleted()

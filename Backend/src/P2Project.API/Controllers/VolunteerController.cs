@@ -58,6 +58,8 @@ namespace P2Project.API.Controllers
             var result = await handler.Handle(new UpdateMainInfoCommand(
                 request.VolunteerId,
                 request.MainInfoDto.FullName,
+                request.MainInfoDto.Age,
+                request.MainInfoDto.Gender,
                 request?.MainInfoDto.Description), cancellationToken);
 
             if (result.IsFailure)

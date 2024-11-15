@@ -8,5 +8,7 @@ namespace P2Project.Application.Volunteers.UpdateMainInfo
 
     public record UpdateMainInfoDto(
               FullNameDto FullName,
+              int Age,
+              string Gender,
               string? Description);
 }
