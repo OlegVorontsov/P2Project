@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using P2Project.API.Extensions;
 using P2Project.Application.Volunteers.CreateVolunteer;
+using P2Project.Application.Volunteers.Delete;
 using P2Project.Application.Volunteers.UpdateMainInfo;
 
 namespace P2Project.API.Controllers
@@ -39,6 +40,29 @@ namespace P2Project.API.Controllers
             CancellationToken cancellationToken)
         {
             var request = new UpdateMainInfoRequest(id, dto);
+
+            var validationResult = await validator.ValidateAsync(
+                                                  request,
+                                                  cancellationToken);
+            if (validationResult.IsValid == false)
+                return validationResult.ToValidationErrorResponse();
+
+            var result = await handler.Handle(request, cancellationToken);
+
+            if (result.IsFailure)
+                return result.Error.ToResponse();
+
+            return Ok(result.Value);
+        }
+
+        [HttpDelete("{id:guid}")]
+        public async Task<ActionResult<Guid>> Delete(
+            [FromRoute] Guid id,
+            [FromServices] DeleteHandler handler,
+            [FromServices] IValidator<DeleteRequest> validator,
+            CancellationToken cancellationToken)
+        {
+            var request = new DeleteRequest(id);
 
             var validationResult = await validator.ValidateAsync(
                                                   request,

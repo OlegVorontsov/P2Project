@@ -51,11 +51,13 @@ namespace P2Project.Application.Volunteers.UpdateMainInfo
 
             _logger.LogInformation(
                     "For volunteer with ID: {id} was updated main info to " +
-                    "full name: {} {} {}",
+                    "full name: {} {} {} " +
+                    "description: {}",
                     volunteerId.Value,
                     fullName.SecondName,
                     fullName.FirstName,
-                    fullName.LastName);
+                    fullName.LastName,
+                    description);
 
             return id;
         }
