@@ -10,10 +10,11 @@ namespace P2Project.Domain.PetManagment
         Male,
         Female
     }
-    public sealed class Volunteer : Entity<VolunteerId>
+    public sealed class Volunteer : Entity<VolunteerId>, ISoftDeletable
     {
         private Volunteer(VolunteerId id) : base(id) { }
         private readonly List<Pet> _pets = [];
+        private bool _isDeleted = false;
 
         public Volunteer(
                 VolunteerId id,
@@ -62,6 +63,48 @@ namespace P2Project.Domain.PetManagment
         public VolunteerPhoneNumbers PhoneNumbers { get; private set; } = default!;
         public VolunteerSocialNetworks? SocialNetworks { get; private set; } = default!;
         public VolunteerAssistanceDetails? AssistanceDetails { get; private set; } = default!;
+        public void UpdateMainInfo(
+                    FullName fullName,
+                    int age,
+                    Gender gender,
+                    Description description)
+        {
+            FullName = fullName;
+            Age = age;
+            Gender = gender;
+            Description = description;
+        }
+
+        public void UpdatePhoneNumbers(
+            VolunteerPhoneNumbers phoneNumbers)
+        {
+            PhoneNumbers = phoneNumbers;
+        }
+
+        public void UpdateSocialNetworks(
+            VolunteerSocialNetworks socialNetworks)
+        {
+            SocialNetworks = socialNetworks;
+        }
+
+        public void UpdateAssistanceDetails(
+            VolunteerAssistanceDetails assistanceDetails)
+        {
+            AssistanceDetails = assistanceDetails;
+        }
+
+        public void Deleted()
+        {
+            if(_isDeleted == false)
+                _isDeleted = true;
+        }
+
+        public void Restored()
+        {
+            if (_isDeleted == true)
+                _isDeleted = false;
+        }
+
         private double GetYearsOfExperience()
         {
             var timeSpan = DateTime.Now - RegisteredDate;

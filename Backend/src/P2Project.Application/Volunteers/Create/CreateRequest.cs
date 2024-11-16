@@ -1,8 +1,8 @@
-﻿using P2Project.Application.Dtos;
+﻿using P2Project.Application.Shared.Dtos;
 
 namespace P2Project.Application.Volunteers.CreateVolunteer
 {
-    public record CreateVolunteerRequest(
+    public record CreateRequest(
             FullNameDto FullName,
             int Age,
             string Gender,

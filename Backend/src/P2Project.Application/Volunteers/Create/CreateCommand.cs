@@ -1,5 +1,5 @@
-﻿using P2Project.Application.Dtos;
-using P2Project.Application.Shared;
+﻿using P2Project.Application.Shared;
+using P2Project.Application.Shared.Dtos;
 
 namespace P2Project.Application.Volunteers.CreateVolunteer
 {

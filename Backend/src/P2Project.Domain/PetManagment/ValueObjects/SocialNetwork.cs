@@ -12,7 +12,9 @@ namespace P2Project.Domain.PetManagment.ValueObjects
         }
         public string Name { get; } = default!;
         public string Link { get; } = default!;
-        public static Result<SocialNetwork, Error> Create(string name, string link)
+        public static Result<SocialNetwork, Error> Create(
+                                            string name,
+                                            string link)
         {
             if (string.IsNullOrWhiteSpace(name))
                 return Errors.General.ValueIsInvalid(nameof(Name));

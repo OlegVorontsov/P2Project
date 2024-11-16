@@ -2,12 +2,11 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using P2Project.API.Response;
 using P2Project.Domain.Shared;
-using SharpGrip.FluentValidation.AutoValidation.Mvc.Results;
 
 namespace P2Project.API.Validation
 {
-    public class CustomResultFactory :
-        IFluentValidationAutoValidationResultFactory
+    // autovalidation, not in use
+    public class CustomResultFactory
     {
         public IActionResult CreateActionResult(
                     ActionExecutingContext context,

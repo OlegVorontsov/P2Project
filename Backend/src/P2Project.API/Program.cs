@@ -1,4 +1,3 @@
-using P2Project.API;
 using P2Project.API.Middlewares;
 using P2Project.Application.Shared;
 using P2Project.Infrastructure.Shared;
@@ -24,19 +23,22 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddInfrastructure()
                 .AddApplication();
 
-builder.Services.AddValidation();
-
 builder.Services.AddSerilog();
 
 var app = builder.Build();
 
+app.UseStaticFiles();
 app.UseExceptionMiddleware();
 app.UseSerilogRequestLogging();
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "P2Project.Api");
+        c.InjectStylesheet("/swagger-ui/SwaggerDark.css");
+    });
     await app.ApplyMigrations();
 }
 
