@@ -12,7 +12,8 @@ namespace P2Project.Infrastructure.Interceptor
             CancellationToken cancellationToken = default)
         {
             if(eventData.Context is null)
-                return await base.SavedChangesAsync(eventData, result, cancellationToken);
+                return await base.SavedChangesAsync(
+                    eventData, result, cancellationToken);
 
             var entries = eventData.Context.ChangeTracker
                 .Entries()
@@ -25,7 +26,8 @@ namespace P2Project.Infrastructure.Interceptor
                     item.Deleted();
             }
 
-            return await base.SavedChangesAsync(eventData, result, cancellationToken);
+            return await base.SavedChangesAsync(
+                eventData, result, cancellationToken);
         }
     }
 }
