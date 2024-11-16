@@ -10,10 +10,10 @@ namespace P2Project.Application.Volunteers.UpdatePhoneNumbers
     public class UpdatePhoneNumbersHandler
     {
         private readonly IVolunteersRepository _volunteersRepository;
-        private readonly ILogger<UpdateMainInfoHandler> _logger;
+        private readonly ILogger<UpdatePhoneNumbersHandler> _logger;
         public UpdatePhoneNumbersHandler(
             IVolunteersRepository volunteersRepository,
-            ILogger<UpdateMainInfoHandler> logger)
+            ILogger<UpdatePhoneNumbersHandler> logger)
         {
             _volunteersRepository = volunteersRepository;
             _logger = logger;

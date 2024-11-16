@@ -5,6 +5,7 @@ using P2Project.Application.Volunteers.CreateVolunteer;
 using P2Project.Application.Volunteers.Delete;
 using P2Project.Application.Volunteers.UpdateMainInfo;
 using P2Project.Application.Volunteers.UpdatePhoneNumbers;
+using P2Project.Application.Volunteers.UpdateSocialNetworks;
 
 namespace P2Project.API.Controllers
 {
@@ -102,6 +103,40 @@ namespace P2Project.API.Controllers
                 new UpdatePhoneNumbersCommand(
                     request.VolunteerId,
                     request.PhoneNumbersDto), cancellationToken);
+
+            if (result.IsFailure)
+                return result.Error.ToResponse();
+
+            return Ok(result.Value);
+        }
+
+        [HttpPatch("{id:guid}/social-networks")]
+        public async Task<ActionResult<Guid>> UpdateSocialNetworks(
+            [FromRoute] Guid id,
+            [FromBody] UpdateSocialNetworksDto dto,
+            [FromServices] UpdateSocialNetworksHandler handler,
+            [FromServices] IValidator<UpdateSocialNetworksRequest> requestValidator,
+            [FromServices] IValidator<UpdateSocialNetworksDto> dtoValidator,
+            CancellationToken cancellationToken)
+        {
+            var request = new UpdateSocialNetworksRequest(id, dto);
+
+            var requestValidationResult = await requestValidator.ValidateAsync(
+                                                  request,
+                                                  cancellationToken);
+            if (requestValidationResult.IsValid == false)
+                return requestValidationResult.ToValidationErrorResponse();
+
+            var dtoValidationResult = await dtoValidator.ValidateAsync(
+                                      dto,
+                                      cancellationToken);
+            if (dtoValidationResult.IsValid == false)
+                return dtoValidationResult.ToValidationErrorResponse();
+
+            var result = await handler.Handle(
+                new UpdateSocialNetworksCommand(
+                    request.VolunteerId,
+                    request.SocialNetworksDto), cancellationToken);
 
             if (result.IsFailure)
                 return result.Error.ToResponse();

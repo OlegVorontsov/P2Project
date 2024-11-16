@@ -74,20 +74,37 @@ namespace P2Project.Domain.PetManagment
             Gender = gender;
             Description = description;
         }
-        public void UpdatePhoneNumbers(VolunteerPhoneNumbers phoneNumbers)
+
+        public void UpdatePhoneNumbers(
+            VolunteerPhoneNumbers phoneNumbers)
         {
             PhoneNumbers = phoneNumbers;
         }
+
+        public void UpdateSocialNetworks(
+            VolunteerSocialNetworks socialNetworks)
+        {
+            SocialNetworks = socialNetworks;
+        }
+
+        public void UpdateAssistanceDetails(
+            VolunteerAssistanceDetails assistanceDetails)
+        {
+            AssistanceDetails = assistanceDetails;
+        }
+
         public void Deleted()
         {
             if(_isDeleted == false)
                 _isDeleted = true;
         }
+
         public void Restored()
         {
             if (_isDeleted == true)
                 _isDeleted = false;
         }
+
         private double GetYearsOfExperience()
         {
             var timeSpan = DateTime.Now - RegisteredDate;
