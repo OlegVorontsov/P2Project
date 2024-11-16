@@ -66,13 +66,19 @@ namespace P2Project.Domain.PetManagment.Entities
 
         public void Deleted()
         {
-            if (_isDeleted == false)
-                _isDeleted = true;
+            if (_isDeleted) return;
+
+            _isDeleted = true;
+            foreach (var petPhoto in _petPhotos)
+                petPhoto.Deleted();
         }
         public void Restored()
         {
-            if (_isDeleted == true)
-                _isDeleted = false;
+            if (!_isDeleted) return;
+
+            _isDeleted = false;
+            foreach (var petPhoto in _petPhotos)
+                petPhoto.Restored();
         }
     }
 }

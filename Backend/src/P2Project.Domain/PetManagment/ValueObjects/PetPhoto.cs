@@ -7,6 +7,7 @@ namespace P2Project.Domain.PetManagment.ValueObjects
     {
         // ef navigation
         private PetPhoto(Guid id) { }
+        private bool _isDeleted = false;
         private PetPhoto(Guid id,
                          string path,
                          bool isMain)
@@ -28,6 +29,18 @@ namespace P2Project.Domain.PetManagment.ValueObjects
             var newPetPhoto = new PetPhoto(id, path, isMain);
 
             return newPetPhoto;
+        }
+        public void Deleted()
+        {
+            if (_isDeleted) return;
+
+            _isDeleted = true;
+        }
+        public void Restored()
+        {
+            if (!_isDeleted) return;
+
+            _isDeleted = false;
         }
     }
 }

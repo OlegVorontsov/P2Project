@@ -95,14 +95,20 @@ namespace P2Project.Domain.PetManagment
 
         public void Deleted()
         {
-            if(_isDeleted == false)
-                _isDeleted = true;
+            if(_isDeleted) return;
+            
+            _isDeleted = true;
+            foreach (var pet in _pets)
+                pet.Deleted();
         }
 
         public void Restored()
         {
-            if (_isDeleted == true)
-                _isDeleted = false;
+            if (!_isDeleted) return;
+
+            _isDeleted = false;
+            foreach (var pet in _pets)
+                pet.Restored();
         }
 
         private double GetYearsOfExperience()
