@@ -13,19 +13,13 @@ namespace P2Project.Application.Volunteers.UpdateAssistanceDetails
             RuleFor(a => a.VolunteerId)
                 .NotEmpty()
                 .WithError(Errors.General.ValueIsRequired());
-        }
-    }
 
-    public class UpdateAssistanceDetailsDtoValidator :
-    AbstractValidator<UpdateAssistanceDetailsDto>
-    {
-        public UpdateAssistanceDetailsDtoValidator()
-        {
-            RuleForEach(a => a.AssistanceDetails).MustBeValueObject(ad =>
-                                            AssistanceDetail.Create(
-                                                ad.Name,
-                                                ad.Description,
-                                                ad.AccountNumber));
+            RuleForEach(a => a.AssistanceDetailsDto.AssistanceDetails)
+                .MustBeValueObject(ad =>
+                                AssistanceDetail.Create(
+                                    ad.Name,
+                                    ad.Description,
+                                    ad.AccountNumber));
         }
     }
 }

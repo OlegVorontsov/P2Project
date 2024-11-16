@@ -46,23 +46,16 @@ namespace P2Project.API.Controllers
             [FromRoute] Guid id,
             [FromBody] UpdateMainInfoDto dto,
             [FromServices] UpdateMainInfoHandler handler,
-            [FromServices] IValidator<UpdateMainInfoRequest> requestValidator,
-            [FromServices] IValidator<UpdateMainInfoDto> dtoValidator,
+            [FromServices] IValidator<UpdateMainInfoRequest> validator,
             CancellationToken cancellationToken)
         {
             var request = new UpdateMainInfoRequest(id, dto);
 
-            var requestValidationResult = await requestValidator.ValidateAsync(
+            var validationResult = await validator.ValidateAsync(
                                                   request,
                                                   cancellationToken);
-            if (requestValidationResult.IsValid == false)
-                return requestValidationResult.ToValidationErrorResponse();
-
-            var dtoValidationResult = await dtoValidator.ValidateAsync(
-                                      dto,
-                                      cancellationToken);
-            if (dtoValidationResult.IsValid == false)
-                return dtoValidationResult.ToValidationErrorResponse();
+            if (validationResult.IsValid == false)
+                return validationResult.ToValidationErrorResponse();
 
             var result = await handler.Handle(new UpdateMainInfoCommand(
                 request.VolunteerId,
@@ -82,23 +75,16 @@ namespace P2Project.API.Controllers
             [FromRoute] Guid id,
             [FromBody] UpdatePhoneNumbersDto dto,
             [FromServices] UpdatePhoneNumbersHandler handler,
-            [FromServices] IValidator<UpdatePhoneNumbersRequest> requestValidator,
-            [FromServices] IValidator<UpdatePhoneNumbersDto> dtoValidator,
+            [FromServices] IValidator<UpdatePhoneNumbersRequest> validator,
             CancellationToken cancellationToken)
         {
             var request = new UpdatePhoneNumbersRequest(id, dto);
 
-            var requestValidationResult = await requestValidator.ValidateAsync(
+            var validationResult = await validator.ValidateAsync(
                                                   request,
                                                   cancellationToken);
-            if (requestValidationResult.IsValid == false)
-                return requestValidationResult.ToValidationErrorResponse();
-
-            var dtoValidationResult = await dtoValidator.ValidateAsync(
-                                      dto,
-                                      cancellationToken);
-            if (dtoValidationResult.IsValid == false)
-                return dtoValidationResult.ToValidationErrorResponse();
+            if (validationResult.IsValid == false)
+                return validationResult.ToValidationErrorResponse();
 
             var result = await handler.Handle(
                 new UpdatePhoneNumbersCommand(
@@ -116,23 +102,16 @@ namespace P2Project.API.Controllers
             [FromRoute] Guid id,
             [FromBody] UpdateSocialNetworksDto dto,
             [FromServices] UpdateSocialNetworksHandler handler,
-            [FromServices] IValidator<UpdateSocialNetworksRequest> requestValidator,
-            [FromServices] IValidator<UpdateSocialNetworksDto> dtoValidator,
+            [FromServices] IValidator<UpdateSocialNetworksRequest> validator,
             CancellationToken cancellationToken)
         {
             var request = new UpdateSocialNetworksRequest(id, dto);
 
-            var requestValidationResult = await requestValidator.ValidateAsync(
+            var validationResult = await validator.ValidateAsync(
                                                   request,
                                                   cancellationToken);
-            if (requestValidationResult.IsValid == false)
-                return requestValidationResult.ToValidationErrorResponse();
-
-            var dtoValidationResult = await dtoValidator.ValidateAsync(
-                                      dto,
-                                      cancellationToken);
-            if (dtoValidationResult.IsValid == false)
-                return dtoValidationResult.ToValidationErrorResponse();
+            if (validationResult.IsValid == false)
+                return validationResult.ToValidationErrorResponse();
 
             var result = await handler.Handle(
                 new UpdateSocialNetworksCommand(
@@ -150,23 +129,16 @@ namespace P2Project.API.Controllers
             [FromRoute] Guid id,
             [FromBody] UpdateAssistanceDetailsDto dto,
             [FromServices] UpdateAssistanceDetailsHandler handler,
-            [FromServices] IValidator<UpdateAssistanceDetailsRequest> requestValidator,
-            [FromServices] IValidator<UpdateAssistanceDetailsDto> dtoValidator,
+            [FromServices] IValidator<UpdateAssistanceDetailsRequest> validator,
             CancellationToken cancellationToken)
         {
             var request = new UpdateAssistanceDetailsRequest(id, dto);
 
-            var requestValidationResult = await requestValidator.ValidateAsync(
+            var validationResult = await validator.ValidateAsync(
                                                   request,
                                                   cancellationToken);
-            if (requestValidationResult.IsValid == false)
-                return requestValidationResult.ToValidationErrorResponse();
-
-            var dtoValidationResult = await dtoValidator.ValidateAsync(
-                                      dto,
-                                      cancellationToken);
-            if (dtoValidationResult.IsValid == false)
-                return dtoValidationResult.ToValidationErrorResponse();
+            if (validationResult.IsValid == false)
+                return validationResult.ToValidationErrorResponse();
 
             var result = await handler.Handle(
                 new UpdateAssistanceDetailsCommand(

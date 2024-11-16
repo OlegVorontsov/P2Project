@@ -14,28 +14,22 @@ namespace P2Project.Application.Volunteers.UpdateMainInfo
             RuleFor(i => i.VolunteerId)
                 .NotEmpty()
                 .WithError(Errors.General.ValueIsRequired());
-        }
-    }
-    public class UpdateMainInfoDtoValidator :
-        AbstractValidator<UpdateMainInfoDto>
-    {
-        public UpdateMainInfoDtoValidator()
-        {
-            RuleFor(i => i.FullName).MustBeValueObject(fn =>
-                    FullName.Create(
-                        fn.FirstName,
-                        fn.SecondName,
-                        fn.LastName));
 
-            RuleFor(i => i.Age).InclusiveBetween(
+            RuleFor(i => i.MainInfoDto.FullName)
+                .MustBeValueObject(fn => FullName.Create(
+                                                  fn.FirstName,
+                                                  fn.SecondName,
+                                                  fn.LastName));
+
+            RuleFor(i => i.MainInfoDto.Age).InclusiveBetween(
                 Constants.MIN_AGE, Constants.MAX_AGE)
                 .WithError(Errors.General.ValueIsInvalid("Age"));
 
-            RuleFor(c => c.Gender).IsEnumName(typeof(Gender))
+            RuleFor(c => c.MainInfoDto.Gender).IsEnumName(typeof(Gender))
                 .WithError(Errors.General.ValueIsInvalid("Gender"));
 
-            RuleFor(i => i.Description).MustBeValueObject(Description.Create)
-                .When(i => !string.IsNullOrWhiteSpace(i.Description));
+            RuleFor(i => i.MainInfoDto.Description)
+                .MustBeValueObject(Description.Create);
         }
     }
 }

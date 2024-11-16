@@ -32,4 +32,8 @@
     <ProjectReference Include="..\P2Project.Infrastructure\P2Project.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\swagger-ui\" />
+  </ItemGroup>
+
 </Project>

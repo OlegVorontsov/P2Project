@@ -13,15 +13,9 @@ namespace P2Project.Application.Volunteers.UpdatePhoneNumbers
             RuleFor(p => p.VolunteerId)
                 .NotEmpty()
                 .WithError(Errors.General.ValueIsRequired());
-        }
-    }
-    public class UpdatePhoneNumbersDtoValidator :
-    AbstractValidator<UpdatePhoneNumbersDto>
-    {
-        public UpdatePhoneNumbersDtoValidator()
-        {
-            RuleForEach(p => p.PhoneNumbers).MustBeValueObject(pn =>
-                                            PhoneNumber.Create(
+
+            RuleForEach(p => p.PhoneNumbersDto.PhoneNumbers)
+                .MustBeValueObject(pn => PhoneNumber.Create(
                                                 pn.Value,
                                                 pn.IsMain));
         }

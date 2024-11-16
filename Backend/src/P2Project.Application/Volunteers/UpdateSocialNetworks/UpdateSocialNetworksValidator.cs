@@ -13,18 +13,11 @@ namespace P2Project.Application.Volunteers.UpdateSocialNetworks
             RuleFor(p => p.VolunteerId)
                 .NotEmpty()
                 .WithError(Errors.General.ValueIsRequired());
-        }
 
-        public class UpdateSocialNetworksDtoValidator :
-            AbstractValidator<UpdateSocialNetworksDto>
-        {
-            public UpdateSocialNetworksDtoValidator()
-            {
-                RuleForEach(s => s.SocialNetworks).MustBeValueObject(sn =>
-                                                SocialNetwork.Create(
-                                                    sn.Name,
-                                                    sn.Link));
-            }
+            RuleForEach(s => s.SocialNetworksDto.SocialNetworks)
+                .MustBeValueObject(sn => SocialNetwork.Create(
+                                   sn.Name,
+                                   sn.Link));
         }
     }
 }
