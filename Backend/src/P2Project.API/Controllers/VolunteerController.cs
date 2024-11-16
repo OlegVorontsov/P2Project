@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using P2Project.API.Extensions;
 using P2Project.Application.Volunteers.CreateVolunteer;
 using P2Project.Application.Volunteers.Delete;
+using P2Project.Application.Volunteers.UpdateAssistanceDetails;
 using P2Project.Application.Volunteers.UpdateMainInfo;
 using P2Project.Application.Volunteers.UpdatePhoneNumbers;
 using P2Project.Application.Volunteers.UpdateSocialNetworks;
@@ -137,6 +138,40 @@ namespace P2Project.API.Controllers
                 new UpdateSocialNetworksCommand(
                     request.VolunteerId,
                     request.SocialNetworksDto), cancellationToken);
+
+            if (result.IsFailure)
+                return result.Error.ToResponse();
+
+            return Ok(result.Value);
+        }
+
+        [HttpPatch("{id:guid}/assistance-details")]
+        public async Task<ActionResult<Guid>> UpdateAssistanceDetails(
+            [FromRoute] Guid id,
+            [FromBody] UpdateAssistanceDetailsDto dto,
+            [FromServices] UpdateAssistanceDetailsHandler handler,
+            [FromServices] IValidator<UpdateAssistanceDetailsRequest> requestValidator,
+            [FromServices] IValidator<UpdateAssistanceDetailsDto> dtoValidator,
+            CancellationToken cancellationToken)
+        {
+            var request = new UpdateAssistanceDetailsRequest(id, dto);
+
+            var requestValidationResult = await requestValidator.ValidateAsync(
+                                                  request,
+                                                  cancellationToken);
+            if (requestValidationResult.IsValid == false)
+                return requestValidationResult.ToValidationErrorResponse();
+
+            var dtoValidationResult = await dtoValidator.ValidateAsync(
+                                      dto,
+                                      cancellationToken);
+            if (dtoValidationResult.IsValid == false)
+                return dtoValidationResult.ToValidationErrorResponse();
+
+            var result = await handler.Handle(
+                new UpdateAssistanceDetailsCommand(
+                    request.VolunteerId,
+                    request.AssistanceDetailsDto), cancellationToken);
 
             if (result.IsFailure)
                 return result.Error.ToResponse();

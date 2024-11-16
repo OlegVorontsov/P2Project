@@ -18,6 +18,7 @@ namespace P2Project.Application.Volunteers.UpdatePhoneNumbers
             _volunteersRepository = volunteersRepository;
             _logger = logger;
         }
+
         public async Task<Result<Guid,Error>> Handle(
             UpdatePhoneNumbersCommand command,
             CancellationToken cancellationToken = default)

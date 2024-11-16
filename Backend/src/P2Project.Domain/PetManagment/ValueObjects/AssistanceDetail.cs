@@ -16,7 +16,8 @@ namespace P2Project.Domain.PetManagment.ValueObjects
         public string Name { get; } = default!;
         public string Description { get; } = default!;
         public string AccountNumber { get; } = default!;
-        public static Result<AssistanceDetail, Error> Create(string name,
+        public static Result<AssistanceDetail, Error> Create(
+                                                      string name,
                                                       string description,
                                                       string accountNumber)
         {
