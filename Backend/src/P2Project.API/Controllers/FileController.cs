@@ -15,10 +15,12 @@ namespace P2Project.API.Controllers
         {
             await using var stream = file.OpenReadStream();
 
+            var path = Guid.NewGuid().ToString();
+
             var uploadFileRecord = new UploadFileRecord(
                 stream,
                 "photos",
-                "");
+                path);
 
             var result = await provider.UploadFile(
                 uploadFileRecord,
