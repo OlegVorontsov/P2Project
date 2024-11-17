@@ -1,8 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Minio;
+using P2Project.Application.FileProvider;
 using P2Project.Application.Volunteers;
 using P2Project.Infrastructure.Options;
+using P2Project.Infrastructure.Providers;
 using P2Project.Infrastructure.Repositories;
 
 namespace P2Project.Infrastructure.Shared
@@ -23,15 +25,13 @@ namespace P2Project.Infrastructure.Shared
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.Configure<MinioOptions>(
-                configuration.GetSection(MinioOptions.MINIO));
-
             services.AddMinio(options =>
             {
                 var minioOptions = configuration
                 .GetSection(MinioOptions.MINIO)
                 .Get<MinioOptions>()
-                ?? throw new ApplicationException("Minio configuration missed");
+                ?? throw new ApplicationException(
+                    "Minio configuration missed");
 
                 options.WithEndpoint(minioOptions.EndPoint);
                 options.WithCredentials(
@@ -39,6 +39,9 @@ namespace P2Project.Infrastructure.Shared
                     minioOptions.SecretKey);
                 options.WithSSL(minioOptions.WithSSl);
             });
+
+            services.AddScoped<IFileProvider, MinioProvider>();
+
             return services;
         }
     }

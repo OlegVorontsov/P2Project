@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using P2Project.Application.Pets.AddPhoto;
 using P2Project.Application.Volunteers.CreateVolunteer;
 using P2Project.Application.Volunteers.Delete;
 using P2Project.Application.Volunteers.UpdateAssistanceDetails;
@@ -20,6 +21,7 @@ namespace P2Project.Application.Shared
             services.AddScoped<UpdateSocialNetworksHandler>();
             services.AddScoped<UpdateAssistanceDetailsHandler>();
             services.AddScoped<DeleteHandler>();
+            services.AddScoped<AddPhotoHandler>();
             services.AddValidatorsFromAssembly(typeof(Inject).Assembly);
             return services;
         }
