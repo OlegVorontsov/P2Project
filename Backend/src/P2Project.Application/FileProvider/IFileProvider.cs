@@ -9,5 +9,13 @@ namespace P2Project.Application.FileProvider
         Task<Result<string, Error>> UploadFile(
             UploadFileRecord uploadFileRecord,
             CancellationToken cancellationToken = default);
+
+        Task<Result<string, Error>> DeleteFile(
+            FileMetadata fileMetadata,
+            CancellationToken cancellationToken = default);
+
+        Task<Result<string, Error>> GetFileURL(
+            FileMetadata fileMetadata,
+            CancellationToken cancellationToken = default);
     }
 }

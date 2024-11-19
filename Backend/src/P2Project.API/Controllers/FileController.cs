@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Minio;
 using P2Project.API.Extensions;
 using P2Project.Application.FileProvider.Models;
-using P2Project.Application.Pets.AddPhoto;
-using P2Project.Application.Shared.Dtos;
+using P2Project.Application.Pets.CreateFile;
+using P2Project.Application.Pets.DeleteFile;
+using P2Project.Application.Pets.GetFile;
 
 namespace P2Project.API.Controllers
 {
@@ -12,7 +12,7 @@ namespace P2Project.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateFile(
             IFormFile file,
-            [FromServices] AddPhotoHandler handler,
+            [FromServices] CreateFileHandler handler,
             CancellationToken cancellationToken = default)
         {
             await using var stream = file.OpenReadStream();
@@ -23,6 +23,36 @@ namespace P2Project.API.Controllers
                 stream,
                 "photos",
                 path), cancellationToken);
+
+            if (result.IsFailure)
+                return result.Error.ToResponse();
+
+            return Ok(result.Value);
+        }
+
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> DeleteFile(
+            [FromRoute] Guid id,
+            [FromServices] DeleteFileHandler handler,
+            CancellationToken cancellationToken = default)
+        {
+            var result = await handler.Handle(new FileMetadata(
+                "photos", id.ToString()), cancellationToken);
+
+            if (result.IsFailure)
+                return result.Error.ToResponse();
+
+            return Ok(result.Value);
+        }
+
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetFile(
+            [FromRoute] Guid id,
+            [FromServices] GetFileHandler handler,
+            CancellationToken cancellationToken = default)
+        {
+            var result = await handler.Handle(new FileMetadata(
+                "photos", id.ToString()), cancellationToken);
 
             if (result.IsFailure)
                 return result.Error.ToResponse();

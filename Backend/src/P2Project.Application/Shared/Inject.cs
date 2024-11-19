@@ -1,7 +1,8 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using P2Project.Application.FileProvider;
-using P2Project.Application.Pets.AddPhoto;
+using P2Project.Application.Pets.CreateFile;
+using P2Project.Application.Pets.DeleteFile;
+using P2Project.Application.Pets.GetFile;
 using P2Project.Application.Volunteers.CreateVolunteer;
 using P2Project.Application.Volunteers.Delete;
 using P2Project.Application.Volunteers.UpdateAssistanceDetails;
@@ -22,7 +23,9 @@ namespace P2Project.Application.Shared
             services.AddScoped<UpdateSocialNetworksHandler>();
             services.AddScoped<UpdateAssistanceDetailsHandler>();
             services.AddScoped<DeleteHandler>();
-            services.AddScoped<AddPhotoHandler>();
+            services.AddScoped<CreateFileHandler>();
+            services.AddScoped<DeleteFileHandler>();
+            services.AddScoped<GetFileHandler>();
             services.AddValidatorsFromAssembly(typeof(Inject).Assembly);
             return services;
         }
