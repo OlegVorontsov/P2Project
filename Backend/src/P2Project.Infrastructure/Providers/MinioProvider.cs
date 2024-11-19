@@ -28,7 +28,7 @@ namespace P2Project.Infrastructure.Providers
             try
             {
                 var bucketExistBucketArgs = new BucketExistsArgs()
-                    .WithBucket("photos");
+                    .WithBucket(uploadFileRecord.BucketName);
 
                 var bucketExist = await _minioClient.BucketExistsAsync(
                     bucketExistBucketArgs, cancellationToken);
@@ -36,7 +36,7 @@ namespace P2Project.Infrastructure.Providers
                 if (bucketExist == false)
                 {
                     var makeBucketArgs = new MakeBucketArgs()
-                        .WithBucket("photos");
+                        .WithBucket(uploadFileRecord.BucketName);
                     await _minioClient.MakeBucketAsync(
                         makeBucketArgs, cancellationToken);
                 }
