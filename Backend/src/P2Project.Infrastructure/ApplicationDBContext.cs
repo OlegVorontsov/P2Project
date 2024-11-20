@@ -19,7 +19,7 @@ namespace P2Project.Infrastructure
             optionsBuilder.UseSnakeCaseNamingConvention();
             optionsBuilder.EnableSensitiveDataLogging();
             optionsBuilder.UseLoggerFactory(CreateLoggerFactory());
-            optionsBuilder.AddInterceptors(new SoftDeleteInterceptor());
+            //optionsBuilder.AddInterceptors(new SoftDeleteInterceptor());
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
