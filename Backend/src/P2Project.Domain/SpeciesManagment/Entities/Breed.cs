@@ -6,10 +6,9 @@ namespace P2Project.Domain.SpeciesManagment.Entities
     public class Breed : ValueObject
     {
         private Breed(Guid id) { }
-        public Breed(Guid id,
-                      Name name)
+        public Breed(Name name)
         {
-            Id = id;
+            Id = Guid.NewGuid();
             Name = name;
         }
         public Guid Id { get; private set; }

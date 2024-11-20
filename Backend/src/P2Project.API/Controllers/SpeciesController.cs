@@ -7,12 +7,12 @@ namespace P2Project.API.Controllers
 {
     public class SpeciesController : ApplicationController
     {
-        [HttpPost]
+        [HttpPost()]
         public async Task<ActionResult<Guid>> Create(
             [FromServices] CreateHandler handler,
-            [FromBody] CreateRequest request,
-            [FromServices] IValidator<CreateRequest> validator,
-            CancellationToken cancellationToken = default)
+            [FromBody] CreateSpeciesRequest request,
+            [FromServices] IValidator<CreateSpeciesRequest> validator,
+            CancellationToken cancellationToken)
         {
             var validationResult = await validator.ValidateAsync(
                                                   request,
@@ -28,6 +28,7 @@ namespace P2Project.API.Controllers
                 return result.Error.ToResponse();
 
             return Ok(result.Value);
+            //return Ok(Guid.NewGuid());
         }
     }
 }

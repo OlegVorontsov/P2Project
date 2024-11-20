@@ -5,7 +5,7 @@ using P2Project.Domain.SpeciesManagment.ValueObjects;
 namespace P2Project.Application.Species.Create
 {
     public class CreateValidator :
-        AbstractValidator<CreateRequest>
+        AbstractValidator<CreateSpeciesRequest>
     {
         public CreateValidator()
         {
