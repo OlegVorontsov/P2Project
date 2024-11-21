@@ -1,7 +1,9 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using P2Project.API.Extensions;
+using P2Project.Application.Species.AddBreeds;
 using P2Project.Application.Species.Create;
+using P2Project.Application.Volunteers.UpdatePhoneNumbers;
 
 namespace P2Project.API.Controllers
 {
@@ -28,7 +30,33 @@ namespace P2Project.API.Controllers
                 return result.Error.ToResponse();
 
             return Ok(result.Value);
-            //return Ok(Guid.NewGuid());
+        }
+
+        [HttpPatch("{id:guid}/breeds")]
+        public async Task<ActionResult<Guid>> AddBreeds(
+            [FromRoute] Guid id,
+            [FromBody] AddBreedsDto dto,
+            [FromServices] AddBreedsHandler handler,
+            [FromServices] IValidator<AddBreedsRequest> validator,
+            CancellationToken cancellationToken)
+        {
+            var request = new AddBreedsRequest(id, dto);
+
+            var validationResult = await validator.ValidateAsync(
+                                                  request,
+                                                  cancellationToken);
+            if (validationResult.IsValid == false)
+                return validationResult.ToValidationErrorResponse();
+
+            var result = await handler.Handle(
+                new AddBreedsCommand(
+                    request.SpeciesId,
+                    request.AddBreedsDto), cancellationToken);
+
+            if (result.IsFailure)
+                return result.Error.ToResponse();
+
+            return Ok(result.Value);
         }
     }
 }

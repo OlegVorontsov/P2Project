@@ -29,9 +29,7 @@ namespace P2Project.Infrastructure.Configurations
 
             builder.HasMany(s => s.Breeds)
                    .WithOne()
-                   .HasForeignKey("breed_id")
-                   .IsRequired();
-            builder.Navigation(v => v.Breeds).AutoInclude();
+                   .HasForeignKey("species_id");
         }
     }
 }

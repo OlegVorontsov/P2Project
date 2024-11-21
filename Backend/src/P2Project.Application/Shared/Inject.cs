@@ -27,6 +27,7 @@ namespace P2Project.Application.Shared
             services.AddScoped<DeleteFileHandler>();
             services.AddScoped<GetFileHandler>();
             services.AddScoped<Species.Create.CreateHandler>();
+            services.AddScoped<Species.AddBreeds.AddBreedsHandler>();
             services.AddValidatorsFromAssembly(typeof(Inject).Assembly);
             return services;
         }
