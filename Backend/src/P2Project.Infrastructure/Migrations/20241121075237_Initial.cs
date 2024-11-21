@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace P2Project.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -32,6 +32,7 @@ namespace P2Project.Infrastructure.Migrations
                     gender = table.Column<string>(type: "text", nullable: false),
                     registered_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     years_of_experience = table.Column<double>(type: "double precision", nullable: false),
+                    is_deleted = table.Column<bool>(type: "boolean", nullable: false),
                     description = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true),
                     email = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false),
                     first_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
@@ -51,18 +52,17 @@ namespace P2Project.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    breed_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    species_id = table.Column<Guid>(type: "uuid", nullable: true),
                     name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_breed", x => x.id);
                     table.ForeignKey(
-                        name: "fk_breed_species_breed_id",
-                        column: x => x.breed_id,
+                        name: "fk_breed_species_species_id",
+                        column: x => x.species_id,
                         principalTable: "species",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "id");
                 });
 
             migrationBuilder.CreateTable(
@@ -77,6 +77,7 @@ namespace P2Project.Infrastructure.Migrations
                     is_vaccinated = table.Column<bool>(type: "boolean", nullable: false),
                     date_of_birth = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ceated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    is_deleted = table.Column<bool>(type: "boolean", nullable: false),
                     assistance_status = table.Column<string>(type: "text", nullable: false),
                     color = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     description = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true),
@@ -121,9 +122,9 @@ namespace P2Project.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "ix_breed_breed_id",
+                name: "ix_breed_species_id",
                 table: "breed",
-                column: "breed_id");
+                column: "species_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_pet_photo_pet_id",

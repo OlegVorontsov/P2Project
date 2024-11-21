@@ -17,7 +17,7 @@ namespace P2Project.Infrastructure
         {
             optionsBuilder.UseNpgsql(configuration.GetConnectionString(DATABASE));
             optionsBuilder.UseSnakeCaseNamingConvention();
-            optionsBuilder.EnableSensitiveDataLogging();
+            optionsBuilder.EnableSensitiveDataLogging(false);
             optionsBuilder.UseLoggerFactory(CreateLoggerFactory());
             //optionsBuilder.AddInterceptors(new SoftDeleteInterceptor());
         }

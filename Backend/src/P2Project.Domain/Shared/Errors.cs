@@ -31,5 +31,13 @@ namespace P2Project.Domain.Shared
                                         $"Volunteer is already exist");
             }
         }
+        public static class Species
+        {
+            public static Error AlreadyExist()
+            {
+                return Error.Validation("record.is.already.exist",
+                                        $"Species is already exist");
+            }
+        }
     }
 }
