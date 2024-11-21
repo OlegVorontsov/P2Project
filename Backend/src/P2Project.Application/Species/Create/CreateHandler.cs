@@ -38,14 +38,11 @@ namespace P2Project.Application.Species.Create
             if (command.Breeds != null)
             {
                 var breeds = command.Breeds.Select(bDto => new Breed(Name.Create(bDto.Name.Value).Value));
-                phoneNumbers.AddRange(phones);
+                newBreeds.AddRange(breeds);
             }
-            var volunteerPhoneNumbers = new VolunteerPhoneNumbers(phoneNumbers);
-
-
 
             var species = new Domain.SpeciesManagment.Species(
-                speciesId, name);
+                speciesId, name, newBreeds);
 
             await _speciesRepository.Add(species, cancellationToken);
 
