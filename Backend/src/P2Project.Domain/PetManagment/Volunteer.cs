@@ -1,4 +1,5 @@
-﻿using P2Project.Domain.PetManagment.Entities;
+﻿using CSharpFunctionalExtensions;
+using P2Project.Domain.PetManagment.Entities;
 using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.IDs;
@@ -92,6 +93,8 @@ namespace P2Project.Domain.PetManagment
         {
             AssistanceDetails = assistanceDetails;
         }
+
+        public void AddPet(Pet pet) => _pets.Add(pet);
 
         public void Deleted()
         {

@@ -1,12 +1,16 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using P2Project.API.Extensions;
+using P2Project.Application.Shared.Dtos;
+using P2Project.Application.Volunteers.CreatePet;
 using P2Project.Application.Volunteers.CreateVolunteer;
 using P2Project.Application.Volunteers.Delete;
 using P2Project.Application.Volunteers.UpdateAssistanceDetails;
 using P2Project.Application.Volunteers.UpdateMainInfo;
 using P2Project.Application.Volunteers.UpdatePhoneNumbers;
 using P2Project.Application.Volunteers.UpdateSocialNetworks;
+using P2Project.Domain.PetManagment.ValueObjects;
+using P2Project.Domain.SpeciesManagment.Entities;
 
 namespace P2Project.API.Controllers
 {
@@ -168,6 +172,51 @@ namespace P2Project.API.Controllers
 
             var result = await handler.Handle(new DeleteCommand(
                 request.VolunteerId), cancellationToken);
+
+            if (result.IsFailure)
+                return result.Error.ToResponse();
+
+            return Ok(result.Value);
+        }
+
+        [HttpPost("{id:guid}/pets")]
+        public async Task<IActionResult> CreatePet(
+            [FromRoute] Guid id,
+            [FromForm] CreatePetDto petDto,
+            [FromServices] CreatePetHandler handler,
+            [FromServices] IValidator<CreatePetValidator> validator,
+            CancellationToken cancellationToken = default)
+        {
+            var fileDtos = petDto.PetPhotos.Select(f =>
+                new FileDto(f.FileName));
+
+            var request = new CreatePetRequest(
+                id,
+                petDto.NickName,
+                petDto.Species,
+                petDto.Breed,
+                petDto.Description,
+                petDto.Color,
+                petDto.HealthInfo,
+                petDto.Address,
+                petDto.Weight,
+                petDto.Height,
+                petDto.OwnerPhoneNumber,
+                petDto.IsCastrated,
+                petDto.IsVaccinated,
+                petDto.DateOfBirth,
+                petDto.AssistanceStatus,
+                petDto.AssistanceDetails,
+                fileDtos);
+
+            var validationResult = await validator.ValidateAsync(
+                                      request,
+                                      cancellationToken);
+            if (validationResult.IsValid == false)
+                return validationResult.ToValidationErrorResponse();
+
+            var result = await handler.Handle(new CreatePetCommand(request),
+                cancellationToken);
 
             if (result.IsFailure)
                 return result.Error.ToResponse();

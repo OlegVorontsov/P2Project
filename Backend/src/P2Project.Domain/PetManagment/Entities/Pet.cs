@@ -26,7 +26,7 @@ namespace P2Project.Domain.PetManagment.Entities
                PhoneNumber ownerPhoneNumber,
                bool isCastrated,
                bool isVaccinated,
-               DateTime dateOfBirth,
+               DateOnly dateOfBirth,
                AssistanceStatus assistanceStatus,
                PetAssistanceDetails? assistanceDetails,
                DateTime createdAt) : base(id)
@@ -58,11 +58,12 @@ namespace P2Project.Domain.PetManagment.Entities
         public PhoneNumber OwnerPhoneNumber { get; private set; } = default!;
         public bool IsCastrated { get; private set; }
         public bool IsVaccinated { get; private set; }
-        public DateTime DateOfBirth { get; private set; }
+        public DateOnly DateOfBirth { get; private set; }
         public AssistanceStatus AssistanceStatus { get; private set; }
         public PetAssistanceDetails? AssistanceDetails { get; private set; } = default!;
         public DateTime CreatedAt { get; private set; }
         public IReadOnlyList<PetPhoto> PetPhotos => _petPhotos;
+        public void AddPetPhoto(PetPhoto petPhoto) => _petPhotos.Add(petPhoto);
 
         public void Deleted()
         {
