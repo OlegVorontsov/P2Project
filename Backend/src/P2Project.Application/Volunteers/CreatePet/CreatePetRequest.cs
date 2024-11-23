@@ -10,7 +10,6 @@ using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.IDs;
 using P2Project.Domain.SpeciesManagment.Entities;
 using P2Project.Domain.SpeciesManagment.ValueObjects;
-using System.Xml.Linq;
 
 namespace P2Project.Application.Volunteers.CreatePet
 {
@@ -29,7 +28,7 @@ namespace P2Project.Application.Volunteers.CreatePet
         bool IsVaccinated,
         DateOnly DateOfBirth,
         string AssistanceStatus,
-        IEnumerable<AssistanceDetailDto>? AssistanceDetails,
+        AssistanceDetailDto? AssistanceDetail,
         IFormFileCollection PetPhotos);
 
     public record CreatePetRequest(
@@ -48,10 +47,10 @@ namespace P2Project.Application.Volunteers.CreatePet
         bool IsVaccinated,
         DateOnly DateOfBirth,
         string AssistanceStatus,
-        IEnumerable<AssistanceDetailDto>? AssistanceDetails,
-        IEnumerable<FileDto> PetPhotos);
+        AssistanceDetailDto? AssistanceDetail,
+        IEnumerable<PetPhotoDto> PetPhotos);
 
-    public record FileDto(string FileName);
+    public record PetPhotoDto(string FileName, bool IsMain);
 
     public record CreatePetCommand(
         Guid VolunteerId,
@@ -69,8 +68,8 @@ namespace P2Project.Application.Volunteers.CreatePet
         bool IsVaccinated,
         DateOnly DateOfBirth,
         string AssistanceStatus,
-        IEnumerable<AssistanceDetailDto>? AssistanceDetails,
-        IEnumerable<FileDto> PetPhotos);
+        AssistanceDetailDto AssistanceDetail,
+        IEnumerable<PetPhotoDto> PetPhotos);
 
     public class CreatePetValidator
     {
@@ -141,46 +140,87 @@ namespace P2Project.Application.Volunteers.CreatePet
             var speciesId = speciesExist.Value.Id;
 
             var breedId = speciesExist.Value?.Breeds?.Where(b =>
-                b.Name.Value == command.Breed)?.Select(r => r.Id)?.FirstOrDefault();
+                b.Name.Value == command.Breed)?.Select(r => r.Id)?
+                .FirstOrDefault();
 
             if (breedId == null && breedId.Value != Guid.Empty)
                 return Errors.General.ValueIsInvalid(command.Breed);
 
+            if(breedId == Guid.Empty)
+            {
+                var newBreeds = new List<Breed>();
+                if (command.Breed != null)
+                {
+                    var breed = new Breed(Name.Create(command.Breed).Value);
+                    newBreeds.AddRange([breed]);
+                    speciesExist.Value.AddBreeds(newBreeds.ToList());
+                    await _speciesRepository.Save(speciesExist.Value, cancellationToken);
+                    breedId = breed.Id;
+                }
+            }
+
             var speciesBreed = new SpeciesBreed(speciesId, breedId.Value);
 
-            var description = Description.Create(command.Description);
-            var color = Color.Create(command.Color);
-            var healthInfo = HealthInfo.Create(command.HealthInfo);
+            var description = Description.Create(command.Description).Value;
+            var color = Color.Create(command.Color).Value;
+            var healthInfo = HealthInfo.Create(command.HealthInfo).Value;
             var address = Address.Create(
                 command.Address.Region,
                 command.Address.City,
                 command.Address.Street,
                 command.Address.House,
                 command.Address.Floor,
-                command.Address.Apartment);
+                command.Address.Apartment).Value;
             var ownerPhoneNumber = PhoneNumber.Create(
                 command.OwnerPhoneNumber.Value,
-                command.OwnerPhoneNumber.IsMain);
+                command.OwnerPhoneNumber.IsMain).Value;
             var assistanceStatus = AssistanceStatus.Create(
-                command.AssistanceStatus);
+                command.AssistanceStatus).Value;
 
             var assistanceDetails = new List<AssistanceDetail>();
-            if (command.AssistanceDetails != null)
+            if (command.AssistanceDetail != null)
             {
-                var details = command.AssistanceDetails.Select(ad =>
-                                                        AssistanceDetail.Create(
-                                                            ad.Name,
-                                                            ad.Description,
-                                                            ad.AccountNumber).Value);
-                assistanceDetails.AddRange(details);
+                var detail = AssistanceDetail.Create(
+                    command.AssistanceDetail.Name,
+                    command.AssistanceDetail.Description,
+                    command.AssistanceDetail.AccountNumber).Value;
+                assistanceDetails.AddRange([detail]);
             }
-            var petAssistanceDetails = new VolunteerAssistanceDetails(assistanceDetails);
+            var petAssistanceDetails = new PetAssistanceDetails(
+                assistanceDetails);
 
+            var newPet = new Pet(
+                petId,
+                nicKName,
+                speciesBreed,
+                description,
+                color,
+                healthInfo,
+                address,
+                command.Weight,
+                command.Height,
+                ownerPhoneNumber,
+                command.IsCastrated,
+                command.IsVaccinated,
+                command.DateOfBirth,
+                assistanceStatus,
+                petAssistanceDetails,
+                DateOnly.FromDateTime(DateTime.Today));
 
+            var petPhotos = command.PetPhotos.Select(p => PetPhoto.Create(
+                p.FileName,
+                p.IsMain).Value);
 
-            var newPet = new Pet();
+            foreach (var petPhoto in petPhotos)
+                newPet.AddPetPhoto(petPhoto);
 
             volunteerResult.Value.AddPet(newPet);
+
+            await _volunteersRepository.Save(
+                volunteerResult.Value,
+                cancellationToken);
+
+            return (Guid)newPet.Id;
         }
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using P2Project.Application.Pets.CreateFile;
 using P2Project.Application.Pets.DeleteFile;
 using P2Project.Application.Pets.GetFile;
+using P2Project.Application.Volunteers.CreatePet;
 using P2Project.Application.Volunteers.CreateVolunteer;
 using P2Project.Application.Volunteers.Delete;
 using P2Project.Application.Volunteers.UpdateAssistanceDetails;
@@ -28,6 +29,7 @@ namespace P2Project.Application.Shared
             services.AddScoped<GetFileHandler>();
             services.AddScoped<Species.Create.CreateHandler>();
             services.AddScoped<Species.AddBreeds.AddBreedsHandler>();
+            services.AddScoped<CreatePetHandler>();
             services.AddValidatorsFromAssembly(typeof(Inject).Assembly);
             return services;
         }

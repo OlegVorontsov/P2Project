@@ -29,7 +29,7 @@ namespace P2Project.Domain.PetManagment.Entities
                DateOnly dateOfBirth,
                AssistanceStatus assistanceStatus,
                PetAssistanceDetails? assistanceDetails,
-               DateTime createdAt) : base(id)
+               DateOnly createdAt) : base(id)
         {
             NickName = nickName;
             SpeciesBreed = speciesBreed;
@@ -61,7 +61,7 @@ namespace P2Project.Domain.PetManagment.Entities
         public DateOnly DateOfBirth { get; private set; }
         public AssistanceStatus AssistanceStatus { get; private set; }
         public PetAssistanceDetails? AssistanceDetails { get; private set; } = default!;
-        public DateTime CreatedAt { get; private set; }
+        public DateOnly CreatedAt { get; private set; }
         public IReadOnlyList<PetPhoto> PetPhotos => _petPhotos;
         public void AddPetPhoto(PetPhoto petPhoto) => _petPhotos.Add(petPhoto);
 

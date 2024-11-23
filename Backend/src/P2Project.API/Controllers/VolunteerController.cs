@@ -184,11 +184,11 @@ namespace P2Project.API.Controllers
             [FromRoute] Guid id,
             [FromForm] CreatePetDto petDto,
             [FromServices] CreatePetHandler handler,
-            [FromServices] IValidator<CreatePetValidator> validator,
+            //[FromServices] IValidator<CreatePetValidator> validator,
             CancellationToken cancellationToken = default)
         {
             var fileDtos = petDto.PetPhotos.Select(f =>
-                new FileDto(f.FileName));
+                new PetPhotoDto(f.FileName, false));
 
             var request = new CreatePetRequest(
                 id,
@@ -206,17 +206,35 @@ namespace P2Project.API.Controllers
                 petDto.IsVaccinated,
                 petDto.DateOfBirth,
                 petDto.AssistanceStatus,
-                petDto.AssistanceDetails,
+                petDto.AssistanceDetail,
                 fileDtos);
 
-            var validationResult = await validator.ValidateAsync(
-                                      request,
-                                      cancellationToken);
-            if (validationResult.IsValid == false)
-                return validationResult.ToValidationErrorResponse();
+            //var validationResult = await validator.ValidateAsync(
+            //                          request,
+            //                          cancellationToken);
+            //if (validationResult.IsValid == false)
+            //    return validationResult.ToValidationErrorResponse();
 
-            var result = await handler.Handle(new CreatePetCommand(request),
-                cancellationToken);
+            var command = new CreatePetCommand(
+                request.VolunteerId,
+                request.NickName,
+                request.Species,
+                request.Breed,
+                request.Description,
+                request.Color,
+                request.HealthInfo,
+                request.Address,
+                request.Weight,
+                request.Height,
+                request.OwnerPhoneNumber,
+                request.IsCastrated,
+                request.IsVaccinated,
+                request.DateOfBirth,
+                request.AssistanceStatus,
+                request.AssistanceDetail,
+                request.PetPhotos);
+
+            var result = await handler.Handle(command, cancellationToken);
 
             if (result.IsFailure)
                 return result.Error.ToResponse();

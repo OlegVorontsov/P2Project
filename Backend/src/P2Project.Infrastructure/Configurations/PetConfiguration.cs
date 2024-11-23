@@ -134,8 +134,8 @@ namespace P2Project.Infrastructure.Configurations
                    .IsRequired()
                    .HasColumnName("date_of_birth")
                    .HasConversion(
-                        d => d.ToUniversalTime(),
-                        d => DateTime.SpecifyKind(d, DateTimeKind.Local));
+                        d => d.ToShortDateString(),
+                        d => DateOnly.Parse(d));
 
             builder.ComplexProperty(p => p.AssistanceStatus, asb =>
             {
@@ -167,16 +167,14 @@ namespace P2Project.Infrastructure.Configurations
             builder.HasMany(p => p.PetPhotos)
                    .WithOne()
                    .HasForeignKey("pet_id")
-                   .OnDelete(DeleteBehavior.Cascade)
-                   .IsRequired();
-            builder.Navigation(p => p.PetPhotos).AutoInclude();
+                   .OnDelete(DeleteBehavior.Cascade);
 
             builder.Property(p => p.CreatedAt)
                    .IsRequired()
-                   .HasColumnName("ceated_at")
+                   .HasColumnName("created_at")
                    .HasConversion(
-                        d => d.ToUniversalTime(),
-                        d => DateTime.SpecifyKind(d, DateTimeKind.Local));
+                        d => d.ToShortDateString(),
+                        d => DateOnly.Parse(d));
 
             builder.Property<bool>("_isDeleted")
                    .UsePropertyAccessMode(PropertyAccessMode.Field)

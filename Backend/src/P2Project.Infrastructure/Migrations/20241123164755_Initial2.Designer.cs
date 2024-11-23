@@ -13,8 +13,8 @@ using P2Project.Infrastructure;
 namespace P2Project.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20241121075237_Initial")]
-    partial class Initial
+    [Migration("20241123164755_Initial2")]
+    partial class Initial2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,12 +32,14 @@ namespace P2Project.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("ceated_at");
+                    b.Property<string>("CreatedAt")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("created_at");
 
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<string>("DateOfBirth")
+                        .IsRequired()
+                        .HasColumnType("text")
                         .HasColumnName("date_of_birth");
 
                     b.Property<double>("Height")
@@ -172,7 +174,7 @@ namespace P2Project.Infrastructure.Migrations
                         .HasColumnType("character varying(300)")
                         .HasColumnName("path");
 
-                    b.Property<Guid>("pet_id")
+                    b.Property<Guid?>("pet_id")
                         .HasColumnType("uuid")
                         .HasColumnName("pet_id");
 
@@ -436,7 +438,6 @@ namespace P2Project.Infrastructure.Migrations
                         .WithMany("PetPhotos")
                         .HasForeignKey("pet_id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
                         .HasConstraintName("fk_pet_photo_pets_pet_id");
                 });
 

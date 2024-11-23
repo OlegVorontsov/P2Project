@@ -1,5 +1,4 @@
-﻿using CSharpFunctionalExtensions;
-using P2Project.Domain.PetManagment.Entities;
+﻿using P2Project.Domain.PetManagment.Entities;
 using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.IDs;
@@ -11,7 +10,7 @@ namespace P2Project.Domain.PetManagment
         Male,
         Female
     }
-    public sealed class Volunteer : Entity<VolunteerId>, ISoftDeletable
+    public sealed class Volunteer : Shared.Entity<VolunteerId>, ISoftDeletable
     {
         private Volunteer(VolunteerId id) : base(id) { }
         private readonly List<Pet> _pets = [];

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace P2Project.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class Initial2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -75,8 +75,8 @@ namespace P2Project.Infrastructure.Migrations
                     height = table.Column<double>(type: "double precision", maxLength: 10, nullable: false),
                     is_castrated = table.Column<bool>(type: "boolean", nullable: false),
                     is_vaccinated = table.Column<bool>(type: "boolean", nullable: false),
-                    date_of_birth = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ceated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    date_of_birth = table.Column<string>(type: "text", nullable: false),
+                    created_at = table.Column<string>(type: "text", nullable: false),
                     is_deleted = table.Column<bool>(type: "boolean", nullable: false),
                     assistance_status = table.Column<string>(type: "text", nullable: false),
                     color = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
@@ -108,7 +108,7 @@ namespace P2Project.Infrastructure.Migrations
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     path = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false),
                     is_main = table.Column<bool>(type: "boolean", nullable: false),
-                    pet_id = table.Column<Guid>(type: "uuid", nullable: false)
+                    pet_id = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
