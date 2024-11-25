@@ -187,10 +187,19 @@ namespace P2Project.API.Controllers
             //[FromServices] IValidator<CreatePetValidator> validator,
             CancellationToken cancellationToken = default)
         {
-            var fileDtos = petDto.PetPhotos.Select(f =>
-                new PetPhotoDto(f.FileName, false));
-
-            var request = new CreatePetRequest(
+            List<PetPhotoDto> petPhotoDtos = [];
+            try
+            {
+                foreach (var petPhoto in petDto.PetPhotos)
+                {
+                    var stream = petPhoto.OpenReadStream();
+                    petPhotoDtos.Add(new PetPhotoDto(
+                        stream,
+                        petPhoto.FileName,
+                        petPhoto.ContentType,
+                        false));
+                }
+                var request = new CreatePetRequest(
                 id,
                 petDto.NickName,
                 petDto.Species,
@@ -207,39 +216,48 @@ namespace P2Project.API.Controllers
                 petDto.DateOfBirth,
                 petDto.AssistanceStatus,
                 petDto.AssistanceDetail,
-                fileDtos);
+                petPhotoDtos);
 
-            //var validationResult = await validator.ValidateAsync(
-            //                          request,
-            //                          cancellationToken);
-            //if (validationResult.IsValid == false)
-            //    return validationResult.ToValidationErrorResponse();
+                //var validationResult = await validator.ValidateAsync(
+                //                          request,
+                //                          cancellationToken);
+                //if (validationResult.IsValid == false)
+                //    return validationResult.ToValidationErrorResponse();
 
-            var command = new CreatePetCommand(
-                request.VolunteerId,
-                request.NickName,
-                request.Species,
-                request.Breed,
-                request.Description,
-                request.Color,
-                request.HealthInfo,
-                request.Address,
-                request.Weight,
-                request.Height,
-                request.OwnerPhoneNumber,
-                request.IsCastrated,
-                request.IsVaccinated,
-                request.DateOfBirth,
-                request.AssistanceStatus,
-                request.AssistanceDetail,
-                request.PetPhotos);
+                var command = new CreatePetCommand(
+                    request.VolunteerId,
+                    request.NickName,
+                    request.Species,
+                    request.Breed,
+                    request.Description,
+                    request.Color,
+                    request.HealthInfo,
+                    request.Address,
+                    request.Weight,
+                    request.Height,
+                    request.OwnerPhoneNumber,
+                    request.IsCastrated,
+                    request.IsVaccinated,
+                    request.DateOfBirth,
+                    request.AssistanceStatus,
+                    request.AssistanceDetail,
+                    request.PetPhotos);
 
-            var result = await handler.Handle(command, cancellationToken);
+                var result = await handler.Handle(command, cancellationToken);
 
-            if (result.IsFailure)
-                return result.Error.ToResponse();
+                if (result.IsFailure)
+                    return result.Error.ToResponse();
 
-            return Ok(result.Value);
+                return Ok(result.Value);
+            }
+            finally
+            {
+                foreach (var petPhotoDto in petPhotoDtos)
+                {
+                    await petPhotoDto.Stream.DisposeAsync();
+                }
+            }
+
         }
     }
 }

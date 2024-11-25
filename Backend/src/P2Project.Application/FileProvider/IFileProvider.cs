@@ -6,8 +6,8 @@ namespace P2Project.Application.FileProvider
 {
     public interface IFileProvider
     {
-        Task<Result<string, Error>> UploadFile(
-            UploadFileRecord uploadFileRecord,
+        public async Task<Result<string, Error>> UploadFiles(
+            FileData fileData,
             CancellationToken cancellationToken = default);
 
         Task<Result<string, Error>> DeleteFile(

@@ -1,6 +1,9 @@
 ﻿using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
+using P2Project.Application.FileProvider;
+using P2Project.Application.FileProvider.Models;
 using P2Project.Application.Shared.Dtos;
 using P2Project.Application.Species;
 using P2Project.Application.Species.Create;
@@ -10,6 +13,7 @@ using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.IDs;
 using P2Project.Domain.SpeciesManagment.Entities;
 using P2Project.Domain.SpeciesManagment.ValueObjects;
+using IFileProvider = P2Project.Application.FileProvider.IFileProvider;
 
 namespace P2Project.Application.Volunteers.CreatePet
 {
@@ -50,7 +54,11 @@ namespace P2Project.Application.Volunteers.CreatePet
         AssistanceDetailDto? AssistanceDetail,
         IEnumerable<PetPhotoDto> PetPhotos);
 
-    public record PetPhotoDto(string FileName, bool IsMain);
+    public record PetPhotoDto(
+        Stream Stream,
+        string FileName,
+        string ContentType,
+        bool IsMain);
 
     public record CreatePetCommand(
         Guid VolunteerId,
@@ -81,19 +89,23 @@ namespace P2Project.Application.Volunteers.CreatePet
 
     public class CreatePetHandler
     {
+        private const string BUCKET_NAME = "photos";
         private readonly IVolunteersRepository _volunteersRepository;
         private readonly ISpeciesRepository _speciesRepository;
+        private readonly IFileProvider _fileProvider;
         private readonly ILogger<CreatePetHandler> _petLogger;
         private readonly ILogger<CreateHandler> _speciesLogger;
 
         public CreatePetHandler(
             IVolunteersRepository volunteersRepository,
             ISpeciesRepository speciesRepository,
+            IFileProvider fileProvider,
             ILogger<CreatePetHandler> petLogger,
             ILogger<CreateHandler> speciesLogger)
         {
             _volunteersRepository = volunteersRepository;
             _speciesRepository = speciesRepository;
+            _fileProvider = fileProvider;
             _petLogger = petLogger;
             _speciesLogger = speciesLogger;
         }
@@ -189,6 +201,31 @@ namespace P2Project.Application.Volunteers.CreatePet
             var petAssistanceDetails = new PetAssistanceDetails(
                 assistanceDetails);
 
+            List<PetPhoto> petPhotos = [];
+            foreach (var file in command.PetPhotos)
+            {
+                var extension = Path.GetExtension(file.FileName);
+
+                var filePath = FilePath.Create(Guid.NewGuid(), extension);
+                if (filePath.IsFailure)
+                    return filePath.Error;
+
+                var uploadFileRecord = new UploadFileRecord(
+                    file.Stream,
+                    BUCKET_NAME,
+                    filePath.Value.Path);
+
+                var uploadResult = await _fileProvider.UploadFile(
+                    uploadFileRecord, cancellationToken);
+
+                if (uploadResult.IsFailure)
+                    return uploadResult.Error;
+
+                var petPhoto = new PetPhoto(filePath.Value, false);
+
+                petPhotos.Add(petPhoto);
+            }
+
             var newPet = new Pet(
                 petId,
                 nicKName,
@@ -206,10 +243,6 @@ namespace P2Project.Application.Volunteers.CreatePet
                 assistanceStatus,
                 petAssistanceDetails,
                 DateOnly.FromDateTime(DateTime.Today));
-
-            var petPhotos = command.PetPhotos.Select(p => PetPhoto.Create(
-                p.FileName,
-                p.IsMain).Value);
 
             foreach (var petPhoto in petPhotos)
                 newPet.AddPetPhoto(petPhoto);

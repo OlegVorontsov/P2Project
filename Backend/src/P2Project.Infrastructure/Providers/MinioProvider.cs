@@ -11,6 +11,7 @@ namespace P2Project.Infrastructure.Providers
     public class MinioProvider : IFileProvider
     {
         private const int EXPIRY = 60 * 60 * 24;
+        private const int MAX_PARALLEL = 10;
 
         private readonly IMinioClient _minioClient;
         private readonly ILogger<MinioProvider> _logger;
@@ -23,33 +24,43 @@ namespace P2Project.Infrastructure.Providers
             _logger = logger;
         }
 
-        public async Task<Result<string, Error>> UploadFile(
-            UploadFileRecord uploadFileRecord,
+        public async Task<Result<string, Error>> UploadFiles(
+            FileData fileData,
             CancellationToken cancellationToken = default)
         {
+            var semaphoreSlim = new SemaphoreSlim(MAX_PARALLEL);
             try
             {
                 var isBucketExist = await IsBucketExist(
-                    uploadFileRecord, cancellationToken);
+                    fileData.BucketName, cancellationToken);
 
                 if (isBucketExist == false)
                 {
                     var makeBucketArgs = new MakeBucketArgs()
-                        .WithBucket(uploadFileRecord.BucketName);
+                        .WithBucket(fileData.BucketName);
                     await _minioClient.MakeBucketAsync(
                         makeBucketArgs, cancellationToken);
                 }
 
-                var putObjectArgs = new PutObjectArgs()
-                    .WithBucket(uploadFileRecord.BucketName)
-                    .WithStreamData(uploadFileRecord.Stream)
-                    .WithObjectSize(uploadFileRecord.Stream.Length)
-                    .WithObject(uploadFileRecord.ObjectName);
+                List<Task> tasks = [];
+                foreach (var file in fileData.Files)
+                {
+                    await semaphoreSlim.WaitAsync(cancellationToken);
 
-                var result = await _minioClient.PutObjectAsync(
-                    putObjectArgs, cancellationToken);
+                    var putObjectArgs = new PutObjectArgs()
+                        .WithBucket(fileData.BucketName)
+                        .WithStreamData(file.Stream)
+                        .WithObjectSize(file.Stream.Length)
+                        .WithObject(file.ObjectName);
 
-                return result.ObjectName;
+                    var task = _minioClient.PutObjectAsync(
+                        putObjectArgs, cancellationToken);
+
+                    semaphoreSlim.Release();
+
+                    tasks.Add(task);
+                }
+                await Task.WhenAll(tasks);
             }
             catch (Exception ex)
             {
@@ -119,11 +130,11 @@ namespace P2Project.Infrastructure.Providers
         }
 
         private async Task<bool> IsBucketExist(
-            UploadFileRecord uploadFileRecord,
+            string bucketName,
             CancellationToken cancellationToken)
         {
             var bucketExistBucketArgs = new BucketExistsArgs()
-                .WithBucket(uploadFileRecord.BucketName);
+                .WithBucket(bucketName);
 
             var bucketExist = await _minioClient.BucketExistsAsync(
                 bucketExistBucketArgs, cancellationToken);
