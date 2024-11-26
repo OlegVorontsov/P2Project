@@ -1,35 +1,29 @@
-﻿
+﻿using CSharpFunctionalExtensions;
+using P2Project.Domain.Shared;
+
 namespace P2Project.Domain.PetManagment.ValueObjects
 {
     public record PetPhoto
     {
-        // ef navigation
-        private PetPhoto(Guid id) { }
-        private bool _isDeleted = false;
-        public PetPhoto(
-            FilePath path,
-            bool isMain)
+        private PetPhoto(string filePath, bool isMain)
         {
-            Id = Guid.Empty;
-            Path = path;
+            FilePath = filePath;
             IsMain = isMain;
         }
 
-        public Guid Id { get; private set; }
-        public FilePath Path { get; }
+        public string FilePath { get; }
         public bool IsMain { get; }
 
-        public void Deleted()
+        public static Result<PetPhoto, Error> Create(
+            string filePath, bool isMain = false)
         {
-            if (_isDeleted) return;
+            if (string.IsNullOrWhiteSpace(filePath))
+                return Errors.General.ValueIsRequired("FilePath");
 
-            _isDeleted = true;
-        }
-        public void Restored()
-        {
-            if (!_isDeleted) return;
+            if (filePath.Length > Constants.MAX_BIG_TEXT_LENGTH)
+                return Errors.General.ValueIsRequired("FilePath");
 
-            _isDeleted = false;
+            return new PetPhoto(filePath, isMain);
         }
     }
 }

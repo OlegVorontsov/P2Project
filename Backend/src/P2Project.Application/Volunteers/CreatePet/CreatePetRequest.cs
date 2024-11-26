@@ -56,9 +56,7 @@ namespace P2Project.Application.Volunteers.CreatePet
 
     public record PetPhotoDto(
         Stream Stream,
-        string FileName,
-        string ContentType,
-        bool IsMain);
+        string FileName);
 
     public record CreatePetCommand(
         Guid VolunteerId,
@@ -109,7 +107,7 @@ namespace P2Project.Application.Volunteers.CreatePet
             _petLogger = petLogger;
             _speciesLogger = speciesLogger;
         }
-        public async Task<Result<Guid, Error>> Handle(
+        public async Task<Result<Guid, ErrorList>> Handle(
             CreatePetCommand command,
             CancellationToken cancellationToken = default)
         {
@@ -119,7 +117,7 @@ namespace P2Project.Application.Volunteers.CreatePet
             var volunteerResult = await _volunteersRepository.GetById(
                 volunteerId, cancellationToken);
             if (volunteerResult.IsFailure)
-                return Errors.General.NotFound(command.VolunteerId);
+                return volunteerResult.Error.ToErrorList();
 
             var petId = PetId.NewPetId();
             var nicKName = NickName.Create(command.NickName).Value;
@@ -156,7 +154,10 @@ namespace P2Project.Application.Volunteers.CreatePet
                 .FirstOrDefault();
 
             if (breedId == null && breedId.Value != Guid.Empty)
-                return Errors.General.ValueIsInvalid(command.Breed);
+            {
+                var error = Errors.General.ValueIsInvalid(command.Breed);
+                return error.ToErrorList();
+            }
 
             if(breedId == Guid.Empty)
             {
@@ -201,30 +202,31 @@ namespace P2Project.Application.Volunteers.CreatePet
             var petAssistanceDetails = new PetAssistanceDetails(
                 assistanceDetails);
 
-            List<PetPhoto> petPhotos = [];
+            List<FileData> filesData = [];
             foreach (var file in command.PetPhotos)
             {
                 var extension = Path.GetExtension(file.FileName);
 
                 var filePath = FilePath.Create(Guid.NewGuid(), extension);
                 if (filePath.IsFailure)
-                    return filePath.Error;
+                    return filePath.Error.ToErrorList();
 
-                var uploadFileRecord = new UploadFileRecord(
+                var fileData = new FileData(
                     file.Stream,
-                    BUCKET_NAME,
-                    filePath.Value.Path);
+                    filePath.Value,
+                    BUCKET_NAME);
 
-                var uploadResult = await _fileProvider.UploadFile(
-                    uploadFileRecord, cancellationToken);
-
-                if (uploadResult.IsFailure)
-                    return uploadResult.Error;
-
-                var petPhoto = new PetPhoto(filePath.Value, false);
-
-                petPhotos.Add(petPhoto);
+                filesData.Add(fileData);
             }
+
+            var filePathsResult = await _fileProvider.UploadFiles(
+                filesData, cancellationToken);
+            if (filePathsResult.IsFailure)
+                return filePathsResult.Error.ToErrorList();
+
+            var petPhotos = filePathsResult.Value.Select(f =>
+                PetPhoto.Create(f.Path, false).Value)
+                .ToList();
 
             var newPet = new Pet(
                 petId,
@@ -242,10 +244,8 @@ namespace P2Project.Application.Volunteers.CreatePet
                 command.DateOfBirth,
                 assistanceStatus,
                 petAssistanceDetails,
-                DateOnly.FromDateTime(DateTime.Today));
-
-            foreach (var petPhoto in petPhotos)
-                newPet.AddPetPhoto(petPhoto);
+                DateOnly.FromDateTime(DateTime.Today),
+                petPhotos);
 
             volunteerResult.Value.AddPet(newPet);
 

@@ -24,7 +24,7 @@ namespace P2Project.Application.Shared
             services.AddScoped<UpdateSocialNetworksHandler>();
             services.AddScoped<UpdateAssistanceDetailsHandler>();
             services.AddScoped<DeleteHandler>();
-            services.AddScoped<CreateFileHandler>();
+            services.AddScoped<UploadFileHandler>();
             services.AddScoped<DeleteFileHandler>();
             services.AddScoped<GetFileHandler>();
             services.AddScoped<Species.Create.CreateHandler>();

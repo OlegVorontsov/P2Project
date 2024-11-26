@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using P2Project.API.Response;
+using P2Project.Domain.Shared;
 using System.Globalization;
 
 namespace P2Project.API.Middlewares
@@ -25,13 +26,10 @@ namespace P2Project.API.Middlewares
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message, ex);
+                _logger.LogError(ex, ex.Message);
 
-                var responseError = new ResponseError(
-                    "server.internal",
-                    ex.Message,
-                    null);
-                var envelope = Envelope.Error([responseError]);
+                var error = Error.Failure("server.internal", ex.Message);
+                var envelope = Envelope.Error(error);
 
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;

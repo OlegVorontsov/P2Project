@@ -10,7 +10,7 @@ namespace P2Project.Domain.PetManagment
         Male,
         Female
     }
-    public sealed class Volunteer : Shared.Entity<VolunteerId>, ISoftDeletable
+    public sealed class Volunteer : Entity<VolunteerId>
     {
         private Volunteer(VolunteerId id) : base(id) { }
         private readonly List<Pet> _pets = [];
@@ -93,25 +93,17 @@ namespace P2Project.Domain.PetManagment
             AssistanceDetails = assistanceDetails;
         }
 
-        public void AddPet(Pet pet) => _pets.Add(pet);
-
-        public void Deleted()
+        public void SoftDelete()
         {
-            if(_isDeleted) return;
-            
+            if (_isDeleted)
+                return;
+
             _isDeleted = true;
             foreach (var pet in _pets)
-                pet.Deleted();
+                pet.SoftDelete();
         }
 
-        public void Restored()
-        {
-            if (!_isDeleted) return;
-
-            _isDeleted = false;
-            foreach (var pet in _pets)
-                pet.Restored();
-        }
+        public void AddPet(Pet pet) => _pets.Add(pet);
 
         private double GetYearsOfExperience()
         {

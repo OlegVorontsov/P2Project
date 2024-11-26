@@ -9,20 +9,19 @@ namespace P2Project.API.Controllers
 {
     public class FileController : ApplicationController
     {
+        public const string BUCKET_NAME_PHOTOS = "photos";
         [HttpPost]
-        public async Task<IActionResult> CreateFile(
+        public async Task<IActionResult> UploadFile(
             IFormFile file,
-            [FromServices] CreateFileHandler handler,
+            [FromServices] UploadFileHandler handler,
             CancellationToken cancellationToken = default)
         {
             await using var stream = file.OpenReadStream();
 
-            var path = Guid.NewGuid().ToString();
-
-            var result = await handler.Handle(new UploadFileRecord(
+            var result = await handler.Handle(new UploadFileRequest(
                 stream,
-                "photos",
-                path), cancellationToken);
+                Guid.NewGuid().ToString(),
+                BUCKET_NAME_PHOTOS), cancellationToken);
 
             if (result.IsFailure)
                 return result.Error.ToResponse();

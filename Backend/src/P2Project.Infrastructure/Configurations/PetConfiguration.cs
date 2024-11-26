@@ -164,10 +164,22 @@ namespace P2Project.Infrastructure.Configurations
                 });
             });
 
-            builder.HasMany(p => p.PetPhotos)
-                   .WithOne()
-                   .HasForeignKey("pet_id")
-                   .OnDelete(DeleteBehavior.Cascade);
+            builder.OwnsOne(p => p.Photos, pp =>
+            {
+                pp.ToJson("photos");
+
+                pp.OwnsMany(x => x.PetPhotos, pb =>
+                {
+                    pb.Property(c => c.FilePath)
+                    .IsRequired()
+                    .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH)
+                    .HasColumnName("file_path");
+
+                    pb.Property(c => c.IsMain)
+                    .IsRequired()
+                    .HasColumnName("is_main");
+                });
+            });
 
             builder.Property(p => p.CreatedAt)
                    .IsRequired()

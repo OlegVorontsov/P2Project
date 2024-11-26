@@ -195,9 +195,7 @@ namespace P2Project.API.Controllers
                     var stream = petPhoto.OpenReadStream();
                     petPhotoDtos.Add(new PetPhotoDto(
                         stream,
-                        petPhoto.FileName,
-                        petPhoto.ContentType,
-                        false));
+                        petPhoto.FileName));
                 }
                 var request = new CreatePetRequest(
                 id,

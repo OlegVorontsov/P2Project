@@ -4,15 +4,13 @@ using P2Project.Domain.Shared.IDs;
 
 namespace P2Project.Domain.PetManagment.Entities
 {
-    public class Pet : Entity<PetId>, ISoftDeletable
+    public class Pet : Entity<PetId>
     {
         // ef core
         private Pet(PetId id) : base(id) { }
 
-        private readonly List<PetPhoto> _petPhotos = [];
         private bool _isDeleted = false;
-        // ef navigation
-        public Volunteer Volunteer { get; private set; } = null!;
+
         public Pet(
                PetId id,
                NickName nickName,
@@ -29,7 +27,8 @@ namespace P2Project.Domain.PetManagment.Entities
                DateOnly dateOfBirth,
                AssistanceStatus assistanceStatus,
                PetAssistanceDetails? assistanceDetails,
-               DateOnly createdAt) : base(id)
+               DateOnly createdAt,
+               IEnumerable<PetPhoto>? photos = null) : base(id)
         {
             NickName = nickName;
             SpeciesBreed = speciesBreed;
@@ -46,6 +45,10 @@ namespace P2Project.Domain.PetManagment.Entities
             AssistanceStatus = assistanceStatus;
             AssistanceDetails = assistanceDetails;
             CreatedAt = createdAt;
+
+            Photos = photos == null
+                ? new PetPhotoList(Enumerable.Empty<PetPhoto>())
+                : new PetPhotoList(photos);
         }
         public NickName NickName { get; private set; } = default!;
         public SpeciesBreed SpeciesBreed { get; private set; } = default!;
@@ -62,24 +65,14 @@ namespace P2Project.Domain.PetManagment.Entities
         public AssistanceStatus AssistanceStatus { get; private set; }
         public PetAssistanceDetails? AssistanceDetails { get; private set; } = default!;
         public DateOnly CreatedAt { get; private set; }
-        public IReadOnlyList<PetPhoto> PetPhotos => _petPhotos;
-        public void AddPetPhoto(PetPhoto petPhoto) => _petPhotos.Add(petPhoto);
+        public PetPhotoList Photos { get; private set; }
 
-        public void Deleted()
+        public void SoftDelete()
         {
-            if (_isDeleted) return;
+            if (_isDeleted)
+                return;
 
             _isDeleted = true;
-            foreach (var petPhoto in _petPhotos)
-                petPhoto.Deleted();
-        }
-        public void Restored()
-        {
-            if (!_isDeleted) return;
-
-            _isDeleted = false;
-            foreach (var petPhoto in _petPhotos)
-                petPhoto.Restored();
         }
     }
 }

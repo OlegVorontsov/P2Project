@@ -1,6 +1,4 @@
 ﻿
-using System.Threading.Tasks.Dataflow;
-
 namespace P2Project.Domain.Shared
 {
     public record Error
@@ -40,6 +38,7 @@ namespace P2Project.Domain.Shared
 
             return new Error(parts[0], parts[1], type);
         }
+        public ErrorList ToErrorList() => new([this]);
     }
     public enum ErrorType
     {
