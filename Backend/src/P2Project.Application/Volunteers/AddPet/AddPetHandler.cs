@@ -1,10 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
-using P2Project.Application.FileProvider;
-using P2Project.Application.FileProvider.Models;
-using P2Project.Application.Shared.Dtos;
 using P2Project.Application.Species;
 using P2Project.Application.Species.Create;
 using P2Project.Domain.PetManagment.Entities;
@@ -17,88 +12,20 @@ using IFileProvider = P2Project.Application.FileProvider.IFileProvider;
 
 namespace P2Project.Application.Volunteers.CreatePet
 {
-    public record CreatePetDto(
-        string NickName,
-        string Species,
-        string Breed,
-        string? Description,
-        string Color,
-        string? HealthInfo,
-        AddressDto Address,
-        double Weight,
-        double Height,
-        PhoneNumberDto OwnerPhoneNumber,
-        bool IsCastrated,
-        bool IsVaccinated,
-        DateOnly DateOfBirth,
-        string AssistanceStatus,
-        AssistanceDetailDto? AssistanceDetail,
-        IFormFileCollection PetPhotos);
-
-    public record CreatePetRequest(
-        Guid VolunteerId,
-        string NickName,
-        string Species,
-        string Breed,
-        string? Description,
-        string Color,
-        string? HealthInfo,
-        AddressDto Address,
-        double Weight,
-        double Height,
-        PhoneNumberDto OwnerPhoneNumber,
-        bool IsCastrated,
-        bool IsVaccinated,
-        DateOnly DateOfBirth,
-        string AssistanceStatus,
-        AssistanceDetailDto? AssistanceDetail,
-        IEnumerable<PetPhotoDto> PetPhotos);
-
-    public record PetPhotoDto(
-        Stream Stream,
-        string FileName);
-
-    public record CreatePetCommand(
-        Guid VolunteerId,
-        string NickName,
-        string Species,
-        string Breed,
-        string? Description,
-        string Color,
-        string? HealthInfo,
-        AddressDto Address,
-        double Weight,
-        double Height,
-        PhoneNumberDto OwnerPhoneNumber,
-        bool IsCastrated,
-        bool IsVaccinated,
-        DateOnly DateOfBirth,
-        string AssistanceStatus,
-        AssistanceDetailDto AssistanceDetail,
-        IEnumerable<PetPhotoDto> PetPhotos);
-
-    public class CreatePetValidator
-    {
-        public CreatePetValidator()
-        {
-
-        }
-    }
-
-    public class CreatePetHandler
+    public class AddPetHandler
     {
         private const string BUCKET_NAME = "photos";
         private readonly IVolunteersRepository _volunteersRepository;
         private readonly ISpeciesRepository _speciesRepository;
         private readonly IFileProvider _fileProvider;
-        private readonly ILogger<CreatePetHandler> _petLogger;
+        private readonly ILogger<AddPetHandler> _petLogger;
         private readonly ILogger<CreateHandler> _speciesLogger;
 
-        public CreatePetHandler(
+        public AddPetHandler(
             IVolunteersRepository volunteersRepository,
             ISpeciesRepository speciesRepository,
             IFileProvider fileProvider,
-            ILogger<CreatePetHandler> petLogger,
+            ILogger<AddPetHandler> petLogger,
             ILogger<CreateHandler> speciesLogger)
         {
             _volunteersRepository = volunteersRepository;
@@ -108,7 +35,7 @@ namespace P2Project.Application.Volunteers.CreatePet
             _speciesLogger = speciesLogger;
         }
         public async Task<Result<Guid, ErrorList>> Handle(
-            CreatePetCommand command,
+            AddPetCommand command,
             CancellationToken cancellationToken = default)
         {
             var volunteerId = VolunteerId.CreateVolunteerId(
@@ -119,7 +46,7 @@ namespace P2Project.Application.Volunteers.CreatePet
             if (volunteerResult.IsFailure)
                 return volunteerResult.Error.ToErrorList();
 
-            var petId = PetId.NewPetId();
+            var petId = PetId.New();
             var nicKName = NickName.Create(command.NickName).Value;
 
             var speciesName = Name.Create(command.Species).Value;
@@ -167,7 +94,8 @@ namespace P2Project.Application.Volunteers.CreatePet
                     var breed = new Breed(Name.Create(command.Breed).Value);
                     newBreeds.AddRange([breed]);
                     speciesExist.Value.AddBreeds(newBreeds.ToList());
-                    await _speciesRepository.Save(speciesExist.Value, cancellationToken);
+                    await _speciesRepository.Save(
+                        speciesExist.Value, cancellationToken);
                     breedId = breed.Id;
                 }
             }
@@ -202,32 +130,6 @@ namespace P2Project.Application.Volunteers.CreatePet
             var petAssistanceDetails = new PetAssistanceDetails(
                 assistanceDetails);
 
-            List<FileData> filesData = [];
-            foreach (var file in command.PetPhotos)
-            {
-                var extension = Path.GetExtension(file.FileName);
-
-                var filePath = FilePath.Create(Guid.NewGuid(), extension);
-                if (filePath.IsFailure)
-                    return filePath.Error.ToErrorList();
-
-                var fileData = new FileData(
-                    file.Stream,
-                    filePath.Value,
-                    BUCKET_NAME);
-
-                filesData.Add(fileData);
-            }
-
-            var filePathsResult = await _fileProvider.UploadFiles(
-                filesData, cancellationToken);
-            if (filePathsResult.IsFailure)
-                return filePathsResult.Error.ToErrorList();
-
-            var petPhotos = filePathsResult.Value.Select(f =>
-                PetPhoto.Create(f.Path, false).Value)
-                .ToList();
-
             var newPet = new Pet(
                 petId,
                 nicKName,
@@ -244,14 +146,16 @@ namespace P2Project.Application.Volunteers.CreatePet
                 command.DateOfBirth,
                 assistanceStatus,
                 petAssistanceDetails,
-                DateOnly.FromDateTime(DateTime.Today),
-                petPhotos);
+                DateOnly.FromDateTime(DateTime.Today));
 
             volunteerResult.Value.AddPet(newPet);
 
             await _volunteersRepository.Save(
                 volunteerResult.Value,
                 cancellationToken);
+
+            _petLogger.LogInformation("Pet added with id: {PetId}.",
+                newPet.Id.Value);
 
             return (Guid)newPet.Id;
         }

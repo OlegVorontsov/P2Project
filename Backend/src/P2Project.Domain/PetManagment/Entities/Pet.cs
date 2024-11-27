@@ -67,6 +67,11 @@ namespace P2Project.Domain.PetManagment.Entities
         public DateOnly CreatedAt { get; private set; }
         public PetPhotoList Photos { get; private set; }
 
+        public void UpdatePhotos(IEnumerable<PetPhoto> photos)
+        {
+            Photos = new PetPhotoList(photos);
+        }
+
         public void SoftDelete()
         {
             if (_isDeleted)

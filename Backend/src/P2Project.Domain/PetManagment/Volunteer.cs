@@ -1,4 +1,5 @@
-﻿using P2Project.Domain.PetManagment.Entities;
+﻿using CSharpFunctionalExtensions;
+using P2Project.Domain.PetManagment.Entities;
 using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.IDs;
@@ -10,7 +11,7 @@ namespace P2Project.Domain.PetManagment
         Male,
         Female
     }
-    public sealed class Volunteer : Entity<VolunteerId>
+    public sealed class Volunteer : Shared.Entity<VolunteerId>
     {
         private Volunteer(VolunteerId id) : base(id) { }
         private readonly List<Pet> _pets = [];
@@ -104,6 +105,15 @@ namespace P2Project.Domain.PetManagment
         }
 
         public void AddPet(Pet pet) => _pets.Add(pet);
+
+        public Result<Pet, Error> GetPetById(PetId petId)
+        {
+            var pet = Pets.FirstOrDefault(p => p.Id == petId);
+            if (pet is null)
+                return Errors.General.NotFound(petId.Value);
+
+            return pet;
+        }
 
         private double GetYearsOfExperience()
         {

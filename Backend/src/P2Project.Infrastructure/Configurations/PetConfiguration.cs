@@ -17,7 +17,7 @@ namespace P2Project.Infrastructure.Configurations
             builder.Property(p => p.Id)
                     .HasConversion(
                     id => id.Value,
-                    value => PetId.CreatePetId(value));
+                    value => PetId.Create(value));
 
             builder.ComplexProperty(p => p.NickName, nb =>
             {

@@ -1,7 +1,9 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using P2Project.API.Extensions;
+using P2Project.API.Processor;
 using P2Project.Application.Shared.Dtos;
+using P2Project.Application.Volunteers.AddPet;
 using P2Project.Application.Volunteers.CreatePet;
 using P2Project.Application.Volunteers.CreateVolunteer;
 using P2Project.Application.Volunteers.Delete;
@@ -9,6 +11,7 @@ using P2Project.Application.Volunteers.UpdateAssistanceDetails;
 using P2Project.Application.Volunteers.UpdateMainInfo;
 using P2Project.Application.Volunteers.UpdatePhoneNumbers;
 using P2Project.Application.Volunteers.UpdateSocialNetworks;
+using P2Project.Application.Volunteers.UploadFilesToPet;
 using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.SpeciesManagment.Entities;
 
@@ -179,83 +182,40 @@ namespace P2Project.API.Controllers
             return Ok(result.Value);
         }
 
-        [HttpPost("{id:guid}/pets")]
-        public async Task<IActionResult> CreatePet(
+        [HttpPost("{id:guid}/pet")]
+        public async Task<IActionResult> AddPet(
             [FromRoute] Guid id,
-            [FromForm] CreatePetDto petDto,
-            [FromServices] CreatePetHandler handler,
-            //[FromServices] IValidator<CreatePetValidator> validator,
+            [FromForm] AddPetRequest request,
+            [FromServices] AddPetHandler handler,
             CancellationToken cancellationToken = default)
         {
-            List<PetPhotoDto> petPhotoDtos = [];
-            try
-            {
-                foreach (var petPhoto in petDto.PetPhotos)
-                {
-                    var stream = petPhoto.OpenReadStream();
-                    petPhotoDtos.Add(new PetPhotoDto(
-                        stream,
-                        petPhoto.FileName));
-                }
-                var request = new CreatePetRequest(
-                id,
-                petDto.NickName,
-                petDto.Species,
-                petDto.Breed,
-                petDto.Description,
-                petDto.Color,
-                petDto.HealthInfo,
-                petDto.Address,
-                petDto.Weight,
-                petDto.Height,
-                petDto.OwnerPhoneNumber,
-                petDto.IsCastrated,
-                petDto.IsVaccinated,
-                petDto.DateOfBirth,
-                petDto.AssistanceStatus,
-                petDto.AssistanceDetail,
-                petPhotoDtos);
+            var command = request.ToCommand(id);
 
-                //var validationResult = await validator.ValidateAsync(
-                //                          request,
-                //                          cancellationToken);
-                //if (validationResult.IsValid == false)
-                //    return validationResult.ToValidationErrorResponse();
+            var result = await handler.Handle(command, cancellationToken);
+            if (result.IsFailure)
+                return BadRequest(result.Error);
 
-                var command = new CreatePetCommand(
-                    request.VolunteerId,
-                    request.NickName,
-                    request.Species,
-                    request.Breed,
-                    request.Description,
-                    request.Color,
-                    request.HealthInfo,
-                    request.Address,
-                    request.Weight,
-                    request.Height,
-                    request.OwnerPhoneNumber,
-                    request.IsCastrated,
-                    request.IsVaccinated,
-                    request.DateOfBirth,
-                    request.AssistanceStatus,
-                    request.AssistanceDetail,
-                    request.PetPhotos);
+            return Ok(result.Value);
+        }
 
-                var result = await handler.Handle(command, cancellationToken);
+        [HttpPost("{volunteerId:guid}/pet/{petId:guid}/files")]
+        public async Task<ActionResult> UploadFilesToPet(
+            [FromRoute] Guid volunteerId,
+            [FromRoute] Guid petId,
+            [FromForm] IFormFileCollection files,
+            [FromServices] UploadFilesToPetHandler handler,
+            CancellationToken cancellationToken)
+        {
+            await using var fileProcessor = new FormFileProcessor();
+            var fileDtos = fileProcessor.ToUploadFileDtos(files);
 
-                if (result.IsFailure)
-                    return result.Error.ToResponse();
+            var command = new UploadFilesToPetCommand(volunteerId, petId, fileDtos);
 
-                return Ok(result.Value);
-            }
-            finally
-            {
-                foreach (var petPhotoDto in petPhotoDtos)
-                {
-                    await petPhotoDto.Stream.DisposeAsync();
-                }
-            }
+            var result = await handler.Handle(command, cancellationToken);
+            if (result.IsFailure)
+                return result.Error.ToResponse();
 
+            return Ok(result.Value);
         }
     }
 }
