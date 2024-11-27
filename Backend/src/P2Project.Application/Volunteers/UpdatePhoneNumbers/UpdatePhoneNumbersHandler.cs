@@ -61,9 +61,8 @@ namespace P2Project.Application.Volunteers.UpdatePhoneNumbers
 
             volunteerResult.Value.UpdatePhoneNumbers(volunteerPhones);
 
-            var id = await _volunteersRepository.Save(
-                            volunteerResult.Value,
-                            cancellationToken);
+            var id = _volunteersRepository.Save(
+                            volunteerResult.Value);
 
             _logger.LogInformation(
                     "For volunteer with ID: {id} was updated phone numbers",

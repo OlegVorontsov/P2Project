@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace P2Project.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial2 : Migration
+    public partial class InitialPetFiles : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -70,7 +70,6 @@ namespace P2Project.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    volunteer_id = table.Column<Guid>(type: "uuid", nullable: false),
                     weight = table.Column<double>(type: "double precision", maxLength: 10, nullable: false),
                     height = table.Column<double>(type: "double precision", maxLength: 10, nullable: false),
                     is_castrated = table.Column<bool>(type: "boolean", nullable: false),
@@ -78,6 +77,7 @@ namespace P2Project.Infrastructure.Migrations
                     date_of_birth = table.Column<string>(type: "text", nullable: false),
                     created_at = table.Column<string>(type: "text", nullable: false),
                     is_deleted = table.Column<bool>(type: "boolean", nullable: false),
+                    volunteer_id = table.Column<Guid>(type: "uuid", nullable: true),
                     assistance_status = table.Column<string>(type: "text", nullable: false),
                     color = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     description = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true),
@@ -88,7 +88,8 @@ namespace P2Project.Infrastructure.Migrations
                     breed_id = table.Column<Guid>(type: "uuid", nullable: false),
                     species_id = table.Column<Guid>(type: "uuid", nullable: false),
                     address = table.Column<string>(type: "jsonb", nullable: false),
-                    assistance_details = table.Column<string>(type: "jsonb", nullable: true)
+                    assistance_details = table.Column<string>(type: "jsonb", nullable: true),
+                    photos = table.Column<string>(type: "jsonb", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -97,39 +98,13 @@ namespace P2Project.Infrastructure.Migrations
                         name: "fk_pets_volunteers_volunteer_id",
                         column: x => x.volunteer_id,
                         principalTable: "volunteers",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "pet_photo",
-                columns: table => new
-                {
-                    id = table.Column<Guid>(type: "uuid", nullable: false),
-                    path = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false),
-                    is_main = table.Column<bool>(type: "boolean", nullable: false),
-                    pet_id = table.Column<Guid>(type: "uuid", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_pet_photo", x => x.id);
-                    table.ForeignKey(
-                        name: "fk_pet_photo_pets_pet_id",
-                        column: x => x.pet_id,
-                        principalTable: "pets",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "id");
                 });
 
             migrationBuilder.CreateIndex(
                 name: "ix_breed_species_id",
                 table: "breed",
                 column: "species_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_pet_photo_pet_id",
-                table: "pet_photo",
-                column: "pet_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_pets_volunteer_id",
@@ -144,13 +119,10 @@ namespace P2Project.Infrastructure.Migrations
                 name: "breed");
 
             migrationBuilder.DropTable(
-                name: "pet_photo");
+                name: "pets");
 
             migrationBuilder.DropTable(
                 name: "species");
-
-            migrationBuilder.DropTable(
-                name: "pets");
 
             migrationBuilder.DropTable(
                 name: "volunteers");

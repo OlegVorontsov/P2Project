@@ -61,7 +61,7 @@ namespace P2Project.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
 
-                    b.Property<Guid>("volunteer_id")
+                    b.Property<Guid?>("volunteer_id")
                         .HasColumnType("uuid")
                         .HasColumnName("volunteer_id");
 
@@ -122,6 +122,7 @@ namespace P2Project.Infrastructure.Migrations
                             b1.IsRequired();
 
                             b1.Property<bool?>("IsMain")
+                                .ValueGeneratedOnUpdateSometimes()
                                 .HasColumnType("boolean")
                                 .HasColumnName("is_main");
 
@@ -152,36 +153,6 @@ namespace P2Project.Infrastructure.Migrations
                         .HasDatabaseName("ix_pets_volunteer_id");
 
                     b.ToTable("pets", (string)null);
-                });
-
-            modelBuilder.Entity("P2Project.Domain.PetManagment.ValueObjects.PetPhoto", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<bool>("IsMain")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_main");
-
-                    b.Property<string>("Path")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("character varying(300)")
-                        .HasColumnName("path");
-
-                    b.Property<Guid?>("pet_id")
-                        .HasColumnType("uuid")
-                        .HasColumnName("pet_id");
-
-                    b.HasKey("Id")
-                        .HasName("pk_pet_photo");
-
-                    b.HasIndex("pet_id")
-                        .HasDatabaseName("ix_pet_photo_pet_id");
-
-                    b.ToTable("pet_photo", (string)null);
                 });
 
             modelBuilder.Entity("P2Project.Domain.PetManagment.Volunteer", b =>
@@ -317,11 +288,10 @@ namespace P2Project.Infrastructure.Migrations
 
             modelBuilder.Entity("P2Project.Domain.PetManagment.Entities.Pet", b =>
                 {
-                    b.HasOne("P2Project.Domain.PetManagment.Volunteer", "Volunteer")
+                    b.HasOne("P2Project.Domain.PetManagment.Volunteer", null)
                         .WithMany("Pets")
                         .HasForeignKey("volunteer_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
+                        .OnDelete(DeleteBehavior.NoAction)
                         .HasConstraintName("fk_pets_volunteers_volunteer_id");
 
                     b.OwnsOne("P2Project.Domain.PetManagment.ValueObjects.Address", "Address", b1 =>
@@ -421,21 +391,62 @@ namespace P2Project.Infrastructure.Migrations
                             b1.Navigation("AssistanceDetails");
                         });
 
+                    b.OwnsOne("P2Project.Domain.PetManagment.ValueObjects.PetPhotoList", "Photos", b1 =>
+                        {
+                            b1.Property<Guid>("PetId")
+                                .HasColumnType("uuid");
+
+                            b1.HasKey("PetId");
+
+                            b1.ToTable("pets");
+
+                            b1.ToJson("photos");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PetId")
+                                .HasConstraintName("fk_pets_pets_id");
+
+                            b1.OwnsMany("P2Project.Domain.PetManagment.ValueObjects.PetPhoto", "PetPhotos", b2 =>
+                                {
+                                    b2.Property<Guid>("PetPhotoListPetId")
+                                        .HasColumnType("uuid");
+
+                                    b2.Property<int>("Id")
+                                        .ValueGeneratedOnAdd()
+                                        .HasColumnType("integer");
+
+                                    b2.Property<string>("FilePath")
+                                        .IsRequired()
+                                        .HasMaxLength(300)
+                                        .HasColumnType("character varying(300)")
+                                        .HasColumnName("file_path");
+
+                                    b2.Property<bool>("IsMain")
+                                        .ValueGeneratedOnUpdateSometimes()
+                                        .HasColumnType("boolean")
+                                        .HasColumnName("is_main");
+
+                                    b2.HasKey("PetPhotoListPetId", "Id");
+
+                                    b2.ToTable("pets");
+
+                                    b2.ToJson("photos");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("PetPhotoListPetId")
+                                        .HasConstraintName("fk_pets_pets_pet_photo_list_pet_id");
+                                });
+
+                            b1.Navigation("PetPhotos");
+                        });
+
                     b.Navigation("Address")
                         .IsRequired();
 
                     b.Navigation("AssistanceDetails");
 
-                    b.Navigation("Volunteer");
-                });
-
-            modelBuilder.Entity("P2Project.Domain.PetManagment.ValueObjects.PetPhoto", b =>
-                {
-                    b.HasOne("P2Project.Domain.PetManagment.Entities.Pet", null)
-                        .WithMany("PetPhotos")
-                        .HasForeignKey("pet_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .HasConstraintName("fk_pet_photo_pets_pet_id");
+                    b.Navigation("Photos")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("P2Project.Domain.PetManagment.Volunteer", b =>
@@ -601,11 +612,6 @@ namespace P2Project.Infrastructure.Migrations
                         .WithMany("Breeds")
                         .HasForeignKey("species_id")
                         .HasConstraintName("fk_breed_species_species_id");
-                });
-
-            modelBuilder.Entity("P2Project.Domain.PetManagment.Entities.Pet", b =>
-                {
-                    b.Navigation("PetPhotos");
                 });
 
             modelBuilder.Entity("P2Project.Domain.PetManagment.Volunteer", b =>

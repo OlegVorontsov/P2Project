@@ -47,9 +47,8 @@ namespace P2Project.Application.Volunteers.UpdateMainInfo
                 gender,
                 description);
 
-            var id = await _volunteersRepository.Save(
-                                        volunteerResult.Value,
-                                        cancellationToken);
+            var id = _volunteersRepository.Save(
+                                        volunteerResult.Value);
 
             _logger.LogInformation(
                     "For volunteer with ID: {id} was updated main info to " +

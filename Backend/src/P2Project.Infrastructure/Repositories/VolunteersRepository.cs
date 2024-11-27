@@ -24,13 +24,10 @@ namespace P2Project.Infrastructure.Repositories
             return volunteer.Id;
         }
 
-        public async Task<Guid> Save(
-                        Volunteer volunteer,
-                        CancellationToken cancellationToken = default)
+        public Guid Save(Volunteer volunteer)
         {
             _dbContext.Volunteers.Attach(volunteer);
-            await _dbContext.SaveChangesAsync(cancellationToken);
-            return volunteer.Id;
+            return volunteer.Id.Value;
         }
 
         public async Task<Guid> Delete(

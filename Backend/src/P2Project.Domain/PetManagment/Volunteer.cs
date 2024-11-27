@@ -104,7 +104,12 @@ namespace P2Project.Domain.PetManagment
                 pet.SoftDelete();
         }
 
-        public void AddPet(Pet pet) => _pets.Add(pet);
+        public UnitResult<Error> AddPet(Pet pet)
+        {
+            _pets.Add(pet);
+
+            return CSharpFunctionalExtensions.Result.Success<Error>();
+        }
 
         public Result<Pet, Error> GetPetById(PetId petId)
         {

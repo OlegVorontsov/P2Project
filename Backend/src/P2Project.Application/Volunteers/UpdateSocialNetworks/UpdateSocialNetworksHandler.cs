@@ -61,9 +61,8 @@ namespace P2Project.Application.Volunteers.UpdateSocialNetworks
 
             volunteerResult.Value.UpdateSocialNetworks(volunteerNetworks);
 
-            var id = await _volunteersRepository.Save(
-                            volunteerResult.Value,
-                            cancellationToken);
+            var id = _volunteersRepository.Save(
+                            volunteerResult.Value);
 
             _logger.LogInformation(
                     "For volunteer with ID: {id} was updated social networks",

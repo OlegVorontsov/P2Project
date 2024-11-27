@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
+using P2Project.Application.Shared;
 using P2Project.Application.Species;
 using P2Project.Application.Species.Create;
 using P2Project.Domain.PetManagment.Entities;
@@ -15,22 +16,23 @@ namespace P2Project.Application.Volunteers.CreatePet
     public class AddPetHandler
     {
         private const string BUCKET_NAME = "photos";
+
         private readonly IVolunteersRepository _volunteersRepository;
         private readonly ISpeciesRepository _speciesRepository;
-        private readonly IFileProvider _fileProvider;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<AddPetHandler> _petLogger;
         private readonly ILogger<CreateHandler> _speciesLogger;
 
         public AddPetHandler(
             IVolunteersRepository volunteersRepository,
             ISpeciesRepository speciesRepository,
-            IFileProvider fileProvider,
+            IUnitOfWork unitOfWork,
             ILogger<AddPetHandler> petLogger,
             ILogger<CreateHandler> speciesLogger)
         {
             _volunteersRepository = volunteersRepository;
             _speciesRepository = speciesRepository;
-            _fileProvider = fileProvider;
+            _unitOfWork = unitOfWork;
             _petLogger = petLogger;
             _speciesLogger = speciesLogger;
         }
@@ -150,9 +152,9 @@ namespace P2Project.Application.Volunteers.CreatePet
 
             volunteerResult.Value.AddPet(newPet);
 
-            await _volunteersRepository.Save(
-                volunteerResult.Value,
-                cancellationToken);
+            _volunteersRepository.Save(volunteerResult.Value);
+
+            await _unitOfWork.SaveChanges(cancellationToken);
 
             _petLogger.LogInformation("Pet added with id: {PetId}.",
                 newPet.Id.Value);
