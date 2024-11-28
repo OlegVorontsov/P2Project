@@ -11,9 +11,7 @@ namespace P2Project.Application.Volunteers
         Task<Guid> Add(
                     Volunteer volunteer,
                     CancellationToken cancellationToken = default);
-        Task<Guid> Save(
-            Volunteer volunteer,
-            CancellationToken cancellationToken = default);
+        Guid Save(Volunteer volunteer);
         Task<Guid> Delete(
             Volunteer volunteer,
             CancellationToken cancellationToken = default);

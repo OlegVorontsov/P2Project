@@ -14,11 +14,10 @@ namespace P2Project.Infrastructure.Configurations
             builder.ToTable("volunteers");
             
             builder.HasKey(v => v.Id);
-            
             builder.Property(v => v.Id)
                     .HasConversion(
                     id => id.Value,
-                    value => VolunteerId.CreateVolunteerId(value));
+                    value => VolunteerId.Create(value));
 
             builder.ComplexProperty(v => v.FullName, fnb =>
             {
@@ -73,11 +72,9 @@ namespace P2Project.Infrastructure.Configurations
                    .HasColumnName("years_of_experience");
 
             builder.HasMany(v => v.Pets)
-                   .WithOne(p => p.Volunteer)
+                   .WithOne()
                    .HasForeignKey("volunteer_id")
-                   .OnDelete(DeleteBehavior.Cascade)
-                   .IsRequired();
-            builder.Navigation(v => v.Pets).AutoInclude();
+                   .OnDelete(DeleteBehavior.NoAction);
 
             builder.OwnsOne(v => v.PhoneNumbers, vb =>
             {

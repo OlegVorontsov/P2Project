@@ -1,12 +1,19 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using P2Project.API.Extensions;
+using P2Project.API.Processor;
+using P2Project.Application.Shared.Dtos;
+using P2Project.Application.Volunteers.AddPet;
+using P2Project.Application.Volunteers.CreatePet;
 using P2Project.Application.Volunteers.CreateVolunteer;
 using P2Project.Application.Volunteers.Delete;
 using P2Project.Application.Volunteers.UpdateAssistanceDetails;
 using P2Project.Application.Volunteers.UpdateMainInfo;
 using P2Project.Application.Volunteers.UpdatePhoneNumbers;
 using P2Project.Application.Volunteers.UpdateSocialNetworks;
+using P2Project.Application.Volunteers.UploadFilesToPet;
+using P2Project.Domain.PetManagment.ValueObjects;
+using P2Project.Domain.SpeciesManagment.Entities;
 
 namespace P2Project.API.Controllers
 {
@@ -169,6 +176,44 @@ namespace P2Project.API.Controllers
             var result = await handler.Handle(new DeleteCommand(
                 request.VolunteerId), cancellationToken);
 
+            if (result.IsFailure)
+                return result.Error.ToResponse();
+
+            return Ok(result.Value);
+        }
+
+        [HttpPost("{id:guid}/pet")]
+        public async Task<IActionResult> AddPet(
+            [FromRoute] Guid id,
+            [FromBody] AddPetRequest request,
+            [FromServices] AddPetHandler handler,
+            CancellationToken cancellationToken = default)
+        {
+            var command = request.ToCommand(id);
+
+            var result = await handler.Handle(
+                command, cancellationToken);
+            if (result.IsFailure)
+                return BadRequest(result.Error);
+
+            return Ok(result.Value);
+        }
+
+        [HttpPost("{volunteerId:guid}/pet/{petId:guid}/files")]
+        public async Task<ActionResult> UploadFilesToPet(
+            [FromRoute] Guid volunteerId,
+            [FromRoute] Guid petId,
+            [FromForm] IFormFileCollection files,
+            [FromServices] UploadFilesToPetHandler handler,
+            CancellationToken cancellationToken)
+        {
+            await using var fileProcessor = new FormFileProcessor();
+            var fileDtos = fileProcessor.ToUploadFileDtos(files);
+
+            var command = new UploadFilesToPetCommand(
+                volunteerId, petId, fileDtos);
+
+            var result = await handler.Handle(command, cancellationToken);
             if (result.IsFailure)
                 return result.Error.ToResponse();
 

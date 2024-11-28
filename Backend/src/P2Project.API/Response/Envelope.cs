@@ -1,4 +1,6 @@
 ﻿
+using P2Project.Domain.Shared;
+
 namespace P2Project.API.Response
 {
     public record ResponseError(
@@ -8,20 +10,31 @@ namespace P2Project.API.Response
     public record Envelope
     {
         public object? Result { get; }
-        public List<ResponseError> Errors { get; }
+        public ErrorList? Errors { get; }
+        public List<ResponseError> ResponseErrors { get; }
         public DateTime TimeGenerated { get; }
 
         private Envelope(
                 object? result,
-                IEnumerable<ResponseError> errors)
+                ErrorList? errors)
         {
             Result = result;
-            Errors = errors.ToList();
+            Errors = errors;
+            TimeGenerated = DateTime.Now;
+        }
+        private Envelope(
+            object? result,
+            IEnumerable<ResponseError> errors)
+        {
+            Result = result;
+            ResponseErrors = errors.ToList();
             TimeGenerated = DateTime.Now;
         }
         public static Envelope Ok(object? result = null) =>
             new (result, []);
-        public static Envelope Error(IEnumerable<ResponseError> errors) =>
+        public static Envelope Error(ErrorList errors) =>
             new (null, errors);
+        public static Envelope ResponseError(IEnumerable<ResponseError> errors) =>
+            new(null, errors);
     }
 }

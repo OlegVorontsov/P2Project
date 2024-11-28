@@ -1,4 +1,5 @@
-﻿using P2Project.Domain.PetManagment.Entities;
+﻿using CSharpFunctionalExtensions;
+using P2Project.Domain.PetManagment.Entities;
 using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.IDs;
@@ -10,7 +11,7 @@ namespace P2Project.Domain.PetManagment
         Male,
         Female
     }
-    public sealed class Volunteer : Entity<VolunteerId>, ISoftDeletable
+    public class Volunteer : Shared.Entity<VolunteerId>
     {
         private Volunteer(VolunteerId id) : base(id) { }
         private readonly List<Pet> _pets = [];
@@ -93,22 +94,30 @@ namespace P2Project.Domain.PetManagment
             AssistanceDetails = assistanceDetails;
         }
 
-        public void Deleted()
+        public void SoftDelete()
         {
-            if(_isDeleted) return;
-            
+            if (_isDeleted)
+                return;
+
             _isDeleted = true;
             foreach (var pet in _pets)
-                pet.Deleted();
+                pet.SoftDelete();
         }
 
-        public void Restored()
+        public UnitResult<Error> AddPet(Pet pet)
         {
-            if (!_isDeleted) return;
+            _pets.Add(pet);
 
-            _isDeleted = false;
-            foreach (var pet in _pets)
-                pet.Restored();
+            return CSharpFunctionalExtensions.Result.Success<Error>();
+        }
+
+        public Result<Pet, Error> GetPetById(PetId petId)
+        {
+            var pet = Pets.FirstOrDefault(p => p.Id.Value == petId.Value);
+            if (pet is null)
+                return Errors.General.NotFound(petId.Value);
+
+            return pet;
         }
 
         private double GetYearsOfExperience()

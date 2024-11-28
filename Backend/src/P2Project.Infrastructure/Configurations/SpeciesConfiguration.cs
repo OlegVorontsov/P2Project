@@ -17,7 +17,7 @@ namespace P2Project.Infrastructure.Configurations
             builder.Property(s => s.Id)
                    .HasConversion(
                         id => id.Value,
-                        value => SpeciesId.CreateSpeciesId(value));
+                        value => SpeciesId.Create(value));
 
             builder.ComplexProperty(s => s.Name, snb =>
             {

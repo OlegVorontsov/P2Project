@@ -13,11 +13,10 @@ namespace P2Project.Infrastructure.Configurations
             builder.ToTable("pets");
 
             builder.HasKey(p => p.Id);
-
             builder.Property(p => p.Id)
                     .HasConversion(
                     id => id.Value,
-                    value => PetId.CreatePetId(value));
+                    value => PetId.Create(value));
 
             builder.ComplexProperty(p => p.NickName, nb =>
             {
@@ -32,7 +31,7 @@ namespace P2Project.Infrastructure.Configurations
                 sbb.Property(si => si.SpeciesId)
                    .HasConversion(
                         id => id.Value,
-                        value => SpeciesId.CreateSpeciesId(value))
+                        value => SpeciesId.Create(value))
                    .HasColumnName("species_id");
 
                 sbb.Property(bi => bi.BreedId)
@@ -134,8 +133,8 @@ namespace P2Project.Infrastructure.Configurations
                    .IsRequired()
                    .HasColumnName("date_of_birth")
                    .HasConversion(
-                        d => d.ToUniversalTime(),
-                        d => DateTime.SpecifyKind(d, DateTimeKind.Local));
+                        d => d.ToShortDateString(),
+                        d => DateOnly.Parse(d));
 
             builder.ComplexProperty(p => p.AssistanceStatus, asb =>
             {
@@ -164,23 +163,29 @@ namespace P2Project.Infrastructure.Configurations
                 });
             });
 
-            builder.HasMany(p => p.PetPhotos)
-                   .WithOne()
-                   .HasForeignKey("pet_id")
-                   .OnDelete(DeleteBehavior.Cascade)
-                   .IsRequired();
-            builder.Navigation(p => p.PetPhotos).AutoInclude();
+            builder.OwnsOne(p => p.Photos, pp =>
+            {
+                pp.ToJson("photos");
+
+                pp.OwnsMany(x => x.PetPhotos, pb =>
+                {
+                    pb.Property(c => c.FilePath)
+                    .IsRequired()
+                    .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH)
+                    .HasColumnName("file_path");
+
+                    pb.Property(c => c.IsMain)
+                    .IsRequired()
+                    .HasColumnName("is_main");
+                });
+            });
 
             builder.Property(p => p.CreatedAt)
                    .IsRequired()
-                   .HasColumnName("ceated_at")
+                   .HasColumnName("created_at")
                    .HasConversion(
-                        d => d.ToUniversalTime(),
-                        d => DateTime.SpecifyKind(d, DateTimeKind.Local));
-
-            builder.Property<bool>("_isDeleted")
-                   .UsePropertyAccessMode(PropertyAccessMode.Field)
-                   .HasColumnName("is_deleted");
+                        d => d.ToShortDateString(),
+                        d => DateOnly.Parse(d));
         }
     }
 }

@@ -5,42 +5,25 @@ namespace P2Project.Domain.PetManagment.ValueObjects
 {
     public record PetPhoto
     {
-        // ef navigation
-        private PetPhoto(Guid id) { }
-        private bool _isDeleted = false;
-        private PetPhoto(Guid id,
-                         string path,
-                         bool isMain)
+        private PetPhoto(string filePath, bool isMain)
         {
-            Id = id;
-            Path = path;
+            FilePath = filePath;
             IsMain = isMain;
         }
-        public Guid Id { get; private set; }
-        public string Path { get; }
+
+        public string FilePath { get; }
         public bool IsMain { get; }
-        public static Result<PetPhoto, Error> Create(Guid id,
-                                                     string path,
-                                                     bool isMain)
+
+        public static Result<PetPhoto, Error> Create(
+            string filePath, bool isMain = false)
         {
-            if (string.IsNullOrWhiteSpace(path))
-                return Errors.General.ValueIsInvalid(nameof(Path));
+            if (string.IsNullOrWhiteSpace(filePath))
+                return Errors.General.ValueIsRequired("FilePath");
 
-            var newPetPhoto = new PetPhoto(id, path, isMain);
+            if (filePath.Length > Constants.MAX_BIG_TEXT_LENGTH)
+                return Errors.General.ValueIsRequired("FilePath");
 
-            return newPetPhoto;
-        }
-        public void Deleted()
-        {
-            if (_isDeleted) return;
-
-            _isDeleted = true;
-        }
-        public void Restored()
-        {
-            if (!_isDeleted) return;
-
-            _isDeleted = false;
+            return new PetPhoto(filePath, isMain);
         }
     }
 }

@@ -17,7 +17,7 @@ namespace P2Project.Application.Pets.GetFile
             FileMetadata fileMetadata,
             CancellationToken cancellationToken = default)
         {
-            var deleteFileResult = await _fileProvider.GetFileURL(
+            var deleteFileResult = await _fileProvider.GetFile(
                 fileMetadata,
                 cancellationToken);
 
