@@ -14,11 +14,10 @@ namespace P2Project.Infrastructure.Configurations
             builder.ToTable("volunteers");
             
             builder.HasKey(v => v.Id);
-            
             builder.Property(v => v.Id)
                     .HasConversion(
                     id => id.Value,
-                    value => VolunteerId.CreateVolunteerId(value));
+                    value => VolunteerId.Create(value));
 
             builder.ComplexProperty(v => v.FullName, fnb =>
             {

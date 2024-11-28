@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
+using P2Project.Application.Shared;
 using P2Project.Domain.PetManagment;
 using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;
@@ -10,20 +11,23 @@ namespace P2Project.Application.Volunteers.UpdateMainInfo
     public class UpdateMainInfoHandler
     {
         private readonly IVolunteersRepository _volunteersRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<UpdateMainInfoHandler> _logger;
 
         public UpdateMainInfoHandler(
             IVolunteersRepository volunteersRepository,
+            IUnitOfWork unitOfWork,
             ILogger<UpdateMainInfoHandler> logger)
         {
             _volunteersRepository = volunteersRepository;
+            _unitOfWork = unitOfWork;
             _logger = logger;
         }
         public async Task<Result<Guid, Error>> Handle(
             UpdateMainInfoCommand command,
             CancellationToken cancellationToken = default)
         {
-            var volunteerId = VolunteerId.CreateVolunteerId(
+            var volunteerId = VolunteerId.Create(
                                           command.VolunteerId);
 
             var volunteerResult = await _volunteersRepository.GetById(
@@ -49,6 +53,7 @@ namespace P2Project.Application.Volunteers.UpdateMainInfo
 
             var id = _volunteersRepository.Save(
                                         volunteerResult.Value);
+            await _unitOfWork.SaveChanges(cancellationToken);
 
             _logger.LogInformation(
                     "For volunteer with ID: {id} was updated main info to " +

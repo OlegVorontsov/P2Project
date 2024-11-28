@@ -11,7 +11,7 @@ namespace P2Project.Domain.PetManagment
         Male,
         Female
     }
-    public sealed class Volunteer : Shared.Entity<VolunteerId>
+    public class Volunteer : Shared.Entity<VolunteerId>
     {
         private Volunteer(VolunteerId id) : base(id) { }
         private readonly List<Pet> _pets = [];
@@ -113,7 +113,7 @@ namespace P2Project.Domain.PetManagment
 
         public Result<Pet, Error> GetPetById(PetId petId)
         {
-            var pet = Pets.FirstOrDefault(p => p.Id == petId);
+            var pet = Pets.FirstOrDefault(p => p.Id.Value == petId.Value);
             if (pet is null)
                 return Errors.General.NotFound(petId.Value);
 

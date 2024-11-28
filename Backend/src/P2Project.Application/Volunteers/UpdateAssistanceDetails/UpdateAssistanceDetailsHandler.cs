@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
+using P2Project.Application.Shared;
 using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.IDs;
@@ -9,12 +10,15 @@ namespace P2Project.Application.Volunteers.UpdateAssistanceDetails
     public class UpdateAssistanceDetailsHandler
     {
         private readonly IVolunteersRepository _volunteersRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<UpdateAssistanceDetailsHandler> _logger;
         public UpdateAssistanceDetailsHandler(
             IVolunteersRepository volunteersRepository,
+            IUnitOfWork unitOfWork,
             ILogger<UpdateAssistanceDetailsHandler> logger)
         {
             _volunteersRepository = volunteersRepository;
+            _unitOfWork = unitOfWork;
             _logger = logger;
         }
 
@@ -22,7 +26,7 @@ namespace P2Project.Application.Volunteers.UpdateAssistanceDetails
             UpdateAssistanceDetailsCommand command,
             CancellationToken cancellationToken = default)
         {
-            var volunteerId = VolunteerId.CreateVolunteerId(
+            var volunteerId = VolunteerId.Create(
                 command.VolunteerId);
 
             var volunteerResult = await _volunteersRepository.GetById(
@@ -66,6 +70,7 @@ namespace P2Project.Application.Volunteers.UpdateAssistanceDetails
 
             var id = _volunteersRepository.Save(
                             volunteerResult.Value);
+            await _unitOfWork.SaveChanges(cancellationToken);
 
             _logger.LogInformation(
                     "For volunteer with ID: {id} was updated assistance details",

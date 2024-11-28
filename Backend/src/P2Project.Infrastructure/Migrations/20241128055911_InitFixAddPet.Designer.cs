@@ -13,8 +13,8 @@ using P2Project.Infrastructure;
 namespace P2Project.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20241127082321_InitialPetFiles")]
-    partial class InitialPetFiles
+    [Migration("20241128055911_InitFixAddPet")]
+    partial class InitFixAddPet
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -59,10 +59,6 @@ namespace P2Project.Infrastructure.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("double precision")
                         .HasColumnName("weight");
-
-                    b.Property<bool>("_isDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_deleted");
 
                     b.Property<Guid?>("volunteer_id")
                         .HasColumnType("uuid")

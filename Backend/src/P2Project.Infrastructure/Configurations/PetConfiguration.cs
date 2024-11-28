@@ -13,7 +13,6 @@ namespace P2Project.Infrastructure.Configurations
             builder.ToTable("pets");
 
             builder.HasKey(p => p.Id);
-
             builder.Property(p => p.Id)
                     .HasConversion(
                     id => id.Value,
@@ -32,7 +31,7 @@ namespace P2Project.Infrastructure.Configurations
                 sbb.Property(si => si.SpeciesId)
                    .HasConversion(
                         id => id.Value,
-                        value => SpeciesId.CreateSpeciesId(value))
+                        value => SpeciesId.Create(value))
                    .HasColumnName("species_id");
 
                 sbb.Property(bi => bi.BreedId)
@@ -187,10 +186,6 @@ namespace P2Project.Infrastructure.Configurations
                    .HasConversion(
                         d => d.ToShortDateString(),
                         d => DateOnly.Parse(d));
-
-            builder.Property<bool>("_isDeleted")
-                   .UsePropertyAccessMode(PropertyAccessMode.Field)
-                   .HasColumnName("is_deleted");
         }
     }
 }

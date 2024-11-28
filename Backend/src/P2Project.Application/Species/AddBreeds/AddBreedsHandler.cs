@@ -21,7 +21,7 @@ namespace P2Project.Application.Species.AddBreeds
             AddBreedsCommand command,
             CancellationToken cancellationToken = default)
         {
-            var speciesId = SpeciesId.CreateSpeciesId(
+            var speciesId = SpeciesId.Create(
                 command.SpeciesId);
 
             var speciesResult = await _speciesRepository.GetById(

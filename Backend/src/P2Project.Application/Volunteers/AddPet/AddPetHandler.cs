@@ -40,7 +40,7 @@ namespace P2Project.Application.Volunteers.CreatePet
             AddPetCommand command,
             CancellationToken cancellationToken = default)
         {
-            var volunteerId = VolunteerId.CreateVolunteerId(
+            var volunteerId = VolunteerId.Create(
                 command.VolunteerId);
 
             var volunteerResult = await _volunteersRepository.GetById(
@@ -66,7 +66,7 @@ namespace P2Project.Application.Volunteers.CreatePet
                 }
 
                 var species = new Domain.SpeciesManagment.Species(
-                    SpeciesId.NewSpeciesId(), speciesName, newBreeds);
+                    SpeciesId.New(), speciesName, newBreeds);
 
                 await _speciesRepository.Add(species, cancellationToken);
 
@@ -159,7 +159,7 @@ namespace P2Project.Application.Volunteers.CreatePet
             _petLogger.LogInformation("Pet added with id: {PetId}.",
                 newPet.Id.Value);
 
-            return (Guid)newPet.Id;
+            return newPet.Id.Value;
         }
     }
 }

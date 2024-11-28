@@ -25,7 +25,7 @@ namespace P2Project.Application.Species.Create
             CreateCommand command,
             CancellationToken cancellationToken = default)
         {
-            var speciesId = SpeciesId.NewSpeciesId();
+            var speciesId = SpeciesId.New();
 
             var name = Name.Create(
                 command.Name.Value).Value;

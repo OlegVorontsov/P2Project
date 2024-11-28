@@ -57,10 +57,6 @@ namespace P2Project.Infrastructure.Migrations
                         .HasColumnType("double precision")
                         .HasColumnName("weight");
 
-                    b.Property<bool>("_isDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_deleted");
-
                     b.Property<Guid?>("volunteer_id")
                         .HasColumnType("uuid")
                         .HasColumnName("volunteer_id");

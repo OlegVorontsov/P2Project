@@ -44,6 +44,7 @@ namespace P2Project.Infrastructure.Repositories
                                  CancellationToken cancellationToken = default)
         {
             var volunteer = await _dbContext.Volunteers
+                                            .Include(v => v.Pets)
                                             .FirstOrDefaultAsync(v =>
                                             v.Id == volunteerId,
                                             cancellationToken);

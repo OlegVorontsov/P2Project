@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace P2Project.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialPetFiles : Migration
+    public partial class InitFixAddPet : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -76,7 +76,6 @@ namespace P2Project.Infrastructure.Migrations
                     is_vaccinated = table.Column<bool>(type: "boolean", nullable: false),
                     date_of_birth = table.Column<string>(type: "text", nullable: false),
                     created_at = table.Column<string>(type: "text", nullable: false),
-                    is_deleted = table.Column<bool>(type: "boolean", nullable: false),
                     volunteer_id = table.Column<Guid>(type: "uuid", nullable: true),
                     assistance_status = table.Column<string>(type: "text", nullable: false),
                     color = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),

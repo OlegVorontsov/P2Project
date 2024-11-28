@@ -185,13 +185,14 @@ namespace P2Project.API.Controllers
         [HttpPost("{id:guid}/pet")]
         public async Task<IActionResult> AddPet(
             [FromRoute] Guid id,
-            [FromForm] AddPetRequest request,
+            [FromBody] AddPetRequest request,
             [FromServices] AddPetHandler handler,
             CancellationToken cancellationToken = default)
         {
             var command = request.ToCommand(id);
 
-            var result = await handler.Handle(command, cancellationToken);
+            var result = await handler.Handle(
+                command, cancellationToken);
             if (result.IsFailure)
                 return BadRequest(result.Error);
 
@@ -209,7 +210,8 @@ namespace P2Project.API.Controllers
             await using var fileProcessor = new FormFileProcessor();
             var fileDtos = fileProcessor.ToUploadFileDtos(files);
 
-            var command = new UploadFilesToPetCommand(volunteerId, petId, fileDtos);
+            var command = new UploadFilesToPetCommand(
+                volunteerId, petId, fileDtos);
 
             var result = await handler.Handle(command, cancellationToken);
             if (result.IsFailure)
