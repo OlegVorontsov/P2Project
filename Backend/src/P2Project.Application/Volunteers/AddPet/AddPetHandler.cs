@@ -40,6 +40,8 @@ namespace P2Project.Application.Volunteers.CreatePet
             AddPetCommand command,
             CancellationToken cancellationToken = default)
         {
+            // валидация
+
             var volunteerId = VolunteerId.Create(
                 command.VolunteerId);
 

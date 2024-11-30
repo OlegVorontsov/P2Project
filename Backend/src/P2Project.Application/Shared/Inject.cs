@@ -1,8 +1,8 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using P2Project.Application.Pets.CreateFile;
-using P2Project.Application.Pets.DeleteFile;
-using P2Project.Application.Pets.GetFile;
+using P2Project.Application.Files.CreateFile;
+using P2Project.Application.Files.DeleteFile;
+using P2Project.Application.Files.GetFile;
 using P2Project.Application.Volunteers.CreatePet;
 using P2Project.Application.Volunteers.CreateVolunteer;
 using P2Project.Application.Volunteers.Delete;

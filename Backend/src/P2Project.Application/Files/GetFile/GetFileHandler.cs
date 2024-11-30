@@ -3,7 +3,7 @@ using P2Project.Application.FileProvider;
 using P2Project.Application.FileProvider.Models;
 using P2Project.Domain.Shared;
 
-namespace P2Project.Application.Pets.GetFile
+namespace P2Project.Application.Files.GetFile
 {
     public class GetFileHandler
     {

@@ -7,7 +7,7 @@ using P2Project.Domain.Shared;
 namespace P2Project.Application.Volunteers.UpdateMainInfo
 {
     public class UpdateMainInfoValidator :
-        AbstractValidator<UpdateMainInfoRequest>
+        AbstractValidator<UpdateMainInfoCommand>
     {
         public UpdateMainInfoValidator()
         {
@@ -15,20 +15,20 @@ namespace P2Project.Application.Volunteers.UpdateMainInfo
                 .NotEmpty()
                 .WithError(Errors.General.ValueIsRequired());
 
-            RuleFor(i => i.MainInfoDto.FullName)
+            RuleFor(i => i.FullName)
                 .MustBeValueObject(fn => FullName.Create(
                                                   fn.FirstName,
                                                   fn.SecondName,
                                                   fn.LastName));
 
-            RuleFor(i => i.MainInfoDto.Age).InclusiveBetween(
+            RuleFor(i => i.Age).InclusiveBetween(
                 Constants.MIN_AGE, Constants.MAX_AGE)
                 .WithError(Errors.General.ValueIsInvalid("Age"));
 
-            RuleFor(c => c.MainInfoDto.Gender).IsEnumName(typeof(Gender))
+            RuleFor(c => c.Gender).IsEnumName(typeof(Gender))
                 .WithError(Errors.General.ValueIsInvalid("Gender"));
 
-            RuleFor(i => i.MainInfoDto.Description)
+            RuleFor(i => i.Description)
                 .MustBeValueObject(Description.Create);
         }
     }

@@ -4,7 +4,7 @@ using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;
 using IFileProvider = P2Project.Application.FileProvider.IFileProvider;
 
-namespace P2Project.Application.Pets.CreateFile
+namespace P2Project.Application.Files.CreateFile
 {
     public class UploadFileHandler
     {

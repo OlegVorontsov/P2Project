@@ -1,8 +1,8 @@
-﻿using FluentValidation;
+﻿using Azure.Core;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using P2Project.API.Extensions;
 using P2Project.API.Processor;
-using P2Project.Application.Shared.Dtos;
 using P2Project.Application.Volunteers.AddPet;
 using P2Project.Application.Volunteers.CreatePet;
 using P2Project.Application.Volunteers.CreateVolunteer;
@@ -12,8 +12,6 @@ using P2Project.Application.Volunteers.UpdateMainInfo;
 using P2Project.Application.Volunteers.UpdatePhoneNumbers;
 using P2Project.Application.Volunteers.UpdateSocialNetworks;
 using P2Project.Application.Volunteers.UploadFilesToPet;
-using P2Project.Domain.PetManagment.ValueObjects;
-using P2Project.Domain.SpeciesManagment.Entities;
 
 namespace P2Project.API.Controllers
 {
@@ -23,24 +21,11 @@ namespace P2Project.API.Controllers
         public async Task<ActionResult<Guid>> Create(
             [FromServices] CreateHandler handler,
             [FromBody] CreateRequest request,
-            [FromServices] IValidator<CreateRequest> validator,
             CancellationToken cancellationToken)
         {
-            var validationResult = await validator.ValidateAsync(
-                                                  request,
-                                                  cancellationToken);
-            if (validationResult.IsValid == false)
-                return validationResult.ToValidationErrorResponse();
+            var command = request.ToCommand();
 
-            var result = await handler.Handle(new CreateCommand(
-                request.FullName,
-                request.Age,
-                request.Gender,
-                request.Email,
-                request?.Description,
-                request.PhoneNumbers,
-                request?.SocialNetworks,
-                request?.AssistanceDetails), cancellationToken);
+            var result = await handler.Handle(command, cancellationToken);
 
             if (result.IsFailure)
                 return result.Error.ToResponse();
@@ -51,25 +36,13 @@ namespace P2Project.API.Controllers
         [HttpPatch("{id:guid}/main-info")]
         public async Task<ActionResult<Guid>> UpdateMainInfo(
             [FromRoute] Guid id,
-            [FromBody] UpdateMainInfoDto dto,
+            [FromBody] UpdateMainInfoRequest request,
             [FromServices] UpdateMainInfoHandler handler,
-            [FromServices] IValidator<UpdateMainInfoRequest> validator,
             CancellationToken cancellationToken)
         {
-            var request = new UpdateMainInfoRequest(id, dto);
+            var command = request.ToCommand(id);
 
-            var validationResult = await validator.ValidateAsync(
-                                                  request,
-                                                  cancellationToken);
-            if (validationResult.IsValid == false)
-                return validationResult.ToValidationErrorResponse();
-
-            var result = await handler.Handle(new UpdateMainInfoCommand(
-                request.VolunteerId,
-                request.MainInfoDto.FullName,
-                request.MainInfoDto.Age,
-                request.MainInfoDto.Gender,
-                request?.MainInfoDto.Description), cancellationToken);
+            var result = await handler.Handle(command, cancellationToken);
 
             if (result.IsFailure)
                 return result.Error.ToResponse();
@@ -80,23 +53,13 @@ namespace P2Project.API.Controllers
         [HttpPatch("{id:guid}/phone-numbers")]
         public async Task<ActionResult<Guid>> UpdatePhoneNumbers(
             [FromRoute] Guid id,
-            [FromBody] UpdatePhoneNumbersDto dto,
+            [FromBody] UpdatePhoneNumbersRequest request,
             [FromServices] UpdatePhoneNumbersHandler handler,
-            [FromServices] IValidator<UpdatePhoneNumbersRequest> validator,
             CancellationToken cancellationToken)
         {
-            var request = new UpdatePhoneNumbersRequest(id, dto);
+            var command = request.ToCommand(id);
 
-            var validationResult = await validator.ValidateAsync(
-                                                  request,
-                                                  cancellationToken);
-            if (validationResult.IsValid == false)
-                return validationResult.ToValidationErrorResponse();
-
-            var result = await handler.Handle(
-                new UpdatePhoneNumbersCommand(
-                    request.VolunteerId,
-                    request.PhoneNumbersDto), cancellationToken);
+            var result = await handler.Handle(command, cancellationToken);
 
             if (result.IsFailure)
                 return result.Error.ToResponse();
@@ -107,23 +70,13 @@ namespace P2Project.API.Controllers
         [HttpPatch("{id:guid}/social-networks")]
         public async Task<ActionResult<Guid>> UpdateSocialNetworks(
             [FromRoute] Guid id,
-            [FromBody] UpdateSocialNetworksDto dto,
+            [FromBody] UpdateSocialNetworksRequest request,
             [FromServices] UpdateSocialNetworksHandler handler,
-            [FromServices] IValidator<UpdateSocialNetworksRequest> validator,
             CancellationToken cancellationToken)
         {
-            var request = new UpdateSocialNetworksRequest(id, dto);
+            var command = request.ToCommand(id);
 
-            var validationResult = await validator.ValidateAsync(
-                                                  request,
-                                                  cancellationToken);
-            if (validationResult.IsValid == false)
-                return validationResult.ToValidationErrorResponse();
-
-            var result = await handler.Handle(
-                new UpdateSocialNetworksCommand(
-                    request.VolunteerId,
-                    request.SocialNetworksDto), cancellationToken);
+            var result = await handler.Handle(command, cancellationToken);
 
             if (result.IsFailure)
                 return result.Error.ToResponse();
@@ -134,23 +87,13 @@ namespace P2Project.API.Controllers
         [HttpPatch("{id:guid}/assistance-details")]
         public async Task<ActionResult<Guid>> UpdateAssistanceDetails(
             [FromRoute] Guid id,
-            [FromBody] UpdateAssistanceDetailsDto dto,
+            [FromBody] UpdateAssistanceDetailsRequest request,
             [FromServices] UpdateAssistanceDetailsHandler handler,
-            [FromServices] IValidator<UpdateAssistanceDetailsRequest> validator,
             CancellationToken cancellationToken)
         {
-            var request = new UpdateAssistanceDetailsRequest(id, dto);
+            var command = request.ToCommand(id);
 
-            var validationResult = await validator.ValidateAsync(
-                                                  request,
-                                                  cancellationToken);
-            if (validationResult.IsValid == false)
-                return validationResult.ToValidationErrorResponse();
-
-            var result = await handler.Handle(
-                new UpdateAssistanceDetailsCommand(
-                    request.VolunteerId,
-                    request.AssistanceDetailsDto), cancellationToken);
+            var result = await handler.Handle(command, cancellationToken);
 
             if (result.IsFailure)
                 return result.Error.ToResponse();
@@ -162,19 +105,11 @@ namespace P2Project.API.Controllers
         public async Task<ActionResult<Guid>> Delete(
             [FromRoute] Guid id,
             [FromServices] DeleteHandler handler,
-            [FromServices] IValidator<DeleteRequest> validator,
             CancellationToken cancellationToken)
         {
-            var request = new DeleteRequest(id);
+            var command = new DeleteCommand(id);
 
-            var validationResult = await validator.ValidateAsync(
-                                                  request,
-                                                  cancellationToken);
-            if (validationResult.IsValid == false)
-                return validationResult.ToValidationErrorResponse();
-
-            var result = await handler.Handle(new DeleteCommand(
-                request.VolunteerId), cancellationToken);
+            var result = await handler.Handle(command, cancellationToken);
 
             if (result.IsFailure)
                 return result.Error.ToResponse();

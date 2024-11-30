@@ -1,10 +1,9 @@
-﻿
-using CSharpFunctionalExtensions;
+﻿using CSharpFunctionalExtensions;
 using P2Project.Application.FileProvider;
 using P2Project.Application.FileProvider.Models;
 using P2Project.Domain.Shared;
 
-namespace P2Project.Application.Pets.DeleteFile
+namespace P2Project.Application.Files.DeleteFile
 {
     public class DeleteFileHandler
     {

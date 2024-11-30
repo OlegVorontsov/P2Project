@@ -1,7 +1,8 @@
-﻿namespace P2Project.Application.Volunteers.UpdateAssistanceDetails
+﻿using P2Project.Application.Shared.Dtos;
+
+namespace P2Project.Application.Volunteers.UpdateAssistanceDetails
 {
     public record UpdateAssistanceDetailsCommand(
         Guid VolunteerId,
-        UpdateAssistanceDetailsDto AssistanceDetailsDto);
-
+        IEnumerable<AssistanceDetailDto> AssistanceDetails);
 }

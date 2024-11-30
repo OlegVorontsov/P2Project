@@ -6,7 +6,7 @@ using P2Project.Domain.Shared;
 namespace P2Project.Application.Volunteers.UpdateAssistanceDetails
 {
     public class UpdateAssistanceDetailsValidator :
-        AbstractValidator<UpdateAssistanceDetailsRequest>
+        AbstractValidator<UpdateAssistanceDetailsCommand>
     {
         public UpdateAssistanceDetailsValidator()
         {
@@ -14,7 +14,7 @@ namespace P2Project.Application.Volunteers.UpdateAssistanceDetails
                 .NotEmpty()
                 .WithError(Errors.General.ValueIsRequired());
 
-            RuleForEach(a => a.AssistanceDetailsDto.AssistanceDetails)
+            RuleForEach(a => a.AssistanceDetails)
                 .MustBeValueObject(ad =>
                                 AssistanceDetail.Create(
                                     ad.Name,

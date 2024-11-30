@@ -6,7 +6,7 @@ using P2Project.Domain.Shared;
 namespace P2Project.Application.Volunteers.UpdatePhoneNumbers
 {
     public class UpdatePhoneNumbersValidator :
-        AbstractValidator<UpdatePhoneNumbersRequest>
+        AbstractValidator<UpdatePhoneNumbersCommand>
     {
         public UpdatePhoneNumbersValidator()
         {
@@ -14,7 +14,7 @@ namespace P2Project.Application.Volunteers.UpdatePhoneNumbers
                 .NotEmpty()
                 .WithError(Errors.General.ValueIsRequired());
 
-            RuleForEach(p => p.PhoneNumbersDto.PhoneNumbers)
+            RuleForEach(p => p.PhoneNumbers)
                 .MustBeValueObject(pn => PhoneNumber.Create(
                                                 pn.Value,
                                                 pn.IsMain));

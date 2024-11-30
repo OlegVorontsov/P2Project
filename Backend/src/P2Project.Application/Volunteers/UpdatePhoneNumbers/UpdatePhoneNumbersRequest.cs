@@ -1,11 +1,11 @@
 ﻿using P2Project.Application.Shared.Dtos;
 
-namespace P2Project.Application.Volunteers.UpdatePhoneNumbers
-{
-    public record UpdatePhoneNumbersRequest(
-        Guid VolunteerId,
-        UpdatePhoneNumbersDto PhoneNumbersDto);
+namespace P2Project.Application.Volunteers.UpdatePhoneNumbers;
 
-    public record UpdatePhoneNumbersDto(
-        IEnumerable<PhoneNumberDto> PhoneNumbers);
+public record UpdatePhoneNumbersRequest(
+    Guid VolunteerId,
+    IEnumerable<PhoneNumberDto> PhoneNumbers)
+{
+    public UpdatePhoneNumbersCommand ToCommand(Guid volunteerId) =>
+        new(volunteerId, PhoneNumbers);
 }

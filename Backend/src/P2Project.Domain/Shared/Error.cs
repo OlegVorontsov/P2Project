@@ -8,15 +8,25 @@ namespace P2Project.Domain.Shared
                 string.Empty,
                 string.Empty,
                 ErrorType.None);
-        private Error(string code, string message, ErrorType type)
+        private Error(string code, string message, ErrorType type, string? invalidField = null)
         {
             Code = code;
             Message = message;
             Type = type;
+            InvalidField = invalidField;
         }
         public string Code { get; }
         public string Message { get; }
         public ErrorType Type { get; }
+        public string? InvalidField { get; } = null;
+
+        public static Error Validation(
+            string code,
+            string message,
+            string? invalidField = null) => new Error(
+                code, message,
+                ErrorType.Validation,
+                invalidField);
         public static Error Validation(string code, string message) =>
             new Error(code, message, ErrorType.Validation);
         public static Error NotFound(string code, string message) =>

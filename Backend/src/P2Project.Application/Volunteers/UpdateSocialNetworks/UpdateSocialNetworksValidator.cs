@@ -6,7 +6,7 @@ using P2Project.Domain.Shared;
 namespace P2Project.Application.Volunteers.UpdateSocialNetworks
 {
     public class UpdateSocialNetworksValidator :
-        AbstractValidator<UpdateSocialNetworksRequest>
+        AbstractValidator<UpdateSocialNetworksCommand>
     {
         public UpdateSocialNetworksValidator()
         {
@@ -14,7 +14,7 @@ namespace P2Project.Application.Volunteers.UpdateSocialNetworks
                 .NotEmpty()
                 .WithError(Errors.General.ValueIsRequired());
 
-            RuleForEach(s => s.SocialNetworksDto.SocialNetworks)
+            RuleForEach(s => s.SocialNetworks)
                 .MustBeValueObject(sn => SocialNetwork.Create(
                                    sn.Name,
                                    sn.Link));
