@@ -23,9 +23,8 @@ namespace P2Project.API.Controllers
             [FromBody] CreateRequest request,
             CancellationToken cancellationToken)
         {
-            var command = request.ToCommand();
-
-            var result = await handler.Handle(command, cancellationToken);
+            var result = await handler.Handle(
+                request.ToCommand(), cancellationToken);
 
             if (result.IsFailure)
                 return result.Error.ToResponse();
@@ -40,9 +39,8 @@ namespace P2Project.API.Controllers
             [FromServices] UpdateMainInfoHandler handler,
             CancellationToken cancellationToken)
         {
-            var command = request.ToCommand(id);
-
-            var result = await handler.Handle(command, cancellationToken);
+            var result = await handler.Handle(
+                request.ToCommand(id), cancellationToken);
 
             if (result.IsFailure)
                 return result.Error.ToResponse();
@@ -57,9 +55,8 @@ namespace P2Project.API.Controllers
             [FromServices] UpdatePhoneNumbersHandler handler,
             CancellationToken cancellationToken)
         {
-            var command = request.ToCommand(id);
-
-            var result = await handler.Handle(command, cancellationToken);
+            var result = await handler.Handle(
+                request.ToCommand(id), cancellationToken);
 
             if (result.IsFailure)
                 return result.Error.ToResponse();
@@ -74,9 +71,8 @@ namespace P2Project.API.Controllers
             [FromServices] UpdateSocialNetworksHandler handler,
             CancellationToken cancellationToken)
         {
-            var command = request.ToCommand(id);
-
-            var result = await handler.Handle(command, cancellationToken);
+            var result = await handler.Handle(
+                request.ToCommand(id), cancellationToken);
 
             if (result.IsFailure)
                 return result.Error.ToResponse();
@@ -91,9 +87,8 @@ namespace P2Project.API.Controllers
             [FromServices] UpdateAssistanceDetailsHandler handler,
             CancellationToken cancellationToken)
         {
-            var command = request.ToCommand(id);
-
-            var result = await handler.Handle(command, cancellationToken);
+            var result = await handler.Handle(
+                request.ToCommand(id), cancellationToken);
 
             if (result.IsFailure)
                 return result.Error.ToResponse();
@@ -107,9 +102,8 @@ namespace P2Project.API.Controllers
             [FromServices] DeleteHandler handler,
             CancellationToken cancellationToken)
         {
-            var command = new DeleteCommand(id);
-
-            var result = await handler.Handle(command, cancellationToken);
+            var result = await handler.Handle(
+                new DeleteCommand(id), cancellationToken);
 
             if (result.IsFailure)
                 return result.Error.ToResponse();
@@ -124,10 +118,8 @@ namespace P2Project.API.Controllers
             [FromServices] AddPetHandler handler,
             CancellationToken cancellationToken = default)
         {
-            var command = request.ToCommand(id);
-
             var result = await handler.Handle(
-                command, cancellationToken);
+                request.ToCommand(id), cancellationToken);
             if (result.IsFailure)
                 return BadRequest(result.Error);
 
