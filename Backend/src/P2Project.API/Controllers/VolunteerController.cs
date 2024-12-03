@@ -1,6 +1,4 @@
-﻿using Azure.Core;
-using FluentValidation;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using P2Project.API.Extensions;
 using P2Project.API.Processor;
 using P2Project.Application.Volunteers.AddPet;
@@ -137,10 +135,11 @@ namespace P2Project.API.Controllers
             await using var fileProcessor = new FormFileProcessor();
             var fileDtos = fileProcessor.ToUploadFileDtos(files);
 
-            var command = new UploadFilesToPetCommand(
-                volunteerId, petId, fileDtos);
+            var result = await handler.Handle(
+                new UploadFilesToPetCommand(
+                    volunteerId, petId, fileDtos),
+                cancellationToken);
 
-            var result = await handler.Handle(command, cancellationToken);
             if (result.IsFailure)
                 return result.Error.ToResponse();
 

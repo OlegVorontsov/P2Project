@@ -7,6 +7,9 @@ using P2Project.Domain.Shared.IDs;
 using P2Project.Domain.Shared;
 using P2Project.Application.FileProvider;
 using P2Project.Application.Shared;
+using FluentValidation;
+using System.ComponentModel.DataAnnotations;
+using P2Project.Application.Extensions;
 
 namespace P2Project.Application.Volunteers.UploadFilesToPet
 {
@@ -14,6 +17,7 @@ namespace P2Project.Application.Volunteers.UploadFilesToPet
     {
         private const string BUCKET_NAME = "photos";
 
+        private readonly IValidator<UploadFilesToPetCommand> _validator;
         private readonly IFileProvider _fileProvider;
         private readonly IVolunteersRepository _volunteersRepository;
         private readonly ISpeciesRepository _speciesRepository;
@@ -21,12 +25,14 @@ namespace P2Project.Application.Volunteers.UploadFilesToPet
         private readonly ILogger<UploadFilesToPetHandler> _logger;
 
         public UploadFilesToPetHandler(
+            IValidator<UploadFilesToPetCommand> validator,
             IFileProvider fileProvider,
             IVolunteersRepository volunteersRepository,
             ISpeciesRepository speciesRepository,
             IUnitOfWork unitOfWork,
             ILogger<UploadFilesToPetHandler> logger)
         {
+            _validator = validator;
             _fileProvider = fileProvider;
             _volunteersRepository = volunteersRepository;
             _speciesRepository = speciesRepository;
@@ -38,18 +44,30 @@ namespace P2Project.Application.Volunteers.UploadFilesToPet
             UploadFilesToPetCommand command,
             CancellationToken cancellationToken)
         {
+            var validationResult = await _validator.ValidateAsync(
+                          command,
+                          cancellationToken);
+            if (validationResult.IsValid == false)
+                return validationResult.ToErrorList();
+
             var volunteerId = VolunteerId.Create(command.VolunteerId);
 
             var volunteerResult = await _volunteersRepository.GetById(
                 volunteerId, cancellationToken);
             if (volunteerResult.IsFailure)
-                return volunteerResult.Error.ToErrorList();
+            {
+                var error = Errors.General.NotFound(command.VolunteerId);
+                return error.ToErrorList();
+            }
 
             var petId = PetId.Create(command.PetId);
 
             var petResult = volunteerResult.Value.GetPetById(petId);
             if (petResult.IsFailure)
-                return petResult.Error.ToErrorList();
+            {
+                var error = Errors.General.NotFound(command.PetId);
+                return error.ToErrorList();
+            }
 
             List<FileData> filesData = [];
             foreach (var file in command.Files)
@@ -79,7 +97,7 @@ namespace P2Project.Application.Volunteers.UploadFilesToPet
             await _unitOfWork.SaveChanges(cancellationToken);
 
             _logger.LogInformation(
-                "Uploaded photos to pet - {petId}",
+                "Uploaded photos for pet with ID: {petId}",
                 petResult.Value.Id.Value);
 
             return petResult.Value.Id.Value;

@@ -10,7 +10,8 @@ namespace P2Project.Domain.PetManagment.ValueObjects
             Value = value;
         }
         public string? Value { get; } = default!;
-        public static Result<HealthInfo, Error> Create(string? value)
+        public static Result<HealthInfo, Error> Create(
+            string? value)
         {
             if (string.IsNullOrWhiteSpace(value))
                 return Errors.General.ValueIsInvalid(nameof(HealthInfo));

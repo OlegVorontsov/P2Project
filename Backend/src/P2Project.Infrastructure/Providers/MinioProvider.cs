@@ -73,7 +73,8 @@ namespace P2Project.Infrastructure.Providers
 
                 var results = pathResult.Select(p => p.Value).ToList();
 
-                _logger.LogInformation("Uploaded files {files}", results);
+                _logger.LogInformation("Uploaded files {files}",
+                    results.Select(f => f.Path));
 
                 return results;
             }
