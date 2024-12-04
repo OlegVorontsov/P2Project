@@ -106,6 +106,28 @@ namespace P2Project.Domain.PetManagment
 
         public UnitResult<Error> AddPet(Pet pet)
         {
+            var serialNumberResult = SerialNumber.Create(
+                _pets.Count + 1);
+            if (serialNumberResult.IsFailure)
+                return serialNumberResult.Error;
+
+            pet.SetSerialNumber(serialNumberResult.Value);
+
+            _pets.Add(pet);
+
+            return CSharpFunctionalExtensions.Result.Success<Error>();
+        }
+
+        public UnitResult<Error> MovePet(
+            Pet pet, SerialNumber serialNumber)
+        {
+            var serialNumberResult = SerialNumber.Create(
+                _pets.Count + 1);
+            if (serialNumberResult.IsFailure)
+                return serialNumberResult.Error;
+
+            pet.SetSerialNumber(serialNumberResult.Value);
+
             _pets.Add(pet);
 
             return CSharpFunctionalExtensions.Result.Success<Error>();

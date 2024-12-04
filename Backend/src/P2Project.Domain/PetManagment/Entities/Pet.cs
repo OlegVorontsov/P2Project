@@ -66,6 +66,10 @@ namespace P2Project.Domain.PetManagment.Entities
         public PetAssistanceDetails? AssistanceDetails { get; private set; } = default!;
         public DateOnly CreatedAt { get; private set; }
         public PetPhotoList Photos { get; private set; }
+        public SerialNumber SerialNumber { get; private set; }
+
+        public void SetSerialNumber (SerialNumber serialNumber) =>
+            SerialNumber = serialNumber;
 
         public void UpdatePhotos(IEnumerable<PetPhoto> photos)
         {

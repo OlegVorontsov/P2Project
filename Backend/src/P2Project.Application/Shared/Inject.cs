@@ -25,11 +25,14 @@ namespace P2Project.Application.Shared
             services.AddScoped<UpdateSocialNetworksHandler>();
             services.AddScoped<UpdateAssistanceDetailsHandler>();
             services.AddScoped<DeleteHandler>();
+
             services.AddScoped<UploadFileHandler>();
             services.AddScoped<DeleteFileHandler>();
             services.AddScoped<GetFileHandler>();
+
             services.AddScoped<Species.Create.CreateHandler>();
             services.AddScoped<Species.AddBreeds.AddBreedsHandler>();
+
             services.AddScoped<AddPetHandler>();
             services.AddScoped<UploadFilesToPetHandler>();
             services.AddValidatorsFromAssembly(typeof(Inject).Assembly);

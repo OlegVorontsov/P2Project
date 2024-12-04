@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using P2Project.Application.Shared.Dtos.Validators;
 using P2Project.Application.Validation;
 using P2Project.Domain.Shared;
 
@@ -16,6 +17,9 @@ namespace P2Project.Application.Volunteers.UploadFilesToPet
             RuleFor(u => u.PetId)
                 .NotEmpty()
                 .WithError(Errors.General.ValueIsRequired());
+
+            RuleForEach(u => u.Files).SetValidator(
+                new UploadFileDtoValidator());
         }
     }
 }
