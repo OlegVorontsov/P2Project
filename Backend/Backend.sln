@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "P2Project.Domain", "src\P2P
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{4EDABDD0-D3C7-4AD4-8A36-38C68B2E3E14}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VolunteerTests", "tests\VolunteerTests\VolunteerTests.csproj", "{9244BB58-0418-473A-A6AC-19ABF6EE8F6E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "P2Project.Domain.UnitTests", "tests\VolunteerTests\P2Project.Domain.UnitTests.csproj", "{9244BB58-0418-473A-A6AC-19ABF6EE8F6E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{5F0C0FBE-9E8F-44DC-849C-0321ADB901F4}"
 EndProject
