@@ -66,7 +66,7 @@ namespace VolunteerTests
             result.IsSuccess.Should().BeTrue();
             petAddedResult.IsSuccess.Should().BeTrue();
             petAddedResult.Value.Id.Should().Be(pet.Id);
-            petAddedResult.Value.SerialNumber.Should().Be(SerialNumber.First());
+            petAddedResult.Value.Position.Should().Be(Position.First());
         }
 
         [Fact]
@@ -157,8 +157,8 @@ namespace VolunteerTests
             result.IsSuccess.Should().BeTrue();
             petNotFirstAddedResult.IsSuccess.Should().BeTrue();
             petNotFirstAddedResult.Value.Id.Should().Be(petToAdd.Id);
-            petNotFirstAddedResult.Value.SerialNumber.Should().Be(
-                         SerialNumber.Create(petsCount + 1).Value);
+            petNotFirstAddedResult.Value.Position.Should().Be(
+                         Position.Create(petsCount + 1).Value);
         }
     }
 }

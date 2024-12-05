@@ -187,7 +187,7 @@ namespace P2Project.Infrastructure.Configurations
                         d => d.ToShortDateString(),
                         d => DateOnly.Parse(d));
 
-            builder.ComplexProperty(p => p.SerialNumber, snb =>
+            builder.ComplexProperty(p => p.Position, snb =>
             {
                 snb.Property(sn => sn.Value)
                   .IsRequired(true)

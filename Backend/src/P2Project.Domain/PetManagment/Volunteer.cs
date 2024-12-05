@@ -3,6 +3,7 @@ using P2Project.Domain.PetManagment.Entities;
 using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.IDs;
+using Result = CSharpFunctionalExtensions.Result;
 
 namespace P2Project.Domain.PetManagment
 {
@@ -106,31 +107,59 @@ namespace P2Project.Domain.PetManagment
 
         public UnitResult<Error> AddPet(Pet pet)
         {
-            var serialNumberResult = SerialNumber.Create(
+            var positionResult = Position.Create(
                 _pets.Count + 1);
-            if (serialNumberResult.IsFailure)
-                return serialNumberResult.Error;
+            if (positionResult.IsFailure)
+                return positionResult.Error;
 
-            pet.SetSerialNumber(serialNumberResult.Value);
+            pet.SetPosition(positionResult.Value);
 
             _pets.Add(pet);
 
-            return CSharpFunctionalExtensions.Result.Success<Error>();
+            return Result.Success<Error>();
         }
 
         public UnitResult<Error> MovePet(
-            Pet pet, SerialNumber serialNumber)
+            Pet pet, Position newPosition)
         {
-            var serialNumberResult = SerialNumber.Create(
-                _pets.Count + 1);
-            if (serialNumberResult.IsFailure)
-                return serialNumberResult.Error;
+            var currentPosition = pet.Position;
 
-            pet.SetSerialNumber(serialNumberResult.Value);
+            if (currentPosition == newPosition || _pets.Count == 1)
+                return Result.Success<Error>();
 
-            _pets.Add(pet);
+            var positionToSet = ChangePositionIfOutOfRange(newPosition);
+            if(positionToSet.IsFailure)
+                return positionToSet.Error;
 
-            return CSharpFunctionalExtensions.Result.Success<Error>();
+            newPosition = positionToSet.Value;
+
+            if(newPosition.Value < currentPosition.Value)
+            {
+                var petsToMove = _pets.Where(p => p.Position.Value >=
+                    newPosition.Value &&
+                    p.Position.Value < currentPosition.Value);
+
+                foreach(var petToMove in petsToMove)
+                {
+                    var moveResult = petToMove.Forward();
+                    if(moveResult.IsFailure)
+                        return moveResult.Error;
+                }
+            }
+            else if (newPosition.Value > currentPosition.Value)
+            {
+                var petsToMove = _pets.Where(p => p.Position.Value >
+                    currentPosition.Value &&
+                    p.Position.Value <= newPosition.Value);
+
+                foreach (var petToMove in petsToMove)
+                {
+                    var moveResult = petToMove.Back();
+                    if (moveResult.IsFailure)
+                        return moveResult.Error;
+                }
+            }
+            return Result.Success<Error>();
         }
 
         public Result<Pet, Error> GetPetById(PetId petId)
@@ -140,6 +169,19 @@ namespace P2Project.Domain.PetManagment
                 return Errors.General.NotFound(petId.Value);
 
             return pet;
+        }
+
+        private Result<Position, Error> ChangePositionIfOutOfRange(
+            Position newPosition)
+        {
+            if (newPosition.Value <= _pets.Count)
+                return newPosition;
+
+            var lastPosition = Position.Create(_pets.Count - 1);
+            if (lastPosition.IsFailure)
+                return lastPosition.Error;
+
+            return lastPosition.Value;
         }
 
         private double GetYearsOfExperience()
