@@ -3,7 +3,7 @@ using P2Project.Domain.Shared;
 
 namespace P2Project.Domain.PetManagment.ValueObjects
 {
-    public record Position
+    public class Position : ValueObject
     {
         public static Position First() => new(1);
         public int Value { get; }
@@ -19,6 +19,15 @@ namespace P2Project.Domain.PetManagment.ValueObjects
                 return Errors.General.ValueIsInvalid("position");
 
             return new Position(value);
+        }
+
+        public static implicit operator int (Position position) =>
+            position.Value;
+
+        // задает объект уникальности класса
+        protected override IEnumerable<object> GetEqualityComponents()
+        {
+            yield return Value;
         }
     }
 }

@@ -95,10 +95,8 @@ namespace P2Project.Domain.PetManagment.Entities
             return Result.Success<Error>();
         }
 
-        public void UpdatePhotos(IEnumerable<PetPhoto> photos)
-        {
+        public void UpdatePhotos(IEnumerable<PetPhoto> photos) =>
             Photos = new PetPhotoList(photos);
-        }
 
         public void SoftDelete()
         {
