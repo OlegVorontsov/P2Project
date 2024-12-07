@@ -1,5 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
+using FluentValidation;
 using Microsoft.Extensions.Logging;
+using P2Project.Application.Extensions;
 using P2Project.Application.Shared;
 using P2Project.Application.Species;
 using P2Project.Application.Species.Create;
@@ -9,7 +11,7 @@ using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.IDs;
 using P2Project.Domain.SpeciesManagment.Entities;
 using P2Project.Domain.SpeciesManagment.ValueObjects;
-using IFileProvider = P2Project.Application.FileProvider.IFileProvider;
+using System.ComponentModel.DataAnnotations;
 
 namespace P2Project.Application.Volunteers.CreatePet
 {
@@ -17,6 +19,7 @@ namespace P2Project.Application.Volunteers.CreatePet
     {
         private const string BUCKET_NAME = "photos";
 
+        private readonly IValidator<AddPetCommand> _validator;
         private readonly IVolunteersRepository _volunteersRepository;
         private readonly ISpeciesRepository _speciesRepository;
         private readonly IUnitOfWork _unitOfWork;
@@ -24,12 +27,14 @@ namespace P2Project.Application.Volunteers.CreatePet
         private readonly ILogger<CreateHandler> _speciesLogger;
 
         public AddPetHandler(
+            IValidator<AddPetCommand> validator,
             IVolunteersRepository volunteersRepository,
             ISpeciesRepository speciesRepository,
             IUnitOfWork unitOfWork,
             ILogger<AddPetHandler> petLogger,
             ILogger<CreateHandler> speciesLogger)
         {
+            _validator = validator;
             _volunteersRepository = volunteersRepository;
             _speciesRepository = speciesRepository;
             _unitOfWork = unitOfWork;
@@ -40,6 +45,12 @@ namespace P2Project.Application.Volunteers.CreatePet
             AddPetCommand command,
             CancellationToken cancellationToken = default)
         {
+            var validationResult = await _validator.ValidateAsync(
+                          command,
+                          cancellationToken);
+            if (validationResult.IsValid == false)
+                return validationResult.ToErrorList();
+
             var volunteerId = VolunteerId.Create(
                 command.VolunteerId);
 

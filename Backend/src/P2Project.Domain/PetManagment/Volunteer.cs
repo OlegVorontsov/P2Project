@@ -3,6 +3,7 @@ using P2Project.Domain.PetManagment.Entities;
 using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.IDs;
+using Result = CSharpFunctionalExtensions.Result;
 
 namespace P2Project.Domain.PetManagment
 {
@@ -64,6 +65,12 @@ namespace P2Project.Domain.PetManagment
         public VolunteerPhoneNumbers PhoneNumbers { get; private set; } = default!;
         public VolunteerSocialNetworks? SocialNetworks { get; private set; } = default!;
         public VolunteerAssistanceDetails? AssistanceDetails { get; private set; } = default!;
+        private double GetYearsOfExperience()
+        {
+            var timeSpan = DateTime.Now - RegisteredDate;
+            return timeSpan.TotalDays / 365.25;
+        }
+
         public void UpdateMainInfo(
                     FullName fullName,
                     int age,
@@ -106,11 +113,17 @@ namespace P2Project.Domain.PetManagment
 
         public UnitResult<Error> AddPet(Pet pet)
         {
+            var positionResult = Position.Create(
+                _pets.Count + 1);
+            if (positionResult.IsFailure)
+                return positionResult.Error;
+
+            pet.SetPosition(positionResult.Value);
+
             _pets.Add(pet);
 
-            return CSharpFunctionalExtensions.Result.Success<Error>();
+            return Result.Success<Error>();
         }
-
         public Result<Pet, Error> GetPetById(PetId petId)
         {
             var pet = Pets.FirstOrDefault(p => p.Id.Value == petId.Value);
@@ -120,10 +133,73 @@ namespace P2Project.Domain.PetManagment
             return pet;
         }
 
-        private double GetYearsOfExperience()
+        public UnitResult<Error> MovePet(
+            Pet pet, Position newPosition)
         {
-            var timeSpan = DateTime.Now - RegisteredDate;
-            return timeSpan.TotalDays / 365.25;
+            var currentPosition = pet.Position;
+
+            if (currentPosition == newPosition || _pets.Count == 1)
+                return Result.Success<Error>();
+
+            var positionToSet = ChangePositionIfOutOfRange(newPosition);
+            if (positionToSet.IsFailure)
+                return positionToSet.Error;
+
+            newPosition = positionToSet.Value;
+
+            var moveResult = MovePetsBetweenPositions(
+                newPosition, currentPosition);
+            if (moveResult.IsFailure)
+                return moveResult.Error;
+
+            pet.SetPosition(newPosition);
+
+            return Result.Success<Error>();
+        }
+
+        private Result<Position, Error> ChangePositionIfOutOfRange(
+            Position newPosition)
+        {
+            if (newPosition <= _pets.Count)
+                return newPosition;
+
+            var lastPosition = Position.Create(_pets.Count - 1);
+            if (lastPosition.IsFailure)
+                return lastPosition.Error;
+
+            return lastPosition;
+        }
+
+        private UnitResult<Error> MovePetsBetweenPositions(
+            Position newPosition, Position currentPosition)
+        {
+            if (newPosition < currentPosition)
+            {
+                var petsToMove = _pets.Where(p => p.Position >=
+                    newPosition &&
+                    p.Position < currentPosition);
+
+                foreach (var petToMove in petsToMove)
+                {
+                    var moveResult = petToMove.Forward();
+                    if (moveResult.IsFailure)
+                        return moveResult.Error;
+                }
+            }
+            else if (newPosition > currentPosition)
+            {
+                var petsToMove = _pets.Where(p => p.Position >
+                    currentPosition &&
+                    p.Position <= newPosition);
+
+                foreach (var petToMove in petsToMove)
+                {
+                    var moveResult = petToMove.Back();
+                    if (moveResult.IsFailure)
+                        return moveResult.Error;
+                }
+            }
+            return Result.Success<Error>();
         }
     }
 }

@@ -10,5 +10,8 @@ namespace P2Project.Domain.Shared
 
         public const int MIN_AGE = 14;
         public const int MAX_AGE = 90;
+
+        public const int MIN_WEIGHT_HEIGHT = 0;
+        public const int MAX_WEIGHT_HEIGHT = 1000;
     }
 }

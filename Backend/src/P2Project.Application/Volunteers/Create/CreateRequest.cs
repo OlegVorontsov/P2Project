@@ -1,8 +1,8 @@
 ﻿using P2Project.Application.Shared.Dtos;
 
-namespace P2Project.Application.Volunteers.CreateVolunteer
-{
-    public record CreateRequest(
+namespace P2Project.Application.Volunteers.CreateVolunteer;
+
+public record CreateRequest(
             FullNameDto FullName,
             int Age,
             string Gender,
@@ -10,5 +10,15 @@ namespace P2Project.Application.Volunteers.CreateVolunteer
             string? Description,
             IEnumerable<PhoneNumberDto> PhoneNumbers,
             IEnumerable<SocialNetworkDto>? SocialNetworks,
-            IEnumerable<AssistanceDetailDto>? AssistanceDetails);
+            IEnumerable<AssistanceDetailDto>? AssistanceDetails)
+{
+    public CreateCommand ToCommand() =>
+        new(FullName,
+            Age,
+            Gender,
+            Email,
+            Description,
+            PhoneNumbers,
+            SocialNetworks,
+            AssistanceDetails);
 }

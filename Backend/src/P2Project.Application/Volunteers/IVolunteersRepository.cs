@@ -12,9 +12,7 @@ namespace P2Project.Application.Volunteers
                     Volunteer volunteer,
                     CancellationToken cancellationToken = default);
         Guid Save(Volunteer volunteer);
-        Task<Guid> Delete(
-            Volunteer volunteer,
-            CancellationToken cancellationToken = default);
+        Guid Delete(Volunteer volunteer);
         Task<Result<Volunteer, Error>> GetById(
                     VolunteerId volunteerId,
                     CancellationToken cancellationToken = default);

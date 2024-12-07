@@ -13,8 +13,8 @@ using P2Project.Infrastructure;
 namespace P2Project.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20241128055911_InitFixAddPet")]
-    partial class InitFixAddPet
+    [Migration("20241206065115_InitPetPosition")]
+    partial class InitPetPosition
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -130,6 +130,15 @@ namespace P2Project.Infrastructure.Migrations
                                 .HasMaxLength(100)
                                 .HasColumnType("character varying(100)")
                                 .HasColumnName("owner_phone_number");
+                        });
+
+                    b.ComplexProperty<Dictionary<string, object>>("Position", "P2Project.Domain.PetManagment.Entities.Pet.Position#Position", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<int>("Value")
+                                .HasColumnType("integer")
+                                .HasColumnName("serial_number");
                         });
 
                     b.ComplexProperty<Dictionary<string, object>>("SpeciesBreed", "P2Project.Domain.PetManagment.Entities.Pet.SpeciesBreed#SpeciesBreed", b1 =>

@@ -1,6 +1,8 @@
-﻿namespace P2Project.Application.Volunteers.UpdatePhoneNumbers
+﻿using P2Project.Application.Shared.Dtos;
+
+namespace P2Project.Application.Volunteers.UpdatePhoneNumbers
 {
     public record UpdatePhoneNumbersCommand(
         Guid VolunteerId,
-        UpdatePhoneNumbersDto PhoneNumbersDto);
+        IEnumerable<PhoneNumberDto> PhoneNumbers);
 }

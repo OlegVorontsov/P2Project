@@ -11,10 +11,7 @@ namespace P2Project.API.Extensions
             var statusCode = GetStatusCodeForErrorType(error.Type);
 
             var envelope = Envelope.Error(error.ToErrorList());
-            return new ObjectResult(envelope)
-            {
-                StatusCode = statusCode
-            };
+            return new ObjectResult(envelope) { StatusCode = statusCode };
         }
         public static ActionResult ToResponse(this ErrorList errors)
         {
@@ -37,10 +34,7 @@ namespace P2Project.API.Extensions
 
             var envelope = Envelope.Error(errors);
 
-            return new ObjectResult(envelope)
-            {
-                StatusCode = statusCode
-            };
+            return new ObjectResult(envelope) { StatusCode = statusCode };
         }
         public static ActionResult ToValidationErrorResponse(
             this FluentValidation.Results.ValidationResult result)

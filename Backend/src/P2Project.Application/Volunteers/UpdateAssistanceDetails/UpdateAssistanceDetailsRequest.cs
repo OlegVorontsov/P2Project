@@ -1,14 +1,11 @@
-﻿using FluentValidation;
-using P2Project.Application.Shared.Dtos;
-using P2Project.Application.Validation;
-using P2Project.Domain.PetManagment.ValueObjects;
+﻿using P2Project.Application.Shared.Dtos;
 
-namespace P2Project.Application.Volunteers.UpdateAssistanceDetails
+namespace P2Project.Application.Volunteers.UpdateAssistanceDetails;
+
+public record UpdateAssistanceDetailsRequest(
+    Guid VolunteerId,
+    IEnumerable<AssistanceDetailDto> AssistanceDetails)
 {
-    public record UpdateAssistanceDetailsRequest(
-        Guid VolunteerId,
-        UpdateAssistanceDetailsDto AssistanceDetailsDto);
-
-    public record UpdateAssistanceDetailsDto(
-        IEnumerable<AssistanceDetailDto> AssistanceDetails);
+    public UpdateAssistanceDetailsCommand ToCommand(Guid volunteerId) =>
+        new(volunteerId, AssistanceDetails);
 }

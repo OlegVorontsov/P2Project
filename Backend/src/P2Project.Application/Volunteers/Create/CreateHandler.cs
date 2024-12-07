@@ -1,5 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
+using FluentValidation;
 using Microsoft.Extensions.Logging;
+using P2Project.Application.Extensions;
 using P2Project.Application.Shared;
 using P2Project.Domain.PetManagment;
 using P2Project.Domain.PetManagment.ValueObjects;
@@ -10,23 +12,32 @@ namespace P2Project.Application.Volunteers.CreateVolunteer
 {
     public class CreateHandler
     {
+        private readonly IValidator<CreateCommand> _validator;
         private readonly IVolunteersRepository _volunteersRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<CreateHandler> _logger;
 
         public CreateHandler(
+            IValidator<CreateCommand> validator,
             IVolunteersRepository volunteersRepository,
             IUnitOfWork unitOfWork,
             ILogger<CreateHandler> logger)
         {
+            _validator = validator;
             _volunteersRepository = volunteersRepository;
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
-        public async Task<Result<Guid, Error>> Handle(
+        public async Task<Result<Guid, ErrorList>> Handle(
             CreateCommand command,
             CancellationToken cancellationToken = default)
         {
+            var validationResult = await _validator.ValidateAsync(
+                                      command,
+                                      cancellationToken);
+            if (validationResult.IsValid == false)
+                return validationResult.ToErrorList();
+
             var volunteerId = VolunteerId.New();
 
             var fullName = FullName.Create(
@@ -37,7 +48,10 @@ namespace P2Project.Application.Volunteers.CreateVolunteer
                                                                   fullName,
                                                                   cancellationToken);
             if (volunteerByFullName.IsSuccess)
-                return Errors.Volunteer.AlreadyExist();
+            {
+                var error = Errors.Volunteer.AlreadyExist();
+                return error.ToErrorList();
+            }
 
             var gender = Enum.Parse<Gender>(command.Gender);
 
@@ -47,7 +61,10 @@ namespace P2Project.Application.Volunteers.CreateVolunteer
                                                                email,
                                                                cancellationToken);
             if (volunteerByEmail.IsSuccess)
-                return Errors.Volunteer.AlreadyExist();
+            {
+                var error = Errors.Volunteer.AlreadyExist();
+                return error.ToErrorList();
+            }
 
             var description = Description.Create(command.Description).Value;
 

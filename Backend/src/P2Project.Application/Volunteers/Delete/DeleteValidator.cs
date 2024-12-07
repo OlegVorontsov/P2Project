@@ -3,7 +3,7 @@
 namespace P2Project.Application.Volunteers.Delete
 {
     public class DeleteValidator :
-        AbstractValidator<DeleteRequest>
+        AbstractValidator<DeleteCommand>
     {
         public DeleteValidator()
         {

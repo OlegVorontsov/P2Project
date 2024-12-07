@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace P2Project.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitFixAddPet : Migration
+    public partial class InitPetPosition : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -84,6 +84,7 @@ namespace P2Project.Infrastructure.Migrations
                     nick_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     is_main = table.Column<bool>(type: "boolean", nullable: true),
                     owner_phone_number = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    serial_number = table.Column<int>(type: "integer", nullable: false),
                     breed_id = table.Column<Guid>(type: "uuid", nullable: false),
                     species_id = table.Column<Guid>(type: "uuid", nullable: false),
                     address = table.Column<string>(type: "jsonb", nullable: false),

@@ -30,13 +30,10 @@ namespace P2Project.Infrastructure.Repositories
             return volunteer.Id.Value;
         }
 
-        public async Task<Guid> Delete(
-                Volunteer volunteer,
-                CancellationToken cancellationToken = default)
+        public Guid Delete(Volunteer volunteer)
         {
             _dbContext.Volunteers.Remove(volunteer);
-            await _dbContext.SaveChangesAsync(cancellationToken);
-            return volunteer.Id;
+            return volunteer.Id.Value;
         }
 
         public async Task<Result<Volunteer, Error>> GetById(

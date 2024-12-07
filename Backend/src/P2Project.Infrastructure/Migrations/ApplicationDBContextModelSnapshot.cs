@@ -129,6 +129,15 @@ namespace P2Project.Infrastructure.Migrations
                                 .HasColumnName("owner_phone_number");
                         });
 
+                    b.ComplexProperty<Dictionary<string, object>>("Position", "P2Project.Domain.PetManagment.Entities.Pet.Position#Position", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<int>("Value")
+                                .HasColumnType("integer")
+                                .HasColumnName("serial_number");
+                        });
+
                     b.ComplexProperty<Dictionary<string, object>>("SpeciesBreed", "P2Project.Domain.PetManagment.Entities.Pet.SpeciesBreed#SpeciesBreed", b1 =>
                         {
                             b1.IsRequired();

@@ -1,10 +1,12 @@
-﻿using P2Project.Domain.PetManagment.ValueObjects;
+﻿using CSharpFunctionalExtensions;
+using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.IDs;
+using Result = CSharpFunctionalExtensions.Result;
 
 namespace P2Project.Domain.PetManagment.Entities
 {
-    public class Pet : Entity<PetId>
+    public class Pet : Shared.Entity<PetId>
     {
         // ef core
         private Pet(PetId id) : base(id) { }
@@ -66,11 +68,35 @@ namespace P2Project.Domain.PetManagment.Entities
         public PetAssistanceDetails? AssistanceDetails { get; private set; } = default!;
         public DateOnly CreatedAt { get; private set; }
         public PetPhotoList Photos { get; private set; }
+        public Position Position { get; private set; }
 
-        public void UpdatePhotos(IEnumerable<PetPhoto> photos)
+        public void SetPosition (Position position) =>
+            Position = position;
+
+        public UnitResult<Error> Forward()
         {
-            Photos = new PetPhotoList(photos);
+            var newPosition = Position.Forward();
+            if(newPosition.IsFailure)
+                return newPosition.Error;
+
+            Position = newPosition.Value;
+
+            return Result.Success<Error>();
         }
+
+        public UnitResult<Error> Back()
+        {
+            var newPosition = Position.Back();
+            if (newPosition.IsFailure)
+                return newPosition.Error;
+
+            Position = newPosition.Value;
+
+            return Result.Success<Error>();
+        }
+
+        public void UpdatePhotos(IEnumerable<PetPhoto> photos) =>
+            Photos = new PetPhotoList(photos);
 
         public void SoftDelete()
         {

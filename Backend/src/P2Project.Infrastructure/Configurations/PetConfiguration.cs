@@ -186,6 +186,13 @@ namespace P2Project.Infrastructure.Configurations
                    .HasConversion(
                         d => d.ToShortDateString(),
                         d => DateOnly.Parse(d));
+
+            builder.ComplexProperty(p => p.Position, snb =>
+            {
+                snb.Property(sn => sn.Value)
+                  .IsRequired(true)
+                  .HasColumnName("serial_number");
+            });
         }
     }
 }

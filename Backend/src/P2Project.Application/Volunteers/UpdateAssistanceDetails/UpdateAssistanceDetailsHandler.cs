@@ -1,5 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
+using FluentValidation;
 using Microsoft.Extensions.Logging;
+using P2Project.Application.Extensions;
 using P2Project.Application.Shared;
 using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;
@@ -9,30 +11,42 @@ namespace P2Project.Application.Volunteers.UpdateAssistanceDetails
 {
     public class UpdateAssistanceDetailsHandler
     {
+        private readonly IValidator<UpdateAssistanceDetailsCommand> _validator;
         private readonly IVolunteersRepository _volunteersRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<UpdateAssistanceDetailsHandler> _logger;
         public UpdateAssistanceDetailsHandler(
+            IValidator<UpdateAssistanceDetailsCommand> validator,
             IVolunteersRepository volunteersRepository,
             IUnitOfWork unitOfWork,
             ILogger<UpdateAssistanceDetailsHandler> logger)
         {
+            _validator = validator;
             _volunteersRepository = volunteersRepository;
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
 
-        public async Task<Result<Guid, Error>> Handle(
+        public async Task<Result<Guid, ErrorList>> Handle(
             UpdateAssistanceDetailsCommand command,
             CancellationToken cancellationToken = default)
         {
+            var validationResult = await _validator.ValidateAsync(
+                                      command,
+                                      cancellationToken);
+            if (validationResult.IsValid == false)
+                return validationResult.ToErrorList();
+
             var volunteerId = VolunteerId.Create(
                 command.VolunteerId);
 
             var volunteerResult = await _volunteersRepository.GetById(
                 volunteerId, cancellationToken);
             if (volunteerResult.IsFailure)
-                return Errors.General.NotFound(command.VolunteerId);
+            {
+                var error = Errors.General.NotFound(command.VolunteerId);
+                return error.ToErrorList();
+            }
 
             var newAssistanceDetails = new List<AssistanceDetail>();
 
@@ -50,10 +64,9 @@ namespace P2Project.Application.Volunteers.UpdateAssistanceDetails
                     newAssistanceDetails.AddRange(oldAssistanceDetails);
             }
 
-            if (command.AssistanceDetailsDto != null)
+            if (command.AssistanceDetails != null)
             {
                 var assistanceDetailsToAdd = command
-                                    .AssistanceDetailsDto
                                     .AssistanceDetails
                                     .Select(ad => AssistanceDetail
                                         .Create(
