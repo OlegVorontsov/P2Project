@@ -1,14 +1,12 @@
 ﻿using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
 using P2Project.Application.FileProvider.Models;
-using P2Project.Application.Species;
 using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared.IDs;
 using P2Project.Domain.Shared;
 using P2Project.Application.FileProvider;
 using P2Project.Application.Shared;
 using FluentValidation;
-using System.ComponentModel.DataAnnotations;
 using P2Project.Application.Extensions;
 
 namespace P2Project.Application.Volunteers.UploadFilesToPet
@@ -20,7 +18,6 @@ namespace P2Project.Application.Volunteers.UploadFilesToPet
         private readonly IValidator<UploadFilesToPetCommand> _validator;
         private readonly IFileProvider _fileProvider;
         private readonly IVolunteersRepository _volunteersRepository;
-        private readonly ISpeciesRepository _speciesRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<UploadFilesToPetHandler> _logger;
 
@@ -28,14 +25,12 @@ namespace P2Project.Application.Volunteers.UploadFilesToPet
             IValidator<UploadFilesToPetCommand> validator,
             IFileProvider fileProvider,
             IVolunteersRepository volunteersRepository,
-            ISpeciesRepository speciesRepository,
             IUnitOfWork unitOfWork,
             ILogger<UploadFilesToPetHandler> logger)
         {
             _validator = validator;
             _fileProvider = fileProvider;
             _volunteersRepository = volunteersRepository;
-            _speciesRepository = speciesRepository;
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
