@@ -15,7 +15,7 @@ namespace P2Project.Application.FileProvider
             IEnumerable<FileData> filesData,
             CancellationToken cancellationToken = default);
 
-        Task<Result<string, Error>> DeleteFile(
+        Task<UnitResult<Error>> DeleteFile(
             FileMetadata fileMetadata,
             CancellationToken cancellationToken = default);
 

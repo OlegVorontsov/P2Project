@@ -89,7 +89,7 @@ namespace P2Project.Infrastructure.Providers
             }
         }
 
-        public async Task<Result<string, Error>> DeleteFile(
+        public async Task<UnitResult<Error>> DeleteFile(
             FileMetadata fileMetadata,
             CancellationToken cancellationToken = default)
         {
@@ -101,19 +101,28 @@ namespace P2Project.Infrastructure.Providers
                 if (isBucketExist == false)
                     throw new Exception($"Bucket {fileMetadata.BucketName} not exist");
 
+                var statusObjectArgs = new StatObjectArgs()
+                    .WithBucket(fileMetadata.BucketName)
+                    .WithObject(fileMetadata.ObjectName);
+
+                var objectStat = await _minioClient.StatObjectAsync(statusObjectArgs, cancellationToken);
+                if (objectStat is null)
+                    return Result.Success<Error>();
+
                 var removeObjectArgs = new RemoveObjectArgs()
                     .WithBucket(fileMetadata.BucketName)
                     .WithObject(fileMetadata.ObjectName);
 
                 await _minioClient.RemoveObjectAsync(removeObjectArgs, cancellationToken);
-
-                return $"File {fileMetadata.ObjectName} was deleted";
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Fail to delete file in minio");
+                _logger.LogError(ex, "Fail to delete file {ObjectName} in minio bucket {BucketName}",
+                    fileMetadata.ObjectName,
+                    fileMetadata.BucketName);
                 return Error.Failure("file.delete", "Fail to delete file in minio");
             }
+            return Result.Success<Error>();
         }
 
         public async Task<Result<string, Error>> GetFile(

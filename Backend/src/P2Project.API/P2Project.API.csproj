@@ -33,6 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Shared\" />
     <Folder Include="wwwroot\swagger-ui\" />
   </ItemGroup>
 

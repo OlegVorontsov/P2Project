@@ -4,12 +4,13 @@ using P2Project.Application.FileProvider.Models;
 using P2Project.Application.Files.CreateFile;
 using P2Project.Application.Files.DeleteFile;
 using P2Project.Application.Files.GetFile;
+using P2Project.Application.Shared.Dtos;
 
 namespace P2Project.API.Controllers
 {
     public class FileController : ApplicationController
     {
-        public const string BUCKET_NAME_PHOTOS = "photos";
+        public const string BUCKET_NAME_FILES = "files";
         [HttpPost]
         public async Task<IActionResult> UploadFile(
             IFormFile file,
@@ -18,10 +19,8 @@ namespace P2Project.API.Controllers
         {
             await using var stream = file.OpenReadStream();
 
-            var result = await handler.Handle(new UploadFileRequest(
-                stream,
-                Guid.NewGuid().ToString(),
-                BUCKET_NAME_PHOTOS), cancellationToken);
+            var result = await handler.Handle(new UploadFileDto(
+                stream, file.FileName), cancellationToken);
 
             if (result.IsFailure)
                 return result.Error.ToResponse();
@@ -36,7 +35,7 @@ namespace P2Project.API.Controllers
             CancellationToken cancellationToken = default)
         {
             var result = await handler.Handle(new FileMetadata(
-                "photos", id.ToString()), cancellationToken);
+                BUCKET_NAME_FILES, id.ToString()), cancellationToken);
 
             if (result.IsFailure)
                 return result.Error.ToResponse();
@@ -51,7 +50,7 @@ namespace P2Project.API.Controllers
             CancellationToken cancellationToken = default)
         {
             var result = await handler.Handle(new FileMetadata(
-                "photos", id.ToString()), cancellationToken);
+                BUCKET_NAME_FILES, id.ToString()), cancellationToken);
 
             if (result.IsFailure)
                 return result.Error.ToResponse();

@@ -18,6 +18,12 @@ namespace P2Project.Application.UnitTests
 {
     public class UploadFilesToPetTests
     {
+        private readonly Mock<IValidator<UploadFilesToPetCommand>> _validatorMock = new();
+        private readonly Mock<IFileProvider> _fileProviderMock = new();
+        private readonly Mock<IVolunteersRepository> _volunteersRepositoryMock = new();
+        private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
+        private readonly Mock<ILogger<UploadFilesToPetHandler>> _loggerMock = new();
+
         [Fact]
         public async Task Handle_Should_Upload_Files_To_Pet()
         {
@@ -37,12 +43,9 @@ namespace P2Project.Application.UnitTests
                     pet.Id.Value,
                     [uploadFileDto, uploadFileDto]);
 
-            var validatorMock = new Mock<IValidator<UploadFilesToPetCommand>>();
-            validatorMock.Setup(v => v.ValidateAsync(
+            _validatorMock.Setup(v => v.ValidateAsync(
                 command, cancellationToken))
                 .ReturnsAsync(new ValidationResult());
-
-            var fileProviderMock = new Mock<IFileProvider>();
 
             var extension = Path.GetExtension(uploadFileDto.FileName);
 
@@ -52,32 +55,25 @@ namespace P2Project.Application.UnitTests
                 FilePath.Create(Guid.NewGuid(), extension).Value
             ];
 
-            fileProviderMock.Setup(f => f.UploadFiles(
+            _fileProviderMock.Setup(f => f.UploadFiles(
                 It.IsAny<List<FileData>>(),
                 cancellationToken))
                 .ReturnsAsync(
                     Result.Success<IReadOnlyList<FilePath>,
                     Error>(filePaths));
 
-            var volunteerRepositoryMock = new Mock<IVolunteersRepository>();
-
-            volunteerRepositoryMock.Setup(r => r.GetById(
+            _volunteersRepositoryMock.Setup(r => r.GetById(
                 volunteer.Id, cancellationToken)).ReturnsAsync(volunteer);
 
-            var unitOfWorkMock = new Mock<IUnitOfWork>();
-
-            unitOfWorkMock.Setup(u => u.SaveChanges(cancellationToken))
+            _unitOfWorkMock.Setup(u => u.SaveChanges(cancellationToken))
                 .Returns(Task.CompletedTask);
 
-            var logger = LoggerFactory.Create(b => b.AddConsole())
-                .CreateLogger<UploadFilesToPetHandler>();
-
             var handler = new UploadFilesToPetHandler(
-                validatorMock.Object,
-                fileProviderMock.Object,
-                volunteerRepositoryMock.Object,
-                unitOfWorkMock.Object,
-                logger);
+                _validatorMock.Object,
+                _fileProviderMock.Object,
+                _volunteersRepositoryMock.Object,
+                _unitOfWorkMock.Object,
+                _loggerMock.Object);
 
             // act
             var uploadResult = await handler.Handle(

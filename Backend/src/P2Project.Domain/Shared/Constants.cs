@@ -13,5 +13,8 @@ namespace P2Project.Domain.Shared
 
         public const int MIN_WEIGHT_HEIGHT = 0;
         public const int MAX_WEIGHT_HEIGHT = 1000;
+
+        public const string BUCKET_NAME_PHOTOS = "photos";
+        public const string BUCKET_NAME_FILES = "files";
     }
 }

@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using P2Project.Application.FileProvider.Models;
+using P2Project.Application.Shared.Dtos;
 using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;
 using IFileProvider = P2Project.Application.FileProvider.IFileProvider;
@@ -15,19 +16,21 @@ namespace P2Project.Application.Files.CreateFile
             _fileProvider = fileProvider;
         }
         public async Task<Result<string, ErrorList>> Handle(
-            UploadFileRequest request,
+            UploadFileDto uploadFileDto,
             CancellationToken cancellationToken = default)
         {
-            var filePathResult = FilePath.Create(request.FilePath);
+            var extension = Path.GetExtension(uploadFileDto.FileName);
 
+            var filePathResult = FilePath.Create(
+                Guid.NewGuid(), extension);
             if (filePathResult.IsFailure)
                 return filePathResult.Error.ToErrorList();
 
             var uploadFileResult = await _fileProvider.UploadFile(
                 new FileData(
-                    request.FileStream,
+                    uploadFileDto.Stream,
                     filePathResult.Value,
-                    request.BucketName),
+                    Constants.BUCKET_NAME_FILES),
                 cancellationToken);
 
             return uploadFileResult.Value;

@@ -21,7 +21,7 @@ namespace P2Project.Application.Files.DeleteFile
                 fileMetadata,
                 cancellationToken);
 
-            return deleteFileResult;
+            return deleteFileResult.IsSuccess.ToString();
         }
     }
 }

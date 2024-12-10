@@ -5,6 +5,7 @@ using P2Project.Application.FileProvider;
 using P2Project.Application.Shared;
 using P2Project.Application.Species;
 using P2Project.Application.Volunteers;
+using P2Project.Infrastructure.BackroundServices;
 using P2Project.Infrastructure.Options;
 using P2Project.Infrastructure.Providers;
 using P2Project.Infrastructure.Repositories;
@@ -23,6 +24,7 @@ namespace P2Project.Infrastructure.Shared
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             //services.AddSingleton<SoftDeleteInterceptor>();
             services.AddMinio(configuration);
+            services.AddHostedService<FilesCleanerBackgroundService>();
             return services;
         }
         private static IServiceCollection AddMinio(

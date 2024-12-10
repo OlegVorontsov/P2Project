@@ -1,20 +1,18 @@
 ﻿using CSharpFunctionalExtensions;
-using Microsoft.Extensions.Logging;
-using P2Project.Application.FileProvider.Models;
-using P2Project.Domain.PetManagment.ValueObjects;
-using P2Project.Domain.Shared.IDs;
-using P2Project.Domain.Shared;
-using P2Project.Application.FileProvider;
-using P2Project.Application.Shared;
 using FluentValidation;
+using Microsoft.Extensions.Logging;
 using P2Project.Application.Extensions;
+using P2Project.Application.FileProvider;
+using P2Project.Application.FileProvider.Models;
+using P2Project.Application.Shared;
+using P2Project.Domain.PetManagment.ValueObjects;
+using P2Project.Domain.Shared;
+using P2Project.Domain.Shared.IDs;
 
 namespace P2Project.Application.Volunteers.UploadFilesToPet
 {
     public class UploadFilesToPetHandler
     {
-        private const string BUCKET_NAME = "photos";
-
         private readonly IValidator<UploadFilesToPetCommand> _validator;
         private readonly IFileProvider _fileProvider;
         private readonly IVolunteersRepository _volunteersRepository;
@@ -74,7 +72,9 @@ namespace P2Project.Application.Volunteers.UploadFilesToPet
                     return filePath.Error.ToErrorList();
 
                 var fileData = new FileData(
-                    file.Stream, filePath.Value, BUCKET_NAME);
+                    file.Stream,
+                    filePath.Value,
+                    Constants.BUCKET_NAME_PHOTOS);
 
                 filesData.Add(fileData);
             }
