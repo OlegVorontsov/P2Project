@@ -89,7 +89,7 @@ namespace P2Project.Infrastructure.Providers
             }
         }
 
-        public async Task<UnitResult<Error>> DeleteFile(
+        public async Task<Result<string, Error>> DeleteFile(
             FileMetadata fileMetadata,
             CancellationToken cancellationToken = default)
         {
@@ -101,19 +101,23 @@ namespace P2Project.Infrastructure.Providers
                 if (isBucketExist == false)
                     throw new Exception($"Bucket {fileMetadata.BucketName} not exist");
 
-                var statusObjectArgs = new StatObjectArgs()
-                    .WithBucket(fileMetadata.BucketName)
-                    .WithObject(fileMetadata.ObjectName);
+                //var statusObjectArgs = new StatObjectArgs()
+                //    .WithBucket(fileMetadata.BucketName)
+                //    .WithObject(fileMetadata.ObjectName);
 
-                var objectStat = await _minioClient.StatObjectAsync(statusObjectArgs, cancellationToken);
-                if (objectStat is null)
-                    return Result.Success<Error>();
+                //var objectStat = await _minioClient.StatObjectAsync(
+                //    statusObjectArgs, cancellationToken);
+                //if (objectStat is null)
+                //    return Result.Success<Error>();
 
                 var removeObjectArgs = new RemoveObjectArgs()
                     .WithBucket(fileMetadata.BucketName)
-                    .WithObject(fileMetadata.ObjectName);
+                    .WithObject(fileMetadata.ObjectName + ".JPG");
 
-                await _minioClient.RemoveObjectAsync(removeObjectArgs, cancellationToken);
+                await _minioClient.RemoveObjectAsync(
+                    removeObjectArgs, cancellationToken);
+
+                return fileMetadata.ObjectName;
             }
             catch (Exception ex)
             {
@@ -122,7 +126,6 @@ namespace P2Project.Infrastructure.Providers
                     fileMetadata.BucketName);
                 return Error.Failure("file.delete", "Fail to delete file in minio");
             }
-            return Result.Success<Error>();
         }
 
         public async Task<Result<string, Error>> GetFile(

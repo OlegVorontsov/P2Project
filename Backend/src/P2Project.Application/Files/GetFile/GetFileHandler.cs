@@ -14,14 +14,14 @@ namespace P2Project.Application.Files.GetFile
             _fileProvider = fileProvider;
         }
         public async Task<Result<string, Error>> Handle(
-            FileMetadata fileMetadata,
+            string id,
             CancellationToken cancellationToken = default)
         {
-            var deleteFileResult = await _fileProvider.GetFile(
-                fileMetadata,
+            var getFileResult = await _fileProvider.GetFile(
+                new FileMetadata(Constants.BUCKET_NAME_FILES, id),
                 cancellationToken);
 
-            return deleteFileResult;
+            return getFileResult;
         }
     }
 }

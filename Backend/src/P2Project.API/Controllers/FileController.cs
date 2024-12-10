@@ -10,7 +10,6 @@ namespace P2Project.API.Controllers
 {
     public class FileController : ApplicationController
     {
-        public const string BUCKET_NAME_FILES = "files";
         [HttpPost]
         public async Task<IActionResult> UploadFile(
             IFormFile file,
@@ -34,8 +33,8 @@ namespace P2Project.API.Controllers
             [FromServices] DeleteFileHandler handler,
             CancellationToken cancellationToken = default)
         {
-            var result = await handler.Handle(new FileMetadata(
-                BUCKET_NAME_FILES, id.ToString()), cancellationToken);
+            var result = await handler.Handle(
+                id.ToString(), cancellationToken);
 
             if (result.IsFailure)
                 return result.Error.ToResponse();
@@ -49,8 +48,8 @@ namespace P2Project.API.Controllers
             [FromServices] GetFileHandler handler,
             CancellationToken cancellationToken = default)
         {
-            var result = await handler.Handle(new FileMetadata(
-                BUCKET_NAME_FILES, id.ToString()), cancellationToken);
+            var result = await handler.Handle(
+                id.ToString(), cancellationToken);
 
             if (result.IsFailure)
                 return result.Error.ToResponse();
