@@ -2,6 +2,7 @@
 using P2Project.Application.FileProvider.Models;
 using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;
+using FileInfo = P2Project.Application.FileProvider.Models.FileInfo;
 
 namespace P2Project.Application.FileProvider
 {
@@ -15,8 +16,12 @@ namespace P2Project.Application.FileProvider
             IEnumerable<FileData> filesData,
             CancellationToken cancellationToken = default);
 
-        Task<Result<string, Error>> DeleteFile(
-            FileMetadata fileMetadata,
+        Task<Result<string, Error>> DeleteFileByFileMetadata(
+            FileMetadata fileMetaData,
+            CancellationToken cancellationToken = default);
+
+        Task<UnitResult<Error>> DeleteFileByFileInfo(
+            FileInfo fileInfo,
             CancellationToken cancellationToken = default);
 
         Task<Result<string, Error>> GetFile(

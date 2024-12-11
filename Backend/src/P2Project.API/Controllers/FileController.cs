@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using P2Project.API.Extensions;
-using P2Project.Application.FileProvider.Models;
 using P2Project.Application.Files.CreateFile;
 using P2Project.Application.Files.DeleteFile;
 using P2Project.Application.Files.GetFile;
@@ -29,12 +28,12 @@ namespace P2Project.API.Controllers
 
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteFile(
-            [FromRoute] Guid id,
+            [FromRoute] string objectName,
             [FromServices] DeleteFileHandler handler,
             CancellationToken cancellationToken = default)
         {
             var result = await handler.Handle(
-                id.ToString(), cancellationToken);
+                objectName, cancellationToken);
 
             if (result.IsFailure)
                 return result.Error.ToResponse();

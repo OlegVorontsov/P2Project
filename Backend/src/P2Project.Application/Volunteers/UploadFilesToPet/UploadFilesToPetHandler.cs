@@ -4,10 +4,12 @@ using Microsoft.Extensions.Logging;
 using P2Project.Application.Extensions;
 using P2Project.Application.FileProvider;
 using P2Project.Application.FileProvider.Models;
+using P2Project.Application.Messaging;
 using P2Project.Application.Shared;
 using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.IDs;
+using FileInfo = P2Project.Application.FileProvider.Models.FileInfo;
 
 namespace P2Project.Application.Volunteers.UploadFilesToPet
 {
@@ -18,19 +20,22 @@ namespace P2Project.Application.Volunteers.UploadFilesToPet
         private readonly IVolunteersRepository _volunteersRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<UploadFilesToPetHandler> _logger;
+        private readonly IMessageQueue<IEnumerable<FileInfo>> _messageQueue;
 
         public UploadFilesToPetHandler(
             IValidator<UploadFilesToPetCommand> validator,
             IFileProvider fileProvider,
             IVolunteersRepository volunteersRepository,
             IUnitOfWork unitOfWork,
-            ILogger<UploadFilesToPetHandler> logger)
+            ILogger<UploadFilesToPetHandler> logger,
+            IMessageQueue<IEnumerable<FileInfo>> messageQueue)
         {
             _validator = validator;
             _fileProvider = fileProvider;
             _volunteersRepository = volunteersRepository;
             _unitOfWork = unitOfWork;
             _logger = logger;
+            _messageQueue = messageQueue;
         }
 
         public async Task<Result<Guid, ErrorList>> Handle(
@@ -71,10 +76,11 @@ namespace P2Project.Application.Volunteers.UploadFilesToPet
                 if (filePath.IsFailure)
                     return filePath.Error.ToErrorList();
 
+                var fileInfo = new FileInfo(
+                    filePath.Value, Constants.BUCKET_NAME_PHOTOS);
+
                 var fileData = new FileData(
-                    file.Stream,
-                    filePath.Value,
-                    Constants.BUCKET_NAME_PHOTOS);
+                    file.Stream, fileInfo);
 
                 filesData.Add(fileData);
             }
@@ -82,7 +88,12 @@ namespace P2Project.Application.Volunteers.UploadFilesToPet
             var filePathsResult = await _fileProvider.UploadFiles(
                 filesData, cancellationToken);
             if (filePathsResult.IsFailure)
+            {
+                await _messageQueue.WriteAsync(
+                    filesData.Select(f => f.FileInfo), cancellationToken);
+
                 return filePathsResult.Error.ToErrorList();
+            }
 
             var petPhotos = filePathsResult.Value
                 .Select(f => PetPhoto.Create(f.Path, false).Value)

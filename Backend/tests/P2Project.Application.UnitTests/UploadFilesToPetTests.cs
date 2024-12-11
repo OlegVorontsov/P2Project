@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using P2Project.Application.FileProvider;
 using P2Project.Application.FileProvider.Models;
+using P2Project.Application.Messaging;
 using P2Project.Application.Shared;
 using P2Project.Application.Shared.Dtos;
 using P2Project.Application.Volunteers;
@@ -12,6 +13,7 @@ using P2Project.Application.Volunteers.UploadFilesToPet;
 using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;
 using P2Project.UnitTestsFabrics;
+using FileInfo = P2Project.Application.FileProvider.Models.FileInfo;
 using Result = CSharpFunctionalExtensions.Result;
 
 namespace P2Project.Application.UnitTests
@@ -23,6 +25,7 @@ namespace P2Project.Application.UnitTests
         private readonly Mock<IVolunteersRepository> _volunteersRepositoryMock = new();
         private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
         private readonly Mock<ILogger<UploadFilesToPetHandler>> _loggerMock = new();
+        private readonly Mock<IMessageQueue<IEnumerable<FileInfo>>> _messageQueueMock = new();
 
         [Fact]
         public async Task Handle_Should_Upload_Files_To_Pet()
@@ -73,7 +76,8 @@ namespace P2Project.Application.UnitTests
                 _fileProviderMock.Object,
                 _volunteersRepositoryMock.Object,
                 _unitOfWorkMock.Object,
-                _loggerMock.Object);
+                _loggerMock.Object,
+                _messageQueueMock.Object);
 
             // act
             var uploadResult = await handler.Handle(
