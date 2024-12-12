@@ -24,7 +24,7 @@ namespace P2Project.Infrastructure.Shared
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.AddScoped<ApplicationDBContext>();
+            services.AddScoped<WriteDBContext>();
             services.AddScoped<IVolunteersRepository, VolunteersRepository>();
             services.AddScoped<ISpeciesRepository, SpeciesRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();

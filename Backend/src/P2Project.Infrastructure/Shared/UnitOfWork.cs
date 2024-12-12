@@ -6,9 +6,9 @@ namespace P2Project.Infrastructure.Shared
 {
     internal class UnitOfWork : IUnitOfWork
     {
-        private readonly ApplicationDBContext _dbContext;
+        private readonly WriteDBContext _dbContext;
 
-        public UnitOfWork(ApplicationDBContext dbContext)
+        public UnitOfWork(WriteDBContext dbContext)
         {
             _dbContext = dbContext;
         }

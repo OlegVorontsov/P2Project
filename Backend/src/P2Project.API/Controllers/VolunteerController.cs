@@ -30,6 +30,12 @@ namespace P2Project.API.Controllers
             return Ok(result.Value);
         }
 
+        [HttpGet]
+        public async Task<ActionResult> Get()
+        {
+
+        }
+
         [HttpPatch("{id:guid}/main-info")]
         public async Task<ActionResult<Guid>> UpdateMainInfo(
             [FromRoute] Guid id,

@@ -9,7 +9,7 @@ public static class AppExtensions
         await using var scope = app.Services.CreateAsyncScope();
         var dbCondext = scope
                        .ServiceProvider
-                       .GetRequiredService<ApplicationDBContext>();
+                       .GetRequiredService<WriteDBContext>();
         await dbCondext.Database.MigrateAsync();
     }
 }

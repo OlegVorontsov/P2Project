@@ -12,7 +12,7 @@ using P2Project.Infrastructure;
 
 namespace P2Project.Infrastructure.Migrations
 {
-    [DbContext(typeof(ApplicationDBContext))]
+    [DbContext(typeof(WriteDBContext))]
     [Migration("20241206065115_InitPetPosition")]
     partial class InitPetPosition
     {

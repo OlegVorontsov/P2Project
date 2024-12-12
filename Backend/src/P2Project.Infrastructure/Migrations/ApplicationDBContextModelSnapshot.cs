@@ -11,7 +11,7 @@ using P2Project.Infrastructure;
 
 namespace P2Project.Infrastructure.Migrations
 {
-    [DbContext(typeof(ApplicationDBContext))]
+    [DbContext(typeof(WriteDBContext))]
     partial class ApplicationDBContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

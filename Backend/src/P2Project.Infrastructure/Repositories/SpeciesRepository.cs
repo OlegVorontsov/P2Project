@@ -10,8 +10,8 @@ namespace P2Project.Infrastructure.Repositories
 {
     public class SpeciesRepository : ISpeciesRepository
     {
-        private readonly ApplicationDBContext _dbContext;
-        public SpeciesRepository(ApplicationDBContext dbContext)
+        private readonly WriteDBContext _dbContext;
+        public SpeciesRepository(WriteDBContext dbContext)
         {
             _dbContext = dbContext;
         }

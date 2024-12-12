@@ -10,8 +10,8 @@ namespace P2Project.Infrastructure.Repositories
 {
     public class VolunteersRepository : IVolunteersRepository
     {
-        private readonly ApplicationDBContext _dbContext;
-        public VolunteersRepository(ApplicationDBContext dbContext)
+        private readonly WriteDBContext _dbContext;
+        public VolunteersRepository(WriteDBContext dbContext)
         {
             _dbContext = dbContext;
         }
