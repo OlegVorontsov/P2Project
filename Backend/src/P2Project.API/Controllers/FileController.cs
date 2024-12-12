@@ -26,9 +26,9 @@ namespace P2Project.API.Controllers
             return Ok(result.Value);
         }
 
-        [HttpDelete("{id:guid}")]
+        [HttpDelete]
         public async Task<IActionResult> DeleteFile(
-            [FromRoute] string objectName,
+            string objectName,
             [FromServices] DeleteFileHandler handler,
             CancellationToken cancellationToken = default)
         {
