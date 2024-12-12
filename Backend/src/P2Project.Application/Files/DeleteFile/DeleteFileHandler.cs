@@ -1,7 +1,9 @@
 ﻿using CSharpFunctionalExtensions;
 using P2Project.Application.FileProvider;
 using P2Project.Application.FileProvider.Models;
+using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;
+using FileInfo = P2Project.Application.FileProvider.Models.FileInfo;
 
 namespace P2Project.Application.Files.DeleteFile
 {
@@ -14,12 +16,12 @@ namespace P2Project.Application.Files.DeleteFile
             _fileProvider = fileProvider;
         }
         public async Task<Result<string, Error>> Handle(
-            FileMetadata fileMetadata,
+            string objectName,
             CancellationToken cancellationToken = default)
         {
-            var deleteFileResult = await _fileProvider.DeleteFile(
-                fileMetadata,
-                cancellationToken);
+            var deleteFileResult = await _fileProvider
+                .DeleteFileByFileMetadata(new FileMetadata(
+                Constants.BUCKET_NAME_FILES, objectName), cancellationToken);
 
             return deleteFileResult;
         }

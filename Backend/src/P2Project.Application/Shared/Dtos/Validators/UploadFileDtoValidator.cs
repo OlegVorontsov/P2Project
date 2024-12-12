@@ -14,7 +14,7 @@ namespace P2Project.Application.Shared.Dtos.Validators
                 .WithError(Errors.General.ValueIsRequired());
 
             RuleFor(fd => fd.Stream)
-                .Must(s => s.Length < 5000000);
+                .Must(s => s.Length < 10000000);
         }
     }
 }

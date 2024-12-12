@@ -118,6 +118,7 @@ namespace P2Project.API.Controllers
         {
             var result = await handler.Handle(
                 request.ToCommand(id), cancellationToken);
+
             if (result.IsFailure)
                 return BadRequest(result.Error);
 
