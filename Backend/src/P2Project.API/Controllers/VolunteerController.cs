@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using P2Project.API.Extensions;
 using P2Project.API.Processor;
-using P2Project.Application.Volunteers.AddPet;
-using P2Project.Application.Volunteers.CreatePet;
-using P2Project.Application.Volunteers.CreateVolunteer;
-using P2Project.Application.Volunteers.Delete;
-using P2Project.Application.Volunteers.UpdateAssistanceDetails;
-using P2Project.Application.Volunteers.UpdateMainInfo;
-using P2Project.Application.Volunteers.UpdatePhoneNumbers;
-using P2Project.Application.Volunteers.UpdateSocialNetworks;
-using P2Project.Application.Volunteers.UploadFilesToPet;
+using P2Project.API.Response;
+using P2Project.Application.Volunteers.Commands.AddPet;
+using P2Project.Application.Volunteers.Commands.Create;
+using P2Project.Application.Volunteers.Commands.Delete;
+using P2Project.Application.Volunteers.Commands.UpdateAssistanceDetails;
+using P2Project.Application.Volunteers.Commands.UpdateMainInfo;
+using P2Project.Application.Volunteers.Commands.UpdatePhoneNumbers;
+using P2Project.Application.Volunteers.Commands.UpdateSocialNetworks;
+using P2Project.Application.Volunteers.Commands.UploadFilesToPet;
 
 namespace P2Project.API.Controllers
 {
@@ -28,12 +28,6 @@ namespace P2Project.API.Controllers
                 return result.Error.ToResponse();
 
             return Ok(result.Value);
-        }
-
-        [HttpGet]
-        public async Task<ActionResult> Get()
-        {
-
         }
 
         [HttpPatch("{id:guid}/main-info")]

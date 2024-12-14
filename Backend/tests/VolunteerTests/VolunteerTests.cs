@@ -2,7 +2,7 @@ using FluentAssertions;
 using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.UnitTestsFabrics;
 
-namespace VolunteerTests
+namespace P2Project.Domain.UnitTests
 {
     public class VolunteerTests
     {

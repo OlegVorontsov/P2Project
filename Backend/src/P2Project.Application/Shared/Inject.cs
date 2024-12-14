@@ -1,16 +1,17 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using P2Project.Application.Files.CreateFile;
 using P2Project.Application.Files.DeleteFile;
 using P2Project.Application.Files.GetFile;
-using P2Project.Application.Volunteers.CreatePet;
-using P2Project.Application.Volunteers.CreateVolunteer;
-using P2Project.Application.Volunteers.Delete;
-using P2Project.Application.Volunteers.UpdateAssistanceDetails;
-using P2Project.Application.Volunteers.UpdateMainInfo;
-using P2Project.Application.Volunteers.UpdatePhoneNumbers;
-using P2Project.Application.Volunteers.UpdateSocialNetworks;
-using P2Project.Application.Volunteers.UploadFilesToPet;
+using P2Project.Application.Files.UploadFile;
+using P2Project.Application.Volunteers.Commands.AddPet;
+using P2Project.Application.Volunteers.Commands.Create;
+using P2Project.Application.Volunteers.Commands.Delete;
+using P2Project.Application.Volunteers.Commands.UpdateAssistanceDetails;
+using P2Project.Application.Volunteers.Commands.UpdateMainInfo;
+using P2Project.Application.Volunteers.Commands.UpdatePhoneNumbers;
+using P2Project.Application.Volunteers.Commands.UpdateSocialNetworks;
+using P2Project.Application.Volunteers.Commands.UploadFilesToPet;
+using P2Project.Application.Volunteers.Queries.GetPets;
 
 namespace P2Project.Application.Shared
 {
@@ -25,6 +26,7 @@ namespace P2Project.Application.Shared
             services.AddScoped<UpdateSocialNetworksHandler>();
             services.AddScoped<UpdateAssistanceDetailsHandler>();
             services.AddScoped<DeleteHandler>();
+            services.AddScoped<GetPetsHandler>();
 
             services.AddScoped<UploadFileHandler>();
             services.AddScoped<DeleteFileHandler>();

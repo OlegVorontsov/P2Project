@@ -1,0 +1,86 @@
+﻿using CSharpFunctionalExtensions;
+using FluentValidation;
+using Microsoft.Extensions.Logging;
+using P2Project.Application.Extensions;
+using P2Project.Application.Shared;
+using P2Project.Domain.PetManagment;
+using P2Project.Domain.PetManagment.ValueObjects;
+using P2Project.Domain.Shared;
+using P2Project.Domain.Shared.IDs;
+
+namespace P2Project.Application.Volunteers.Commands.UpdateMainInfo
+{
+    public class UpdateMainInfoHandler
+    {
+        private readonly IValidator<UpdateMainInfoCommand> _validator;
+        private readonly IVolunteersRepository _volunteersRepository;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly ILogger<UpdateMainInfoHandler> _logger;
+
+        public UpdateMainInfoHandler(
+            IValidator<UpdateMainInfoCommand> validator,
+            IVolunteersRepository volunteersRepository,
+            IUnitOfWork unitOfWork,
+            ILogger<UpdateMainInfoHandler> logger)
+        {
+            _validator = validator;
+            _volunteersRepository = volunteersRepository;
+            _unitOfWork = unitOfWork;
+            _logger = logger;
+        }
+        public async Task<Result<Guid, ErrorList>> Handle(
+            UpdateMainInfoCommand command,
+            CancellationToken cancellationToken = default)
+        {
+            var validationResult = await _validator.ValidateAsync(
+                                      command,
+                                      cancellationToken);
+            if (validationResult.IsValid == false)
+                return validationResult.ToErrorList();
+
+            var volunteerId = VolunteerId.Create(
+                                          command.VolunteerId);
+
+            var volunteerResult = await _volunteersRepository.GetById(
+                                        volunteerId,
+                                        cancellationToken);
+            if (volunteerResult.IsFailure)
+                return volunteerResult.Error.ToErrorList();
+
+            var fullName = FullName.Create(
+                                    command.FullName.FirstName,
+                                    command.FullName.SecondName,
+                                    command.FullName.LastName).Value;
+
+            var gender = Enum.Parse<Gender>(command.Gender);
+
+            var description = Description.Create(
+                command.Description).Value;
+
+            volunteerResult.Value.UpdateMainInfo(
+                fullName,
+                command.Age,
+                gender,
+                description);
+
+            var id = _volunteersRepository.Save(
+                                        volunteerResult.Value);
+            await _unitOfWork.SaveChanges(cancellationToken);
+
+            _logger.LogInformation(
+                    "For volunteer with ID: {id} was updated main info to " +
+                    "full name: {SecondName} {FirstName} {LastName} " +
+                    "age: {Age} gender: {gender} " +
+                    "description: {Value}",
+                    id,
+                    fullName.SecondName,
+                    fullName.FirstName,
+                    fullName.LastName,
+                    command.Age,
+                    gender,
+                    description.Value);
+
+            return id;
+        }
+    }
+}

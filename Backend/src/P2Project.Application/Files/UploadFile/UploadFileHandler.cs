@@ -6,7 +6,7 @@ using P2Project.Domain.Shared;
 using FileInfo = P2Project.Application.FileProvider.Models.FileInfo;
 using IFileProvider = P2Project.Application.FileProvider.IFileProvider;
 
-namespace P2Project.Application.Files.CreateFile
+namespace P2Project.Application.Files.UploadFile
 {
     public class UploadFileHandler
     {

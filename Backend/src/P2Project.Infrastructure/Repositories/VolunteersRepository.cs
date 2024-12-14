@@ -5,13 +5,14 @@ using P2Project.Domain.PetManagment;
 using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.IDs;
+using P2Project.Infrastructure.DBContexts;
 
 namespace P2Project.Infrastructure.Repositories
 {
     public class VolunteersRepository : IVolunteersRepository
     {
-        private readonly WriteDBContext _dbContext;
-        public VolunteersRepository(WriteDBContext dbContext)
+        private readonly WriteDbContext _dbContext;
+        public VolunteersRepository(WriteDbContext dbContext)
         {
             _dbContext = dbContext;
         }
