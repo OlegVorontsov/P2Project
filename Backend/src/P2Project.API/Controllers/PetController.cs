@@ -14,7 +14,7 @@ public class PetController : ApplicationController
     {
         var query = request.ToQuery();
 
-        var response = handler.Handle(query, cancellationToken);
+        var response = await handler.Handle(query, cancellationToken);
 
         return Ok(response);
     }

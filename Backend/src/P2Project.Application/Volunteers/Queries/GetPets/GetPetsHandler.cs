@@ -21,11 +21,13 @@ namespace P2Project.Application.Volunteers.Queries.GetPets
         {
             var petsDbSet = _readDbContext
                 .Pets.AsQueryable();
-
-            return await petsDbSet.ToPagedList(
+            
+            var pagedList = await petsDbSet.ToPagedList(
                 query.Page,
                 query.PageSize,
                 cancellationToken);
+
+            return pagedList;
         }
     }
 }
