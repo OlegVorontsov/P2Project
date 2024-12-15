@@ -1,5 +1,6 @@
 ﻿using FluentValidation.Results;
 using P2Project.Domain.Shared;
+using P2Project.Domain.Shared.Errors;
 
 namespace P2Project.Application.Extensions
 {

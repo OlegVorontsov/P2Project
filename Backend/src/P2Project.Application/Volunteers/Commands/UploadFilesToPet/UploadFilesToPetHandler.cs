@@ -4,16 +4,19 @@ using Microsoft.Extensions.Logging;
 using P2Project.Application.Extensions;
 using P2Project.Application.FileProvider;
 using P2Project.Application.FileProvider.Models;
+using P2Project.Application.Interfaces;
+using P2Project.Application.Interfaces.Commands;
+using P2Project.Application.Interfaces.Repositories;
 using P2Project.Application.Messaging;
-using P2Project.Application.Shared;
 using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;
+using P2Project.Domain.Shared.Errors;
 using P2Project.Domain.Shared.IDs;
 using FileInfo = P2Project.Application.FileProvider.Models.FileInfo;
 
 namespace P2Project.Application.Volunteers.Commands.UploadFilesToPet
 {
-    public class UploadFilesToPetHandler
+    public class UploadFilesToPetHandler : ICommandHandler<Guid, UploadFilesToPetCommand>
     {
         private readonly IValidator<UploadFilesToPetCommand> _validator;
         private readonly IFileProvider _fileProvider;

@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using P2Project.Infrastructure.DBContexts;
+using P2Project.Infrastructure.DbContexts;
 
 namespace P2Project.API.Extensions;
 

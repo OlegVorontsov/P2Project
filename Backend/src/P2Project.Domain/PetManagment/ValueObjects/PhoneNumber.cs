@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using P2Project.Domain.Shared;
 using System.Text.RegularExpressions;
+using P2Project.Domain.Shared.Errors;
 
 namespace P2Project.Domain.PetManagment.ValueObjects
 {

@@ -2,19 +2,22 @@
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using P2Project.Application.Extensions;
-using P2Project.Application.Shared;
+using P2Project.Application.Interfaces;
+using P2Project.Application.Interfaces.Commands;
+using P2Project.Application.Interfaces.Repositories;
 using P2Project.Application.Species;
 using P2Project.Application.Species.Create;
 using P2Project.Domain.PetManagment.Entities;
 using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;
+using P2Project.Domain.Shared.Errors;
 using P2Project.Domain.Shared.IDs;
 using P2Project.Domain.SpeciesManagment.Entities;
 using P2Project.Domain.SpeciesManagment.ValueObjects;
 
 namespace P2Project.Application.Volunteers.Commands.AddPet
 {
-    public class AddPetHandler
+    public class AddPetHandler : ICommandHandler<Guid, AddPetCommand>
     {
         private const string BUCKET_NAME = "photos";
 

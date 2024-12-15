@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using P2Project.API.Response;
 using P2Project.Domain.Shared;
+using P2Project.Domain.Shared.Errors;
 
 namespace P2Project.API.Extensions
 {

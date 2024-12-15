@@ -1,4 +1,7 @@
-﻿namespace P2Project.Application.Volunteers.Commands.Delete
+﻿using P2Project.Application.Interfaces;
+using P2Project.Application.Interfaces.Commands;
+
+namespace P2Project.Application.Volunteers.Commands.Delete
 {
-    public record DeleteCommand(Guid VolunteerId);
+    public record DeleteCommand(Guid VolunteerId) : ICommand;
 }

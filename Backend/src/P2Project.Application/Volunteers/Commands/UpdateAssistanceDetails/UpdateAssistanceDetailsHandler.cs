@@ -2,14 +2,16 @@
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using P2Project.Application.Extensions;
-using P2Project.Application.Shared;
+using P2Project.Application.Interfaces;
+using P2Project.Application.Interfaces.Commands;
+using P2Project.Application.Interfaces.Repositories;
 using P2Project.Domain.PetManagment.ValueObjects;
-using P2Project.Domain.Shared;
+using P2Project.Domain.Shared.Errors;
 using P2Project.Domain.Shared.IDs;
 
 namespace P2Project.Application.Volunteers.Commands.UpdateAssistanceDetails
 {
-    public class UpdateAssistanceDetailsHandler
+    public class UpdateAssistanceDetailsHandler : ICommandHandler<Guid, UpdateAssistanceDetailsCommand>
     {
         private readonly IValidator<UpdateAssistanceDetailsCommand> _validator;
         private readonly IVolunteersRepository _volunteersRepository;

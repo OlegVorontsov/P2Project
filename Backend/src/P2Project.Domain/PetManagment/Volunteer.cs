@@ -2,6 +2,7 @@
 using P2Project.Domain.PetManagment.Entities;
 using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;
+using P2Project.Domain.Shared.Errors;
 using P2Project.Domain.Shared.IDs;
 using Result = CSharpFunctionalExtensions.Result;
 

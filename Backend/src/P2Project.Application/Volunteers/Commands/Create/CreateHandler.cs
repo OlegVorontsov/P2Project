@@ -2,15 +2,18 @@
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using P2Project.Application.Extensions;
-using P2Project.Application.Shared;
+using P2Project.Application.Interfaces;
+using P2Project.Application.Interfaces.Commands;
+using P2Project.Application.Interfaces.Repositories;
 using P2Project.Domain.PetManagment;
 using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;
+using P2Project.Domain.Shared.Errors;
 using P2Project.Domain.Shared.IDs;
 
 namespace P2Project.Application.Volunteers.Commands.Create
 {
-    public class CreateHandler
+    public class CreateHandler : ICommandHandler<Guid, CreateCommand>
     {
         private readonly IValidator<CreateCommand> _validator;
         private readonly IVolunteersRepository _volunteersRepository;

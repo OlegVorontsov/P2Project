@@ -1,4 +1,6 @@
-﻿using P2Project.Application.Shared.Dtos;
+﻿using P2Project.Application.Interfaces;
+using P2Project.Application.Interfaces.Commands;
+using P2Project.Application.Shared.Dtos;
 
 namespace P2Project.Application.Volunteers.Commands.UpdateMainInfo
 {
@@ -7,5 +9,5 @@ namespace P2Project.Application.Volunteers.Commands.UpdateMainInfo
                   FullNameDto FullName,
                   int Age,
                   string Gender,
-                  string? Description);
+                  string? Description) : ICommand;
 }
