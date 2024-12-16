@@ -22,11 +22,7 @@ namespace P2Project.Application.Shared.Dtos
         public string AssistanceDetail { get; init; } = string.Empty;
         public string CreatedAt { get; init; } = string.Empty;
         public int Position { get; init; }*/
-        public PetPhotoDto[] PetPhotosDto { get; private set; } = null!;
+        public IEnumerable<PetPhotoDto> Photos { get; init; } = default!;
     }
 }
-public class PetPhotoDto
-{
-    public string Path { get; set; } = string.Empty;
-    public bool IsMain { get; set; }
-}
+public record PetPhotoDto(string Path, bool IsMain);

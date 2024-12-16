@@ -7,7 +7,7 @@ namespace P2Project.API.Controllers.Pets;
 public class PetController : ApplicationController
 {
     [HttpGet]
-    public async Task<ActionResult> Get(
+    public async Task<IActionResult> Get(
         [FromQuery] GetPetsRequest request,
         [FromServices] GetPetsHandler handler,
         CancellationToken cancellationToken)

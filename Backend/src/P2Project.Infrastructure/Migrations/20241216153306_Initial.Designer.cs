@@ -13,7 +13,7 @@ using P2Project.Infrastructure.DbContexts;
 namespace P2Project.Infrastructure.Migrations
 {
     [DbContext(typeof(WriteDbContext))]
-    [Migration("20241216064857_Initial")]
+    [Migration("20241216153306_Initial")]
     partial class Initial
     {
         /// <inheritdoc />

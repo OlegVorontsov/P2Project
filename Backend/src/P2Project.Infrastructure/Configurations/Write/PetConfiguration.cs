@@ -170,36 +170,18 @@ namespace P2Project.Infrastructure.Configurations.Write
                 .HasConversion(
                     photos => JsonSerializer
                         .Serialize(photos
-                            .Select(pp => new PetPhotoDto
-                            {
-                                Path = pp.FilePath,
-                                IsMain = pp.IsMain
-                            }), JsonSerializerOptions.Default),
+                            .Select(pp =>
+                                new PetPhotoDto(pp.FilePath, pp.IsMain)),
+                            JsonSerializerOptions.Default),
                     
-                    json => JsonSerializer.Deserialize<List<PetPhotoDto>>(json, JsonSerializerOptions.Default)!
+                    json => JsonSerializer.Deserialize<IEnumerable<PetPhotoDto>>(json, JsonSerializerOptions.Default)!
                         .Select(dto => PetPhoto.Create(dto.Path, dto.IsMain).Value).ToList(),
                     
                     new ValueComparer<IReadOnlyList<PetPhoto>>(
                             (c1, c2) => c1!.SequenceEqual(c2!),
-                            c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                            c => (IReadOnlyList<PetPhoto>)c.ToList()));
-
-            /*builder.OwnsOne(p => p.Photos, pp =>
-            {
-                pp.ToJson("photos");
-
-                pp.OwnsMany(x => x.PetPhotos, pb =>
-                {
-                    pb.Property(c => c.FilePath)
-                    .IsRequired()
-                    .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH)
-                    .HasColumnName("file_path");
-
-                    pb.Property(c => c.IsMain)
-                    .IsRequired()
-                    .HasColumnName("is_main");
-                });
-            });*/
+                            c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v!.GetHashCode())),
+                            c => c.ToList()));
+            builder.Property(p => p.Photos).HasColumnName("photos");
 
             builder.Property(p => p.CreatedAt)
                    .IsRequired()
