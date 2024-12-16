@@ -2,13 +2,17 @@
 using Microsoft.Extensions.DependencyInjection;
 using Minio;
 using P2Project.Application.FileProvider;
-using P2Project.Application.FilesCleaner;
+using P2Project.Application.Interfaces;
+using P2Project.Application.Interfaces.DbContexts;
+using P2Project.Application.Interfaces.Repositories;
+using P2Project.Application.Interfaces.Services;
 using P2Project.Application.Messaging;
 using P2Project.Application.Shared;
 using P2Project.Application.Species;
 using P2Project.Application.Volunteers;
 using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Infrastructure.BackroundServices;
+using P2Project.Infrastructure.DbContexts;
 using P2Project.Infrastructure.MessageQueues;
 using P2Project.Infrastructure.Options;
 using P2Project.Infrastructure.Providers;
@@ -24,19 +28,52 @@ namespace P2Project.Infrastructure.Shared
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.AddScoped<ApplicationDBContext>();
-            services.AddScoped<IVolunteersRepository, VolunteersRepository>();
-            services.AddScoped<ISpeciesRepository, SpeciesRepository>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-            //services.AddSingleton<SoftDeleteInterceptor>();
-            services.AddMinio(configuration);
+            services.AddRepositories()
+                    .AddDBContexts()
+                    .AddUnitOfWork()
+                    .AddHostedServices()
+                    .AddMinio(configuration);
 
-            services.AddHostedService<FilesCleanerBackgroundService>();
             services.AddSingleton<IMessageQueue<IEnumerable<FileInfo>>,
                                   InMemoryMessageQueue<IEnumerable<FileInfo>>>();
             services.AddScoped<IFilesCleanerService, FilesCleanerService>();
             return services;
         }
+
+        private static IServiceCollection AddHostedServices(
+            this IServiceCollection services)
+        {
+            services.AddHostedService<FilesCleanerBackgroundService>();
+
+            return services;
+        }
+
+        private static IServiceCollection AddUnitOfWork(
+            this IServiceCollection services)
+        {
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            return services;
+        }
+
+        private static IServiceCollection AddDBContexts(
+            this IServiceCollection services)
+        {
+            services.AddScoped<WriteDbContext>();
+            services.AddScoped<IReadDbContext, ReadDbContext>();
+
+            return services;
+        }
+
+        private static IServiceCollection AddRepositories(
+            this IServiceCollection services)
+        {
+            services.AddScoped<IVolunteersRepository, VolunteersRepository>();
+            services.AddScoped<ISpeciesRepository, SpeciesRepository>();
+
+            return services;
+        }
+
         private static IServiceCollection AddMinio(
             this IServiceCollection services,
             IConfiguration configuration)

@@ -1,5 +1,6 @@
 ﻿
 using P2Project.Domain.Shared;
+using P2Project.Domain.Shared.Errors;
 
 namespace P2Project.API.Response
 {

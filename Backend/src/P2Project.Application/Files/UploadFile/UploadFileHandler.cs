@@ -3,10 +3,11 @@ using P2Project.Application.FileProvider.Models;
 using P2Project.Application.Shared.Dtos;
 using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;
+using P2Project.Domain.Shared.Errors;
 using FileInfo = P2Project.Application.FileProvider.Models.FileInfo;
 using IFileProvider = P2Project.Application.FileProvider.IFileProvider;
 
-namespace P2Project.Application.Files.CreateFile
+namespace P2Project.Application.Files.UploadFile
 {
     public class UploadFileHandler
     {

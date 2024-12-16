@@ -2,6 +2,7 @@
 using P2Project.API.Response;
 using P2Project.Domain.Shared;
 using System.Globalization;
+using P2Project.Domain.Shared.Errors;
 
 namespace P2Project.API.Middlewares
 {

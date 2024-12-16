@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using P2Project.Application.FilesCleaner;
+using P2Project.Application.Interfaces.Services;
 
 namespace P2Project.Infrastructure.BackroundServices
 {

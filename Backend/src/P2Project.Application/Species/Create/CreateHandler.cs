@@ -1,15 +1,15 @@
 ﻿using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
 using P2Project.Domain.Shared.IDs;
-using P2Project.Domain.Shared;
 using P2Project.Domain.SpeciesManagment.ValueObjects;
-using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.SpeciesManagment.Entities;
-using System.Linq;
+using P2Project.Application.Interfaces.Commands;
+using P2Project.Application.Interfaces.Repositories;
+using P2Project.Domain.Shared.Errors;
 
 namespace P2Project.Application.Species.Create
 {
-    public class CreateHandler
+    public class CreateHandler : ICommandHandler<Guid, CreateCommand>
     {
         private readonly ISpeciesRepository _speciesRepository;
         private readonly ILogger<CreateHandler> _logger;
@@ -21,7 +21,7 @@ namespace P2Project.Application.Species.Create
             _speciesRepository = speciesRepository;
             _logger = logger;
         }
-        public async Task<Result<Guid, Error>> Handle(
+        public async Task<Result<Guid, ErrorList>> Handle(
             CreateCommand command,
             CancellationToken cancellationToken = default)
         {
@@ -32,7 +32,10 @@ namespace P2Project.Application.Species.Create
             var speciesByName = await _speciesRepository.GetByName(
                 name, cancellationToken);
             if (speciesByName.IsSuccess)
-                return Errors.Species.AlreadyExist();
+            {
+                var error = Errors.Species.AlreadyExist();
+                return error.ToErrorList();
+            }
 
             var newBreeds = new List<Breed>();
             if (command.Breeds != null)

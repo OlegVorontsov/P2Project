@@ -1,14 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
 using P2Project.Application.Shared;
 using System.Data;
+using P2Project.Application.Interfaces;
+using P2Project.Infrastructure.DbContexts;
 
 namespace P2Project.Infrastructure.Shared
 {
     internal class UnitOfWork : IUnitOfWork
     {
-        private readonly ApplicationDBContext _dbContext;
+        private readonly WriteDbContext _dbContext;
 
-        public UnitOfWork(ApplicationDBContext dbContext)
+        public UnitOfWork(WriteDbContext dbContext)
         {
             _dbContext = dbContext;
         }

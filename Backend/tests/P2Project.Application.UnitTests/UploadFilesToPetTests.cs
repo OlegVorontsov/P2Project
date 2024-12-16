@@ -5,13 +5,16 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using P2Project.Application.FileProvider;
 using P2Project.Application.FileProvider.Models;
+using P2Project.Application.Interfaces;
+using P2Project.Application.Interfaces.Repositories;
 using P2Project.Application.Messaging;
 using P2Project.Application.Shared;
 using P2Project.Application.Shared.Dtos;
 using P2Project.Application.Volunteers;
-using P2Project.Application.Volunteers.UploadFilesToPet;
+using P2Project.Application.Volunteers.Commands.UploadFilesToPet;
 using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;
+using P2Project.Domain.Shared.Errors;
 using P2Project.UnitTestsFabrics;
 using FileInfo = P2Project.Application.FileProvider.Models.FileInfo;
 using Result = CSharpFunctionalExtensions.Result;
@@ -83,7 +86,7 @@ namespace P2Project.Application.UnitTests
             var uploadResult = await handler.Handle(
                 command, cancellationToken);
             var filesCount = volunteer.Pets
-                .Where(p => p.Id == pet.Id).First().Photos.PetPhotos.Count;
+                .Where(p => p.Id == pet.Id).First().Photos.Count;
 
             // assert
             uploadResult.IsSuccess.Should().BeTrue();

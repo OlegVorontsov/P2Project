@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using P2Project.Infrastructure;
+using P2Project.Infrastructure.DbContexts;
+
+namespace P2Project.API.Extensions;
 
 public static class AppExtensions
 {
@@ -8,8 +10,8 @@ public static class AppExtensions
     {
         await using var scope = app.Services.CreateAsyncScope();
         var dbCondext = scope
-                       .ServiceProvider
-                       .GetRequiredService<ApplicationDBContext>();
+            .ServiceProvider
+            .GetRequiredService<WriteDbContext>();
         await dbCondext.Database.MigrateAsync();
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using P2Project.Application.FileProvider;
-using P2Project.Application.FilesCleaner;
+using P2Project.Application.Interfaces.Services;
 using P2Project.Application.Messaging;
 using FileInfo = P2Project.Application.FileProvider.Models.FileInfo;
 

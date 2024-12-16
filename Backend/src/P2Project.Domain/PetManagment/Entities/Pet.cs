@@ -1,6 +1,8 @@
-﻿using CSharpFunctionalExtensions;
+﻿using System.Collections;
+using CSharpFunctionalExtensions;
 using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;
+using P2Project.Domain.Shared.Errors;
 using P2Project.Domain.Shared.IDs;
 using Result = CSharpFunctionalExtensions.Result;
 
@@ -12,6 +14,8 @@ namespace P2Project.Domain.PetManagment.Entities
         private Pet(PetId id) : base(id) { }
 
         private bool _isDeleted = false;
+        
+        private List<PetPhoto> _photos = [];
 
         public Pet(
                PetId id,
@@ -30,7 +34,7 @@ namespace P2Project.Domain.PetManagment.Entities
                AssistanceStatus assistanceStatus,
                PetAssistanceDetails? assistanceDetails,
                DateOnly createdAt,
-               IEnumerable<PetPhoto>? photos = null) : base(id)
+               List<PetPhoto>? photos = null) : base(id)
         {
             NickName = nickName;
             SpeciesBreed = speciesBreed;
@@ -48,9 +52,8 @@ namespace P2Project.Domain.PetManagment.Entities
             AssistanceDetails = assistanceDetails;
             CreatedAt = createdAt;
 
-            Photos = photos == null
-                ? new PetPhotoList(Enumerable.Empty<PetPhoto>())
-                : new PetPhotoList(photos);
+            _photos = photos ??
+                new List<PetPhoto>([]);
         }
         public NickName NickName { get; private set; } = default!;
         public SpeciesBreed SpeciesBreed { get; private set; } = default!;
@@ -67,7 +70,7 @@ namespace P2Project.Domain.PetManagment.Entities
         public AssistanceStatus AssistanceStatus { get; private set; }
         public PetAssistanceDetails? AssistanceDetails { get; private set; } = default!;
         public DateOnly CreatedAt { get; private set; }
-        public PetPhotoList Photos { get; private set; }
+        public IReadOnlyList<PetPhoto> Photos => _photos;
         public Position Position { get; private set; }
 
         public void SetPosition (Position position) =>
@@ -95,8 +98,8 @@ namespace P2Project.Domain.PetManagment.Entities
             return Result.Success<Error>();
         }
 
-        public void UpdatePhotos(IEnumerable<PetPhoto> photos) =>
-            Photos = new PetPhotoList(photos);
+        public void UpdatePhotos(List<PetPhoto> photos) =>
+            _photos = photos;
 
         public void SoftDelete()
         {
