@@ -6,7 +6,7 @@ namespace P2Project.Application.Shared.Dtos
         public Guid Id { get; init; }
         public Guid VolunteerId { get; init; }
         public string NickName { get; init; } = string.Empty;
-        public string Species { get; init; } = string.Empty;
+        /*public string Species { get; init; } = string.Empty;
         public string Breed { get; init; } = string.Empty;
         public string Description { get; init; } = string.Empty;
         public string Color { get; init; } = string.Empty;
@@ -21,7 +21,12 @@ namespace P2Project.Application.Shared.Dtos
         public string AssistanceStatus { get; init; } = string.Empty;
         public string AssistanceDetail { get; init; } = string.Empty;
         public string CreatedAt { get; init; } = string.Empty;
-        public string Photos { get; init; } = string.Empty;
-        public int Position { get; init; }
+        public int Position { get; init; }*/
+        public PetPhotoDto[] PetPhotosDto { get; private set; } = null!;
     }
+}
+public class PetPhotoDto
+{
+    public string Path { get; set; } = string.Empty;
+    public bool IsMain { get; set; }
 }

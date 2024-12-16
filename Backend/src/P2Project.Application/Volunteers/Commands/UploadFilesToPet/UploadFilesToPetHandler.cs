@@ -99,7 +99,7 @@ namespace P2Project.Application.Volunteers.Commands.UploadFilesToPet
             }
 
             var petPhotos = filePathsResult.Value
-                .Select(f => PetPhoto.Create(f.Path, false).Value)
+                .Select(f => PetPhoto.Create(f.Path).Value)
                 .ToList();
 
             petResult.Value.UpdatePhotos(petPhotos);

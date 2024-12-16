@@ -86,7 +86,7 @@ namespace P2Project.Application.UnitTests
             var uploadResult = await handler.Handle(
                 command, cancellationToken);
             var filesCount = volunteer.Pets
-                .Where(p => p.Id == pet.Id).First().Photos.PetPhotos.Count;
+                .Where(p => p.Id == pet.Id).First().Photos.Count;
 
             // assert
             uploadResult.IsSuccess.Should().BeTrue();

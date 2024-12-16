@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace P2Project.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitReadDbContext : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -76,6 +76,7 @@ namespace P2Project.Infrastructure.Migrations
                     is_vaccinated = table.Column<bool>(type: "boolean", nullable: false),
                     date_of_birth = table.Column<string>(type: "text", nullable: false),
                     created_at = table.Column<string>(type: "text", nullable: false),
+                    photos = table.Column<string>(type: "text", nullable: false),
                     volunteer_id = table.Column<Guid>(type: "uuid", nullable: true),
                     assistance_status = table.Column<string>(type: "text", nullable: false),
                     color = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
@@ -88,8 +89,7 @@ namespace P2Project.Infrastructure.Migrations
                     breed_id = table.Column<Guid>(type: "uuid", nullable: false),
                     species_id = table.Column<Guid>(type: "uuid", nullable: false),
                     address = table.Column<string>(type: "jsonb", nullable: false),
-                    assistance_details = table.Column<string>(type: "jsonb", nullable: true),
-                    photos = table.Column<string>(type: "jsonb", nullable: false)
+                    assistance_details = table.Column<string>(type: "jsonb", nullable: true)
                 },
                 constraints: table =>
                 {

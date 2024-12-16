@@ -1,6 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using P2Project.Domain.PetManagment.Entities;
+using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.IDs;
 
@@ -162,8 +165,26 @@ namespace P2Project.Infrastructure.Configurations.Write
                       .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH);
                 });
             });
+            
+            builder.Property(p => p.Photos)
+                .HasConversion(
+                    photos => JsonSerializer
+                        .Serialize(photos
+                            .Select(pp => new PetPhotoDto
+                            {
+                                Path = pp.FilePath,
+                                IsMain = pp.IsMain
+                            }), JsonSerializerOptions.Default),
+                    
+                    json => JsonSerializer.Deserialize<List<PetPhotoDto>>(json, JsonSerializerOptions.Default)!
+                        .Select(dto => PetPhoto.Create(dto.Path, dto.IsMain).Value).ToList(),
+                    
+                    new ValueComparer<IReadOnlyList<PetPhoto>>(
+                            (c1, c2) => c1!.SequenceEqual(c2!),
+                            c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+                            c => (IReadOnlyList<PetPhoto>)c.ToList()));
 
-            builder.OwnsOne(p => p.Photos, pp =>
+            /*builder.OwnsOne(p => p.Photos, pp =>
             {
                 pp.ToJson("photos");
 
@@ -178,7 +199,7 @@ namespace P2Project.Infrastructure.Configurations.Write
                     .IsRequired()
                     .HasColumnName("is_main");
                 });
-            });
+            });*/
 
             builder.Property(p => p.CreatedAt)
                    .IsRequired()
