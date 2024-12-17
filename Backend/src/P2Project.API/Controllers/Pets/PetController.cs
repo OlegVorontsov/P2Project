@@ -18,4 +18,17 @@ public class PetController : ApplicationController
 
         return Ok(response);
     }
+    
+    [HttpGet("dapper")]
+    public async Task<IActionResult> GetByDapper(
+        [FromQuery] GetPetsRequest request,
+        [FromServices] GetPetsHandlerDapper handler,
+        CancellationToken cancellationToken)
+    {
+        var query = request.ToQuery();
+
+        var response = await handler.Handle(query, cancellationToken);
+
+        return Ok(response);
+    }
 }

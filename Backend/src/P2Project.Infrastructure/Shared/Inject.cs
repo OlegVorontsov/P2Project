@@ -3,8 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Minio;
 using P2Project.Application.FileProvider;
 using P2Project.Application.Interfaces;
+using P2Project.Application.Interfaces.DataBase;
 using P2Project.Application.Interfaces.DbContexts;
-using P2Project.Application.Interfaces.Repositories;
 using P2Project.Application.Interfaces.Services;
 using P2Project.Application.Messaging;
 using P2Project.Application.Shared;
@@ -29,7 +29,7 @@ namespace P2Project.Infrastructure.Shared
             IConfiguration configuration)
         {
             services.AddRepositories()
-                    .AddDBContexts()
+                    .AddDataBase()
                     .AddUnitOfWork()
                     .AddHostedServices()
                     .AddMinio(configuration);
@@ -56,11 +56,14 @@ namespace P2Project.Infrastructure.Shared
             return services;
         }
 
-        private static IServiceCollection AddDBContexts(
+        private static IServiceCollection AddDataBase(
             this IServiceCollection services)
         {
             services.AddScoped<WriteDbContext>();
             services.AddScoped<IReadDbContext, ReadDbContext>();
+            
+            services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
+            Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 
             return services;
         }

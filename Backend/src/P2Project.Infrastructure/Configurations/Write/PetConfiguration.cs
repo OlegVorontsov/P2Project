@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using P2Project.Application.Shared.Dtos;
 using P2Project.Domain.PetManagment.Entities;
 using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;
@@ -181,6 +182,7 @@ namespace P2Project.Infrastructure.Configurations.Write
                             (c1, c2) => c1!.SequenceEqual(c2!),
                             c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v!.GetHashCode())),
                             c => c.ToList()));
+            builder.Property(p => p.Photos).HasColumnType("jsonb");
             builder.Property(p => p.Photos).HasColumnName("photos");
 
             builder.Property(p => p.CreatedAt)
@@ -194,7 +196,7 @@ namespace P2Project.Infrastructure.Configurations.Write
             {
                 snb.Property(sn => sn.Value)
                   .IsRequired(true)
-                  .HasColumnName("serial_number");
+                  .HasColumnName("position");
             });
         }
     }
