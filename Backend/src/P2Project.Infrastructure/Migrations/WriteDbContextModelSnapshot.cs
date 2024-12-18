@@ -54,7 +54,7 @@ namespace P2Project.Infrastructure.Migrations
 
                     b.Property<string>("Photos")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasColumnType("jsonb")
                         .HasColumnName("photos");
 
                     b.Property<double>("Weight")

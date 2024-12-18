@@ -13,7 +13,7 @@ using P2Project.Infrastructure.DbContexts;
 namespace P2Project.Infrastructure.Migrations
 {
     [DbContext(typeof(WriteDbContext))]
-    [Migration("20241217054109_Initial")]
+    [Migration("20241218152603_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -57,7 +57,7 @@ namespace P2Project.Infrastructure.Migrations
 
                     b.Property<string>("Photos")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasColumnType("jsonb")
                         .HasColumnName("photos");
 
                     b.Property<double>("Weight")

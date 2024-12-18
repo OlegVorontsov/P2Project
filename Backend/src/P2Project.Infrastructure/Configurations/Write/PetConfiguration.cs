@@ -7,6 +7,7 @@ using P2Project.Domain.PetManagment.Entities;
 using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.IDs;
+using P2Project.Infrastructure.Extensions;
 
 namespace P2Project.Infrastructure.Configurations.Write
 {
@@ -168,22 +169,10 @@ namespace P2Project.Infrastructure.Configurations.Write
             });
             
             builder.Property(p => p.Photos)
-                .HasConversion(
-                    photos => JsonSerializer
-                        .Serialize(photos
-                            .Select(pp =>
-                                new PetPhotoDto(pp.FilePath, pp.IsMain)),
-                            JsonSerializerOptions.Default),
-                    
-                    json => JsonSerializer.Deserialize<IEnumerable<PetPhotoDto>>(json, JsonSerializerOptions.Default)!
-                        .Select(dto => PetPhoto.Create(dto.Path, dto.IsMain).Value).ToList(),
-                    
-                    new ValueComparer<IReadOnlyList<PetPhoto>>(
-                            (c1, c2) => c1!.SequenceEqual(c2!),
-                            c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v!.GetHashCode())),
-                            c => c.ToList()));
-            builder.Property(p => p.Photos).HasColumnType("jsonb");
-            builder.Property(p => p.Photos).HasColumnName("photos");
+                .ValueObjectsCollectionJsonConversion(
+                    photo => new PetPhotoDto(photo.FilePath, photo.IsMain),
+                    dto => PetPhoto.Create(dto.Path, dto.IsMain).Value)
+                .HasColumnName("photos");
 
             builder.Property(p => p.CreatedAt)
                    .IsRequired()
