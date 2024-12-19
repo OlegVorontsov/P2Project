@@ -3,7 +3,7 @@ using P2Project.Domain.Shared.Errors;
 using P2Project.Domain.Shared.IDs;
 using P2Project.Domain.SpeciesManagment.ValueObjects;
 
-namespace P2Project.Application.Interfaces.Repositories
+namespace P2Project.Application.Interfaces.DataBase
 {
     public interface ISpeciesRepository
     {

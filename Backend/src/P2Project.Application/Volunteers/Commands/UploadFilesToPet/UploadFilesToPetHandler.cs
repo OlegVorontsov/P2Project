@@ -6,7 +6,7 @@ using P2Project.Application.FileProvider;
 using P2Project.Application.FileProvider.Models;
 using P2Project.Application.Interfaces;
 using P2Project.Application.Interfaces.Commands;
-using P2Project.Application.Interfaces.Repositories;
+using P2Project.Application.Interfaces.DataBase;
 using P2Project.Application.Messaging;
 using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;

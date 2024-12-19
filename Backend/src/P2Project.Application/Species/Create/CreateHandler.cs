@@ -4,7 +4,7 @@ using P2Project.Domain.Shared.IDs;
 using P2Project.Domain.SpeciesManagment.ValueObjects;
 using P2Project.Domain.SpeciesManagment.Entities;
 using P2Project.Application.Interfaces.Commands;
-using P2Project.Application.Interfaces.Repositories;
+using P2Project.Application.Interfaces.DataBase;
 using P2Project.Domain.Shared.Errors;
 
 namespace P2Project.Application.Species.Create

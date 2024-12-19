@@ -13,12 +13,15 @@ namespace P2Project.Infrastructure.Configurations.Read
 
             builder.HasKey(p => p.Id);
             
-            builder.Property(p => p.PetPhotosDto)
+            builder.Property(p => p.Photos)
                 .HasConversion(
                     photos => JsonSerializer
                         .Serialize(string.Empty, JsonSerializerOptions.Default),
                     
-                    json => JsonSerializer.Deserialize<PetPhotoDto[]>(json, JsonSerializerOptions.Default)!);
+                    json => JsonSerializer
+                        .Deserialize<IEnumerable<PetPhotoDto>>(
+                            json, JsonSerializerOptions.Default)!)
+                .HasColumnName("photos");
         }
     }
 }

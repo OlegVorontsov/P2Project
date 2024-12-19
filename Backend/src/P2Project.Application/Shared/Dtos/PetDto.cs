@@ -1,12 +1,11 @@
-﻿
-namespace P2Project.Application.Shared.Dtos
+﻿namespace P2Project.Application.Shared.Dtos;
+
+public class PetDto
 {
-    public class PetDto
-    {
-        public Guid Id { get; init; }
-        public Guid VolunteerId { get; init; }
-        public string NickName { get; init; } = string.Empty;
-        /*public string Species { get; init; } = string.Empty;
+    public Guid Id { get; init; }
+    public Guid VolunteerId { get; init; }
+    public string NickName { get; init; } = string.Empty;
+    /*public string Species { get; init; } = string.Empty;
         public string Breed { get; init; } = string.Empty;
         public string Description { get; init; } = string.Empty;
         public string Color { get; init; } = string.Empty;
@@ -20,13 +19,9 @@ namespace P2Project.Application.Shared.Dtos
         public string DateOfBirth { get; init; } = string.Empty;
         public string AssistanceStatus { get; init; } = string.Empty;
         public string AssistanceDetail { get; init; } = string.Empty;
-        public string CreatedAt { get; init; } = string.Empty;
-        public int Position { get; init; }*/
-        public PetPhotoDto[] PetPhotosDto { get; private set; } = null!;
-    }
+        public string CreatedAt { get; init; } = string.Empty;*/
+    public int Position { get; init; }
+    public IEnumerable<PetPhotoDto> Photos { get; set; } = default!;
 }
-public class PetPhotoDto
-{
-    public string Path { get; set; } = string.Empty;
-    public bool IsMain { get; set; }
-}
+
+public record PetPhotoDto(string Path, bool IsMain);
