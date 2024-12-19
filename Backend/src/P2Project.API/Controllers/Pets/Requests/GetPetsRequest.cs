@@ -6,6 +6,8 @@ namespace P2Project.API.Controllers.Pets.Requests
         string? NickName,
         int? PositionFrom,
         int? PositionTo,
+        string? SortBy,
+        string? SortOrder,
         int Page,
         int PageSize)
     {
@@ -14,6 +16,8 @@ namespace P2Project.API.Controllers.Pets.Requests
                 NickName,
                 PositionFrom,
                 PositionTo,
+                SortBy,
+                SortOrder,
                 Page,
                 PageSize);
     }

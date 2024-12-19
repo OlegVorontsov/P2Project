@@ -1,7 +1,5 @@
-﻿using System.Text.Json;
-using Dapper;
+﻿using System.Linq.Expressions;
 using P2Project.Application.Extensions;
-using P2Project.Application.Interfaces.DataBase;
 using P2Project.Application.Interfaces.DbContexts;
 using P2Project.Application.Interfaces.Queries;
 using P2Project.Application.Shared.Dtos;
@@ -24,6 +22,18 @@ namespace P2Project.Application.Volunteers.Queries.GetPets
             CancellationToken cancellationToken)
         {
             var petsQuery = _readDbContext.Pets;
+            
+            Expression<Func<PetDto, object>> keySelector = 
+                query.SortBy?.ToLower() switch
+                {
+                    "nickname" => pet => pet.NickName,
+                    "position" => pet => pet.Position,
+                    _ => pet => pet.Id
+                };
+            
+            petsQuery = query.SortOrder?.ToLower() == "desc"
+                ? petsQuery.OrderByDescending(keySelector)
+                : petsQuery.OrderBy(keySelector);
 
             petsQuery = petsQuery.WhereIf(
                 !string.IsNullOrWhiteSpace(query.NickName),
@@ -38,60 +48,10 @@ namespace P2Project.Application.Volunteers.Queries.GetPets
                 p => p.Position >= query.PositionFrom!.Value);
 
             return await petsQuery
-                .OrderBy(p => p.Position)
                 .ToPagedList(
                 query.Page,
                 query.PageSize,
                 cancellationToken);
-        }
-    }
-    public class GetPetsHandlerDapper : IQueryHandler<PagedList<PetDto>, GetPetsQuery>
-    {
-        private readonly ISqlConnectionFactory _connectionFactory;
-
-        public GetPetsHandlerDapper(ISqlConnectionFactory connectionFactory)
-        {
-            _connectionFactory = connectionFactory;
-        }
-
-        public async Task<PagedList<PetDto>> Handle(
-            GetPetsQuery query,
-            CancellationToken cancellationToken)
-        {
-            var connection = _connectionFactory.CreateConnection();
-            
-            var parameters = new DynamicParameters();
-
-            var totalCount = await connection
-                .ExecuteScalarAsync<long>("select count(*) from pets");
-
-            var sql = """
-                      select id, nick_name, position, photos from pets
-                      order by position desc
-                      limit @pageSize offset @offset
-                      """;
-
-            parameters.Add("@pageSize", query.PageSize);
-            parameters.Add("@offset", (query.Page - 1) * query.PageSize);
-            
-            var pets = await connection.QueryAsync<PetDto, string, PetDto>(
-                sql,
-                (pet, jsonPhotos) =>
-                {
-                    var photos = JsonSerializer.Deserialize<IEnumerable<PetPhotoDto>>(jsonPhotos) ?? new List<PetPhotoDto>();
-                    pet.Photos = photos;
-                    return pet;
-                },
-                splitOn: "photos",
-                param: parameters);
-            
-            return new PagedList<PetDto>()
-            {
-                Items = pets.ToList(),
-                TotalCount = totalCount,
-                Page = query.Page,
-                PageSize = query.PageSize
-            };
         }
     }
 }
