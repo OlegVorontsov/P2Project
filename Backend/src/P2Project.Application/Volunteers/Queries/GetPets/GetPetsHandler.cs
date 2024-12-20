@@ -1,26 +1,36 @@
 ﻿using System.Linq.Expressions;
+using CSharpFunctionalExtensions;
+using FluentValidation;
 using P2Project.Application.Extensions;
 using P2Project.Application.Interfaces.DbContexts;
 using P2Project.Application.Interfaces.Queries;
 using P2Project.Application.Shared.Dtos;
 using P2Project.Application.Shared.Models;
+using P2Project.Domain.Shared.Errors;
 
 namespace P2Project.Application.Volunteers.Queries.GetPets
 {
     public class GetPetsHandler : IQueryHandler<PagedList<PetDto>, GetPetsQuery>
     {
+        private readonly IValidator<GetPetsQuery> _validator;
         private readonly IReadDbContext _readDbContext;
 
         public GetPetsHandler(
-            IReadDbContext readDbContext)
+            IReadDbContext readDbContext, IValidator<GetPetsQuery> validator)
         {
             _readDbContext = readDbContext;
+            _validator = validator;
         }
 
-        public async Task<PagedList<PetDto>> Handle(
+        public async Task<Result<PagedList<PetDto>, ErrorList>> Handle(
             GetPetsQuery query,
             CancellationToken cancellationToken)
         {
+            var validationResult = await _validator.ValidateAsync(
+                query, cancellationToken);
+            if (validationResult.IsValid == false)
+                return validationResult.ToErrorList();
+            
             var petsQuery = _readDbContext.Pets;
             
             Expression<Func<PetDto, object>> keySelector = 

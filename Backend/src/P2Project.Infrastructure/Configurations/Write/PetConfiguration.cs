@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using P2Project.Application.Shared.Dtos;
 using P2Project.Domain.PetManagment.Entities;
@@ -147,26 +145,14 @@ namespace P2Project.Infrastructure.Configurations.Write
                    .IsRequired()
                    .HasColumnName("assistance_status");
             });
-
-            builder.OwnsOne(p => p.AssistanceDetails, adb =>
-            {
-                adb.ToJson();
-
-                adb.OwnsMany(ad => ad.AssistanceDetails, ab =>
-                {
-                    ab.Property(a => a.Name)
-                      .IsRequired()
-                      .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH);
-
-                    ab.Property(a => a.Description)
-                      .IsRequired()
-                      .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH);
-
-                    ab.Property(a => a.AccountNumber)
-                      .IsRequired()
-                      .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH);
-                });
-            });
+            
+            builder.Property(p => p.AssistanceDetails)
+                .ValueObjectsCollectionJsonConversion(
+                    detail => new AssistanceDetailDto(
+                        detail.Name, detail.Description, detail.AccountNumber),
+                    dto => AssistanceDetail.Create(
+                        dto.Name, dto.Description, dto.AccountNumber).Value)
+                .HasColumnName("assistance_details");
             
             builder.Property(p => p.Photos)
                 .ValueObjectsCollectionJsonConversion(

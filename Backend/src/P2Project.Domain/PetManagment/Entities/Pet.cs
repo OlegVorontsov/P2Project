@@ -30,8 +30,8 @@ namespace P2Project.Domain.PetManagment.Entities
                bool isVaccinated,
                DateOnly dateOfBirth,
                AssistanceStatus assistanceStatus,
-               PetAssistanceDetails? assistanceDetails,
                DateOnly createdAt,
+               List<AssistanceDetail>? assistanceDetails,
                List<PetPhoto>? photos = null) : base(id)
         {
             NickName = nickName;
@@ -47,9 +47,9 @@ namespace P2Project.Domain.PetManagment.Entities
             IsVaccinated = isVaccinated;
             DateOfBirth = dateOfBirth;
             AssistanceStatus = assistanceStatus;
-            AssistanceDetails = assistanceDetails;
             CreatedAt = createdAt;
-
+            AssistanceDetails = assistanceDetails ??
+                                new List<AssistanceDetail>([]);
             Photos = photos ??
                      new List<PetPhoto>([]);
         }
@@ -66,8 +66,8 @@ namespace P2Project.Domain.PetManagment.Entities
         public bool IsVaccinated { get; private set; }
         public DateOnly DateOfBirth { get; private set; }
         public AssistanceStatus AssistanceStatus { get; private set; }
-        public PetAssistanceDetails? AssistanceDetails { get; private set; } = default!;
         public DateOnly CreatedAt { get; private set; }
+        public IReadOnlyList<AssistanceDetail> AssistanceDetails { get; private set; } = null!;
         public IReadOnlyList<PetPhoto> Photos { get; private set; } = null!;
         public Position Position { get; private set; }
 
