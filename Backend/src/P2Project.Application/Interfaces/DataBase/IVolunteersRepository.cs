@@ -4,7 +4,7 @@ using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared.Errors;
 using P2Project.Domain.Shared.IDs;
 
-namespace P2Project.Application.Interfaces.Repositories
+namespace P2Project.Application.Interfaces.DataBase
 {
     public interface IVolunteersRepository
     {

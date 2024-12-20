@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
-using P2Project.Application.Interfaces.Repositories;
+using P2Project.Application.Interfaces.DataBase;
 using P2Project.Domain.Shared.IDs;
 using P2Project.Domain.Shared;
 using P2Project.Domain.SpeciesManagment;

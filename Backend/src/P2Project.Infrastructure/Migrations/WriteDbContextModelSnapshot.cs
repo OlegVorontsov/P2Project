@@ -54,7 +54,7 @@ namespace P2Project.Infrastructure.Migrations
 
                     b.Property<string>("Photos")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasColumnType("jsonb")
                         .HasColumnName("photos");
 
                     b.Property<double>("Weight")
@@ -139,7 +139,7 @@ namespace P2Project.Infrastructure.Migrations
 
                             b1.Property<int>("Value")
                                 .HasColumnType("integer")
-                                .HasColumnName("serial_number");
+                                .HasColumnName("position");
                         });
 
                     b.ComplexProperty<Dictionary<string, object>>("SpeciesBreed", "P2Project.Domain.PetManagment.Entities.Pet.SpeciesBreed#SpeciesBreed", b1 =>

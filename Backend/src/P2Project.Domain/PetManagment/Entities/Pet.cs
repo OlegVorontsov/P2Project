@@ -14,8 +14,6 @@ namespace P2Project.Domain.PetManagment.Entities
         private Pet(PetId id) : base(id) { }
 
         private bool _isDeleted = false;
-        
-        private List<PetPhoto> _photos = [];
 
         public Pet(
                PetId id,
@@ -52,8 +50,8 @@ namespace P2Project.Domain.PetManagment.Entities
             AssistanceDetails = assistanceDetails;
             CreatedAt = createdAt;
 
-            _photos = photos ??
-                new List<PetPhoto>([]);
+            Photos = photos ??
+                     new List<PetPhoto>([]);
         }
         public NickName NickName { get; private set; } = default!;
         public SpeciesBreed SpeciesBreed { get; private set; } = default!;
@@ -70,7 +68,7 @@ namespace P2Project.Domain.PetManagment.Entities
         public AssistanceStatus AssistanceStatus { get; private set; }
         public PetAssistanceDetails? AssistanceDetails { get; private set; } = default!;
         public DateOnly CreatedAt { get; private set; }
-        public IReadOnlyList<PetPhoto> Photos => _photos;
+        public IReadOnlyList<PetPhoto> Photos { get; private set; } = null!;
         public Position Position { get; private set; }
 
         public void SetPosition (Position position) =>
@@ -99,7 +97,7 @@ namespace P2Project.Domain.PetManagment.Entities
         }
 
         public void UpdatePhotos(List<PetPhoto> photos) =>
-            _photos = photos;
+            Photos = photos;
 
         public void SoftDelete()
         {
