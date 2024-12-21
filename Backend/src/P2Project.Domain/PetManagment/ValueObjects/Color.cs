@@ -6,6 +6,8 @@ namespace P2Project.Domain.PetManagment.ValueObjects
 {
     public class Color : ValueObject
     {
+        public const string DB_COLUMN_COLOR = "color";
+
         private Color(string value)
         {
             Value = value;

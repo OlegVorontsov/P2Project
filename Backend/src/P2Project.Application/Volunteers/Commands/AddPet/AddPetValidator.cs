@@ -26,7 +26,12 @@ namespace P2Project.Application.Volunteers.Commands.AddPet
 
             RuleFor(ap => ap.Color).MustBeValueObject(Color.Create);
 
-            RuleFor(ap => ap.HealthInfo).MustBeValueObject(HealthInfo.Create);
+            RuleFor(ap => ap.HealthInfo).MustBeValueObject(hi => HealthInfo.Create(
+                hi.Weight,
+                hi.Height,
+                hi.IsCastrated,
+                hi.IsVaccinated,
+                hi.HealthDescription));
 
             RuleFor(ap => ap.Address).MustBeValueObject(a => Address.Create(
                 a.Region,
@@ -35,14 +40,6 @@ namespace P2Project.Application.Volunteers.Commands.AddPet
                 a.House,
                 a.Floor,
                 a.Apartment));
-
-            RuleFor(ap => ap.Weight).InclusiveBetween(
-                Constants.MIN_WEIGHT_HEIGHT, Constants.MAX_WEIGHT_HEIGHT)
-                .WithError(Errors.General.ValueIsInvalid("Weight"));
-
-            RuleFor(ap => ap.Height).InclusiveBetween(
-                Constants.MIN_WEIGHT_HEIGHT, Constants.MAX_WEIGHT_HEIGHT)
-                .WithError(Errors.General.ValueIsInvalid("Height"));
 
             RuleFor(ap => ap.OwnerPhoneNumber).MustBeValueObject(pn =>
                                             PhoneNumber.Create(

@@ -6,6 +6,7 @@ namespace P2Project.Domain.PetManagment.ValueObjects
 {
     public class NickName : ValueObject
     {
+        public const string DB_COLUMN_NICKNAME = "nick_name";
         private NickName(string value)
         {
             Value = value;

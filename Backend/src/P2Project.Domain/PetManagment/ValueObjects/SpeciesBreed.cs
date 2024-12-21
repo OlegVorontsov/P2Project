@@ -5,6 +5,8 @@ namespace P2Project.Domain.PetManagment.ValueObjects
 {
     public class SpeciesBreed : ValueObject
     {
+        public const string DB_COLUMN_SPECIES_ID = "species_id";
+        public const string DB_COLUMN_BREED_ID = "breed_id";
         public SpeciesBreed(SpeciesId speciesId, Guid breedId)
         {
             SpeciesId = speciesId;

@@ -6,6 +6,12 @@ namespace P2Project.Domain.PetManagment.ValueObjects
 {
     public record Address
     {
+        public const string DB_COLUMN_REGION = "region";
+        public const string DB_COLUMN_CITY = "city";
+        public const string DB_COLUMN_STREET = "street";
+        public const string DB_COLUMN_HOUSE = "house";
+        public const string DB_COLUMN_FLOOR = "floor";
+        public const string DB_COLUMN_APARTMENT = "apartment";
         private Address(string region,
                         string city,
                         string street,

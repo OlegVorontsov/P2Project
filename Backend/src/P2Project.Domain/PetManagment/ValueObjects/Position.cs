@@ -6,6 +6,7 @@ namespace P2Project.Domain.PetManagment.ValueObjects
 {
     public class Position : ValueObject
     {
+        public const string DB_COLUMN_POSITION = "position";
         public static Position First() => new(1);
         public int Value { get; }
         public Position(int value) => Value = value;

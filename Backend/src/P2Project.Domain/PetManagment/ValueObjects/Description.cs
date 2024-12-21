@@ -6,6 +6,7 @@ namespace P2Project.Domain.PetManagment.ValueObjects
 {
     public class Description : ValueObject
     {
+        public const string DB_COLUMN_DESCRIPTION = "description";
         private Description(string? value)
         {
             Value = value;

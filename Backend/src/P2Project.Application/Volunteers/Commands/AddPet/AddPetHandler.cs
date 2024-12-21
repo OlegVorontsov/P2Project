@@ -119,7 +119,12 @@ namespace P2Project.Application.Volunteers.Commands.AddPet
 
             var description = Description.Create(command.Description).Value;
             var color = Color.Create(command.Color).Value;
-            var healthInfo = HealthInfo.Create(command.HealthInfo).Value;
+            var healthInfo = HealthInfo.Create(
+                command.HealthInfo.Weight,
+                command.HealthInfo.Height,
+                command.HealthInfo.IsCastrated,
+                command.HealthInfo.IsVaccinated,
+                command.HealthInfo.HealthDescription).Value;
             var address = Address.Create(
                 command.Address.Region,
                 command.Address.City,
@@ -142,8 +147,7 @@ namespace P2Project.Application.Volunteers.Commands.AddPet
                     command.AssistanceDetail.AccountNumber).Value;
                 assistanceDetails.AddRange([detail]);
             }
-            var petAssistanceDetails = new PetAssistanceDetails(
-                assistanceDetails);
+            var petAssistanceDetails = assistanceDetails;
 
             var newPet = new Pet(
                 petId,
@@ -153,15 +157,11 @@ namespace P2Project.Application.Volunteers.Commands.AddPet
                 color,
                 healthInfo,
                 address,
-                command.Weight,
-                command.Height,
                 ownerPhoneNumber,
-                command.IsCastrated,
-                command.IsVaccinated,
-                command.DateOfBirth,
+                command.BirthDate,
                 assistanceStatus,
-                petAssistanceDetails,
-                DateOnly.FromDateTime(DateTime.Today));
+                DateOnly.FromDateTime(DateTime.Today),
+                petAssistanceDetails);
 
             volunteerResult.Value.AddPet(newPet);
 

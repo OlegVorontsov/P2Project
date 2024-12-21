@@ -16,7 +16,7 @@ public class PetController : ApplicationController
 
         var response = await handler.Handle(query, cancellationToken);
 
-        return Ok(response);
+        return Ok(response.Value);
     }
     
     [HttpGet("dapper")]

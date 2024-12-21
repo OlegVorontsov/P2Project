@@ -1,12 +1,14 @@
 ﻿using System.Linq.Expressions;
+using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 using P2Project.Application.Shared.Models;
+using P2Project.Domain.Shared.Errors;
 
 namespace P2Project.Application.Extensions
 {
     public static class QueriesExtensions
     {
-        public static async Task<PagedList<T>> ToPagedList<T>(
+        public static async Task<Result<PagedList<T>, Error>> ToPagedList<T>(
             this IQueryable<T> source,
             int page,
             int pageSize,
@@ -18,6 +20,9 @@ namespace P2Project.Application.Extensions
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync(cancellationToken);
+
+            if (items is null)
+                return Errors.General.NotFound();
 
             return new PagedList<T>
             {

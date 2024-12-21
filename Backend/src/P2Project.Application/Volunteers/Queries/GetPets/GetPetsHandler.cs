@@ -30,38 +30,61 @@ namespace P2Project.Application.Volunteers.Queries.GetPets
                 query, cancellationToken);
             if (validationResult.IsValid == false)
                 return validationResult.ToErrorList();
+
+            var petsQuery = ApplyFilters(_readDbContext.Pets, query);
             
-            var petsQuery = _readDbContext.Pets;
-            
-            Expression<Func<PetDto, object>> keySelector = 
-                query.SortBy?.ToLower() switch
-                {
-                    "nickname" => pet => pet.NickName,
-                    "position" => pet => pet.Position,
-                    _ => pet => pet.Id
-                };
+            var keySelector = SortByProperty(query.SortBy);
             
             petsQuery = query.SortOrder?.ToLower() == "desc"
                 ? petsQuery.OrderByDescending(keySelector)
                 : petsQuery.OrderBy(keySelector);
-
-            petsQuery = petsQuery.WhereIf(
-                !string.IsNullOrWhiteSpace(query.NickName),
-                p => p.NickName.Contains(query.NickName!));
             
-            petsQuery = petsQuery.WhereIf(
-                query.PositionTo != null,
-                p => p.Position <= query.PositionTo!.Value);
-            
-            petsQuery = petsQuery.WhereIf(
-                query.PositionFrom != null,
-                p => p.Position >= query.PositionFrom!.Value);
+            var result = await petsQuery.ToPagedList(
+                    query.Page,
+                    query.PageSize,
+                    cancellationToken);
 
-            return await petsQuery
-                .ToPagedList(
-                query.Page,
-                query.PageSize,
-                cancellationToken);
+            if (result.IsFailure)
+            {
+                var error = result.Error;
+                return error.ToErrorList();
+            }
+
+            return result.Value;
+        }
+
+        private static Expression<Func<PetDto, object>> SortByProperty(string? sortBy)
+        {
+            if (string.IsNullOrEmpty(sortBy))
+                return volunteer => volunteer.Id;
+
+            Expression<Func<PetDto, object>> keySelector = sortBy?.ToLower() switch
+            {
+                "nickname" => p => p.NickName,
+                "color" => p => p.Color,
+                "city" => p => p.City,
+                "weight" => p => p.Weight,
+                "height" => p => p.Height,
+                _ => p => p.Id
+            };
+
+            return keySelector;
+        }
+        
+        private static IQueryable<PetDto> ApplyFilters(
+            IQueryable<PetDto> dbQuery, GetPetsQuery query)
+        {
+            return dbQuery
+                .WhereIf(query.VolunteerId.GetValueOrDefault(Guid.Empty) != Guid.Empty, p => p.VolunteerId == query.VolunteerId)
+                .WhereIf(query.SpeciesId.GetValueOrDefault(Guid.Empty) != Guid.Empty, p => p.SpeciesId == query.SpeciesId)
+                .WhereIf(query.BreedId.GetValueOrDefault(Guid.Empty) != Guid.Empty, p => p.BreedId == query.BreedId)
+                .WhereIf(!string.IsNullOrWhiteSpace(query.NickName), p => p.NickName.Contains(query.NickName!))
+                .WhereIf(!string.IsNullOrWhiteSpace(query.Color), p => p.Color.Contains(query.Color!))
+                .WhereIf(!string.IsNullOrWhiteSpace(query.City), p => p.City.Contains(query.City!))
+                .WhereIf(query.WeightFrom.HasValue, p => p.Weight >= query.WeightFrom!)
+                .WhereIf(query.WeightTo.HasValue, p => p.Weight <= query.WeightTo!)
+                .WhereIf(query.HeightFrom.HasValue, p => p.Height >= query.HeightFrom!)
+                .WhereIf(query.HeightTo.HasValue, p => p.Height <= query.HeightTo!);
         }
     }
 }

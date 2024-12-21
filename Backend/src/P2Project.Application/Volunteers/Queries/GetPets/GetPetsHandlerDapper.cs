@@ -1,27 +1,39 @@
 using System.Text;
 using System.Text.Json;
+using CSharpFunctionalExtensions;
 using Dapper;
+using FluentValidation;
 using P2Project.Application.Extensions;
 using P2Project.Application.Interfaces.DataBase;
 using P2Project.Application.Interfaces.Queries;
 using P2Project.Application.Shared.Dtos;
 using P2Project.Application.Shared.Models;
+using P2Project.Domain.Shared.Errors;
 
 namespace P2Project.Application.Volunteers.Queries.GetPets;
 
 public class GetPetsHandlerDapper : IQueryHandler<PagedList<PetDto>, GetPetsQuery>
 {
+    private readonly IValidator<GetPetsQuery> _validator;
     private readonly ISqlConnectionFactory _connectionFactory;
 
-    public GetPetsHandlerDapper(ISqlConnectionFactory connectionFactory)
+    public GetPetsHandlerDapper(
+        IValidator<GetPetsQuery> validator,
+        ISqlConnectionFactory connectionFactory)
     {
+        _validator = validator;
         _connectionFactory = connectionFactory;
     }
 
-    public async Task<PagedList<PetDto>> Handle(
+    public async Task<Result<PagedList<PetDto>, ErrorList>> Handle(
         GetPetsQuery query,
         CancellationToken cancellationToken)
     {
+        var validationResult = await _validator.ValidateAsync(
+            query, cancellationToken);
+        if (validationResult.IsValid == false)
+            return validationResult.ToErrorList();
+        
         var connection = _connectionFactory.CreateConnection();
             
         var parameters = new DynamicParameters();

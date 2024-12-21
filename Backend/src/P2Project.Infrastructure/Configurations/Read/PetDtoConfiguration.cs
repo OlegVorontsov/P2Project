@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using P2Project.Application.Shared.Dtos;
+using P2Project.Domain.PetManagment.Entities;
 using P2Project.Domain.PetManagment.ValueObjects;
 
 namespace P2Project.Infrastructure.Configurations.Read
@@ -10,7 +11,7 @@ namespace P2Project.Infrastructure.Configurations.Read
     {
         public void Configure(EntityTypeBuilder<PetDto> builder)
         {
-            builder.ToTable("pets");
+            builder.ToTable(Pet.DB_TABLE_PETS);
 
             builder.HasKey(p => p.Id);
 
@@ -21,7 +22,7 @@ namespace P2Project.Infrastructure.Configurations.Read
                     json => JsonSerializer
                         .Deserialize<IEnumerable<AssistanceDetailDto>>(
                             json, JsonSerializerOptions.Default)!)
-                .HasColumnName("assistance_details");
+                .HasColumnName(Pet.DB_COLUMN_ASSISTANCE_DETAILS);
             
             builder.Property(p => p.Photos)
                 .HasConversion(
@@ -31,7 +32,7 @@ namespace P2Project.Infrastructure.Configurations.Read
                     json => JsonSerializer
                         .Deserialize<IEnumerable<PetPhotoDto>>(
                             json, JsonSerializerOptions.Default)!)
-                .HasColumnName("photos");
+                .HasColumnName(Pet.DB_COLUMN_PHOTOS);
         }
     }
 }

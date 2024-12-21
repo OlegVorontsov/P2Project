@@ -10,6 +10,11 @@ namespace P2Project.Domain.PetManagment.Entities
 {
     public class Pet : Shared.Entity<PetId>
     {
+        public const string DB_TABLE_PETS = "pets";
+        public const string DB_COLUMN_BIRTH_DATE = "birth_date";
+        public const string DB_COLUMN_CREATED_AT = "created_at";
+        public const string DB_COLUMN_ASSISTANCE_DETAILS = "assistance_details";
+        public const string DB_COLUMN_PHOTOS = "photos";
         // ef core
         private Pet(PetId id) : base(id) { }
 
@@ -23,12 +28,8 @@ namespace P2Project.Domain.PetManagment.Entities
                Color color,
                HealthInfo healthInfo,
                Address address,
-               double weight,
-               double height,
-               PhoneNumber ownerPhoneNumber,
-               bool isCastrated,
-               bool isVaccinated,
-               DateOnly dateOfBirth,
+               PhoneNumber PhoneNumber,
+               DateOnly birthDate,
                AssistanceStatus assistanceStatus,
                DateOnly createdAt,
                List<AssistanceDetail>? assistanceDetails,
@@ -40,12 +41,8 @@ namespace P2Project.Domain.PetManagment.Entities
             Color = color;
             HealthInfo = healthInfo;
             Address = address;
-            Weight = weight;
-            Height = height;
-            OwnerPhoneNumber = ownerPhoneNumber;
-            IsCastrated = isCastrated;
-            IsVaccinated = isVaccinated;
-            DateOfBirth = dateOfBirth;
+            PhoneNumber = PhoneNumber;
+            BirthDate = birthDate;
             AssistanceStatus = assistanceStatus;
             CreatedAt = createdAt;
             AssistanceDetails = assistanceDetails ??
@@ -59,12 +56,8 @@ namespace P2Project.Domain.PetManagment.Entities
         public Color Color { get; private set; } = default!;
         public HealthInfo HealthInfo { get; private set; } = default!;
         public Address Address { get; private set; }
-        public double Weight { get; private set; }
-        public double Height { get; private set; }
-        public PhoneNumber OwnerPhoneNumber { get; private set; } = default!;
-        public bool IsCastrated { get; private set; }
-        public bool IsVaccinated { get; private set; }
-        public DateOnly DateOfBirth { get; private set; }
+        public PhoneNumber PhoneNumber { get; private set; } = default!;
+        public DateOnly BirthDate { get; private set; }
         public AssistanceStatus AssistanceStatus { get; private set; }
         public DateOnly CreatedAt { get; private set; }
         public IReadOnlyList<AssistanceDetail> AssistanceDetails { get; private set; } = null!;

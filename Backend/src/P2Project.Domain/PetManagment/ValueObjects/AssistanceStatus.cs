@@ -1,11 +1,11 @@
 ﻿using CSharpFunctionalExtensions;
-using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.Errors;
 
 namespace P2Project.Domain.PetManagment.ValueObjects
 {
     public class AssistanceStatus
     {
+        public const string DB_COLUMN_ASSISTANCE_STATUS = "assistance_status";
         private static List<AssistanceStatus> _statusList = [NeedsHelp,
                                                                NeedsFood,
                                                                OnMedication,

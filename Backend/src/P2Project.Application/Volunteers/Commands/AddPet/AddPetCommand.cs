@@ -12,14 +12,10 @@ namespace P2Project.Application.Volunteers.Commands.AddPet
         string Breed,
         string? Description,
         string Color,
-        string? HealthInfo,
+        HealthInfoDto HealthInfo,
         AddressDto Address,
-        double Weight,
-        double Height,
         PhoneNumberDto OwnerPhoneNumber,
-        bool IsCastrated,
-        bool IsVaccinated,
-        DateOnly DateOfBirth,
+        DateOnly BirthDate,
         string AssistanceStatus,
         AssistanceDetailDto AssistanceDetail) : ICommand;
 }
