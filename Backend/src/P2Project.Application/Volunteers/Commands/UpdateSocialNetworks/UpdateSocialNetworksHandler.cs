@@ -6,6 +6,7 @@ using P2Project.Application.Interfaces;
 using P2Project.Application.Interfaces.Commands;
 using P2Project.Application.Interfaces.DataBase;
 using P2Project.Domain.PetManagment.ValueObjects;
+using P2Project.Domain.PetManagment.ValueObjects.Volunteers;
 using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.Errors;
 using P2Project.Domain.Shared.IDs;
@@ -57,7 +58,6 @@ namespace P2Project.Application.Volunteers.Commands.UpdateSocialNetworks
             if (existingSocialNetworks != null)
             {
                 var oldNetworksToAdd = existingSocialNetworks?
-                                    .SocialNetworks
                                     .Select(s => SocialNetwork
                                         .Create(
                                             s.Name,
@@ -77,7 +77,7 @@ namespace P2Project.Application.Volunteers.Commands.UpdateSocialNetworks
                 newSocialNetworks.AddRange(networksToAdd);
             }
 
-            var volunteerNetworks = new VolunteerSocialNetworks(newSocialNetworks);
+            var volunteerNetworks = newSocialNetworks;
 
             volunteerResult.Value.UpdateSocialNetworks(volunteerNetworks);
 

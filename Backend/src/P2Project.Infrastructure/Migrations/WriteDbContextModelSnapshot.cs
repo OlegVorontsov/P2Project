@@ -123,7 +123,7 @@ namespace P2Project.Infrastructure.Migrations
                                 .HasColumnName("description");
                         });
 
-                    b.ComplexProperty<Dictionary<string, object>>("HealthInfo", "P2Project.Domain.PetManagment.Entities.Pet.HealthInfo#HealthInfo", b1 =>
+                    b.ComplexProperty<Dictionary<string, object>>("VolunteerInfo", "P2Project.Domain.PetManagment.Entities.Pet.VolunteerInfo#VolunteerInfo", b1 =>
                         {
                             b1.IsRequired();
 
@@ -222,7 +222,7 @@ namespace P2Project.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("gender");
 
-                    b.Property<DateTime>("RegisteredDate")
+                    b.Property<DateTime>("RegisteredAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("registered_date");
 

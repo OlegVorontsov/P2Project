@@ -1,7 +1,6 @@
-﻿using P2Project.Application.Interfaces;
-using P2Project.Application.Interfaces.Commands;
-using P2Project.Application.Shared;
-using P2Project.Application.Shared.Dtos;
+﻿using P2Project.Application.Interfaces.Commands;
+using P2Project.Application.Shared.Dtos.Common;
+using P2Project.Application.Shared.Dtos.Pets;
 
 namespace P2Project.Application.Volunteers.Commands.AddPet
 {

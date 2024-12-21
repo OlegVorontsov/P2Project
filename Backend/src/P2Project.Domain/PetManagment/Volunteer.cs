@@ -1,6 +1,9 @@
 ﻿using CSharpFunctionalExtensions;
 using P2Project.Domain.PetManagment.Entities;
 using P2Project.Domain.PetManagment.ValueObjects;
+using P2Project.Domain.PetManagment.ValueObjects.Common;
+using P2Project.Domain.PetManagment.ValueObjects.Pets;
+using P2Project.Domain.PetManagment.ValueObjects.Volunteers;
 using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.Errors;
 using P2Project.Domain.Shared.IDs;
@@ -15,39 +18,45 @@ namespace P2Project.Domain.PetManagment
     }
     public class Volunteer : Shared.Entity<VolunteerId>
     {
+        public const string DB_TABLE_VOLUNTEERS = "volunteers";
+        public const string DB_COLUMN_GENDER = "gender";
+        public const string DB_COLUMN_REGISTERED_AT = "registered_at";
+        public const string DB_COLUMN_YEARS_OF_EXPERIENCE = "years_of_experience";
+        public const string DB_COLUMN_PHONE_NUMBERS = "phone_numbers";
+        public const string DB_COLUMN_SOCIAL_NETWORKS = "social_networks";
+        public const string DB_COLUMN_ASSISTANCE_DETAILS = "assistance_details";
         private Volunteer(VolunteerId id) : base(id) { }
         private readonly List<Pet> _pets = [];
-        private bool _isDeleted = false;
 
         public Volunteer(
                 VolunteerId id,
                 FullName fullName,
-                int age,
+                VolunteerInfo volunteerInfo,
                 Gender gender,
                 Email email,
                 Description description,
-                DateTime registeredDate,
-                VolunteerPhoneNumbers phoneNumbers,
-                VolunteerSocialNetworks? socialNetworks,
-                VolunteerAssistanceDetails? assistanceDetails) : base(id)
+                DateTime registeredAt,
+                List<PhoneNumber>? phoneNumbers,
+                List<SocialNetwork>? socialNetworks,
+                List<AssistanceDetail>? assistanceDetails) : base(id)
         {
             FullName = fullName;
-            Age = age;
+            VolunteerInfo = volunteerInfo;
             Gender = gender;
             Email = email;
             Description = description;
-            RegisteredDate = registeredDate;
-            PhoneNumbers = phoneNumbers;
-            SocialNetworks = socialNetworks;
-            AssistanceDetails = assistanceDetails;
+            RegisteredAt = registeredAt;
+            PhoneNumbers = phoneNumbers ?? new List<PhoneNumber>();
+            SocialNetworks = socialNetworks ?? new List<SocialNetwork>();
+            AssistanceDetails = assistanceDetails ?? new List<AssistanceDetail>();
         }
         public FullName FullName { get; private set; }
-        public int Age { get; private set; }
+        public VolunteerInfo VolunteerInfo { get; private set; }
         public Gender Gender { get; private set; }
         public Email Email { get; private set; } = default!;
         public Description Description { get; private set; } = default!;
-        public DateTime RegisteredDate { get; private set; }
-        public double YearsOfExperience
+        public DateTime RegisteredAt { get; private set; }
+        public string YearsOfExperience
         {
             get => GetYearsOfExperience();
             private set { }
@@ -63,54 +72,60 @@ namespace P2Project.Domain.PetManagment
             _pets.Count(p => p.AssistanceStatus == AssistanceStatus.LooksForHome);
         public int FoundHomePets =>
             _pets.Count(p => p.AssistanceStatus == AssistanceStatus.FoundHome);
-        public VolunteerPhoneNumbers PhoneNumbers { get; private set; } = default!;
-        public VolunteerSocialNetworks? SocialNetworks { get; private set; } = default!;
-        public VolunteerAssistanceDetails? AssistanceDetails { get; private set; } = default!;
-        private double GetYearsOfExperience()
+        public IReadOnlyList<PhoneNumber> PhoneNumbers { get; private set; } = null!;
+        public IReadOnlyList<SocialNetwork> SocialNetworks { get; private set; } = null!;
+        public IReadOnlyList<AssistanceDetail> AssistanceDetails { get; private set; } = null!;
+        private string GetYearsOfExperience()
         {
-            var timeSpan = DateTime.Now - RegisteredDate;
-            return timeSpan.TotalDays / 365.25;
+            var registrationDate = RegisteredAt;
+            var currentDate = DateTime.Now;
+            
+            var years = currentDate.Year - registrationDate.Year;
+            var months = currentDate.Month - registrationDate.Month;
+            var days = currentDate.Day - registrationDate.Day;
+            
+            if (days < 0)
+            {
+                months--;
+                days += DateTime.DaysInMonth(currentDate.Year, currentDate.Month);
+            }
+            
+            if (months < 0)
+            {
+                years--;
+                months += 12;
+            }
+            
+            string yearString = years == 1 ? "1 год" : years + " лет";
+            string monthString = months == 1 ? "1 месяц" : months + " месяцев";
+            string dayString = days == 1 ? "1 день" : days + " дней";
+
+            return $"{yearString} {monthString} {dayString}";
         }
 
         public void UpdateMainInfo(
                     FullName fullName,
-                    int age,
+                    VolunteerInfo volunteerInfo,
                     Gender gender,
                     Description description)
         {
             FullName = fullName;
-            Age = age;
+            VolunteerInfo = volunteerInfo;
             Gender = gender;
             Description = description;
         }
 
         public void UpdatePhoneNumbers(
-            VolunteerPhoneNumbers phoneNumbers)
-        {
+            List<PhoneNumber> phoneNumbers) =>
             PhoneNumbers = phoneNumbers;
-        }
 
         public void UpdateSocialNetworks(
-            VolunteerSocialNetworks socialNetworks)
-        {
+            List<SocialNetwork> socialNetworks) =>
             SocialNetworks = socialNetworks;
-        }
 
         public void UpdateAssistanceDetails(
-            VolunteerAssistanceDetails assistanceDetails)
-        {
+            List<AssistanceDetail> assistanceDetails) =>
             AssistanceDetails = assistanceDetails;
-        }
-
-        public void SoftDelete()
-        {
-            if (_isDeleted)
-                return;
-
-            _isDeleted = true;
-            foreach (var pet in _pets)
-                pet.SoftDelete();
-        }
 
         public UnitResult<Error> AddPet(Pet pet)
         {
@@ -125,6 +140,7 @@ namespace P2Project.Domain.PetManagment
 
             return Result.Success<Error>();
         }
+        
         public Result<Pet, Error> GetPetById(PetId petId)
         {
             var pet = Pets.FirstOrDefault(p => p.Id.Value == petId.Value);

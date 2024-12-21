@@ -1,4 +1,6 @@
 ﻿using P2Project.Application.Shared.Dtos;
+using P2Project.Application.Shared.Dtos.Common;
+using P2Project.Application.Shared.Dtos.Pets;
 using P2Project.Application.Volunteers.Commands.AddPet;
 
 namespace P2Project.API.Controllers.Volunteers.Requests;

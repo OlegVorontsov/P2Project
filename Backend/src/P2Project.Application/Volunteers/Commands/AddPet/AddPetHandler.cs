@@ -9,6 +9,8 @@ using P2Project.Application.Species;
 using P2Project.Application.Species.Create;
 using P2Project.Domain.PetManagment.Entities;
 using P2Project.Domain.PetManagment.ValueObjects;
+using P2Project.Domain.PetManagment.ValueObjects.Common;
+using P2Project.Domain.PetManagment.ValueObjects.Pets;
 using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.Errors;
 using P2Project.Domain.Shared.IDs;

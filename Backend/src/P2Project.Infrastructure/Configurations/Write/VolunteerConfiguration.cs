@@ -1,9 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using P2Project.Application.Shared.Dtos.Common;
+using P2Project.Application.Shared.Dtos.Volunteers;
 using P2Project.Domain.Extensions;
 using P2Project.Domain.PetManagment;
+using P2Project.Domain.PetManagment.ValueObjects.Common;
+using P2Project.Domain.PetManagment.ValueObjects.Volunteers;
 using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.IDs;
+using P2Project.Infrastructure.Extensions;
 
 namespace P2Project.Infrastructure.Configurations.Write
 {
@@ -11,7 +16,7 @@ namespace P2Project.Infrastructure.Configurations.Write
     {
         public void Configure(EntityTypeBuilder<Volunteer> builder)
         {
-            builder.ToTable("volunteers");
+            builder.ToTable(Volunteer.DB_TABLE_VOLUNTEERS);
 
             builder.HasKey(v => v.Id);
             builder.Property(v => v.Id)
@@ -24,35 +29,41 @@ namespace P2Project.Infrastructure.Configurations.Write
                 fnb.Property(fn => fn.FirstName)
                    .IsRequired()
                    .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH)
-                   .HasColumnName("first_name");
+                   .HasColumnName(FullName.DB_COLUMN_FIRST_NAME);
 
-                fnb.Property(fnb => fnb.SecondName)
+                fnb.Property(snb => snb.SecondName)
                    .IsRequired()
                    .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH)
-                   .HasColumnName("second_name");
+                   .HasColumnName(FullName.DB_COLUMN_SECOND_NAME);
 
-                fnb.Property(fnb => fnb.LastName)
+                fnb.Property(lnb => lnb.LastName)
                    .IsRequired(false)
                    .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH)
-                   .HasColumnName("last_name");
+                   .HasColumnName(FullName.DB_COLUMN_LAST_NAME);
             });
 
-            builder.Property(v => v.Age)
-                   .IsRequired()
-                   .HasMaxLength(Constants.MAX_TINY_TEXT_LENGTH)
-                   .HasColumnName("age");
+            builder.ComplexProperty(v => v.VolunteerInfo, vib =>
+            {
+                vib.Property(vi => vi.Age)
+                    .IsRequired()
+                    .HasColumnName(VolunteerInfo.DB_COLUMN_AGE);
+
+                vib.Property(vi => vi.Grade)
+                    .IsRequired()
+                    .HasColumnName(VolunteerInfo.DB_COLUMN_GRADE);
+            });
 
             builder.Property(v => v.Gender)
                    .IsRequired()
                    .HasConversion<string>()
-                   .HasColumnName("gender");
+                   .HasColumnName(Volunteer.DB_COLUMN_GENDER);
 
             builder.ComplexProperty(v => v.Email, eb =>
             {
                 eb.Property(e => e.Value)
                   .IsRequired()
                   .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH)
-                  .HasColumnName("email");
+                  .HasColumnName(Email.DB_COLUMN_EMAIL);
             });
 
             builder.ComplexProperty(v => v.Description, db =>
@@ -60,77 +71,45 @@ namespace P2Project.Infrastructure.Configurations.Write
                 db.Property(d => d.Value)
                   .IsRequired(false)
                   .HasMaxLength(Constants.MAX_BIG_TEXT_LENGTH)
-                  .HasColumnName("description");
+                  .HasColumnName(Description.DB_COLUMN_DESCRIPTION);
             });
 
-            builder.Property(v => v.RegisteredDate)
-                   .IsRequired()
-                   .HasColumnName("registered_date")
-                   .SetLocalDateTime(DateTimeKind.Local);
+            builder.Property(v => v.RegisteredAt)
+                .IsRequired()
+                .SetLocalDateTime(DateTimeKind.Local)
+                .HasColumnName(Volunteer.DB_COLUMN_REGISTERED_AT);
 
             builder.Property(v => v.YearsOfExperience)
-                   .HasColumnName("years_of_experience");
+                   .HasColumnName(Volunteer.DB_COLUMN_YEARS_OF_EXPERIENCE);
 
             builder.HasMany(v => v.Pets)
                    .WithOne()
-                   .HasForeignKey("volunteer_id")
+                   .HasForeignKey(p => p.VolunteerId)
                    .OnDelete(DeleteBehavior.NoAction);
 
-            builder.OwnsOne(v => v.PhoneNumbers, vb =>
-            {
-                vb.ToJson();
+            builder.Property(v => v.PhoneNumbers)
+                .ValueObjectsCollectionJsonConversion(
+                    phone => new PhoneNumberDto(
+                        phone.Value, phone.IsMain),
+                    dto => PhoneNumber.Create(
+                        dto.Value, dto.IsMain).Value)
+                .HasColumnName(Volunteer.DB_COLUMN_PHONE_NUMBERS);
 
-                vb.OwnsMany(pn => pn.PhoneNumbers, pb =>
-                {
-                    pb.Property(p => p.Value)
-                      .IsRequired(false)
-                      .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH);
+            builder.Property(v => v.SocialNetworks)
+                .ValueObjectsCollectionJsonConversion(
+                    social => new SocialNetworkDto(
+                        social.Name, social.Link),
+                    dto => SocialNetwork.Create(
+                        dto.Name, dto.Link).Value)
+                .HasColumnName(Volunteer.DB_COLUMN_SOCIAL_NETWORKS);
 
-                    pb.Property(p => p.IsMain)
-                      .IsRequired(false)
-                      .IsRequired();
-                });
-            });
-
-            builder.OwnsOne(v => v.SocialNetworks, vb =>
-            {
-                vb.ToJson();
-
-                vb.OwnsMany(sn => sn.SocialNetworks, sb =>
-                {
-                    sb.Property(p => p.Name)
-                      .IsRequired()
-                      .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH);
-
-                    sb.Property(p => p.Link)
-                      .IsRequired()
-                      .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH);
-                });
-            });
-
-            builder.OwnsOne(v => v.AssistanceDetails, vb =>
-            {
-                vb.ToJson();
-
-                vb.OwnsMany(ad => ad.AssistanceDetails, ab =>
-                {
-                    ab.Property(a => a.Name)
-                      .IsRequired()
-                      .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH);
-
-                    ab.Property(a => a.Description)
-                      .IsRequired()
-                      .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH);
-
-                    ab.Property(a => a.AccountNumber)
-                      .IsRequired()
-                      .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH);
-                });
-            });
-
-            builder.Property<bool>("_isDeleted")
-                .UsePropertyAccessMode(PropertyAccessMode.Field)
-                .HasColumnName("is_deleted");
+            builder.Property(v => v.AssistanceDetails)
+                .ValueObjectsCollectionJsonConversion(
+                    detail => new AssistanceDetailDto(
+                        detail.Name, detail.Description, detail.AccountNumber),
+                    dto => AssistanceDetail.Create(
+                        dto.Name, dto.Description, dto.AccountNumber).Value)
+                .HasColumnName(Volunteer.DB_COLUMN_ASSISTANCE_DETAILS);
         }
     }
 }

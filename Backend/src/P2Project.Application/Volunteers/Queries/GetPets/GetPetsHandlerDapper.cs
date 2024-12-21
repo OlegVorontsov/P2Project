@@ -7,6 +7,7 @@ using P2Project.Application.Extensions;
 using P2Project.Application.Interfaces.DataBase;
 using P2Project.Application.Interfaces.Queries;
 using P2Project.Application.Shared.Dtos;
+using P2Project.Application.Shared.Dtos.Pets;
 using P2Project.Application.Shared.Models;
 using P2Project.Domain.Shared.Errors;
 

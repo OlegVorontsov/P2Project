@@ -3,6 +3,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using P2Project.Application.Interfaces.DbContexts;
 using P2Project.Application.Shared.Dtos;
+using P2Project.Application.Shared.Dtos.Pets;
+using P2Project.Application.Shared.Dtos.Volunteers;
 using P2Project.Infrastructure.Shared;
 
 namespace P2Project.Infrastructure.DbContexts

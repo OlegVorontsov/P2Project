@@ -1,11 +1,13 @@
 ﻿using P2Project.Application.Shared.Dtos;
+using P2Project.Application.Shared.Dtos.Common;
+using P2Project.Application.Shared.Dtos.Volunteers;
 using P2Project.Application.Volunteers.Commands.Create;
 
 namespace P2Project.API.Controllers.Volunteers.Requests;
 
 public record CreateRequest(
             FullNameDto FullName,
-            int Age,
+            VolunteerInfoDto VolunteerInfo,
             string Gender,
             string Email,
             string? Description,
@@ -15,7 +17,7 @@ public record CreateRequest(
 {
     public CreateCommand ToCommand() =>
         new(FullName,
-            Age,
+            VolunteerInfo,
             Gender,
             Email,
             Description,

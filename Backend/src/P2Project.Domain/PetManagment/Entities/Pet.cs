@@ -1,7 +1,7 @@
-﻿using System.Collections;
-using CSharpFunctionalExtensions;
+﻿using CSharpFunctionalExtensions;
 using P2Project.Domain.PetManagment.ValueObjects;
-using P2Project.Domain.Shared;
+using P2Project.Domain.PetManagment.ValueObjects.Common;
+using P2Project.Domain.PetManagment.ValueObjects.Pets;
 using P2Project.Domain.Shared.Errors;
 using P2Project.Domain.Shared.IDs;
 using Result = CSharpFunctionalExtensions.Result;
@@ -18,8 +18,6 @@ namespace P2Project.Domain.PetManagment.Entities
         // ef core
         private Pet(PetId id) : base(id) { }
 
-        private bool _isDeleted = false;
-
         public Pet(
                PetId id,
                NickName nickName,
@@ -28,7 +26,7 @@ namespace P2Project.Domain.PetManagment.Entities
                Color color,
                HealthInfo healthInfo,
                Address address,
-               PhoneNumber PhoneNumber,
+               PhoneNumber phoneNumber,
                DateOnly birthDate,
                AssistanceStatus assistanceStatus,
                DateOnly createdAt,
@@ -41,7 +39,7 @@ namespace P2Project.Domain.PetManagment.Entities
             Color = color;
             HealthInfo = healthInfo;
             Address = address;
-            PhoneNumber = PhoneNumber;
+            PhoneNumber = phoneNumber;
             BirthDate = birthDate;
             AssistanceStatus = assistanceStatus;
             CreatedAt = createdAt;
@@ -63,6 +61,7 @@ namespace P2Project.Domain.PetManagment.Entities
         public IReadOnlyList<AssistanceDetail> AssistanceDetails { get; private set; } = null!;
         public IReadOnlyList<PetPhoto> Photos { get; private set; } = null!;
         public Position Position { get; private set; }
+        public VolunteerId VolunteerId { get; private set; } = null!;
 
         public void SetPosition (Position position) =>
             Position = position;
@@ -91,13 +90,5 @@ namespace P2Project.Domain.PetManagment.Entities
 
         public void UpdatePhotos(List<PetPhoto> photos) =>
             Photos = photos;
-
-        public void SoftDelete()
-        {
-            if (_isDeleted)
-                return;
-
-            _isDeleted = true;
-        }
     }
 }

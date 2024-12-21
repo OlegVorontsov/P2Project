@@ -1,5 +1,7 @@
 ﻿using P2Project.Domain.PetManagment;
 using P2Project.Domain.PetManagment.ValueObjects;
+using P2Project.Domain.PetManagment.ValueObjects.Common;
+using P2Project.Domain.PetManagment.ValueObjects.Volunteers;
 using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.IDs;
 
@@ -16,14 +18,16 @@ namespace P2Project.UnitTestsFabrics
                     "FirstName",
                     "SecondName",
                     "LastName").Value,
-                random.Next(Constants.MIN_AGE, Constants.MAX_AGE),
+                VolunteerInfo.Create(
+                    random.Next(Constants.MIN_AGE, Constants.MAX_AGE),
+                    random.Next(Constants.MIN_GRADE, Constants.MAX_GRADE)).Value,
                 Gender.Male,
                 Email.Create("test@domain.com").Value,
                 Description.Create("description").Value,
                 DateTime.Now,
-                new VolunteerPhoneNumbers(new List<PhoneNumber>()),
-                new VolunteerSocialNetworks(new List<SocialNetwork>()),
-                new VolunteerAssistanceDetails(new List<AssistanceDetail>()));
+                new List<PhoneNumber>(),
+                new List<SocialNetwork>(),
+                new List<AssistanceDetail>());
         }
 
         public static Volunteer CreateVolunteerWithPets(int petsCount)

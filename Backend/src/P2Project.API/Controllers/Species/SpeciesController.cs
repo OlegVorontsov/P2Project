@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using P2Project.API.Controllers.Species.Requests;
 using P2Project.API.Extensions;
 using P2Project.Application.Shared.Dtos;
+using P2Project.Application.Shared.Dtos.Pets;
 using P2Project.Application.Species.AddBreeds;
 using P2Project.Application.Species.Create;
 

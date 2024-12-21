@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using P2Project.Application.Shared.Dtos;
+using P2Project.Application.Shared.Dtos.Volunteers;
 
 namespace P2Project.Infrastructure.Configurations.Read
 {
