@@ -171,6 +171,13 @@ namespace P2Project.Infrastructure.Configurations.Write
                   .IsRequired()
                   .HasColumnName(Position.DB_COLUMN_POSITION);
             });
+            
+            builder.Property(v => v.IsDeleted)
+                .HasColumnName("is_deleted")
+                .IsRequired();
+
+            builder.Property(v => v.DeletionDateTime)
+                .HasColumnName("deletion_datetime");
         }
     }
 }

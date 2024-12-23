@@ -110,6 +110,13 @@ namespace P2Project.Infrastructure.Configurations.Write
                     dto => AssistanceDetail.Create(
                         dto.Name, dto.Description, dto.AccountNumber).Value)
                 .HasColumnName(Volunteer.DB_COLUMN_ASSISTANCE_DETAILS);
+            
+            builder.Property(v => v.IsDeleted)
+                .HasColumnName("is_deleted")
+                .IsRequired();
+
+            builder.Property(v => v.DeletionDateTime)
+                .HasColumnName("deletion_datetime");
         }
     }
 }

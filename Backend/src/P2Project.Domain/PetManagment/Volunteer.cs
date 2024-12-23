@@ -16,7 +16,7 @@ namespace P2Project.Domain.PetManagment
         Male,
         Female
     }
-    public class Volunteer : Shared.Entity<VolunteerId>
+    public class Volunteer : SoftDeletableEntity<VolunteerId>
     {
         public const string DB_TABLE_VOLUNTEERS = "volunteers";
         public const string DB_COLUMN_GENDER = "gender";
@@ -101,6 +101,26 @@ namespace P2Project.Domain.PetManagment
             string dayString = days == 1 ? "1 день" : days + " дней";
 
             return $"{yearString} {monthString} {dayString}";
+        }
+        
+        public override void SoftDelete()
+        {
+            base.SoftDelete();
+
+            foreach (var pet in _pets)
+            {
+                pet.SoftDelete();
+            }
+        }
+
+        public override void Restore()
+        {
+            base.Restore();
+
+            foreach (var pet in _pets)
+            {
+                pet.Restore();
+            }
         }
 
         public void UpdateMainInfo(

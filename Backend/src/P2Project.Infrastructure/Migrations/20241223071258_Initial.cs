@@ -28,19 +28,21 @@ namespace P2Project.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    age = table.Column<int>(type: "integer", maxLength: 10, nullable: false),
                     gender = table.Column<string>(type: "text", nullable: false),
-                    registered_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    years_of_experience = table.Column<double>(type: "double precision", nullable: false),
-                    is_deleted = table.Column<bool>(type: "boolean", nullable: false),
+                    registered_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    years_of_experience = table.Column<string>(type: "text", nullable: false),
+                    phone_numbers = table.Column<string>(type: "jsonb", nullable: false),
+                    social_networks = table.Column<string>(type: "jsonb", nullable: false),
+                    assistance_details = table.Column<string>(type: "jsonb", nullable: false),
                     description = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true),
                     email = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false),
                     first_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     last_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     second_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    assistance_details = table.Column<string>(type: "jsonb", nullable: true),
-                    phone_numbers = table.Column<string>(type: "jsonb", nullable: false),
-                    social_networks = table.Column<string>(type: "jsonb", nullable: true)
+                    age = table.Column<int>(type: "integer", nullable: false),
+                    grade = table.Column<int>(type: "integer", nullable: false),
+                    is_deleted = table.Column<bool>(type: "boolean", nullable: false),
+                    deletion_datetime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -74,7 +76,7 @@ namespace P2Project.Infrastructure.Migrations
                     created_at = table.Column<string>(type: "text", nullable: false),
                     assistance_details = table.Column<string>(type: "jsonb", nullable: false),
                     photos = table.Column<string>(type: "jsonb", nullable: false),
-                    volunteer_id = table.Column<Guid>(type: "uuid", nullable: true),
+                    volunteer_id = table.Column<Guid>(type: "uuid", nullable: false),
                     apartment = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     city = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     floor = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
@@ -94,7 +96,9 @@ namespace P2Project.Infrastructure.Migrations
                     phone_number = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     position = table.Column<int>(type: "integer", nullable: false),
                     breed_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    species_id = table.Column<Guid>(type: "uuid", nullable: false)
+                    species_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    is_deleted = table.Column<bool>(type: "boolean", nullable: false),
+                    deletion_datetime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {

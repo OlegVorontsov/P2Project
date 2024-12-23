@@ -2,13 +2,14 @@
 using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.PetManagment.ValueObjects.Common;
 using P2Project.Domain.PetManagment.ValueObjects.Pets;
+using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.Errors;
 using P2Project.Domain.Shared.IDs;
 using Result = CSharpFunctionalExtensions.Result;
 
 namespace P2Project.Domain.PetManagment.Entities
 {
-    public class Pet : Shared.Entity<PetId>
+    public class Pet : SoftDeletableEntity<PetId>
     {
         public const string DB_TABLE_PETS = "pets";
         public const string DB_COLUMN_BIRTH_DATE = "birth_date";
