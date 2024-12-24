@@ -40,7 +40,7 @@ namespace P2Project.Application.Volunteers.Queries.GetPets
                 ? petsQuery.OrderByDescending(keySelector)
                 : petsQuery.OrderBy(keySelector);
             
-            var result = await petsQuery.ToPagedList(
+            var result = await petsQuery.ToPagedListOrError(
                     query.Page,
                     query.PageSize,
                     cancellationToken);

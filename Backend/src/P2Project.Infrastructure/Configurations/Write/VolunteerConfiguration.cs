@@ -76,7 +76,6 @@ namespace P2Project.Infrastructure.Configurations.Write
 
             builder.Property(v => v.RegisteredAt)
                 .IsRequired()
-                .SetLocalDateTime(DateTimeKind.Local)
                 .HasColumnName(Volunteer.DB_COLUMN_REGISTERED_AT);
 
             builder.Property(v => v.YearsOfExperience)
@@ -86,6 +85,24 @@ namespace P2Project.Infrastructure.Configurations.Write
                    .WithOne()
                    .HasForeignKey(p => p.VolunteerId)
                    .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Property(v => v.NeedsHelpPets)
+                   .HasColumnName("needs_help_pets");
+            
+            builder.Property(v => v.NeedsFoodPets)
+                .HasColumnName("needs_food_pets");
+            
+            builder.Property(v => v.OnMedicationPets)
+                .HasColumnName("on_medication_pets");
+            
+            builder.Property(v => v.LooksForHomePets)
+                .HasColumnName("looks_for_home_pets");
+            
+            builder.Property(v => v.FoundHomePets)
+                .HasColumnName("found_home_pets");
+            
+            builder.Property(v => v.UnknownStatusPets)
+                .HasColumnName("unknown_status_pets");
 
             builder.Property(v => v.PhoneNumbers)
                 .ValueObjectsCollectionJsonConversion(

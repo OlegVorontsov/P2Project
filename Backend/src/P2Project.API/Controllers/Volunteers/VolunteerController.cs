@@ -10,11 +10,25 @@ using P2Project.Application.Volunteers.Commands.UpdateMainInfo;
 using P2Project.Application.Volunteers.Commands.UpdatePhoneNumbers;
 using P2Project.Application.Volunteers.Commands.UpdateSocialNetworks;
 using P2Project.Application.Volunteers.Commands.UploadFilesToPet;
+using P2Project.Application.Volunteers.Queries.GetFilteredVolunteersWithPagination;
 
 namespace P2Project.API.Controllers.Volunteers
 {
     public class VolunteerController : ApplicationController
     {
+        [HttpGet]
+        public async Task<IActionResult> GetAll(
+            [FromQuery] GetFilteredVolunteersWithPaginationRequest request,
+            [FromServices] GetFilteredVolunteersWithPaginationHandler handler,
+            CancellationToken cancellationToken = default)
+        {
+            var query = request.ToQuery();
+
+            var response = await handler.Handle(query, cancellationToken);
+
+            return Ok(response.Value);
+        }
+        
         [HttpPost]
         public async Task<ActionResult<Guid>> Create(
             [FromServices] CreateHandler handler,

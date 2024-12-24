@@ -137,6 +137,7 @@ namespace P2Project.Application.Volunteers.Commands.AddPet
             var ownerPhoneNumber = PhoneNumber.Create(
                 command.OwnerPhoneNumber.Value,
                 command.OwnerPhoneNumber.IsMain).Value;
+            
             var assistanceStatus = AssistanceStatus.Create(
                 command.AssistanceStatus).Value;
 

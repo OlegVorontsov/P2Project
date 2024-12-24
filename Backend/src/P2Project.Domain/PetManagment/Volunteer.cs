@@ -35,7 +35,6 @@ namespace P2Project.Domain.PetManagment
                 Gender gender,
                 Email email,
                 Description description,
-                DateTime registeredAt,
                 List<PhoneNumber>? phoneNumbers,
                 List<SocialNetwork>? socialNetworks,
                 List<AssistanceDetail>? assistanceDetails) : base(id)
@@ -45,7 +44,7 @@ namespace P2Project.Domain.PetManagment
             Gender = gender;
             Email = email;
             Description = description;
-            RegisteredAt = registeredAt;
+            RegisteredAt = DateTime.UtcNow;
             PhoneNumbers = phoneNumbers ?? new List<PhoneNumber>();
             SocialNetworks = socialNetworks ?? new List<SocialNetwork>();
             AssistanceDetails = assistanceDetails ?? new List<AssistanceDetail>();
@@ -62,16 +61,32 @@ namespace P2Project.Domain.PetManagment
             private set { }
         }
         public IReadOnlyList<Pet> Pets => _pets;
-        public int NeedsHelpPets =>
-            _pets.Count(p => p.AssistanceStatus == AssistanceStatus.NeedsHelp);
-        public int NeedsFoodPets =>
-            _pets.Count(p => p.AssistanceStatus == AssistanceStatus.NeedsFood);
-        public int OnMedicationPets =>
-            _pets.Count(p => p.AssistanceStatus == AssistanceStatus.OnMedication);
-        public int LooksForHomePets =>
-            _pets.Count(p => p.AssistanceStatus == AssistanceStatus.LooksForHome);
-        public int FoundHomePets =>
-            _pets.Count(p => p.AssistanceStatus == AssistanceStatus.FoundHome);
+        public int NeedsHelpPets
+        {
+            get => _pets.Count(p => p.AssistanceStatus.Status == "needshelp");
+            private set { }
+        }
+        public int NeedsFoodPets
+        {
+            get => _pets.Count(p => p.AssistanceStatus.Status == "needsfood");
+            private set { }
+        }
+        public int OnMedicationPets
+        {
+            get => _pets.Count(p => p.AssistanceStatus.Status == "onmedication");
+            private set { }
+        }
+        public int LooksForHomePets
+        {
+            get => _pets.Count(p => p.AssistanceStatus.Status == "looksforhome");
+            private set { }
+        }
+        public int FoundHomePets
+        {
+            get => _pets.Count(p => p.AssistanceStatus.Status == "foundhome");
+            private set { }
+        }
+        public int UnknownStatusPets{ get; private set; } = default!;
         public IReadOnlyList<PhoneNumber> PhoneNumbers { get; private set; } = null!;
         public IReadOnlyList<SocialNetwork> SocialNetworks { get; private set; } = null!;
         public IReadOnlyList<AssistanceDetail> AssistanceDetails { get; private set; } = null!;
@@ -155,6 +170,16 @@ namespace P2Project.Domain.PetManagment
                 return positionResult.Error;
 
             pet.SetPosition(positionResult.Value);
+
+            var status = pet.AssistanceStatus.Status.ToLower() switch
+            {
+                "needshelp" => NeedsHelpPets++,
+                "needsfood" => NeedsFoodPets++,
+                "onmedication" => OnMedicationPets++,
+                "looksforhome" => LooksForHomePets++,
+                "foundhome" => FoundHomePets++,
+                _ => UnknownStatusPets++,
+            };
 
             _pets.Add(pet);
 

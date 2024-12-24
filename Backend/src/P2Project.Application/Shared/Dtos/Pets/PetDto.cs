@@ -29,4 +29,5 @@ public class PetDto
     public int Position { get; init; }
     public IEnumerable<AssistanceDetailDto> AssistanceDetails { get; set; } = default!;
     public IEnumerable<PetPhotoDto> Photos { get; set; } = default!;
+    public bool IsDeleted { get; init; }
 }

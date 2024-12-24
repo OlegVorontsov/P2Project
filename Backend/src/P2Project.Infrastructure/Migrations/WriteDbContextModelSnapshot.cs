@@ -229,6 +229,10 @@ namespace P2Project.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("deletion_datetime");
 
+                    b.Property<int>("FoundHomePets")
+                        .HasColumnType("integer")
+                        .HasColumnName("found_home_pets");
+
                     b.Property<string>("Gender")
                         .IsRequired()
                         .HasColumnType("text")
@@ -237,6 +241,22 @@ namespace P2Project.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
+
+                    b.Property<int>("LooksForHomePets")
+                        .HasColumnType("integer")
+                        .HasColumnName("looks_for_home_pets");
+
+                    b.Property<int>("NeedsFoodPets")
+                        .HasColumnType("integer")
+                        .HasColumnName("needs_food_pets");
+
+                    b.Property<int>("NeedsHelpPets")
+                        .HasColumnType("integer")
+                        .HasColumnName("needs_help_pets");
+
+                    b.Property<int>("OnMedicationPets")
+                        .HasColumnType("integer")
+                        .HasColumnName("on_medication_pets");
 
                     b.Property<string>("PhoneNumbers")
                         .IsRequired()
@@ -251,6 +271,10 @@ namespace P2Project.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("jsonb")
                         .HasColumnName("social_networks");
+
+                    b.Property<int>("UnknownStatusPets")
+                        .HasColumnType("integer")
+                        .HasColumnName("unknown_status_pets");
 
                     b.Property<string>("YearsOfExperience")
                         .IsRequired()

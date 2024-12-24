@@ -24,7 +24,6 @@ namespace P2Project.UnitTestsFabrics
                 Gender.Male,
                 Email.Create("test@domain.com").Value,
                 Description.Create("description").Value,
-                DateTime.Now,
                 new List<PhoneNumber>(),
                 new List<SocialNetwork>(),
                 new List<AssistanceDetail>());

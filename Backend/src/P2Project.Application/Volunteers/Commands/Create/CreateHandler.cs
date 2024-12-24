@@ -77,8 +77,6 @@ namespace P2Project.Application.Volunteers.Commands.Create
 
             var description = Description.Create(command.Description).Value;
 
-            var registeredDate = DateTime.Now;
-
             var phoneNumbers = new List<PhoneNumber>();
             if (command.PhoneNumbers != null)
             {
@@ -120,7 +118,6 @@ namespace P2Project.Application.Volunteers.Commands.Create
                             gender,
                             email,
                             description,
-                            registeredDate,
                             volunteerPhoneNumbers,
                             volunteerSocialNetworks,
                             volunteerAssistanceDetails);
