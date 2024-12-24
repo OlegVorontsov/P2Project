@@ -6,10 +6,8 @@ using P2Project.Application.Interfaces;
 using P2Project.Application.Interfaces.Commands;
 using P2Project.Application.Interfaces.DataBase;
 using P2Project.Domain.PetManagment;
-using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.PetManagment.ValueObjects.Common;
 using P2Project.Domain.PetManagment.ValueObjects.Volunteers;
-using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.Errors;
 using P2Project.Domain.Shared.IDs;
 
