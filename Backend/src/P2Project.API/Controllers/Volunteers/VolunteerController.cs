@@ -45,8 +45,8 @@ namespace P2Project.API.Controllers.Volunteers
         
         [HttpPost]
         public async Task<ActionResult<Guid>> Create(
-            [FromServices] CreateHandler handler,
             [FromBody] CreateRequest request,
+            [FromServices] CreateHandler handler,
             CancellationToken cancellationToken)
         {
             var result = await handler.Handle(

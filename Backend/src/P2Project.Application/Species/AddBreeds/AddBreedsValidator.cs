@@ -14,7 +14,7 @@ namespace P2Project.Application.Species.AddBreeds
                 .NotEmpty()
                 .WithError(Errors.General.ValueIsRequired());
 
-            RuleForEach(s => s.AddBreedsDto.Breeds)
+            RuleForEach(s => s.Breeds)
                 .MustBeValueObject(b => Breed.Create(b.Name.Value));
         }
     }

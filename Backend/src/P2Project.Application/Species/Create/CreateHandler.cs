@@ -1,5 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
+using FluentValidation;
 using Microsoft.Extensions.Logging;
+using P2Project.Application.Extensions;
 using P2Project.Domain.Shared.IDs;
 using P2Project.Domain.SpeciesManagment.ValueObjects;
 using P2Project.Domain.SpeciesManagment.Entities;
@@ -11,13 +13,16 @@ namespace P2Project.Application.Species.Create
 {
     public class CreateHandler : ICommandHandler<Guid, CreateCommand>
     {
+        private readonly IValidator<CreateCommand> _validator;
         private readonly ISpeciesRepository _speciesRepository;
         private readonly ILogger<CreateHandler> _logger;
 
         public CreateHandler(
+            IValidator<CreateCommand> validator,
             ISpeciesRepository speciesRepository,
             ILogger<CreateHandler> logger)
         {
+            _validator = validator;
             _speciesRepository = speciesRepository;
             _logger = logger;
         }
@@ -25,10 +30,16 @@ namespace P2Project.Application.Species.Create
             CreateCommand command,
             CancellationToken cancellationToken = default)
         {
+            var validationResult = await _validator.ValidateAsync(
+                command, cancellationToken);
+            if (validationResult.IsValid == false)
+                return validationResult.ToErrorList();
+            
             var speciesId = SpeciesId.New();
 
             var name = Name.Create(
                 command.Name.Value).Value;
+            
             var speciesByName = await _speciesRepository.GetByName(
                 name, cancellationToken);
             if (speciesByName.IsSuccess)
@@ -40,20 +51,21 @@ namespace P2Project.Application.Species.Create
             var newBreeds = new List<Breed>();
             if (command.Breeds != null)
             {
-                var breeds = command.Breeds.Select(bDto => new Breed(Name.Create(bDto.Name.Value).Value));
+                var breeds = command.Breeds
+                    .Select(bDto => new Breed(Name.Create(bDto.Name.Value).Value));
                 newBreeds.AddRange(breeds);
             }
 
-            var species = new Domain.SpeciesManagment.Species(
+            var newSpecies = new Domain.SpeciesManagment.Species(
                 speciesId, name, newBreeds);
 
-            await _speciesRepository.Add(species, cancellationToken);
+            await _speciesRepository.Add(newSpecies, cancellationToken);
 
             _logger.LogInformation(
                 "Species created with ID: {id}",
-                speciesId.Value);
+                newSpecies.Id.Value);
 
-            return (Guid)species.Id;
+            return newSpecies.Id.Value;
         }
     }
 }
