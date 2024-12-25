@@ -1,10 +1,12 @@
-﻿using System.Text.Json;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using P2Project.Application.Shared.Dtos;
+using P2Project.Application.Shared.Dtos.Common;
+using P2Project.Application.Shared.Dtos.Pets;
 using P2Project.Domain.PetManagment.Entities;
 using P2Project.Domain.PetManagment.ValueObjects;
+using P2Project.Domain.PetManagment.ValueObjects.Common;
+using P2Project.Domain.PetManagment.ValueObjects.Pets;
 using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.IDs;
 using P2Project.Infrastructure.Extensions;
@@ -15,7 +17,7 @@ namespace P2Project.Infrastructure.Configurations.Write
     {
         public void Configure(EntityTypeBuilder<Pet> builder)
         {
-            builder.ToTable("pets");
+            builder.ToTable(Pet.DB_TABLE_PETS);
 
             builder.HasKey(p => p.Id);
             builder.Property(p => p.Id)
@@ -28,7 +30,7 @@ namespace P2Project.Infrastructure.Configurations.Write
                 nb.Property(n => n.Value)
                   .IsRequired()
                   .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH)
-                  .HasColumnName("nick_name");
+                  .HasColumnName(NickName.DB_COLUMN_NICKNAME);
             });
 
             builder.ComplexProperty(p => p.SpeciesBreed, sbb =>
@@ -37,10 +39,10 @@ namespace P2Project.Infrastructure.Configurations.Write
                    .HasConversion(
                         id => id.Value,
                         value => SpeciesId.Create(value))
-                   .HasColumnName("species_id");
+                   .HasColumnName(SpeciesBreed.DB_COLUMN_SPECIES_ID);
 
                 sbb.Property(bi => bi.BreedId)
-                   .HasColumnName("breed_id");
+                   .HasColumnName(SpeciesBreed.DB_COLUMN_BREED_ID);
             });
 
             builder.ComplexProperty(p => p.Description, db =>
@@ -48,7 +50,7 @@ namespace P2Project.Infrastructure.Configurations.Write
                 db.Property(d => d.Value)
                   .IsRequired(false)
                   .HasMaxLength(Constants.MAX_BIG_TEXT_LENGTH)
-                  .HasColumnName("description");
+                  .HasColumnName(Description.DB_COLUMN_DESCRIPTION);
             });
 
             builder.ComplexProperty(p => p.Color, cb =>
@@ -56,137 +58,126 @@ namespace P2Project.Infrastructure.Configurations.Write
                 cb.Property(c => c.Value)
                   .IsRequired()
                   .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH)
-                  .HasColumnName("color");
+                  .HasColumnName(Color.DB_COLUMN_COLOR);
             });
 
             builder.ComplexProperty(p => p.HealthInfo, hib =>
             {
-                hib.Property(hi => hi.Value)
+                hib.Property(pp => pp.Weight)
+                    .IsRequired()
+                    .HasColumnName(HealthInfo.DB_COLUMN_WEIGHT);
+                
+                hib.Property(pp => pp.Height)
+                    .IsRequired()
+                    .HasColumnName(HealthInfo.DB_COLUMN_HEIGHT);
+
+                hib.Property(pp => pp.IsCastrated)
+                    .IsRequired()
+                    .HasColumnName(HealthInfo.DB_COLUMN_IS_CASTRATED);
+                
+                hib.Property(pp => pp.IsVaccinated)
+                    .IsRequired()
+                    .HasColumnName(HealthInfo.DB_COLUMN_IS_VACCINATED);
+                
+                hib.Property(hi => hi.HealthDescription)
                   .IsRequired(false)
                   .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH)
-                  .HasColumnName("health_info");
+                  .HasColumnName(HealthInfo.DB_COLUMN_HEALTH_DESCRIPTION);
             });
 
-            builder.OwnsOne(p => p.Address, ab =>
+            builder.ComplexProperty(p => p.Address, ab =>
             {
-                ab.ToJson();
-
                 ab.Property(a => a.Region)
                   .IsRequired()
-                  .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH);
+                  .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH)
+                  .HasColumnName(Address.DB_COLUMN_REGION);
 
                 ab.Property(a => a.City)
                   .IsRequired()
-                  .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH);
+                  .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH)
+                  .HasColumnName(Address.DB_COLUMN_CITY);
 
                 ab.Property(a => a.Street)
                   .IsRequired()
-                  .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH);
+                  .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH)
+                  .HasColumnName(Address.DB_COLUMN_STREET);
 
                 ab.Property(a => a.House)
                   .IsRequired()
-                  .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH);
+                  .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH)
+                  .HasColumnName(Address.DB_COLUMN_HOUSE);
 
                 ab.Property(a => a.Floor)
                   .IsRequired(false)
-                  .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH);
+                  .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH)
+                  .HasColumnName(Address.DB_COLUMN_FLOOR);
 
                 ab.Property(a => a.Apartment)
                   .IsRequired(false)
-                  .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH);
+                  .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH)
+                  .HasColumnName(Address.DB_COLUMN_APARTMENT);
             });
 
-            builder.Property(p => p.Weight)
-                   .IsRequired()
-                   .HasMaxLength(Constants.MAX_TINY_TEXT_LENGTH)
-                   .HasColumnName("weight");
-
-            builder.Property(p => p.Height)
-                   .IsRequired()
-                   .HasMaxLength(Constants.MAX_TINY_TEXT_LENGTH)
-                   .HasColumnName("height");
-
-            builder.ComplexProperty(p => p.OwnerPhoneNumber, pnb =>
+            builder.ComplexProperty(p => p.PhoneNumber, pnb =>
             {
                 pnb.Property(pn => pn.Value)
                    .IsRequired()
                    .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH)
-                   .HasColumnName("owner_phone_number");
+                   .HasColumnName(PhoneNumber.DB_COLUMN_PHONE_NUMBER);
 
                 pnb.Property(pn => pn.IsMain)
                    .IsRequired(false)
-                   .HasColumnName("is_main");
+                   .HasColumnName(PhoneNumber.DB_COLUMN_IS_MAIN);
             });
 
-            builder.ComplexProperty(p => p.HealthInfo, hib =>
-            {
-                hib.Property(hi => hi.Value)
-                  .IsRequired(false)
-                  .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH)
-                  .HasColumnName("health_info");
-            });
-
-            builder.Property(p => p.IsCastrated)
-                   .IsRequired()
-                   .HasColumnName("is_castrated");
-
-            builder.Property(p => p.IsVaccinated)
-                   .IsRequired()
-                   .HasColumnName("is_vaccinated");
-
-            builder.Property(p => p.DateOfBirth)
-                   .IsRequired()
-                   .HasColumnName("date_of_birth")
-                   .HasConversion(
-                        d => d.ToShortDateString(),
-                        d => DateOnly.Parse(d));
+            builder.Property(p => p.BirthDate)
+                .IsRequired()
+                .HasConversion(
+                    d => d.ToShortDateString(),
+                    d => DateOnly.Parse(d))
+                .HasColumnName(Pet.DB_COLUMN_BIRTH_DATE);
 
             builder.ComplexProperty(p => p.AssistanceStatus, asb =>
             {
                 asb.Property(a => a.Status)
                    .IsRequired()
-                   .HasColumnName("assistance_status");
+                   .HasColumnName(AssistanceStatus.DB_COLUMN_ASSISTANCE_STATUS);
             });
-
-            builder.OwnsOne(p => p.AssistanceDetails, adb =>
-            {
-                adb.ToJson();
-
-                adb.OwnsMany(ad => ad.AssistanceDetails, ab =>
-                {
-                    ab.Property(a => a.Name)
-                      .IsRequired()
-                      .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH);
-
-                    ab.Property(a => a.Description)
-                      .IsRequired()
-                      .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH);
-
-                    ab.Property(a => a.AccountNumber)
-                      .IsRequired()
-                      .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH);
-                });
-            });
+            
+            builder.Property(p => p.AssistanceDetails)
+                .ValueObjectsCollectionJsonConversion(
+                    detail => new AssistanceDetailDto(
+                        detail.Name, detail.Description, detail.AccountNumber),
+                    dto => AssistanceDetail.Create(
+                        dto.Name, dto.Description, dto.AccountNumber).Value)
+                .HasColumnName(Pet.DB_COLUMN_ASSISTANCE_DETAILS);
             
             builder.Property(p => p.Photos)
                 .ValueObjectsCollectionJsonConversion(
                     photo => new PetPhotoDto(photo.FilePath, photo.IsMain),
                     dto => PetPhoto.Create(dto.Path, dto.IsMain).Value)
-                .HasColumnName("photos");
+                .HasColumnName(Pet.DB_COLUMN_PHOTOS);
 
             builder.Property(p => p.CreatedAt)
-                   .IsRequired()
-                   .HasColumnName("created_at")
-                   .HasConversion(
-                        d => d.ToShortDateString(),
-                        d => DateOnly.Parse(d));
+                .IsRequired()
+                .HasConversion(
+                    d => d.ToShortDateString(),
+                    d => DateOnly.Parse(d))
+                .HasColumnName(Pet.DB_COLUMN_CREATED_AT);
 
             builder.ComplexProperty(p => p.Position, snb =>
             {
                 snb.Property(sn => sn.Value)
-                  .IsRequired(true)
-                  .HasColumnName("position");
+                  .IsRequired()
+                  .HasColumnName(Position.DB_COLUMN_POSITION);
             });
+            
+            builder.Property(v => v.IsDeleted)
+                .HasColumnName("is_deleted")
+                .IsRequired();
+
+            builder.Property(v => v.DeletionDateTime)
+                .HasColumnName("deletion_datetime");
         }
     }
 }

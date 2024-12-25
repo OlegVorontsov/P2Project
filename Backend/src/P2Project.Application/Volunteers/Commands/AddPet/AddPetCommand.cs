@@ -1,7 +1,6 @@
-﻿using P2Project.Application.Interfaces;
-using P2Project.Application.Interfaces.Commands;
-using P2Project.Application.Shared;
-using P2Project.Application.Shared.Dtos;
+﻿using P2Project.Application.Interfaces.Commands;
+using P2Project.Application.Shared.Dtos.Common;
+using P2Project.Application.Shared.Dtos.Pets;
 
 namespace P2Project.Application.Volunteers.Commands.AddPet
 {
@@ -12,14 +11,10 @@ namespace P2Project.Application.Volunteers.Commands.AddPet
         string Breed,
         string? Description,
         string Color,
-        string? HealthInfo,
+        HealthInfoDto HealthInfo,
         AddressDto Address,
-        double Weight,
-        double Height,
         PhoneNumberDto OwnerPhoneNumber,
-        bool IsCastrated,
-        bool IsVaccinated,
-        DateOnly DateOfBirth,
+        DateOnly BirthDate,
         string AssistanceStatus,
         AssistanceDetailDto AssistanceDetail) : ICommand;
 }

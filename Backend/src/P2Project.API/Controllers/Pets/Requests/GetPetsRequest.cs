@@ -3,9 +3,16 @@
 namespace P2Project.API.Controllers.Pets.Requests
 {
     public record GetPetsRequest(
+        Guid? VolunteerId,
+        Guid? SpeciesId,
+        Guid? BreedId,  
         string? NickName,
-        int? PositionFrom,
-        int? PositionTo,
+        string? Color,
+        string? City,
+        int? WeightFrom,
+        int? WeightTo,
+        int? HeightFrom,
+        int? HeightTo,
         string? SortBy,
         string? SortOrder,
         int Page,
@@ -13,9 +20,16 @@ namespace P2Project.API.Controllers.Pets.Requests
     {
         public GetPetsQuery ToQuery() =>
             new (
+                VolunteerId,
+                SpeciesId,
+                BreedId,
                 NickName,
-                PositionFrom,
-                PositionTo,
+                Color,
+                City,
+                WeightFrom,
+                WeightTo,
+                HeightFrom,
+                HeightTo,
                 SortBy,
                 SortOrder,
                 Page,

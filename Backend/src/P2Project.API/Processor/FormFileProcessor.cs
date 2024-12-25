@@ -1,4 +1,5 @@
 ﻿using P2Project.Application.Shared.Dtos;
+using P2Project.Application.Shared.Dtos.Files;
 
 namespace P2Project.API.Processor
 {

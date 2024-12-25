@@ -6,6 +6,7 @@ using P2Project.Application.Interfaces;
 using P2Project.Application.Interfaces.Commands;
 using P2Project.Application.Interfaces.DataBase;
 using P2Project.Domain.PetManagment.ValueObjects;
+using P2Project.Domain.PetManagment.ValueObjects.Common;
 using P2Project.Domain.Shared.Errors;
 using P2Project.Domain.Shared.IDs;
 
@@ -56,7 +57,6 @@ namespace P2Project.Application.Volunteers.Commands.UpdateAssistanceDetails
             if (existingAssistanceDetails != null)
             {
                 var oldAssistanceDetails = existingAssistanceDetails?
-                                    .AssistanceDetails
                                     .Select(ad => AssistanceDetail
                                         .Create(
                                             ad.Name,
@@ -78,8 +78,7 @@ namespace P2Project.Application.Volunteers.Commands.UpdateAssistanceDetails
                 newAssistanceDetails.AddRange(assistanceDetailsToAdd);
             }
 
-            var volunteerAssistanceDetails = new VolunteerAssistanceDetails(
-                                                newAssistanceDetails);
+            var volunteerAssistanceDetails = newAssistanceDetails;
 
             volunteerResult.Value.UpdateAssistanceDetails(volunteerAssistanceDetails);
 

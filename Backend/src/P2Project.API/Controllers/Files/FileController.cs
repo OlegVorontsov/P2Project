@@ -4,6 +4,7 @@ using P2Project.Application.Files.DeleteFile;
 using P2Project.Application.Files.GetFile;
 using P2Project.Application.Files.UploadFile;
 using P2Project.Application.Shared.Dtos;
+using P2Project.Application.Shared.Dtos.Files;
 
 namespace P2Project.API.Controllers.Files
 {

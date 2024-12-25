@@ -29,42 +29,76 @@ namespace P2Project.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<string>("AssistanceDetails")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("assistance_details");
+
+                    b.Property<string>("BirthDate")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("birth_date");
+
                     b.Property<string>("CreatedAt")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("created_at");
 
-                    b.Property<string>("DateOfBirth")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("date_of_birth");
+                    b.Property<DateTime?>("DeletionDateTime")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deletion_datetime");
 
-                    b.Property<double>("Height")
-                        .HasMaxLength(10)
-                        .HasColumnType("double precision")
-                        .HasColumnName("height");
-
-                    b.Property<bool>("IsCastrated")
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
-                        .HasColumnName("is_castrated");
-
-                    b.Property<bool>("IsVaccinated")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_vaccinated");
+                        .HasColumnName("is_deleted");
 
                     b.Property<string>("Photos")
                         .IsRequired()
                         .HasColumnType("jsonb")
                         .HasColumnName("photos");
 
-                    b.Property<double>("Weight")
-                        .HasMaxLength(10)
-                        .HasColumnType("double precision")
-                        .HasColumnName("weight");
-
-                    b.Property<Guid?>("volunteer_id")
+                    b.Property<Guid>("VolunteerId")
                         .HasColumnType("uuid")
                         .HasColumnName("volunteer_id");
+
+                    b.ComplexProperty<Dictionary<string, object>>("Address", "P2Project.Domain.PetManagment.Entities.Pet.Address#Address", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Apartment")
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("apartment");
+
+                            b1.Property<string>("City")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("city");
+
+                            b1.Property<string>("Floor")
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("floor");
+
+                            b1.Property<string>("House")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("house");
+
+                            b1.Property<string>("Region")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("region");
+
+                            b1.Property<string>("Street")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("street");
+                        });
 
                     b.ComplexProperty<Dictionary<string, object>>("AssistanceStatus", "P2Project.Domain.PetManagment.Entities.Pet.AssistanceStatus#AssistanceStatus", b1 =>
                         {
@@ -101,10 +135,26 @@ namespace P2Project.Infrastructure.Migrations
                         {
                             b1.IsRequired();
 
-                            b1.Property<string>("Value")
+                            b1.Property<string>("HealthDescription")
                                 .HasMaxLength(300)
                                 .HasColumnType("character varying(300)")
-                                .HasColumnName("health_info");
+                                .HasColumnName("health_description");
+
+                            b1.Property<double>("Height")
+                                .HasColumnType("double precision")
+                                .HasColumnName("height");
+
+                            b1.Property<bool>("IsCastrated")
+                                .HasColumnType("boolean")
+                                .HasColumnName("is_castrated");
+
+                            b1.Property<bool>("IsVaccinated")
+                                .HasColumnType("boolean")
+                                .HasColumnName("is_vaccinated");
+
+                            b1.Property<double>("Weight")
+                                .HasColumnType("double precision")
+                                .HasColumnName("weight");
                         });
 
                     b.ComplexProperty<Dictionary<string, object>>("NickName", "P2Project.Domain.PetManagment.Entities.Pet.NickName#NickName", b1 =>
@@ -118,7 +168,7 @@ namespace P2Project.Infrastructure.Migrations
                                 .HasColumnName("nick_name");
                         });
 
-                    b.ComplexProperty<Dictionary<string, object>>("OwnerPhoneNumber", "P2Project.Domain.PetManagment.Entities.Pet.OwnerPhoneNumber#PhoneNumber", b1 =>
+                    b.ComplexProperty<Dictionary<string, object>>("PhoneNumber", "P2Project.Domain.PetManagment.Entities.Pet.PhoneNumber#PhoneNumber", b1 =>
                         {
                             b1.IsRequired();
 
@@ -130,7 +180,7 @@ namespace P2Project.Infrastructure.Migrations
                                 .IsRequired()
                                 .HasMaxLength(100)
                                 .HasColumnType("character varying(100)")
-                                .HasColumnName("owner_phone_number");
+                                .HasColumnName("phone_number");
                         });
 
                     b.ComplexProperty<Dictionary<string, object>>("Position", "P2Project.Domain.PetManagment.Entities.Pet.Position#Position", b1 =>
@@ -158,7 +208,7 @@ namespace P2Project.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("pk_pets");
 
-                    b.HasIndex("volunteer_id")
+                    b.HasIndex("VolunteerId")
                         .HasDatabaseName("ix_pets_volunteer_id");
 
                     b.ToTable("pets", (string)null);
@@ -170,27 +220,66 @@ namespace P2Project.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<int>("Age")
-                        .HasMaxLength(10)
+                    b.Property<string>("AssistanceDetails")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("assistance_details");
+
+                    b.Property<DateTime?>("DeletionDateTime")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deletion_datetime");
+
+                    b.Property<int>("FoundHomePets")
                         .HasColumnType("integer")
-                        .HasColumnName("age");
+                        .HasColumnName("found_home_pets");
 
                     b.Property<string>("Gender")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("gender");
 
-                    b.Property<DateTime>("RegisteredDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("registered_date");
-
-                    b.Property<double>("YearsOfExperience")
-                        .HasColumnType("double precision")
-                        .HasColumnName("years_of_experience");
-
-                    b.Property<bool>("_isDeleted")
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
+
+                    b.Property<int>("LooksForHomePets")
+                        .HasColumnType("integer")
+                        .HasColumnName("looks_for_home_pets");
+
+                    b.Property<int>("NeedsFoodPets")
+                        .HasColumnType("integer")
+                        .HasColumnName("needs_food_pets");
+
+                    b.Property<int>("NeedsHelpPets")
+                        .HasColumnType("integer")
+                        .HasColumnName("needs_help_pets");
+
+                    b.Property<int>("OnMedicationPets")
+                        .HasColumnType("integer")
+                        .HasColumnName("on_medication_pets");
+
+                    b.Property<string>("PhoneNumbers")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("phone_numbers");
+
+                    b.Property<DateTime>("RegisteredAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("registered_at");
+
+                    b.Property<string>("SocialNetworks")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("social_networks");
+
+                    b.Property<int>("UnknownStatusPets")
+                        .HasColumnType("integer")
+                        .HasColumnName("unknown_status_pets");
+
+                    b.Property<string>("YearsOfExperience")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("years_of_experience");
 
                     b.ComplexProperty<Dictionary<string, object>>("Description", "P2Project.Domain.PetManagment.Volunteer.Description#Description", b1 =>
                         {
@@ -233,6 +322,19 @@ namespace P2Project.Infrastructure.Migrations
                                 .HasMaxLength(100)
                                 .HasColumnType("character varying(100)")
                                 .HasColumnName("second_name");
+                        });
+
+                    b.ComplexProperty<Dictionary<string, object>>("VolunteerInfo", "P2Project.Domain.PetManagment.Volunteer.VolunteerInfo#VolunteerInfo", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<int>("Age")
+                                .HasColumnType("integer")
+                                .HasColumnName("age");
+
+                            b1.Property<int>("Grade")
+                                .HasColumnType("integer")
+                                .HasColumnName("grade");
                         });
 
                     b.HasKey("Id")
@@ -299,268 +401,10 @@ namespace P2Project.Infrastructure.Migrations
                 {
                     b.HasOne("P2Project.Domain.PetManagment.Volunteer", null)
                         .WithMany("Pets")
-                        .HasForeignKey("volunteer_id")
+                        .HasForeignKey("VolunteerId")
                         .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
                         .HasConstraintName("fk_pets_volunteers_volunteer_id");
-
-                    b.OwnsOne("P2Project.Domain.PetManagment.ValueObjects.Address", "Address", b1 =>
-                        {
-                            b1.Property<Guid>("PetId")
-                                .HasColumnType("uuid");
-
-                            b1.Property<string>("Apartment")
-                                .HasMaxLength(100)
-                                .HasColumnType("character varying(100)");
-
-                            b1.Property<string>("City")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("character varying(100)");
-
-                            b1.Property<string>("Floor")
-                                .HasMaxLength(100)
-                                .HasColumnType("character varying(100)");
-
-                            b1.Property<string>("House")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("character varying(100)");
-
-                            b1.Property<string>("Region")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("character varying(100)");
-
-                            b1.Property<string>("Street")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("character varying(100)");
-
-                            b1.HasKey("PetId");
-
-                            b1.ToTable("pets");
-
-                            b1.ToJson("address");
-
-                            b1.WithOwner()
-                                .HasForeignKey("PetId")
-                                .HasConstraintName("fk_pets_pets_id");
-                        });
-
-                    b.OwnsOne("P2Project.Domain.PetManagment.ValueObjects.PetAssistanceDetails", "AssistanceDetails", b1 =>
-                        {
-                            b1.Property<Guid>("PetId")
-                                .HasColumnType("uuid");
-
-                            b1.HasKey("PetId");
-
-                            b1.ToTable("pets");
-
-                            b1.ToJson("assistance_details");
-
-                            b1.WithOwner()
-                                .HasForeignKey("PetId")
-                                .HasConstraintName("fk_pets_pets_id");
-
-                            b1.OwnsMany("P2Project.Domain.PetManagment.ValueObjects.AssistanceDetail", "AssistanceDetails", b2 =>
-                                {
-                                    b2.Property<Guid>("PetAssistanceDetailsPetId")
-                                        .HasColumnType("uuid");
-
-                                    b2.Property<int>("Id")
-                                        .ValueGeneratedOnAdd()
-                                        .HasColumnType("integer");
-
-                                    b2.Property<string>("AccountNumber")
-                                        .IsRequired()
-                                        .HasMaxLength(100)
-                                        .HasColumnType("character varying(100)");
-
-                                    b2.Property<string>("Description")
-                                        .IsRequired()
-                                        .HasMaxLength(300)
-                                        .HasColumnType("character varying(300)");
-
-                                    b2.Property<string>("Name")
-                                        .IsRequired()
-                                        .HasMaxLength(100)
-                                        .HasColumnType("character varying(100)");
-
-                                    b2.HasKey("PetAssistanceDetailsPetId", "Id");
-
-                                    b2.ToTable("pets");
-
-                                    b2.ToJson("assistance_details");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("PetAssistanceDetailsPetId")
-                                        .HasConstraintName("fk_pets_pets_pet_assistance_details_pet_id");
-                                });
-
-                            b1.Navigation("AssistanceDetails");
-                        });
-
-                    b.Navigation("Address")
-                        .IsRequired();
-
-                    b.Navigation("AssistanceDetails");
-                });
-
-            modelBuilder.Entity("P2Project.Domain.PetManagment.Volunteer", b =>
-                {
-                    b.OwnsOne("P2Project.Domain.PetManagment.ValueObjects.VolunteerAssistanceDetails", "AssistanceDetails", b1 =>
-                        {
-                            b1.Property<Guid>("VolunteerId")
-                                .HasColumnType("uuid");
-
-                            b1.HasKey("VolunteerId");
-
-                            b1.ToTable("volunteers");
-
-                            b1.ToJson("assistance_details");
-
-                            b1.WithOwner()
-                                .HasForeignKey("VolunteerId")
-                                .HasConstraintName("fk_volunteers_volunteers_id");
-
-                            b1.OwnsMany("P2Project.Domain.PetManagment.ValueObjects.AssistanceDetail", "AssistanceDetails", b2 =>
-                                {
-                                    b2.Property<Guid>("VolunteerAssistanceDetailsVolunteerId")
-                                        .HasColumnType("uuid");
-
-                                    b2.Property<int>("Id")
-                                        .ValueGeneratedOnAdd()
-                                        .HasColumnType("integer");
-
-                                    b2.Property<string>("AccountNumber")
-                                        .IsRequired()
-                                        .HasMaxLength(100)
-                                        .HasColumnType("character varying(100)");
-
-                                    b2.Property<string>("Description")
-                                        .IsRequired()
-                                        .HasMaxLength(300)
-                                        .HasColumnType("character varying(300)");
-
-                                    b2.Property<string>("Name")
-                                        .IsRequired()
-                                        .HasMaxLength(100)
-                                        .HasColumnType("character varying(100)");
-
-                                    b2.HasKey("VolunteerAssistanceDetailsVolunteerId", "Id");
-
-                                    b2.ToTable("volunteers");
-
-                                    b2.ToJson("assistance_details");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("VolunteerAssistanceDetailsVolunteerId")
-                                        .HasConstraintName("fk_volunteers_volunteers_volunteer_assistance_details_volunteer_id");
-                                });
-
-                            b1.Navigation("AssistanceDetails");
-                        });
-
-                    b.OwnsOne("P2Project.Domain.PetManagment.ValueObjects.VolunteerPhoneNumbers", "PhoneNumbers", b1 =>
-                        {
-                            b1.Property<Guid>("VolunteerId")
-                                .HasColumnType("uuid");
-
-                            b1.HasKey("VolunteerId");
-
-                            b1.ToTable("volunteers");
-
-                            b1.ToJson("phone_numbers");
-
-                            b1.WithOwner()
-                                .HasForeignKey("VolunteerId")
-                                .HasConstraintName("fk_volunteers_volunteers_id");
-
-                            b1.OwnsMany("P2Project.Domain.PetManagment.ValueObjects.PhoneNumber", "PhoneNumbers", b2 =>
-                                {
-                                    b2.Property<Guid>("VolunteerPhoneNumbersVolunteerId")
-                                        .HasColumnType("uuid");
-
-                                    b2.Property<int>("Id")
-                                        .ValueGeneratedOnAdd()
-                                        .HasColumnType("integer");
-
-                                    b2.Property<bool?>("IsMain")
-                                        .IsRequired()
-                                        .HasColumnType("boolean");
-
-                                    b2.Property<string>("Value")
-                                        .HasMaxLength(100)
-                                        .HasColumnType("character varying(100)");
-
-                                    b2.HasKey("VolunteerPhoneNumbersVolunteerId", "Id");
-
-                                    b2.ToTable("volunteers");
-
-                                    b2.ToJson("phone_numbers");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("VolunteerPhoneNumbersVolunteerId")
-                                        .HasConstraintName("fk_volunteers_volunteers_volunteer_phone_numbers_volunteer_id");
-                                });
-
-                            b1.Navigation("PhoneNumbers");
-                        });
-
-                    b.OwnsOne("P2Project.Domain.PetManagment.ValueObjects.VolunteerSocialNetworks", "SocialNetworks", b1 =>
-                        {
-                            b1.Property<Guid>("VolunteerId")
-                                .HasColumnType("uuid");
-
-                            b1.HasKey("VolunteerId");
-
-                            b1.ToTable("volunteers");
-
-                            b1.ToJson("social_networks");
-
-                            b1.WithOwner()
-                                .HasForeignKey("VolunteerId")
-                                .HasConstraintName("fk_volunteers_volunteers_id");
-
-                            b1.OwnsMany("P2Project.Domain.PetManagment.ValueObjects.SocialNetwork", "SocialNetworks", b2 =>
-                                {
-                                    b2.Property<Guid>("VolunteerSocialNetworksVolunteerId")
-                                        .HasColumnType("uuid");
-
-                                    b2.Property<int>("Id")
-                                        .ValueGeneratedOnAdd()
-                                        .HasColumnType("integer");
-
-                                    b2.Property<string>("Link")
-                                        .IsRequired()
-                                        .HasMaxLength(100)
-                                        .HasColumnType("character varying(100)");
-
-                                    b2.Property<string>("Name")
-                                        .IsRequired()
-                                        .HasMaxLength(100)
-                                        .HasColumnType("character varying(100)");
-
-                                    b2.HasKey("VolunteerSocialNetworksVolunteerId", "Id");
-
-                                    b2.ToTable("volunteers");
-
-                                    b2.ToJson("social_networks");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("VolunteerSocialNetworksVolunteerId")
-                                        .HasConstraintName("fk_volunteers_volunteers_volunteer_social_networks_volunteer_id");
-                                });
-
-                            b1.Navigation("SocialNetworks");
-                        });
-
-                    b.Navigation("AssistanceDetails");
-
-                    b.Navigation("PhoneNumbers")
-                        .IsRequired();
-
-                    b.Navigation("SocialNetworks");
                 });
 
             modelBuilder.Entity("P2Project.Domain.SpeciesManagment.Entities.Breed", b =>

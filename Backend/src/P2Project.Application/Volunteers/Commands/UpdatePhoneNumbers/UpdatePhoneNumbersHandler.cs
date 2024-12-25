@@ -7,6 +7,7 @@ using P2Project.Application.Interfaces.Commands;
 using P2Project.Application.Interfaces.DataBase;
 using P2Project.Application.Shared;
 using P2Project.Domain.PetManagment.ValueObjects;
+using P2Project.Domain.PetManagment.ValueObjects.Common;
 using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.Errors;
 using P2Project.Domain.Shared.IDs;
@@ -58,7 +59,6 @@ namespace P2Project.Application.Volunteers.Commands.UpdatePhoneNumbers
             if (existingPhoneNumbers != null)
             {
                 var oldPhonesToAdd = existingPhoneNumbers?
-                                    .PhoneNumbers
                                     .Select(pn => PhoneNumber
                                         .Create(
                                         pn.Value,
@@ -78,7 +78,7 @@ namespace P2Project.Application.Volunteers.Commands.UpdatePhoneNumbers
                 newPhoneNumbers.AddRange(phonesToAdd);
             }
 
-            var volunteerPhones = new VolunteerPhoneNumbers(newPhoneNumbers);
+            var volunteerPhones = newPhoneNumbers;
 
             volunteerResult.Value.UpdatePhoneNumbers(volunteerPhones);
 

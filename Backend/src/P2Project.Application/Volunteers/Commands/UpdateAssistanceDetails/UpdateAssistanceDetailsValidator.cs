@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using P2Project.Application.Validation;
 using P2Project.Domain.PetManagment.ValueObjects;
+using P2Project.Domain.PetManagment.ValueObjects.Common;
 using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.Errors;
 

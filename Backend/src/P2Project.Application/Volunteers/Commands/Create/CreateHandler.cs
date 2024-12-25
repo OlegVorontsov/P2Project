@@ -6,8 +6,8 @@ using P2Project.Application.Interfaces;
 using P2Project.Application.Interfaces.Commands;
 using P2Project.Application.Interfaces.DataBase;
 using P2Project.Domain.PetManagment;
-using P2Project.Domain.PetManagment.ValueObjects;
-using P2Project.Domain.Shared;
+using P2Project.Domain.PetManagment.ValueObjects.Common;
+using P2Project.Domain.PetManagment.ValueObjects.Volunteers;
 using P2Project.Domain.Shared.Errors;
 using P2Project.Domain.Shared.IDs;
 
@@ -55,6 +55,10 @@ namespace P2Project.Application.Volunteers.Commands.Create
                 var error = Errors.Volunteer.AlreadyExist();
                 return error.ToErrorList();
             }
+            
+            var volunteerInfo = VolunteerInfo.Create(
+                command.VolunteerInfo.Age,
+                command.VolunteerInfo.Grade).Value;
 
             var gender = Enum.Parse<Gender>(command.Gender);
 
@@ -71,8 +75,6 @@ namespace P2Project.Application.Volunteers.Commands.Create
 
             var description = Description.Create(command.Description).Value;
 
-            var registeredDate = DateTime.Now;
-
             var phoneNumbers = new List<PhoneNumber>();
             if (command.PhoneNumbers != null)
             {
@@ -82,7 +84,7 @@ namespace P2Project.Application.Volunteers.Commands.Create
                                                       pn.IsMain).Value);
                 phoneNumbers.AddRange(phones);
             }
-            var volunteerPhoneNumbers = new VolunteerPhoneNumbers(phoneNumbers);
+            var volunteerPhoneNumbers = phoneNumbers;
 
             var socialNetworks = new List<SocialNetwork>();
             if (command.SocialNetworks != null)
@@ -93,7 +95,7 @@ namespace P2Project.Application.Volunteers.Commands.Create
                                                          sn.Link).Value);
                 socialNetworks.AddRange(networks);
             }
-            var volunteerSocialNetworks = new VolunteerSocialNetworks(socialNetworks);
+            var volunteerSocialNetworks = socialNetworks;
 
             var assistanceDetails = new List<AssistanceDetail>();
             if (command.AssistanceDetails != null)
@@ -105,16 +107,15 @@ namespace P2Project.Application.Volunteers.Commands.Create
                                                             ad.AccountNumber).Value);
                 assistanceDetails.AddRange(details);
             }
-            var volunteerAssistanceDetails = new VolunteerAssistanceDetails(assistanceDetails);
+            var volunteerAssistanceDetails = assistanceDetails;
 
             var volunteer = new Volunteer(
                             volunteerId,
                             fullName,
-                            command.Age,
+                            volunteerInfo,
                             gender,
                             email,
                             description,
-                            registeredDate,
                             volunteerPhoneNumbers,
                             volunteerSocialNetworks,
                             volunteerAssistanceDetails);

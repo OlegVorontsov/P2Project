@@ -1,4 +1,6 @@
 ﻿using P2Project.Application.Shared.Dtos;
+using P2Project.Application.Shared.Dtos.Common;
+using P2Project.Application.Shared.Dtos.Pets;
 using P2Project.Application.Volunteers.Commands.AddPet;
 
 namespace P2Project.API.Controllers.Volunteers.Requests;
@@ -9,13 +11,9 @@ public record AddPetRequest(
     string Breed,
     string? Description,
     string Color,
-    string? HealthInfo,
+    HealthInfoDto HealthInfo,
     AddressDto Address,
-    double Weight,
-    double Height,
     PhoneNumberDto OwnerPhoneNumber,
-    bool IsCastrated,
-    bool IsVaccinated,
     DateOnly DateOfBirth,
     string AssistanceStatus,
     AssistanceDetailDto AssistanceDetail)
@@ -30,11 +28,7 @@ public record AddPetRequest(
             Color,
             HealthInfo,
             Address,
-            Weight,
-            Height,
             OwnerPhoneNumber,
-            IsCastrated,
-            IsVaccinated,
             DateOfBirth,
             AssistanceStatus,
             AssistanceDetail);

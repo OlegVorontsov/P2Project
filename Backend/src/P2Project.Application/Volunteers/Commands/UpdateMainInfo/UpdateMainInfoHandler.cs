@@ -7,6 +7,8 @@ using P2Project.Application.Interfaces.Commands;
 using P2Project.Application.Interfaces.DataBase;
 using P2Project.Domain.PetManagment;
 using P2Project.Domain.PetManagment.ValueObjects;
+using P2Project.Domain.PetManagment.ValueObjects.Common;
+using P2Project.Domain.PetManagment.ValueObjects.Volunteers;
 using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.Errors;
 using P2Project.Domain.Shared.IDs;
@@ -55,6 +57,10 @@ namespace P2Project.Application.Volunteers.Commands.UpdateMainInfo
                                     command.FullName.SecondName,
                                     command.FullName.LastName).Value;
 
+            var volunteerInfo = VolunteerInfo.Create(
+                command.VolunteerInfo.Age,
+                command.VolunteerInfo.Grade).Value;
+
             var gender = Enum.Parse<Gender>(command.Gender);
 
             var description = Description.Create(
@@ -62,7 +68,7 @@ namespace P2Project.Application.Volunteers.Commands.UpdateMainInfo
 
             volunteerResult.Value.UpdateMainInfo(
                 fullName,
-                command.Age,
+                volunteerInfo,
                 gender,
                 description);
 
@@ -73,13 +79,14 @@ namespace P2Project.Application.Volunteers.Commands.UpdateMainInfo
             _logger.LogInformation(
                     "For volunteer with ID: {id} was updated main info to " +
                     "full name: {SecondName} {FirstName} {LastName} " +
-                    "age: {Age} gender: {gender} " +
+                    "age: {Age} grade: {Grade} gender: {gender} " +
                     "description: {Value}",
                     id,
                     fullName.SecondName,
                     fullName.FirstName,
                     fullName.LastName,
-                    command.Age,
+                    volunteerInfo.Age,
+                    volunteerInfo.Grade,
                     gender,
                     description.Value);
 
