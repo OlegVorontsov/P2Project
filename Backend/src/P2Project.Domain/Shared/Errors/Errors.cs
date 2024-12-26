@@ -46,6 +46,8 @@ namespace P2Project.Domain.Shared.Errors
                 return Error.Validation("record.is.already.exist",
                                         $"Species is already exist");
             }
+            public static Error BreedDelete(Guid id) =>
+                Error.Unexpected("Breed.DeletingFail", $"Failed to delete breed with id {id}");
         }
     }
 }

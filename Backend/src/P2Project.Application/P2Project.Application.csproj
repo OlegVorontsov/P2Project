@@ -17,8 +17,4 @@
     <ProjectReference Include="..\P2Project.Domain\P2Project.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Species\Commands\" />
-  </ItemGroup>
-
 </Project>

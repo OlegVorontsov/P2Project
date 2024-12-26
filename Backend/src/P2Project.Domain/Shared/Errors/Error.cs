@@ -36,6 +36,8 @@ namespace P2Project.Domain.Shared.Errors
             new (code, message, ErrorType.NotFound);
         public static Error Failure(string code, string message) =>
             new (code, message, ErrorType.Failure);
+        public static Error Unexpected(string code, string message) =>
+            new(code, message, ErrorType.Unexpected);
         public static Error Conflict(string code, string message) =>
             new (code, message, ErrorType.Conflict);
         public string Serialize() => string.Join(SEPARATOR, Code, Message, Type);
@@ -59,6 +61,7 @@ namespace P2Project.Domain.Shared.Errors
         NotFound,
         Failure,
         Conflict,
+        Unexpected,
         None
     }
 }

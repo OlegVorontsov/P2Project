@@ -37,5 +37,14 @@ namespace P2Project.Domain.SpeciesManagment
             _breeds.AddRange(breeds);
             return Id.Value;
         }
+        
+        public UnitResult<Error> DeleteBreed(Breed breed)
+        {
+            var deleted = _breeds.Remove(breed);
+            if (deleted == false)
+                return Errors.Species.BreedDelete(breed.Id);
+
+            return Result.Success<Error>();
+        }
     }
 }

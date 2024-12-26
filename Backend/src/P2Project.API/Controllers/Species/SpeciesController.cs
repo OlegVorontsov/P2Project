@@ -3,6 +3,7 @@ using P2Project.API.Controllers.Species.Requests;
 using P2Project.API.Extensions;
 using P2Project.Application.Species.Commands.AddBreeds;
 using P2Project.Application.Species.Commands.Create;
+using P2Project.Application.Species.Commands.DeleteBreedById;
 using P2Project.Application.Species.Commands.DeleteSpeciesById;
 
 namespace P2Project.API.Controllers.Species
@@ -52,6 +53,22 @@ namespace P2Project.API.Controllers.Species
                 return result.Error.ToResponse();
 
             return Ok(result.Value);
+        }
+        
+        [HttpDelete("{speciesId:guid}/breeds/{breedId:guid}")]
+        public async Task<IActionResult> DeleteBreed(
+            [FromRoute] Guid speciesId,
+            [FromRoute] Guid breedId,
+            [FromServices] DeleteBreedByIdHandler handler,
+            CancellationToken cancellationToken)
+        {
+            var handleResult = await handler.Handle(
+                new DeleteBreedByIdCommand(speciesId, breedId),
+                cancellationToken);
+            if (handleResult.IsFailure)
+                return handleResult.Error.ToResponse();
+
+            return Ok();
         }
     }
 }
