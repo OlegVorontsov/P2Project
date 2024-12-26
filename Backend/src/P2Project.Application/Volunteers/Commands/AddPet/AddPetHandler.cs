@@ -6,7 +6,7 @@ using P2Project.Application.Interfaces;
 using P2Project.Application.Interfaces.Commands;
 using P2Project.Application.Interfaces.DataBase;
 using P2Project.Application.Species;
-using P2Project.Application.Species.Create;
+using P2Project.Application.Species.Commands.Create;
 using P2Project.Domain.PetManagment.Entities;
 using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.PetManagment.ValueObjects.Common;

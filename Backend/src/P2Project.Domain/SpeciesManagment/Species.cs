@@ -8,7 +8,7 @@ using P2Project.Domain.SpeciesManagment.ValueObjects;
 
 namespace P2Project.Domain.SpeciesManagment
 {
-    public class Species : Shared.Entity<SpeciesId>
+    public class Species : Shared.BaseClasses.Entity<SpeciesId>
     {
         private Species(SpeciesId id) : base(id) { }
         private readonly List<Breed> _breeds = [];

@@ -1,8 +1,10 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using P2Project.Application.Agreements;
 using P2Project.Application.Files.DeleteFile;
 using P2Project.Application.Files.GetFile;
 using P2Project.Application.Files.UploadFile;
+using P2Project.Application.Interfaces.Agreements;
 using P2Project.Application.Interfaces.Commands;
 using P2Project.Application.Interfaces.Queries;
 
@@ -16,6 +18,8 @@ namespace P2Project.Application.Shared
             services.AddCommands()
                     .AddQueries()
                     .AddValidatorsFromAssembly(typeof(Inject).Assembly);
+
+            services.AddScoped<IPetsAgreement, PetsAgreement>();
             
             services.AddScoped<UploadFileHandler>();
             services.AddScoped<DeleteFileHandler>();

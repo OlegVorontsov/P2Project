@@ -2,7 +2,7 @@
 using P2Project.Application.Validation;
 using P2Project.Domain.SpeciesManagment.ValueObjects;
 
-namespace P2Project.Application.Species.Create
+namespace P2Project.Application.Species.Commands.Create
 {
     public class CreateValidator :
         AbstractValidator<CreateCommand>

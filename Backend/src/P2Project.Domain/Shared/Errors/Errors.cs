@@ -22,6 +22,14 @@ namespace P2Project.Domain.Shared.Errors
                 return Error.Validation("lenght.is.invalid",
                                         $"invalid {label} lenght");
             }
+            public static Error DeleteConflict(
+                Guid? id = null, string? entityTypeName = null)
+            {
+                var forId = id is null ? " " : $"with id {id} ";
+                var type = entityTypeName is null ? "" : $"of type {entityTypeName}";
+
+                return Error.Conflict("Conflict.Constraint", $"Can't delete entity {forId}{type}");
+            }
         }
         public static class Volunteer
         {

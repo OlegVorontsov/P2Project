@@ -1,5 +1,5 @@
 ﻿
-namespace P2Project.Domain.Shared
+namespace P2Project.Domain.Shared.BaseClasses
 {
     public abstract class Entity<TId> where TId : notnull 
     {

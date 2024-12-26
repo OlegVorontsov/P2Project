@@ -13,7 +13,7 @@ using P2Project.Infrastructure.DbContexts;
 namespace P2Project.Infrastructure.Migrations
 {
     [DbContext(typeof(WriteDbContext))]
-    [Migration("20241224143802_Initial")]
+    [Migration("20241226151353_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -415,6 +415,7 @@ namespace P2Project.Infrastructure.Migrations
                     b.HasOne("P2Project.Domain.SpeciesManagment.Species", null)
                         .WithMany("Breeds")
                         .HasForeignKey("species_id")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_breed_species_species_id");
                 });
 

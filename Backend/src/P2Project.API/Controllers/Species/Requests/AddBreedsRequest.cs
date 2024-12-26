@@ -1,6 +1,6 @@
 ﻿using P2Project.Application.Shared.Dtos;
 using P2Project.Application.Shared.Dtos.Pets;
-using P2Project.Application.Species.AddBreeds;
+using P2Project.Application.Species.Commands.AddBreeds;
 
 namespace P2Project.API.Controllers.Species.Requests;
 

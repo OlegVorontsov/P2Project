@@ -13,7 +13,7 @@ namespace P2Project.Application.Interfaces.DataBase
         Task<Guid> Save(
             Domain.SpeciesManagment.Species species,
             CancellationToken cancellationToken = default);
-        Task<Guid> Delete(
+        Guid Delete(
             Domain.SpeciesManagment.Species species,
             CancellationToken cancellationToken = default);
         Task<Result<Domain.SpeciesManagment.Species, Error>> GetById(

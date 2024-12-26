@@ -36,12 +36,11 @@ namespace P2Project.Infrastructure.Repositories
             return species.Id;
         }
 
-        public async Task<Guid> Delete(
+        public Guid Delete(
                 Species species,
                 CancellationToken cancellationToken = default)
         {
             _dbContext.Species.Remove(species);
-            await _dbContext.SaveChangesAsync(cancellationToken);
             return species.Id;
         }
 

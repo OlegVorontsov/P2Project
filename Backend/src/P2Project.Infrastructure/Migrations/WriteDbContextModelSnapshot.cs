@@ -412,6 +412,7 @@ namespace P2Project.Infrastructure.Migrations
                     b.HasOne("P2Project.Domain.SpeciesManagment.Species", null)
                         .WithMany("Breeds")
                         .HasForeignKey("species_id")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_breed_species_species_id");
                 });
 

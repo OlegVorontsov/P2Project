@@ -8,7 +8,7 @@ using P2Project.Domain.Shared.Errors;
 using P2Project.Domain.Shared.IDs;
 using P2Project.Domain.SpeciesManagment.Entities;
 
-namespace P2Project.Application.Species.AddBreeds
+namespace P2Project.Application.Species.Commands.AddBreeds
 {
     public class AddBreedsHandler : ICommandHandler<Guid, AddBreedsCommand>
     {

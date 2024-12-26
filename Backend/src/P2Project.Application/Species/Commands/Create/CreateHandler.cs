@@ -2,14 +2,14 @@
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using P2Project.Application.Extensions;
-using P2Project.Domain.Shared.IDs;
-using P2Project.Domain.SpeciesManagment.ValueObjects;
-using P2Project.Domain.SpeciesManagment.Entities;
 using P2Project.Application.Interfaces.Commands;
 using P2Project.Application.Interfaces.DataBase;
 using P2Project.Domain.Shared.Errors;
+using P2Project.Domain.Shared.IDs;
+using P2Project.Domain.SpeciesManagment.Entities;
+using P2Project.Domain.SpeciesManagment.ValueObjects;
 
-namespace P2Project.Application.Species.Create
+namespace P2Project.Application.Species.Commands.Create
 {
     public class CreateHandler : ICommandHandler<Guid, CreateCommand>
     {
