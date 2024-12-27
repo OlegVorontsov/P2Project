@@ -2,6 +2,7 @@
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using P2Project.Application.Extensions;
+using P2Project.Application.Interfaces;
 using P2Project.Application.Interfaces.Commands;
 using P2Project.Application.Interfaces.DataBase;
 using P2Project.Domain.Shared.Errors;
@@ -15,16 +16,18 @@ namespace P2Project.Application.Species.Commands.Create
     {
         private readonly IValidator<CreateCommand> _validator;
         private readonly ISpeciesRepository _speciesRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<CreateHandler> _logger;
 
         public CreateHandler(
             IValidator<CreateCommand> validator,
             ISpeciesRepository speciesRepository,
-            ILogger<CreateHandler> logger)
+            ILogger<CreateHandler> logger, IUnitOfWork unitOfWork)
         {
             _validator = validator;
             _speciesRepository = speciesRepository;
             _logger = logger;
+            _unitOfWork = unitOfWork;
         }
         public async Task<Result<Guid, ErrorList>> Handle(
             CreateCommand command,
@@ -52,7 +55,9 @@ namespace P2Project.Application.Species.Commands.Create
             if (command.Breeds != null)
             {
                 var breeds = command.Breeds
-                    .Select(bDto => new Breed(Name.Create(bDto.Name.Value).Value));
+                    .Select(bDto => new Breed(
+                        BreedId.New(),
+                        Name.Create(bDto.Name.Value).Value));
                 newBreeds.AddRange(breeds);
             }
 
@@ -60,6 +65,7 @@ namespace P2Project.Application.Species.Commands.Create
                 speciesId, name, newBreeds);
 
             await _speciesRepository.Add(newSpecies, cancellationToken);
+            await _unitOfWork.SaveChanges(cancellationToken);
 
             _logger.LogInformation(
                 "Species created with ID: {id}",

@@ -68,20 +68,23 @@ namespace P2Project.Application.Volunteers.Commands.AddPet
 
             var speciesName = Name.Create(command.Species).Value;
 
-            var speciesIfExist = await _speciesRepository.GetByName(
+            var isSpeciesExist = await _speciesRepository.GetByName(
                 speciesName, cancellationToken);
 
-            if (speciesIfExist.IsFailure)
+            if (isSpeciesExist.IsFailure)
             {
                 var newBreeds = new List<Breed>();
                 if (command.Breed != null)
                 {
-                    var breed = new Breed(Name.Create(command.Breed).Value);
+                    var breed = new Breed(
+                        BreedId.New(),
+                        Name.Create(command.Breed).Value);
                     newBreeds.AddRange([breed]);
                 }
 
                 var species = new Domain.SpeciesManagment.Species(
-                    SpeciesId.New(), speciesName, newBreeds);
+                    SpeciesId.New(), speciesName, []);
+                species.AddBreeds(newBreeds);
 
                 await _speciesRepository.Add(species, cancellationToken);
 
@@ -108,11 +111,12 @@ namespace P2Project.Application.Volunteers.Commands.AddPet
                 var newBreeds = new List<Breed>();
                 if (command.Breed != null)
                 {
-                    var breed = new Breed(Name.Create(command.Breed).Value);
+                    var breed = new Breed(
+                        BreedId.New(),
+                        Name.Create(command.Breed).Value);
                     newBreeds.AddRange([breed]);
-                    speciesExist.Value.AddBreeds(newBreeds.ToList());
-                    await _speciesRepository.Save(
-                        speciesExist.Value, cancellationToken);
+                    speciesExist.Value.AddBreeds(newBreeds);
+                    _speciesRepository.Save(speciesExist.Value);
                     breedId = breed.Id;
                 }
             }

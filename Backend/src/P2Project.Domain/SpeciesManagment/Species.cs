@@ -32,7 +32,7 @@ namespace P2Project.Domain.SpeciesManagment
 
             if (result != null && result.Any())
             {
-                return Errors.General.ValueIsInvalid(string.Join(", ", result));
+                return Errors.Breed.AlreadyExist();
             }
             _breeds.AddRange(breeds);
             return Id.Value;

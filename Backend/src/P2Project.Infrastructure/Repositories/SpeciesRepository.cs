@@ -27,21 +27,17 @@ namespace P2Project.Infrastructure.Repositories
             return species.Id;
         }
 
-        public async Task<Guid> Save(
-                        Species species,
-                        CancellationToken cancellationToken = default)
+        public Guid Save(Species species)
         {
             _dbContext.Species.Attach(species);
-            await _dbContext.SaveChangesAsync(cancellationToken);
-            return species.Id;
+            return species.Id.Value;
         }
 
         public Guid Delete(
-                Species species,
-                CancellationToken cancellationToken = default)
+            Species species, CancellationToken cancellationToken = default)
         {
             _dbContext.Species.Remove(species);
-            return species.Id;
+            return species.Id.Value;
         }
 
         public async Task<Result<Species, Error>> GetById(
@@ -49,9 +45,9 @@ namespace P2Project.Infrastructure.Repositories
                                  CancellationToken cancellationToken = default)
         {
             var species = await _dbContext.Species
-                                            .FirstOrDefaultAsync(s =>
-                                            s.Id == speciesId,
-                                            cancellationToken);
+                .Include(s => s.Breeds)
+                .FirstOrDefaultAsync(s => 
+                        s.Id == speciesId, cancellationToken);
             if (species is null)
                 return Errors.General.NotFound(speciesId);
             return species;
@@ -62,9 +58,8 @@ namespace P2Project.Infrastructure.Repositories
                                 CancellationToken cancellationToken = default)
         {
             var species = await _dbContext.Species
-                                            .FirstOrDefaultAsync(s =>
-                                            s.Name == name,
-                                            cancellationToken);
+                .FirstOrDefaultAsync(s => 
+                        s.Name == name, cancellationToken);
             if (species is null)
                 return Errors.General.NotFound();
             return species;

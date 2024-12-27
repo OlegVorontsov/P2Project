@@ -56,18 +56,18 @@ namespace P2Project.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "breed",
+                name: "breeds",
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    species_id = table.Column<Guid>(type: "uuid", nullable: true),
+                    species_id = table.Column<Guid>(type: "uuid", nullable: false),
                     name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_breed", x => x.id);
+                    table.PrimaryKey("pk_breeds", x => x.id);
                     table.ForeignKey(
-                        name: "fk_breed_species_species_id",
+                        name: "fk_breeds_species_species_id",
                         column: x => x.species_id,
                         principalTable: "species",
                         principalColumn: "id",
@@ -118,8 +118,8 @@ namespace P2Project.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "ix_breed_species_id",
-                table: "breed",
+                name: "ix_breeds_species_id",
+                table: "breeds",
                 column: "species_id");
 
             migrationBuilder.CreateIndex(
@@ -132,7 +132,7 @@ namespace P2Project.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "breed");
+                name: "breeds");
 
             migrationBuilder.DropTable(
                 name: "pets");

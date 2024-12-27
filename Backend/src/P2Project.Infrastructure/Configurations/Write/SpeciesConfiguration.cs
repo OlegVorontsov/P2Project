@@ -30,7 +30,7 @@ namespace P2Project.Infrastructure.Configurations.Write
             builder.HasMany(s => s.Breeds)
                    .WithOne()
                    .OnDelete(DeleteBehavior.Cascade)
-                   .HasForeignKey("species_id");
+                   .HasForeignKey(b => b.SpeciesId);
         }
     }
 }

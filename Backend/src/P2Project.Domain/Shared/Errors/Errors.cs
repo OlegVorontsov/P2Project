@@ -49,5 +49,14 @@ namespace P2Project.Domain.Shared.Errors
             public static Error BreedDelete(Guid id) =>
                 Error.Unexpected("Breed.DeletingFail", $"Failed to delete breed with id {id}");
         }
+        
+        public static class Breed
+        {
+            public static Error AlreadyExist()
+            {
+                return Error.Validation("record.is.already.exist",
+                    $"Breed is already exist");
+            }
+        }
     }
 }

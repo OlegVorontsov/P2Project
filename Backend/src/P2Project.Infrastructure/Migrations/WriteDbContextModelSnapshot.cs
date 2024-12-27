@@ -346,11 +346,10 @@ namespace P2Project.Infrastructure.Migrations
             modelBuilder.Entity("P2Project.Domain.SpeciesManagment.Entities.Breed", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<Guid?>("species_id")
+                    b.Property<Guid>("SpeciesId")
                         .HasColumnType("uuid")
                         .HasColumnName("species_id");
 
@@ -366,12 +365,12 @@ namespace P2Project.Infrastructure.Migrations
                         });
 
                     b.HasKey("Id")
-                        .HasName("pk_breed");
+                        .HasName("pk_breeds");
 
-                    b.HasIndex("species_id")
-                        .HasDatabaseName("ix_breed_species_id");
+                    b.HasIndex("SpeciesId")
+                        .HasDatabaseName("ix_breeds_species_id");
 
-                    b.ToTable("breed", (string)null);
+                    b.ToTable("breeds", (string)null);
                 });
 
             modelBuilder.Entity("P2Project.Domain.SpeciesManagment.Species", b =>
@@ -411,9 +410,10 @@ namespace P2Project.Infrastructure.Migrations
                 {
                     b.HasOne("P2Project.Domain.SpeciesManagment.Species", null)
                         .WithMany("Breeds")
-                        .HasForeignKey("species_id")
+                        .HasForeignKey("SpeciesId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .HasConstraintName("fk_breed_species_species_id");
+                        .IsRequired()
+                        .HasConstraintName("fk_breeds_species_species_id");
                 });
 
             modelBuilder.Entity("P2Project.Domain.PetManagment.Volunteer", b =>
