@@ -13,7 +13,7 @@ using P2Project.Domain.Shared.Errors;
 
 namespace P2Project.Application.Volunteers.Queries.GetPets;
 
-public class GetPetsHandlerDapper : IQueryHandler<PagedList<PetDto>, GetPetsQuery>
+public class GetPetsHandlerDapper : IQueryValidationHandler<PagedList<PetDto>, GetPetsQuery>
 {
     private readonly IValidator<GetPetsQuery> _validator;
     private readonly ISqlConnectionFactory _connectionFactory;

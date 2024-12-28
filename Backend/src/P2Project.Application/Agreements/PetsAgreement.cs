@@ -21,15 +21,13 @@ public class PetsAgreement : IPetsAgreement
         Guid speciesId, CancellationToken cancellationToken = default)
     {
         var query = new IsAnyPetBySpeciesQuery(speciesId);
-        var result = await _isAnyPetBySpeciesHandler.Handle(query, cancellationToken);
-        return result.Value;
+        return await _isAnyPetBySpeciesHandler.Handle(query, cancellationToken);
     }
 
     public async Task<bool> IsAnyPetByBreedId(
         Guid breedId, CancellationToken cancellationToken = default)
     {
         var query = new IsAnyPetByBreedQuery(breedId);
-        var result = await _isAnyPetByBreedHandler.Handle(query, cancellationToken);
-        return result.Value;
+        return await _isAnyPetByBreedHandler.Handle(query, cancellationToken);
     }
 }

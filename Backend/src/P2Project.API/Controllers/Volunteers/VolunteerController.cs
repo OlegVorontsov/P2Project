@@ -33,7 +33,7 @@ namespace P2Project.API.Controllers.Volunteers
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById(
             [FromRoute] Guid id,
-            [FromServices] GetVolunteerByIdQueryHandler handler,
+            [FromServices] GetVolunteerByIdHandler handler,
             CancellationToken cancellationToken = default)
         {
             var query = new GetVolunteerByIdQuery(id);
@@ -146,9 +146,8 @@ namespace P2Project.API.Controllers.Volunteers
         {
             var result = await handler.Handle(
                 request.ToCommand(id), cancellationToken);
-
             if (result.IsFailure)
-                return BadRequest(result.Error);
+                return result.Error.ToResponse();
 
             return Ok(result.Value);
         }

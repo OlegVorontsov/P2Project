@@ -13,7 +13,7 @@ using P2Project.Domain.Shared.Errors;
 namespace P2Project.Application.Species.Queries.GetAllBreedsPaginatedBySpeciesId;
 
 public class GetAllBreedsPaginatedBySpeciesIdHandler :
-    IQueryHandler<PagedList<BreedReadDto>, GetAllBreedsPaginatedBySpeciesIdQuery>
+    IQueryValidationHandler<PagedList<BreedReadDto>, GetAllBreedsPaginatedBySpeciesIdQuery>
 {
     private readonly IValidator<GetAllBreedsPaginatedBySpeciesIdQuery> _validator;
     private readonly ISpeciesReadDbContext _speciesReadDbContext;

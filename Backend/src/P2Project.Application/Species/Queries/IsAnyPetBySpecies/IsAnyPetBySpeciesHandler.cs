@@ -1,10 +1,7 @@
-using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using P2Project.Application.Interfaces.DbContexts;
 using P2Project.Application.Interfaces.DbContexts.Volunteers;
 using P2Project.Application.Interfaces.Queries;
-using P2Project.Domain.Shared.Errors;
 
 namespace P2Project.Application.Species.Queries.IsAnyPetBySpecies;
 
@@ -21,7 +18,7 @@ public class IsAnyPetBySpeciesHandler : IQueryHandler<bool, IsAnyPetBySpeciesQue
         _logger = logger;
     }
 
-    public async Task<Result<bool, ErrorList>> Handle(
+    public async Task<bool> Handle(
         IsAnyPetBySpeciesQuery query,
         CancellationToken cancellationToken)
     {

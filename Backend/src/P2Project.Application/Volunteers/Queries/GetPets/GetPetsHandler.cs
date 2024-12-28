@@ -11,7 +11,7 @@ using P2Project.Domain.Shared.Errors;
 
 namespace P2Project.Application.Volunteers.Queries.GetPets
 {
-    public class GetPetsHandler : IQueryHandler<PagedList<PetDto>, GetPetsQuery>
+    public class GetPetsHandler : IQueryValidationHandler<PagedList<PetDto>, GetPetsQuery>
     {
         private readonly IValidator<GetPetsQuery> _validator;
         private readonly IVolunteersReadDbContext _volunteersReadDbContext;

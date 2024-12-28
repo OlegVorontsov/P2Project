@@ -12,7 +12,7 @@ using P2Project.Domain.Shared.Errors;
 namespace P2Project.Application.Volunteers.Queries.GetFilteredVolunteersWithPagination;
 
 public class GetFilteredVolunteersWithPaginationHandler :
-    IQueryHandler<PagedList<VolunteerDto>, GetFilteredVolunteersWithPaginationQuery>
+    IQueryValidationHandler<PagedList<VolunteerDto>, GetFilteredVolunteersWithPaginationQuery>
 {
     private readonly IValidator<GetFilteredVolunteersWithPaginationQuery> _validator;
     private readonly IVolunteersReadDbContext _volunteersReadDbContext;

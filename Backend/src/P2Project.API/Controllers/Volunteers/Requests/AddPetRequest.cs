@@ -6,9 +6,9 @@ using P2Project.Application.Volunteers.Commands.AddPet;
 namespace P2Project.API.Controllers.Volunteers.Requests;
 
 public record AddPetRequest(
+    Guid SpeciesId,
+    Guid BreedId,
     string NickName,
-    string Species,
-    string Breed,
     string? Description,
     string Color,
     HealthInfoDto HealthInfo,
@@ -21,9 +21,9 @@ public record AddPetRequest(
 {
     public AddPetCommand ToCommand(Guid volunteerId) =>
         new(volunteerId,
+            SpeciesId,
+            BreedId,
             NickName,
-            Species,
-            Breed,
             Description,
             Color,
             HealthInfo,

@@ -9,15 +9,15 @@ using P2Project.Domain.Shared.Errors;
 
 namespace P2Project.Application.Volunteers.Queries.GetVolunteerById;
 
-public class GetVolunteerByIdQueryHandler :
-    IQueryHandler<VolunteerDto, GetVolunteerByIdQuery>
+public class GetVolunteerByIdHandler :
+    IQueryValidationHandler<VolunteerDto, GetVolunteerByIdQuery>
 {
     private readonly IVolunteersReadDbContext _volunteersReadDbContext;
-    private readonly ILogger<GetVolunteerByIdQueryHandler> _logger;
+    private readonly ILogger<GetVolunteerByIdHandler> _logger;
 
-    public GetVolunteerByIdQueryHandler(
+    public GetVolunteerByIdHandler(
         IVolunteersReadDbContext volunteersReadDbContext,
-        ILogger<GetVolunteerByIdQueryHandler> logger)
+        ILogger<GetVolunteerByIdHandler> logger)
     {
         _volunteersReadDbContext = volunteersReadDbContext;
         _logger = logger;

@@ -22,7 +22,7 @@ public class IsAnyPetByBreedHandler :
         _logger = logger;
     }
 
-    public async Task<Result<bool, ErrorList>> Handle(
+    public async Task<bool> Handle(
         IsAnyPetByBreedQuery query,
         CancellationToken cancellationToken = default)
     {

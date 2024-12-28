@@ -20,6 +20,7 @@ namespace P2Project.Application.Shared
                     .AddValidatorsFromAssembly(typeof(Inject).Assembly);
 
             services.AddScoped<IPetsAgreement, PetsAgreement>();
+            services.AddScoped<ISpeciesAgreement, SpeciesAgreement>();
             
             services.AddScoped<UploadFileHandler>();
             services.AddScoped<DeleteFileHandler>();
@@ -39,9 +40,15 @@ namespace P2Project.Application.Shared
         
         private static IServiceCollection AddQueries(this IServiceCollection services)
         {
-            return services.Scan(scan => scan.FromAssemblies(typeof(Inject).Assembly)
+            services.Scan(scan => scan.FromAssemblies(typeof(Inject).Assembly)
                 .AddClasses(classes => classes
                     .AssignableTo(typeof(IQueryHandler<,>)))
+                .AsSelfWithInterfaces()
+                .WithScopedLifetime());
+            
+            return services.Scan(scan => scan.FromAssemblies(typeof(Inject).Assembly)
+                .AddClasses(classes => classes
+                    .AssignableTo(typeof(IQueryValidationHandler<,>)))
                 .AsSelfWithInterfaces()
                 .WithScopedLifetime());
         }

@@ -17,12 +17,16 @@ namespace P2Project.Application.Volunteers.Commands.AddPet
             RuleFor(ap => ap.VolunteerId)
                 .NotEmpty()
                 .WithError(Errors.General.ValueIsRequired());
+            
+            RuleFor(ap => ap.SpeciesId)
+                .NotEmpty()
+                .WithError(Errors.General.ValueIsRequired());
+            
+            RuleFor(ap => ap.BreedId)
+                .NotEmpty()
+                .WithError(Errors.General.ValueIsRequired());
 
             RuleFor(ap => ap.NickName).MustBeValueObject(NickName.Create);
-
-            RuleFor(ap => ap.Species).MustBeValueObject(Name.Create);
-
-            RuleFor(ap => ap.Breed).MustBeValueObject(Name.Create);
 
             RuleFor(ap => ap.Description).MustBeValueObject(Description.Create);
 

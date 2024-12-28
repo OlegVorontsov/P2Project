@@ -11,7 +11,7 @@ using P2Project.Domain.Shared.Errors;
 namespace P2Project.Application.Species.Queries.GetAllSpeciesFilteredPaginated;
 
 public class GetAllSpeciesFilteredPaginatedQueryHandler :
-    IQueryHandler<PagedList<SpeciesDto>, GetAllSpeciesFilteredPaginatedQuery>
+    IQueryValidationHandler<PagedList<SpeciesDto>, GetAllSpeciesFilteredPaginatedQuery>
 {
     private readonly IValidator<GetAllSpeciesFilteredPaginatedQuery> _validator;
     private readonly ISpeciesReadDbContext _speciesReadDbContext;
