@@ -1,6 +1,4 @@
-﻿using CSharpFunctionalExtensions;
-using P2Project.Domain.Shared.Errors;
-using P2Project.Domain.Shared.IDs;
+﻿using P2Project.Domain.Shared.IDs;
 using P2Project.Domain.SpeciesManagment.ValueObjects;
 
 namespace P2Project.Domain.SpeciesManagment.Entities

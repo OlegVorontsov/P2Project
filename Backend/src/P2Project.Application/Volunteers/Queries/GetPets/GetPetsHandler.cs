@@ -3,6 +3,7 @@ using CSharpFunctionalExtensions;
 using FluentValidation;
 using P2Project.Application.Extensions;
 using P2Project.Application.Interfaces.DbContexts;
+using P2Project.Application.Interfaces.DbContexts.Volunteers;
 using P2Project.Application.Interfaces.Queries;
 using P2Project.Application.Shared.Dtos.Pets;
 using P2Project.Application.Shared.Models;
@@ -13,12 +14,12 @@ namespace P2Project.Application.Volunteers.Queries.GetPets
     public class GetPetsHandler : IQueryHandler<PagedList<PetDto>, GetPetsQuery>
     {
         private readonly IValidator<GetPetsQuery> _validator;
-        private readonly IReadDbContext _readDbContext;
+        private readonly IVolunteersReadDbContext _volunteersReadDbContext;
 
         public GetPetsHandler(
-            IReadDbContext readDbContext, IValidator<GetPetsQuery> validator)
+            IVolunteersReadDbContext volunteersReadDbContext, IValidator<GetPetsQuery> validator)
         {
-            _readDbContext = readDbContext;
+            _volunteersReadDbContext = volunteersReadDbContext;
             _validator = validator;
         }
 
@@ -31,7 +32,7 @@ namespace P2Project.Application.Volunteers.Queries.GetPets
             if (validationResult.IsValid == false)
                 return validationResult.ToErrorList();
 
-            var petsQuery = ApplyFilters(_readDbContext.Pets, query);
+            var petsQuery = ApplyFilters(_volunteersReadDbContext.Pets, query);
             
             var keySelector = SortByProperty(query.SortBy);
             

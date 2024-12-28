@@ -2,15 +2,15 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using P2Project.Application.Interfaces.DbContexts;
-using P2Project.Application.Shared.Dtos;
+using P2Project.Application.Interfaces.DbContexts.Volunteers;
 using P2Project.Application.Shared.Dtos.Pets;
 using P2Project.Application.Shared.Dtos.Volunteers;
 using P2Project.Infrastructure.Shared;
 
 namespace P2Project.Infrastructure.DbContexts
 {
-    public class ReadDbContext(
-    IConfiguration configuration) : DbContext, IReadDbContext
+    public class VolunteersReadDbContext(
+        IConfiguration configuration) : DbContext, IVolunteersReadDbContext
     {
         private ILoggerFactory CreateLoggerFactory() =>
             LoggerFactory.Create(builder => { builder.AddConsole(); });
@@ -27,7 +27,7 @@ namespace P2Project.Infrastructure.DbContexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(
-                typeof(ReadDbContext).Assembly,
+                typeof(VolunteersReadDbContext).Assembly,
                 type => type.FullName?.Contains("Configurations.Read") ?? false);
         }
         public IQueryable<VolunteerDto> Volunteers => Set<VolunteerDto>();
