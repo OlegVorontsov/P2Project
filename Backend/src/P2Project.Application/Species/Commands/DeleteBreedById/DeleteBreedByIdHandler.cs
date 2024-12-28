@@ -12,7 +12,7 @@ using P2Project.Domain.Shared.IDs;
 namespace P2Project.Application.Species.Commands.DeleteBreedById;
 
 public class DeleteBreedByIdHandler :
-    ICommandHandler<DeleteBreedByIdCommand>
+    ICommandHandler<Guid, DeleteBreedByIdCommand>
 {
     private readonly IValidator<DeleteBreedByIdCommand> _validator;
     private readonly ISpeciesRepository _speciesRepository;
@@ -34,7 +34,7 @@ public class DeleteBreedByIdHandler :
         _logger = logger;
     }
 
-    public async Task<UnitResult<ErrorList>> Handle(
+    public async Task<Result<Guid, ErrorList>> Handle(
         DeleteBreedByIdCommand command,
         CancellationToken cancellationToken = default)
     {
@@ -69,6 +69,6 @@ public class DeleteBreedByIdHandler :
             breedToDelete.Name,
             breedToDelete.Id);
 
-        return Result.Success<ErrorList>();
+        return breedToDelete.Id.Value;
     }
 }

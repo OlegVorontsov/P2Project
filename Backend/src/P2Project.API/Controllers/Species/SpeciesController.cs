@@ -62,13 +62,13 @@ namespace P2Project.API.Controllers.Species
             [FromServices] DeleteBreedByIdHandler handler,
             CancellationToken cancellationToken)
         {
-            var handleResult = await handler.Handle(
+            var result = await handler.Handle(
                 new DeleteBreedByIdCommand(speciesId, breedId),
                 cancellationToken);
-            if (handleResult.IsFailure)
-                return handleResult.Error.ToResponse();
+            if (result.IsFailure)
+                return result.Error.ToResponse();
 
-            return Ok();
+            return Ok(result.Value);
         }
     }
 }
