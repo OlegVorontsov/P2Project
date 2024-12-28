@@ -5,13 +5,14 @@ using P2Project.Application.Species.Commands.AddBreeds;
 using P2Project.Application.Species.Commands.Create;
 using P2Project.Application.Species.Commands.DeleteBreedById;
 using P2Project.Application.Species.Commands.DeleteSpeciesById;
+using P2Project.Application.Species.Queries.GetAllBreedsPaginatedBySpeciesId;
 using P2Project.Application.Species.Queries.GetAllSpeciesFilteredPaginated;
 
 namespace P2Project.API.Controllers.Species
 {
     public class SpeciesController : ApplicationController
     {
-        [HttpPost()]
+        [HttpPost]
         public async Task<ActionResult<Guid>> Create(
             [FromBody] CreateSpeciesRequest request,
             [FromServices] CreateHandler handler,
@@ -82,6 +83,21 @@ namespace P2Project.API.Controllers.Species
                 request.ToQuery(), cancellationToken);
 
             return Ok(species.Value);
+        }
+        
+        [HttpGet("{id:guid}/breeds")]
+        public async Task<IActionResult> GetBreedsBySpeciesId(
+            [FromRoute] Guid id,
+            [FromQuery] GetAllBreedsPaginatedBySpeciesIdRequest request,
+            [FromServices] GetAllBreedsPaginatedBySpeciesIdHandler handler,
+            CancellationToken cancellationToken)
+        {
+            var result = await handler.Handle(
+                request.ToQuery(id), cancellationToken);
+            if (result.IsFailure)
+                return result.Error.ToResponse();
+
+            return Ok(result.Value);
         }
     }
 }
