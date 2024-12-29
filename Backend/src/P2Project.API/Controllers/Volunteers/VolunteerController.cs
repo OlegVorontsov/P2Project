@@ -3,6 +3,7 @@ using P2Project.API.Controllers.Volunteers.Requests;
 using P2Project.API.Extensions;
 using P2Project.API.Processor;
 using P2Project.Application.Volunteers.Commands.AddPet;
+using P2Project.Application.Volunteers.Commands.AddPetPhotos;
 using P2Project.Application.Volunteers.Commands.Create;
 using P2Project.Application.Volunteers.Commands.Delete;
 using P2Project.Application.Volunteers.Commands.UpdateAssistanceDetails;
@@ -10,7 +11,6 @@ using P2Project.Application.Volunteers.Commands.UpdateMainInfo;
 using P2Project.Application.Volunteers.Commands.UpdatePet;
 using P2Project.Application.Volunteers.Commands.UpdatePhoneNumbers;
 using P2Project.Application.Volunteers.Commands.UpdateSocialNetworks;
-using P2Project.Application.Volunteers.Commands.UploadFilesToPet;
 using P2Project.Application.Volunteers.Queries.GetFilteredVolunteersWithPagination;
 using P2Project.Application.Volunteers.Queries.GetVolunteerById;
 
@@ -154,18 +154,18 @@ namespace P2Project.API.Controllers.Volunteers
         }
 
         [HttpPost("{volunteerId:guid}/pet/{petId:guid}/files")]
-        public async Task<ActionResult> UploadFilesToPet(
+        public async Task<ActionResult> AddPetPhotos(
             [FromRoute] Guid volunteerId,
             [FromRoute] Guid petId,
             [FromForm] IFormFileCollection files,
-            [FromServices] UploadFilesToPetHandler handler,
+            [FromServices] AddPetPhotosHandler photosHandler,
             CancellationToken cancellationToken)
         {
             await using var fileProcessor = new FormFileProcessor();
             var fileDtos = fileProcessor.ToUploadFileDtos(files);
 
-            var result = await handler.Handle(
-                new UploadFilesToPetCommand(
+            var result = await photosHandler.Handle(
+                new AddPetPhotosCommand(
                     volunteerId, petId, fileDtos),
                 cancellationToken);
 

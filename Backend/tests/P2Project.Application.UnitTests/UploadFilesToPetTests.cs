@@ -12,7 +12,7 @@ using P2Project.Application.Shared;
 using P2Project.Application.Shared.Dtos;
 using P2Project.Application.Shared.Dtos.Files;
 using P2Project.Application.Volunteers;
-using P2Project.Application.Volunteers.Commands.UploadFilesToPet;
+using P2Project.Application.Volunteers.Commands.AddPetPhotos;
 using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.PetManagment.ValueObjects.Files;
 using P2Project.Domain.Shared;
@@ -25,11 +25,11 @@ namespace P2Project.Application.UnitTests
 {
     public class UploadFilesToPetTests
     {
-        private readonly Mock<IValidator<UploadFilesToPetCommand>> _validatorMock = new();
+        private readonly Mock<IValidator<AddPetPhotosCommand>> _validatorMock = new();
         private readonly Mock<IFileProvider> _fileProviderMock = new();
         private readonly Mock<IVolunteersRepository> _volunteersRepositoryMock = new();
         private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
-        private readonly Mock<ILogger<UploadFilesToPetHandler>> _loggerMock = new();
+        private readonly Mock<ILogger<AddPetPhotosHandler>> _loggerMock = new();
         private readonly Mock<IMessageQueue<IEnumerable<FileInfo>>> _messageQueueMock = new();
 
         [Fact]
@@ -46,7 +46,7 @@ namespace P2Project.Application.UnitTests
             var fileName = "test.jpg";
             var uploadFileDto = new UploadFileDto(stream, fileName);
 
-            var command = new UploadFilesToPetCommand(
+            var command = new AddPetPhotosCommand(
                     volunteer.Id.Value,
                     pet.Id.Value,
                     [uploadFileDto, uploadFileDto]);
@@ -76,7 +76,7 @@ namespace P2Project.Application.UnitTests
             _unitOfWorkMock.Setup(u => u.SaveChanges(cancellationToken))
                 .Returns(Task.CompletedTask);
 
-            var handler = new UploadFilesToPetHandler(
+            var handler = new AddPetPhotosHandler(
                 _validatorMock.Object,
                 _fileProviderMock.Object,
                 _volunteersRepositoryMock.Object,
