@@ -6,6 +6,7 @@ using P2Project.Application.Volunteers.Commands.AddPet;
 using P2Project.Application.Volunteers.Commands.AddPetPhotos;
 using P2Project.Application.Volunteers.Commands.Create;
 using P2Project.Application.Volunteers.Commands.Delete;
+using P2Project.Application.Volunteers.Commands.DeletePetPhotos;
 using P2Project.Application.Volunteers.Commands.UpdateAssistanceDetails;
 using P2Project.Application.Volunteers.Commands.UpdateMainInfo;
 using P2Project.Application.Volunteers.Commands.UpdatePet;
@@ -173,6 +174,21 @@ namespace P2Project.API.Controllers.Volunteers
                 return result.Error.ToResponse();
 
             return Ok(result.Value);
+        }
+        
+        [HttpDelete("{volunteerId:guid}/pets/{petId:guid}/photos")]
+        public async Task<IActionResult> DeletePetPhotos(
+            [FromRoute] Guid volunteerId,
+            [FromRoute] Guid petId,
+            [FromServices] DeletePetPhotosHandler handler,
+            CancellationToken cancellationToken = default)
+        {
+            var result = await handler.Handle(
+                new DeletePetPhotosCommand(volunteerId, petId), cancellationToken);
+            if (result.IsFailure)
+                return result.Error.ToResponse();
+
+            return Ok();
         }
         
         [HttpPut("{volunteerId:guid}/pets/{petId:guid}")]

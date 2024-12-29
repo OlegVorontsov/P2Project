@@ -1,8 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
-using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.PetManagment.ValueObjects.Common;
 using P2Project.Domain.PetManagment.ValueObjects.Pets;
-using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.BaseClasses;
 using P2Project.Domain.Shared.Errors;
 using P2Project.Domain.Shared.IDs;
@@ -92,6 +90,13 @@ namespace P2Project.Domain.PetManagment.Entities
 
         public void UpdatePhotos(List<PetPhoto> photos) =>
             Photos = photos;
+
+        internal Result<IReadOnlyList<PetPhoto>, Error> DeleteAllPhotos()
+        {
+            var photosToDelete = new List<PetPhoto>(Photos);
+            Photos = [];
+            return photosToDelete;
+        }
 
         public void Update(
             NickName nickName,

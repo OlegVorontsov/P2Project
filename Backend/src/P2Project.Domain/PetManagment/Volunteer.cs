@@ -219,6 +219,19 @@ namespace P2Project.Domain.PetManagment
             return Result.Success<Error>();
         }
         
+        public Result<IReadOnlyList<PetPhoto>, Error> DeletePetPhotos(PetId petId)
+        {
+            var pet = Pets.FirstOrDefault(p => p.Id == petId);
+            if (pet is null)
+                return Errors.Volunteer.PetNotFound(Id, petId);
+            
+            var deleteResult = pet.DeleteAllPhotos();
+            if (deleteResult.IsFailure)
+                return deleteResult.Error;
+            
+            return deleteResult;
+        }
+        
         public Result<Pet, Error> GetPetById(PetId petId)
         {
             var pet = Pets.FirstOrDefault(p => p.Id.Value == petId.Value);
