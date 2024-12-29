@@ -1,9 +1,11 @@
 ﻿using FluentValidation;
 using P2Project.Application.Validation;
 using P2Project.Domain.Shared.Errors;
+using P2Project.Domain.Shared.IDs;
 using P2Project.Domain.SpeciesManagment.Entities;
+using P2Project.Domain.SpeciesManagment.ValueObjects;
 
-namespace P2Project.Application.Species.AddBreeds
+namespace P2Project.Application.Species.Commands.AddBreeds
 {
     public class AddBreedsValidator :
         AbstractValidator<AddBreedsCommand>
@@ -14,8 +16,8 @@ namespace P2Project.Application.Species.AddBreeds
                 .NotEmpty()
                 .WithError(Errors.General.ValueIsRequired());
 
-            RuleForEach(s => s.AddBreedsDto.Breeds)
-                .MustBeValueObject(b => Breed.Create(b.Name.Value));
+            RuleForEach(s => s.Breeds)
+                .MustBeValueObject(b => Name.Create(b.Name.Value));
         }
     }
 }

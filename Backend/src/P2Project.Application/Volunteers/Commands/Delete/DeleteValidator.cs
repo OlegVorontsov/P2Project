@@ -7,7 +7,7 @@ namespace P2Project.Application.Volunteers.Commands.Delete
     {
         public DeleteValidator()
         {
-            RuleFor(d => d.VolunteerId).NotEmpty();
+            RuleFor(d => d.VolunteerId).NotNull().NotEmpty();
         }
     }
 }

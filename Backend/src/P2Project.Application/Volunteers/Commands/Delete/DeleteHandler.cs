@@ -34,8 +34,7 @@ namespace P2Project.Application.Volunteers.Commands.Delete
             CancellationToken cancellationToken = default)
         {
             var validationResult = await _validator.ValidateAsync(
-                                      command,
-                                      cancellationToken);
+                command, cancellationToken);
             if (validationResult.IsValid == false)
                 return validationResult.ToErrorList();
 
@@ -45,10 +44,7 @@ namespace P2Project.Application.Volunteers.Commands.Delete
             var volunteerResult = await _volunteersRepository.GetById(
                 volunteerId, cancellationToken);
             if (volunteerResult.IsFailure)
-            {
-                var error = Errors.General.NotFound(command.VolunteerId);
-                return error.ToErrorList();
-            }
+                return Errors.General.NotFound(command.VolunteerId).ToErrorList();
 
             volunteerResult.Value.SoftDelete();
 

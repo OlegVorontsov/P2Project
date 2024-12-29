@@ -3,19 +3,15 @@ using FluentValidation;
 using Microsoft.Extensions.Logging;
 using P2Project.Application.Extensions;
 using P2Project.Application.Interfaces;
+using P2Project.Application.Interfaces.Agreements;
 using P2Project.Application.Interfaces.Commands;
 using P2Project.Application.Interfaces.DataBase;
-using P2Project.Application.Species;
-using P2Project.Application.Species.Create;
+using P2Project.Application.Species.Commands.Create;
 using P2Project.Domain.PetManagment.Entities;
-using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.PetManagment.ValueObjects.Common;
 using P2Project.Domain.PetManagment.ValueObjects.Pets;
-using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.Errors;
 using P2Project.Domain.Shared.IDs;
-using P2Project.Domain.SpeciesManagment.Entities;
-using P2Project.Domain.SpeciesManagment.ValueObjects;
 
 namespace P2Project.Application.Volunteers.Commands.AddPet
 {
@@ -24,26 +20,27 @@ namespace P2Project.Application.Volunteers.Commands.AddPet
         private const string BUCKET_NAME = "photos";
 
         private readonly IValidator<AddPetCommand> _validator;
+        private readonly ISpeciesAgreement _speciesAgreement;
         private readonly IVolunteersRepository _volunteersRepository;
-        private readonly ISpeciesRepository _speciesRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<AddPetHandler> _petLogger;
         private readonly ILogger<CreateHandler> _speciesLogger;
 
         public AddPetHandler(
             IValidator<AddPetCommand> validator,
+            ISpeciesAgreement speciesAgreement,
             IVolunteersRepository volunteersRepository,
-            ISpeciesRepository speciesRepository,
             IUnitOfWork unitOfWork,
             ILogger<AddPetHandler> petLogger,
             ILogger<CreateHandler> speciesLogger)
         {
             _validator = validator;
+            _speciesAgreement = speciesAgreement;
             _volunteersRepository = volunteersRepository;
-            _speciesRepository = speciesRepository;
             _unitOfWork = unitOfWork;
             _petLogger = petLogger;
             _speciesLogger = speciesLogger;
+            _speciesAgreement = speciesAgreement;
         }
         public async Task<Result<Guid, ErrorList>> Handle(
             AddPetCommand command,
@@ -54,7 +51,7 @@ namespace P2Project.Application.Volunteers.Commands.AddPet
                           cancellationToken);
             if (validationResult.IsValid == false)
                 return validationResult.ToErrorList();
-
+            
             var volunteerId = VolunteerId.Create(
                 command.VolunteerId);
 
@@ -62,62 +59,21 @@ namespace P2Project.Application.Volunteers.Commands.AddPet
                 volunteerId, cancellationToken);
             if (volunteerResult.IsFailure)
                 return volunteerResult.Error.ToErrorList();
+            
+            var speciesExistsResult = await _speciesAgreement.SpeciesAndBreedExists(
+                command.SpeciesId, command.BreedId, cancellationToken);
+            if (speciesExistsResult.IsFailure)
+            {
+                _speciesLogger.LogInformation(
+                    "Tried to create pet with unexisting species or breed id");
+                return speciesExistsResult.Error.ToErrorList();
+            }
 
             var petId = PetId.New();
             var nicKName = NickName.Create(command.NickName).Value;
-
-            var speciesName = Name.Create(command.Species).Value;
-
-            var speciesIfExist = await _speciesRepository.GetByName(
-                speciesName, cancellationToken);
-
-            if (speciesIfExist.IsFailure)
-            {
-                var newBreeds = new List<Breed>();
-                if (command.Breed != null)
-                {
-                    var breed = new Breed(Name.Create(command.Breed).Value);
-                    newBreeds.AddRange([breed]);
-                }
-
-                var species = new Domain.SpeciesManagment.Species(
-                    SpeciesId.New(), speciesName, newBreeds);
-
-                await _speciesRepository.Add(species, cancellationToken);
-
-                _speciesLogger.LogInformation(
-                    "Species created with ID: {id}",
-                    species.Id.Value);
-            }
-            var speciesExist = await _speciesRepository.GetByName(
-                speciesName, cancellationToken);
-            var speciesId = speciesExist.Value.Id;
-
-            var breedId = speciesExist.Value?.Breeds?.Where(b =>
-                b.Name.Value == command.Breed)?.Select(r => r.Id)?
-                .FirstOrDefault();
-
-            if (breedId == null && breedId.Value != Guid.Empty)
-            {
-                var error = Errors.General.ValueIsInvalid(command.Breed);
-                return error.ToErrorList();
-            }
-
-            if (breedId == Guid.Empty)
-            {
-                var newBreeds = new List<Breed>();
-                if (command.Breed != null)
-                {
-                    var breed = new Breed(Name.Create(command.Breed).Value);
-                    newBreeds.AddRange([breed]);
-                    speciesExist.Value.AddBreeds(newBreeds.ToList());
-                    await _speciesRepository.Save(
-                        speciesExist.Value, cancellationToken);
-                    breedId = breed.Id;
-                }
-            }
-
-            var speciesBreed = new SpeciesBreed(speciesId, breedId.Value);
+            
+            var speciesBreed = new SpeciesBreed(
+                SpeciesId.Create(command.SpeciesId), command.BreedId);
 
             var description = Description.Create(command.Description).Value;
             var color = Color.Create(command.Color).Value;

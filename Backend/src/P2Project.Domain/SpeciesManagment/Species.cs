@@ -8,7 +8,7 @@ using P2Project.Domain.SpeciesManagment.ValueObjects;
 
 namespace P2Project.Domain.SpeciesManagment
 {
-    public class Species : Shared.Entity<SpeciesId>
+    public class Species : Shared.BaseClasses.Entity<SpeciesId>
     {
         private Species(SpeciesId id) : base(id) { }
         private readonly List<Breed> _breeds = [];
@@ -32,10 +32,19 @@ namespace P2Project.Domain.SpeciesManagment
 
             if (result != null && result.Any())
             {
-                return Errors.General.ValueIsInvalid(string.Join(", ", result));
+                return Errors.Breed.AlreadyExist();
             }
             _breeds.AddRange(breeds);
             return Id.Value;
+        }
+        
+        public UnitResult<Error> DeleteBreed(Breed breed)
+        {
+            var deleted = _breeds.Remove(breed);
+            if (deleted == false)
+                return Errors.Species.BreedDelete(breed.Id);
+
+            return Result.Success<Error>();
         }
     }
 }

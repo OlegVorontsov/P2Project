@@ -1,9 +1,12 @@
 ﻿using P2Project.Application.Shared.Dtos;
 using P2Project.Application.Shared.Dtos.Pets;
+using P2Project.Application.Species.Commands.AddBreeds;
 
-namespace P2Project.API.Controllers.Species.Requests
+namespace P2Project.API.Controllers.Species.Requests;
+
+public record AddBreedsRequest(
+    IEnumerable<BreedDto> Breeds)
 {
-    public record AddBreedsRequest(
-        Guid SpeciesId,
-        AddBreedsDto AddBreedsDto);
+    public AddBreedsCommand ToCommand(Guid speciesId) =>
+        new(speciesId, Breeds);
 }

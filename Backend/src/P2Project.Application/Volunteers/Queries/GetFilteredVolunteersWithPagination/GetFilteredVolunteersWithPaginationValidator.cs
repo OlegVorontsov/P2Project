@@ -9,8 +9,12 @@ public class GetFilteredVolunteersWithPaginationValidator :
 {
     public GetFilteredVolunteersWithPaginationValidator()
     {
-        RuleFor(q => q.Page).GreaterThanOrEqualTo(1).WithError(Errors.General.ValueIsInvalid("Page"));
+        RuleFor(q => q.Page)
+            .GreaterThanOrEqualTo(1)
+            .WithError(Errors.General.ValueIsInvalid("Page"));
 
-        RuleFor(q => q.PageSize).GreaterThanOrEqualTo(1).WithError(Errors.General.ValueIsInvalid("PageSize"));
+        RuleFor(q => q.PageSize)
+            .GreaterThanOrEqualTo(1)
+            .WithError(Errors.General.ValueIsInvalid("PageSize"));
     }
 }

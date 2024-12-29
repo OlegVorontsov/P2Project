@@ -6,9 +6,9 @@ namespace P2Project.Application.Volunteers.Commands.AddPet
 {
     public record AddPetCommand(
         Guid VolunteerId,
+        Guid SpeciesId,
+        Guid BreedId,
         string NickName,
-        string Species,
-        string Breed,
         string? Description,
         string Color,
         HealthInfoDto HealthInfo,

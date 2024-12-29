@@ -5,12 +5,10 @@ using P2Project.Application.FileProvider;
 using P2Project.Application.Interfaces;
 using P2Project.Application.Interfaces.DataBase;
 using P2Project.Application.Interfaces.DbContexts;
+using P2Project.Application.Interfaces.DbContexts.Species;
+using P2Project.Application.Interfaces.DbContexts.Volunteers;
 using P2Project.Application.Interfaces.Services;
 using P2Project.Application.Messaging;
-using P2Project.Application.Shared;
-using P2Project.Application.Species;
-using P2Project.Application.Volunteers;
-using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Infrastructure.BackroundServices;
 using P2Project.Infrastructure.DbContexts;
 using P2Project.Infrastructure.MessageQueues;
@@ -60,7 +58,8 @@ namespace P2Project.Infrastructure.Shared
             this IServiceCollection services)
         {
             services.AddScoped<WriteDbContext>();
-            services.AddScoped<IReadDbContext, ReadDbContext>();
+            services.AddScoped<IVolunteersReadDbContext, VolunteersReadDbContext>();
+            services.AddScoped<ISpeciesReadDbContext, SpeciesReadDbContext>();
             
             services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
             Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
