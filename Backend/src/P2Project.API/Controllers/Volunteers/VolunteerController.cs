@@ -7,6 +7,7 @@ using P2Project.Application.Volunteers.Commands.Create;
 using P2Project.Application.Volunteers.Commands.Delete;
 using P2Project.Application.Volunteers.Commands.UpdateAssistanceDetails;
 using P2Project.Application.Volunteers.Commands.UpdateMainInfo;
+using P2Project.Application.Volunteers.Commands.UpdatePet;
 using P2Project.Application.Volunteers.Commands.UpdatePhoneNumbers;
 using P2Project.Application.Volunteers.Commands.UpdateSocialNetworks;
 using P2Project.Application.Volunteers.Commands.UploadFilesToPet;
@@ -168,6 +169,22 @@ namespace P2Project.API.Controllers.Volunteers
                     volunteerId, petId, fileDtos),
                 cancellationToken);
 
+            if (result.IsFailure)
+                return result.Error.ToResponse();
+
+            return Ok(result.Value);
+        }
+        
+        [HttpPut("{volunteerId:guid}/pets/{petId:guid}")]
+        public async Task<IActionResult> UpdatePet(
+            [FromRoute] Guid volunteerId,
+            [FromRoute] Guid petId,
+            [FromServices] UpdatePetHandler handler,
+            [FromBody] UpdatePetRequest request,
+            CancellationToken cancellationToken = default)
+        {
+            var result = await handler.Handle(
+                request.ToCommand(volunteerId, petId), cancellationToken);
             if (result.IsFailure)
                 return result.Error.ToResponse();
 

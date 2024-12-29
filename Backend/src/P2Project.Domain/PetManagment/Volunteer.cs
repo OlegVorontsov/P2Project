@@ -186,6 +186,38 @@ namespace P2Project.Domain.PetManagment
 
             return Result.Success<Error>();
         }
+
+        public UnitResult<Error> UpdatePet(
+            PetId id,
+            NickName nickName,
+            SpeciesBreed speciesBreed,
+            Description description,
+            Color color,
+            HealthInfo healthInfo,
+            Address address,
+            PhoneNumber phoneNumber,
+            DateOnly birthDate,
+            AssistanceStatus assistanceStatus,
+            List<AssistanceDetail>? assistanceDetails)
+        {
+            var petExist = _pets.FirstOrDefault(p => p.Id == id);
+            if (petExist is null)
+                return Errors.Volunteer.PetNotFound(Id, id.Value);
+            
+            petExist.Update(
+                nickName,
+                speciesBreed,
+                description,
+                color,
+                healthInfo,
+                address,
+                phoneNumber,
+                birthDate,
+                assistanceStatus,
+                assistanceDetails);
+            
+            return Result.Success<Error>();
+        }
         
         public Result<Pet, Error> GetPetById(PetId petId)
         {

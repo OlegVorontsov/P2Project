@@ -15,14 +15,17 @@ namespace P2Project.Application.Volunteers.Commands.AddPet
         public AddPetValidator()
         {
             RuleFor(ap => ap.VolunteerId)
+                .NotNull()
                 .NotEmpty()
                 .WithError(Errors.General.ValueIsRequired());
             
             RuleFor(ap => ap.SpeciesId)
+                .NotNull()
                 .NotEmpty()
                 .WithError(Errors.General.ValueIsRequired());
             
             RuleFor(ap => ap.BreedId)
+                .NotNull()
                 .NotEmpty()
                 .WithError(Errors.General.ValueIsRequired());
 

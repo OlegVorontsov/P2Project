@@ -92,5 +92,30 @@ namespace P2Project.Domain.PetManagment.Entities
 
         public void UpdatePhotos(List<PetPhoto> photos) =>
             Photos = photos;
+
+        public void Update(
+            NickName nickName,
+            SpeciesBreed speciesBreed,
+            Description description,
+            Color color,
+            HealthInfo healthInfo,
+            Address address,
+            PhoneNumber phoneNumber,
+            DateOnly birthDate,
+            AssistanceStatus assistanceStatus,
+            List<AssistanceDetail>? assistanceDetails)
+        {
+            NickName = nickName;
+            SpeciesBreed = speciesBreed;
+            Description = description;
+            Color = color;
+            HealthInfo = healthInfo;
+            Address = address;
+            PhoneNumber = phoneNumber;
+            BirthDate = birthDate;
+            AssistanceStatus = assistanceStatus;
+            if (assistanceDetails != null)
+                AssistanceDetails = assistanceDetails;
+        }
     }
 }

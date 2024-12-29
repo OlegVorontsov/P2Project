@@ -38,6 +38,10 @@ namespace P2Project.Domain.Shared.Errors
                 return Error.Validation("record.is.already.exist",
                                         $"Volunteer is already exist");
             }
+            
+            public static Error PetNotFound(Guid volunteerId, Guid petId) =>
+                Error.NotFound("Pet.NotFound",
+                    $"Volunteer with id {volunteerId} don't have pet with id {petId}");
         }
         public static class Species
         {

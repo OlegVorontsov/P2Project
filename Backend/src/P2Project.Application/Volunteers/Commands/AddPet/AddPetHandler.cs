@@ -47,8 +47,7 @@ namespace P2Project.Application.Volunteers.Commands.AddPet
             CancellationToken cancellationToken = default)
         {
             var validationResult = await _validator.ValidateAsync(
-                          command,
-                          cancellationToken);
+                command, cancellationToken);
             if (validationResult.IsValid == false)
                 return validationResult.ToErrorList();
             
