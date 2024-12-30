@@ -254,6 +254,17 @@ namespace P2Project.Domain.PetManagment
             
             return deleteResult;
         }
+
+        public UnitResult<Error> SoftDeletePet(PetId petId)
+        {
+            var petResult = GetPetById(petId);
+            if (petResult.IsFailure)
+                return petResult.Error;
+
+            petResult.Value.SoftDelete();
+
+            return UnitResult.Success<Error>();
+        }
         
         public Result<Pet, Error> GetPetById(PetId petId)
         {
