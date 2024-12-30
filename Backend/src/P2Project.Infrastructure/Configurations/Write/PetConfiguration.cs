@@ -178,6 +178,9 @@ namespace P2Project.Infrastructure.Configurations.Write
 
             builder.Property(v => v.DeletionDateTime)
                 .HasColumnName("deletion_datetime");
+
+            builder.Property(p => p.VolunteerId)
+                .IsRequired();
         }
     }
 }

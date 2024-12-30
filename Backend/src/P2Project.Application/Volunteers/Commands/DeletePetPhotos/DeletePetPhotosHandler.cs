@@ -69,11 +69,15 @@ public class DeletePetPhotosHandler : ICommandHandler<DeletePetPhotosCommand>
         
         await _unitOfWork.SaveChanges(cancellationToken);
 
-        foreach (var fileToDelete in deleteResult.Value)
+        foreach (var filePath in deleteResult.Value)
         {
-            await _fileProvider.DeleteFileByFileMetadata(new FileMetadata(
-                    Constants.BUCKET_NAME_PHOTOS, fileToDelete.FilePath),
+            var fileDeletingResult = await _fileProvider.DeleteFileByFileMetadata(
+                new FileMetadata(Constants.BUCKET_NAME_PHOTOS, filePath),
                 cancellationToken);
+            
+            if (fileDeletingResult.IsFailure)
+                _logger.LogError("Error occured while deleting file with name {name} from storage",
+                    filePath);
         }
         
         _logger.LogInformation(

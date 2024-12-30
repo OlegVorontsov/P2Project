@@ -84,7 +84,7 @@ namespace P2Project.Infrastructure.Configurations.Write
             builder.HasMany(v => v.Pets)
                    .WithOne()
                    .HasForeignKey(p => p.VolunteerId)
-                   .OnDelete(DeleteBehavior.NoAction);
+                   .IsRequired();
 
             builder.Property(v => v.NeedsHelpPets)
                    .HasColumnName("needs_help_pets");

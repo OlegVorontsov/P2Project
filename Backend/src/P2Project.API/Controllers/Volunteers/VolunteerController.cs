@@ -8,6 +8,7 @@ using P2Project.Application.Volunteers.Commands.ChangePetStatus;
 using P2Project.Application.Volunteers.Commands.Create;
 using P2Project.Application.Volunteers.Commands.Delete;
 using P2Project.Application.Volunteers.Commands.DeletePetPhotos;
+using P2Project.Application.Volunteers.Commands.HardDeletePet;
 using P2Project.Application.Volunteers.Commands.SoftDeletePet;
 using P2Project.Application.Volunteers.Commands.UpdateAssistanceDetails;
 using P2Project.Application.Volunteers.Commands.UpdateMainInfo;
@@ -234,6 +235,21 @@ namespace P2Project.API.Controllers.Volunteers
         {
             var result = await handler.Handle(
                 new SoftDeletePetCommand(volunteerId, petId), cancellationToken);
+            if (result.IsFailure)
+                return result.Error.ToResponse();
+
+            return Ok(result.Value);
+        }
+        
+        [HttpDelete("{volunteerId:guid}/pets/{petId:guid}/hard")]
+        public async Task<IActionResult> HardDeletePet(
+            [FromRoute] Guid volunteerId,
+            [FromRoute] Guid petId,
+            [FromServices] HardDeletePetHandler handler,
+            CancellationToken cancellationToken)
+        {
+            var result = await handler.Handle(
+                new HardDeletePetCommand(volunteerId, petId), cancellationToken);
             if (result.IsFailure)
                 return result.Error.ToResponse();
 

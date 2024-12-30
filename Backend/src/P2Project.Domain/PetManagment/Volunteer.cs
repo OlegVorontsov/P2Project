@@ -242,7 +242,7 @@ namespace P2Project.Domain.PetManagment
             return Result.Success<Error>();
         }
         
-        public Result<IReadOnlyList<PetPhoto>, Error> DeletePetPhotos(PetId petId)
+        public Result<string[], Error> DeletePetPhotos(PetId petId)
         {
             var pet = Pets.FirstOrDefault(p => p.Id == petId);
             if (pet is null)
@@ -264,6 +264,20 @@ namespace P2Project.Domain.PetManagment
             petResult.Value.SoftDelete();
 
             return UnitResult.Success<Error>();
+        }
+
+        public Result<string[], Error> HardDeletePet(PetId petId)
+        {
+            var petResult = GetPetById(petId);
+            if (petResult.IsFailure)
+                return petResult.Error;
+
+            var filesToDelete = petResult.Value.Photos
+                .Select(ph => ph.FilePath).ToArray();
+            
+            _pets.Remove(petResult.Value);
+
+            return filesToDelete;
         }
         
         public Result<Pet, Error> GetPetById(PetId petId)

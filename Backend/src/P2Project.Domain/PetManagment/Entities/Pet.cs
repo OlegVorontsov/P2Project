@@ -91,11 +91,11 @@ namespace P2Project.Domain.PetManagment.Entities
         public void UpdatePhotos(List<PetPhoto> photos) =>
             Photos = photos;
 
-        internal Result<IReadOnlyList<PetPhoto>, Error> DeleteAllPhotos()
+        internal Result<string[], Error> DeleteAllPhotos()
         {
-            var photosToDelete = new List<PetPhoto>(Photos);
+            var photosToDelete = Photos.Select(p => p.FilePath);
             Photos = [];
-            return photosToDelete;
+            return photosToDelete.ToArray();
         }
 
         public void Update(
