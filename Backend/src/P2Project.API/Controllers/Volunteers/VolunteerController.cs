@@ -4,6 +4,7 @@ using P2Project.API.Extensions;
 using P2Project.API.Processor;
 using P2Project.Application.Volunteers.Commands.AddPet;
 using P2Project.Application.Volunteers.Commands.AddPetPhotos;
+using P2Project.Application.Volunteers.Commands.ChangePetStatus;
 using P2Project.Application.Volunteers.Commands.Create;
 using P2Project.Application.Volunteers.Commands.Delete;
 using P2Project.Application.Volunteers.Commands.DeletePetPhotos;
@@ -197,6 +198,22 @@ namespace P2Project.API.Controllers.Volunteers
             [FromRoute] Guid petId,
             [FromServices] UpdatePetHandler handler,
             [FromBody] UpdatePetRequest request,
+            CancellationToken cancellationToken = default)
+        {
+            var result = await handler.Handle(
+                request.ToCommand(volunteerId, petId), cancellationToken);
+            if (result.IsFailure)
+                return result.Error.ToResponse();
+
+            return Ok(result.Value);
+        }
+        
+        [HttpPut("{volunteerId:guid}/pets/{petId:guid}/status")]
+        public async Task<IActionResult> ChangePetStatus(
+            [FromRoute] Guid volunteerId,
+            [FromRoute] Guid petId,
+            [FromBody] ChangePetStatusRequest request,
+            [FromServices] ChangePetStatusHandler handler,
             CancellationToken cancellationToken = default)
         {
             var result = await handler.Handle(

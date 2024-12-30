@@ -122,5 +122,10 @@ namespace P2Project.Domain.PetManagment.Entities
             if (assistanceDetails != null)
                 AssistanceDetails = assistanceDetails;
         }
+
+        public void ChangeStatus(AssistanceStatus newStatus)
+        {
+            AssistanceStatus = newStatus;
+        }
     }
 }

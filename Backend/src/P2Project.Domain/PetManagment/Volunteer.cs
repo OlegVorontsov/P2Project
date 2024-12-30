@@ -218,6 +218,29 @@ namespace P2Project.Domain.PetManagment
             
             return Result.Success<Error>();
         }
+
+        public UnitResult<Error> ChangePetStatus(
+            PetId petId,
+            AssistanceStatus newStatus)
+        {
+            var petExist = _pets.FirstOrDefault(p => p.Id == petId);
+            if (petExist is null)
+                return Errors.Volunteer.PetNotFound(Id, petId.Value);
+
+            var currentStatusChange = petExist.AssistanceStatus.Status switch
+            {
+                "needshelp" => NeedsHelpPets--,
+                "needsfood" => NeedsFoodPets--,
+                "onmedication" => OnMedicationPets--,
+                "looksforhome" => LooksForHomePets--,
+                "foundhome" => FoundHomePets--,
+                _ => UnknownStatusPets--,
+            };
+            
+            petExist.ChangeStatus(newStatus);
+            
+            return Result.Success<Error>();
+        }
         
         public Result<IReadOnlyList<PetPhoto>, Error> DeletePetPhotos(PetId petId)
         {
