@@ -241,6 +241,21 @@ namespace P2Project.Domain.PetManagment
             
             return Result.Success<Error>();
         }
+
+        public Result<string, Error> ChangePetMainPhoto(
+            PetId petId,
+            PetPhoto newMainPhoto)
+        {
+            var petExist = _pets.FirstOrDefault(p => p.Id == petId);
+            if (petExist is null)
+                return Errors.Volunteer.PetNotFound(Id, petId.Value);
+            
+            var changeResult = petExist.ChangeMainPhoto(newMainPhoto);
+            if(changeResult.IsFailure)
+                return changeResult.Error;
+            
+            return changeResult.Value;
+        }
         
         public Result<string[], Error> DeletePetPhotos(PetId petId)
         {

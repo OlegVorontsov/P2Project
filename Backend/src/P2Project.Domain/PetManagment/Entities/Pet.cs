@@ -127,5 +127,32 @@ namespace P2Project.Domain.PetManagment.Entities
         {
             AssistanceStatus = newStatus;
         }
+
+        public Result<string, Error> ChangeMainPhoto(
+            PetPhoto petPhoto)
+        {
+            var photoExist = Photos.FirstOrDefault(p =>
+                p.FilePath == petPhoto.FilePath);
+            if (photoExist is null)
+                return Errors.General.NotFound();
+
+            if (photoExist.IsMain)
+                return Errors.General.Failure(petPhoto.FilePath);
+
+            var newPhotos = new List<PetPhoto>();
+            foreach (var photo in Photos)
+            {
+                if (photo.FilePath != petPhoto.FilePath)
+                {
+                    newPhotos.Add(PetPhoto.Create(photo.FilePath, false).Value);
+                }
+            }
+            
+            newPhotos.Add(petPhoto);
+            
+            Photos = newPhotos;
+
+            return photoExist.FilePath;
+        }
     }
 }

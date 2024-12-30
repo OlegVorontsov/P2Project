@@ -16,6 +16,12 @@ namespace P2Project.Domain.Shared.Errors
                 return Error.NotFound("record.not.found",
                                       $"record not found {forId}");
             }
+
+            public static Error Failure(string? name = null)
+            {
+                var label = name == null ? "" : " " + name + " ";
+                return Error.Failure(label, $"{label} is invalid");
+            }
             public static Error ValueIsRequired(string? name = null)
             {
                 var label = name == null ? "" : " " + name + " ";
