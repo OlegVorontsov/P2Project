@@ -1,8 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
-using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.PetManagment.ValueObjects.Common;
 using P2Project.Domain.PetManagment.ValueObjects.Pets;
-using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.BaseClasses;
 using P2Project.Domain.Shared.Errors;
 using P2Project.Domain.Shared.IDs;
@@ -92,5 +90,69 @@ namespace P2Project.Domain.PetManagment.Entities
 
         public void UpdatePhotos(List<PetPhoto> photos) =>
             Photos = photos;
+
+        internal Result<string[], Error> DeleteAllPhotos()
+        {
+            var photosToDelete = Photos.Select(p => p.FilePath);
+            Photos = [];
+            return photosToDelete.ToArray();
+        }
+
+        public void Update(
+            NickName nickName,
+            SpeciesBreed speciesBreed,
+            Description description,
+            Color color,
+            HealthInfo healthInfo,
+            Address address,
+            PhoneNumber phoneNumber,
+            DateOnly birthDate,
+            AssistanceStatus assistanceStatus,
+            List<AssistanceDetail>? assistanceDetails)
+        {
+            NickName = nickName;
+            SpeciesBreed = speciesBreed;
+            Description = description;
+            Color = color;
+            HealthInfo = healthInfo;
+            Address = address;
+            PhoneNumber = phoneNumber;
+            BirthDate = birthDate;
+            AssistanceStatus = assistanceStatus;
+            if (assistanceDetails != null)
+                AssistanceDetails = assistanceDetails;
+        }
+
+        public void ChangeStatus(AssistanceStatus newStatus)
+        {
+            AssistanceStatus = newStatus;
+        }
+
+        public Result<string, Error> ChangeMainPhoto(
+            PetPhoto petPhoto)
+        {
+            var photoExist = Photos.FirstOrDefault(p =>
+                p.FilePath == petPhoto.FilePath);
+            if (photoExist is null)
+                return Errors.General.NotFound();
+
+            if (photoExist.IsMain)
+                return Errors.General.Failure(petPhoto.FilePath);
+
+            var newPhotos = new List<PetPhoto>();
+            foreach (var photo in Photos)
+            {
+                if (photo.FilePath != petPhoto.FilePath)
+                {
+                    newPhotos.Add(PetPhoto.Create(photo.FilePath, false).Value);
+                }
+            }
+            
+            newPhotos.Add(petPhoto);
+            
+            Photos = newPhotos;
+
+            return photoExist.FilePath;
+        }
     }
 }

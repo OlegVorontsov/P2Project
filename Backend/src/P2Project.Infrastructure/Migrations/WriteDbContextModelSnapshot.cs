@@ -401,7 +401,7 @@ namespace P2Project.Infrastructure.Migrations
                     b.HasOne("P2Project.Domain.PetManagment.Volunteer", null)
                         .WithMany("Pets")
                         .HasForeignKey("VolunteerId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_pets_volunteers_volunteer_id");
                 });

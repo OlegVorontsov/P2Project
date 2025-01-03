@@ -16,6 +16,12 @@ namespace P2Project.Domain.Shared.Errors
                 return Error.NotFound("record.not.found",
                                       $"record not found {forId}");
             }
+
+            public static Error Failure(string? name = null)
+            {
+                var label = name == null ? "" : " " + name + " ";
+                return Error.Failure(label, $"{label} is invalid");
+            }
             public static Error ValueIsRequired(string? name = null)
             {
                 var label = name == null ? "" : " " + name + " ";
@@ -38,6 +44,10 @@ namespace P2Project.Domain.Shared.Errors
                 return Error.Validation("record.is.already.exist",
                                         $"Volunteer is already exist");
             }
+            
+            public static Error PetNotFound(Guid volunteerId, Guid petId) =>
+                Error.NotFound("Pet.NotFound",
+                    $"Volunteer with id {volunteerId} don't have pet with id {petId}");
         }
         public static class Species
         {

@@ -186,6 +186,114 @@ namespace P2Project.Domain.PetManagment
 
             return Result.Success<Error>();
         }
+
+        public UnitResult<Error> UpdatePet(
+            PetId id,
+            NickName nickName,
+            SpeciesBreed speciesBreed,
+            Description description,
+            Color color,
+            HealthInfo healthInfo,
+            Address address,
+            PhoneNumber phoneNumber,
+            DateOnly birthDate,
+            AssistanceStatus assistanceStatus,
+            List<AssistanceDetail>? assistanceDetails)
+        {
+            var petExist = _pets.FirstOrDefault(p => p.Id == id);
+            if (petExist is null)
+                return Errors.Volunteer.PetNotFound(Id, id.Value);
+            
+            petExist.Update(
+                nickName,
+                speciesBreed,
+                description,
+                color,
+                healthInfo,
+                address,
+                phoneNumber,
+                birthDate,
+                assistanceStatus,
+                assistanceDetails);
+            
+            return Result.Success<Error>();
+        }
+
+        public UnitResult<Error> ChangePetStatus(
+            PetId petId,
+            AssistanceStatus newStatus)
+        {
+            var petExist = _pets.FirstOrDefault(p => p.Id == petId);
+            if (petExist is null)
+                return Errors.Volunteer.PetNotFound(Id, petId.Value);
+
+            var currentStatusChange = petExist.AssistanceStatus.Status switch
+            {
+                "needshelp" => NeedsHelpPets--,
+                "needsfood" => NeedsFoodPets--,
+                "onmedication" => OnMedicationPets--,
+                "looksforhome" => LooksForHomePets--,
+                "foundhome" => FoundHomePets--,
+                _ => UnknownStatusPets--,
+            };
+            
+            petExist.ChangeStatus(newStatus);
+            
+            return Result.Success<Error>();
+        }
+
+        public Result<string, Error> ChangePetMainPhoto(
+            PetId petId,
+            PetPhoto newMainPhoto)
+        {
+            var petExist = _pets.FirstOrDefault(p => p.Id == petId);
+            if (petExist is null)
+                return Errors.Volunteer.PetNotFound(Id, petId.Value);
+            
+            var changeResult = petExist.ChangeMainPhoto(newMainPhoto);
+            if(changeResult.IsFailure)
+                return changeResult.Error;
+            
+            return changeResult.Value;
+        }
+        
+        public Result<string[], Error> DeletePetPhotos(PetId petId)
+        {
+            var pet = Pets.FirstOrDefault(p => p.Id == petId);
+            if (pet is null)
+                return Errors.Volunteer.PetNotFound(Id, petId);
+            
+            var deleteResult = pet.DeleteAllPhotos();
+            if (deleteResult.IsFailure)
+                return deleteResult.Error;
+            
+            return deleteResult;
+        }
+
+        public UnitResult<Error> SoftDeletePet(PetId petId)
+        {
+            var petResult = GetPetById(petId);
+            if (petResult.IsFailure)
+                return petResult.Error;
+
+            petResult.Value.SoftDelete();
+
+            return UnitResult.Success<Error>();
+        }
+
+        public Result<string[], Error> HardDeletePet(PetId petId)
+        {
+            var petResult = GetPetById(petId);
+            if (petResult.IsFailure)
+                return petResult.Error;
+
+            var filesToDelete = petResult.Value.Photos
+                .Select(ph => ph.FilePath).ToArray();
+            
+            _pets.Remove(petResult.Value);
+
+            return filesToDelete;
+        }
         
         public Result<Pet, Error> GetPetById(PetId petId)
         {

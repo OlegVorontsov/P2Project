@@ -1,5 +1,4 @@
 using FluentAssertions;
-using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.PetManagment.ValueObjects.Pets;
 using P2Project.UnitTestsFabrics;
 
@@ -8,7 +7,7 @@ namespace P2Project.Domain.UnitTests
     public class VolunteerTests
     {
         [Fact]
-        public void Add_Pet_PetFirst_Return_Success_Result()
+        public void Add_first_pet_to_volunteer()
         {
             // arrange
             var volunteer = VolunteerFabric.CreateVolunteer();
@@ -27,7 +26,7 @@ namespace P2Project.Domain.UnitTests
         }
 
         [Fact]
-        public void Add_Pet_Pets_Return_Success_Result()
+        public void Add_pet_to_volunteer_with_pets()
         {
             // arrange
             int petsCount = 5;
@@ -49,7 +48,7 @@ namespace P2Project.Domain.UnitTests
         }
 
         [Fact]
-        public void Move_Pet_Should_Not_Move_If_Pet_Already_At_NewPosition()
+        public void Move_pet_to_it_position()
         {
             // arrange
             int petsCount = 5;
@@ -79,7 +78,7 @@ namespace P2Project.Domain.UnitTests
         }
 
         [Fact]
-        public void Move_Pet_Should_Move_Other_Pets_Forward_When_NewPosition_Is_Lower()
+        public void Move_pet_to_lower_position()
         {
             // arrange
             int petsCount = 5;
@@ -109,7 +108,7 @@ namespace P2Project.Domain.UnitTests
         }
 
         [Fact] 
-        public void Move_Pet_Should_Move_Other_Pets_Back_When_NewPosition_Is_Greater()
+        public void Move_pet_to_greater_position()
         {
             // arrange
             int petsCount = 5;
@@ -139,7 +138,7 @@ namespace P2Project.Domain.UnitTests
         }
 
         [Fact]
-        public void Move_Pet_Should_Move_Other_Pets_Forward_When_NewPosition_Is_First()
+        public void Move_last_pet_to_first_position()
         {
             // arrange
             int petsCount = 5;
@@ -169,7 +168,7 @@ namespace P2Project.Domain.UnitTests
         }
 
         [Fact]
-        public void Move_Pet_Should_Move_Other_Pets_Back_When_NewPosition_Is_Last()
+        public void Move_first_pet_to_last_position()
         {
             // arrange
             int petsCount = 5;
@@ -196,6 +195,45 @@ namespace P2Project.Domain.UnitTests
             thirdPet.Position.Should().Be(Position.Create(2).Value);
             fourthPet.Position.Should().Be(Position.Create(3).Value);
             fifthPet.Position.Should().Be(Position.Create(4).Value);
+        }
+
+        [Fact]
+        public void Soft_delete_volunteer()
+        {
+            // arrange
+            int petsCount = 5;
+            var volunteerWithPets = VolunteerFabric.CreateVolunteerWithPets(
+                petsCount);
+            
+            // act
+            volunteerWithPets.SoftDelete();
+            
+            // assert
+            volunteerWithPets.IsDeleted.Should().BeTrue();
+            foreach (var pet in volunteerWithPets.Pets)
+            {
+                pet.IsDeleted.Should().BeTrue();
+            }
+        }
+        
+        [Fact]
+        public void Restore_volunteer()
+        {
+            // arrange
+            int petsCount = 5;
+            var volunteerWithPets = VolunteerFabric.CreateVolunteerWithPets(
+                petsCount);
+            volunteerWithPets.SoftDelete();
+            
+            // act
+            volunteerWithPets.Restore();
+            
+            // assert
+            volunteerWithPets.IsDeleted.Should().BeFalse();
+            foreach (var pet in volunteerWithPets.Pets)
+            {
+                pet.IsDeleted.Should().BeFalse();
+            }
         }
     }
 }

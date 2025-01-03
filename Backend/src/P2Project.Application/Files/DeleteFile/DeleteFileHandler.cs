@@ -1,10 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
 using P2Project.Application.FileProvider;
 using P2Project.Application.FileProvider.Models;
-using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.Errors;
-using FileInfo = P2Project.Application.FileProvider.Models.FileInfo;
 
 namespace P2Project.Application.Files.DeleteFile
 {

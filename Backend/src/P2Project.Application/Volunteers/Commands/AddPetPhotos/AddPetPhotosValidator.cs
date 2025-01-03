@@ -1,15 +1,14 @@
 ﻿using FluentValidation;
 using P2Project.Application.Shared.Dtos.Validators;
 using P2Project.Application.Validation;
-using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.Errors;
 
-namespace P2Project.Application.Volunteers.Commands.UploadFilesToPet
+namespace P2Project.Application.Volunteers.Commands.AddPetPhotos
 {
-    public class UploadFilesToPetValidator :
-        AbstractValidator<UploadFilesToPetCommand>
+    public class AddPetPhotosValidator :
+        AbstractValidator<AddPetPhotosCommand>
     {
-        public UploadFilesToPetValidator()
+        public AddPetPhotosValidator()
         {
             RuleFor(u => u.VolunteerId)
                 .NotEmpty()

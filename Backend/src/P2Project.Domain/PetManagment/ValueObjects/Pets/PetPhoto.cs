@@ -16,7 +16,7 @@ namespace P2Project.Domain.PetManagment.ValueObjects.Pets
         public bool IsMain { get; }
 
         public static Result<PetPhoto, Error> Create(
-            string filePath, bool isMain = false)
+            string filePath, bool isMain)
         {
             if (string.IsNullOrWhiteSpace(filePath))
                 return Errors.General.ValueIsRequired("FilePath");
