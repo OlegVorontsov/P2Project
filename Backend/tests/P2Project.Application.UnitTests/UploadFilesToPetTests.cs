@@ -8,14 +8,9 @@ using P2Project.Application.FileProvider.Models;
 using P2Project.Application.Interfaces;
 using P2Project.Application.Interfaces.DataBase;
 using P2Project.Application.Messaging;
-using P2Project.Application.Shared;
-using P2Project.Application.Shared.Dtos;
 using P2Project.Application.Shared.Dtos.Files;
-using P2Project.Application.Volunteers;
 using P2Project.Application.Volunteers.Commands.AddPetPhotos;
-using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.PetManagment.ValueObjects.Files;
-using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.Errors;
 using P2Project.UnitTestsFabrics;
 using FileInfo = P2Project.Application.FileProvider.Models.FileInfo;
@@ -33,7 +28,7 @@ namespace P2Project.Application.UnitTests
         private readonly Mock<IMessageQueue<IEnumerable<FileInfo>>> _messageQueueMock = new();
 
         [Fact]
-        public async Task Handle_Should_Upload_Files_To_Pet()
+        public async Task Upload_Files_To_Pet()
         {
             // arrange
             var cancellationToken = new CancellationTokenSource().Token;

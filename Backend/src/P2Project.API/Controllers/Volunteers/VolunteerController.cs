@@ -227,7 +227,7 @@ namespace P2Project.API.Controllers.Volunteers
             return Ok(result.Value);
         }
         
-        [HttpPut("{volunteerId:guid}/pets/{petId:guid}/main_photo")]
+        [HttpPut("{volunteerId:guid}/pets/{petId:guid}/main-photo")]
         public async Task<IActionResult> ChangePetMainPhoto(
             [FromRoute] Guid volunteerId,
             [FromRoute] Guid petId,
