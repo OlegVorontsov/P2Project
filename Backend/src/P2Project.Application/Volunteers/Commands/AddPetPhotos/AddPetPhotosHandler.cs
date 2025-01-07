@@ -17,7 +17,8 @@ using FileInfo = P2Project.Application.FileProvider.Models.FileInfo;
 
 namespace P2Project.Application.Volunteers.Commands.AddPetPhotos
 {
-    public class AddPetPhotosHandler : ICommandHandler<Guid, AddPetPhotosCommand>
+    public class AddPetPhotosHandler :
+        ICommandHandler<Guid, AddPetPhotosCommand>
     {
         private readonly IValidator<AddPetPhotosCommand> _validator;
         private readonly IFileProvider _fileProvider;

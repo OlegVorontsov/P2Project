@@ -7,15 +7,20 @@ using P2Project.Infrastructure.Shared;
 
 namespace P2Project.Infrastructure.DbContexts
 {
-    public class SpeciesReadDbContext(
-        IConfiguration configuration) : DbContext, ISpeciesReadDbContext
+    public class SpeciesReadDbContext : DbContext, ISpeciesReadDbContext
     {
+        private readonly string _connectionString;
+
+        public SpeciesReadDbContext(string connectionString)
+        {
+            _connectionString = connectionString;
+        }
+
         private ILoggerFactory CreateLoggerFactory() =>
             LoggerFactory.Create(builder => { builder.AddConsole(); });
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql(
-                configuration.GetConnectionString(Constants.DATABASE));
+            optionsBuilder.UseNpgsql(_connectionString);
             optionsBuilder.UseSnakeCaseNamingConvention();
             optionsBuilder.EnableSensitiveDataLogging(false);
             optionsBuilder.UseLoggerFactory(CreateLoggerFactory());

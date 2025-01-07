@@ -4,7 +4,6 @@ using Minio;
 using P2Project.Application.FileProvider;
 using P2Project.Application.Interfaces;
 using P2Project.Application.Interfaces.DataBase;
-using P2Project.Application.Interfaces.DbContexts;
 using P2Project.Application.Interfaces.DbContexts.Species;
 using P2Project.Application.Interfaces.DbContexts.Volunteers;
 using P2Project.Application.Interfaces.Services;
@@ -27,7 +26,7 @@ namespace P2Project.Infrastructure.Shared
             IConfiguration configuration)
         {
             services.AddRepositories()
-                    .AddDataBase()
+                    .AddDataBase(configuration)
                     .AddUnitOfWork()
                     .AddHostedServices()
                     .AddMinio(configuration);
@@ -55,11 +54,17 @@ namespace P2Project.Infrastructure.Shared
         }
 
         private static IServiceCollection AddDataBase(
-            this IServiceCollection services)
+            this IServiceCollection services,
+            IConfiguration configuration)
         {
-            services.AddScoped<WriteDbContext>();
-            services.AddScoped<IVolunteersReadDbContext, VolunteersReadDbContext>();
-            services.AddScoped<ISpeciesReadDbContext, SpeciesReadDbContext>();
+            services.AddScoped<WriteDbContext>(_ =>
+                new WriteDbContext(configuration.GetConnectionString(Constants.DATABASE)!));
+            
+            services.AddScoped<IVolunteersReadDbContext, VolunteersReadDbContext>(_ =>
+                new VolunteersReadDbContext(configuration.GetConnectionString(Constants.DATABASE)!));
+            
+            services.AddScoped<ISpeciesReadDbContext, SpeciesReadDbContext>(_ =>
+                new SpeciesReadDbContext(configuration.GetConnectionString(Constants.DATABASE)!));
             
             services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
             Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;

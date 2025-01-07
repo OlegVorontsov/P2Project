@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "P2Project.Application.UnitT
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "P2Project.UnitTestsFabrics", "tests\P2Project.UnitTestsFabric\P2Project.UnitTestsFabrics.csproj", "{84E10FA9-5C68-4ED3-9EAC-5864BA8C164A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "P2Project.IntegrationTests", "tests\P2Project.IntegrationTests\P2Project.IntegrationTests.csproj", "{D3B33FB3-C548-4A9C-A0F1-7503ADD3DB36}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{84E10FA9-5C68-4ED3-9EAC-5864BA8C164A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84E10FA9-5C68-4ED3-9EAC-5864BA8C164A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84E10FA9-5C68-4ED3-9EAC-5864BA8C164A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3B33FB3-C548-4A9C-A0F1-7503ADD3DB36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3B33FB3-C548-4A9C-A0F1-7503ADD3DB36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3B33FB3-C548-4A9C-A0F1-7503ADD3DB36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3B33FB3-C548-4A9C-A0F1-7503ADD3DB36}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,6 +73,7 @@ Global
 		{9244BB58-0418-473A-A6AC-19ABF6EE8F6E} = {5F0C0FBE-9E8F-44DC-849C-0321ADB901F4}
 		{46919D25-D259-4199-835C-DC8E423B1A82} = {5F0C0FBE-9E8F-44DC-849C-0321ADB901F4}
 		{84E10FA9-5C68-4ED3-9EAC-5864BA8C164A} = {5F0C0FBE-9E8F-44DC-849C-0321ADB901F4}
+		{D3B33FB3-C548-4A9C-A0F1-7503ADD3DB36} = {5F0C0FBE-9E8F-44DC-849C-0321ADB901F4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CDE875A3-0719-41D9-802B-AF45CA477C09}
