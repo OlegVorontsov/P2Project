@@ -7,9 +7,10 @@ using P2Project.Application.Volunteers.Commands.AddPetPhotos;
 using P2Project.Application.Volunteers.Commands.ChangePetMainPhoto;
 using P2Project.Application.Volunteers.Commands.ChangePetStatus;
 using P2Project.Application.Volunteers.Commands.Create;
-using P2Project.Application.Volunteers.Commands.Delete;
 using P2Project.Application.Volunteers.Commands.DeletePetPhotos;
+using P2Project.Application.Volunteers.Commands.HardDelete;
 using P2Project.Application.Volunteers.Commands.HardDeletePet;
+using P2Project.Application.Volunteers.Commands.SoftDelete;
 using P2Project.Application.Volunteers.Commands.SoftDeletePet;
 using P2Project.Application.Volunteers.Commands.UpdateAssistanceDetails;
 using P2Project.Application.Volunteers.Commands.UpdateMainInfo;
@@ -128,15 +129,29 @@ namespace P2Project.API.Controllers.Volunteers
             return Ok(result.Value);
         }
 
-        [HttpDelete("{id:guid}")]
-        public async Task<ActionResult<Guid>> Delete(
+        [HttpDelete("{id:guid}/soft")]
+        public async Task<ActionResult<Guid>> SoftDelete(
             [FromRoute] Guid id,
-            [FromServices] DeleteHandler handler,
+            [FromServices] SoftDeleteHandler handler,
             CancellationToken cancellationToken)
         {
             var result = await handler.Handle(
-                new DeleteCommand(id), cancellationToken);
+                new SoftDeleteCommand(id), cancellationToken);
 
+            if (result.IsFailure)
+                return result.Error.ToResponse();
+
+            return Ok(result.Value);
+        }
+        
+        [HttpDelete("{id:guid}/hard")]
+        public async Task<IActionResult> HardDelete(
+            [FromRoute] Guid id,
+            [FromServices] HardDeleteHandler handler,
+            CancellationToken cancellationToken)
+        {
+            var result = await handler.Handle(
+                new HardDeleteCommand(id), cancellationToken);
             if (result.IsFailure)
                 return result.Error.ToResponse();
 

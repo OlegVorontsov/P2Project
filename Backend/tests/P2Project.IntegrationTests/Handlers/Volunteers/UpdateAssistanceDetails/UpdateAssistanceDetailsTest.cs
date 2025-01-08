@@ -1,28 +1,28 @@
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using P2Project.Application.Interfaces.Commands;
-using P2Project.Application.Volunteers.Commands.Create;
+using P2Project.Application.Volunteers.Commands.UpdateAssistanceDetails;
 using P2Project.IntegrationTests.Extensions;
 using P2Project.IntegrationTests.Factories;
 
-namespace P2Project.IntegrationTests.Handlers.Volunteers.CreateVolunteer;
+namespace P2Project.IntegrationTests.Handlers.Volunteers.UpdateAssistanceDetails;
 
-public class CreateVolunteerTest : IntegrationTestBase
+public class UpdateAssistanceDetailsTest : IntegrationTestBase
 {
-    private readonly ICommandHandler<Guid, CreateCommand> _sut;
-    
-    public CreateVolunteerTest(IntegrationTestsFactory factory) : base(factory)
+    private readonly ICommandHandler<Guid, UpdateAssistanceDetailsCommand> _sut;
+    public UpdateAssistanceDetailsTest(IntegrationTestsFactory factory) : base(factory)
     {
         var scope = factory.Services.CreateScope();
         _sut = scope.ServiceProvider
-            .GetRequiredService<ICommandHandler<Guid, CreateCommand>>();
+            .GetRequiredService<ICommandHandler<Guid, UpdateAssistanceDetailsCommand>>();
     }
     
     [Fact]
-    public async Task CreateVolunteerInDatabase()
+    public async Task UpdateAssistanceDetails()
     {
         // Arrange
-        var command = _fixture.FakeCreateVolunteerCommand();
+        var volunteerId = await SeedVolunteer();
+        var command = _fixture.FakeUpdateAssistanceDetailsCommand(volunteerId);
 
         // Act
         var result = await _sut.Handle(command, CancellationToken.None);

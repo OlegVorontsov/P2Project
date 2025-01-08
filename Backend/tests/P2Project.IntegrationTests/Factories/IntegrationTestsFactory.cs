@@ -7,8 +7,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Npgsql;
 using NSubstitute;
+using P2Project.API;
 using P2Project.Application.FileProvider;
 using P2Project.Application.FileProvider.Models;
+using P2Project.Application.Interfaces.DbContexts.Species;
 using P2Project.Application.Interfaces.DbContexts.Volunteers;
 using P2Project.Domain.Shared.Errors;
 using P2Project.Infrastructure.DbContexts;
@@ -41,6 +43,7 @@ public class IntegrationTestsFactory :
     private void ConfigureDefault(IServiceCollection services)
     {
         services.RemoveAll(typeof(IVolunteersReadDbContext));
+        services.RemoveAll(typeof(ISpeciesReadDbContext));
         services.RemoveAll(typeof(WriteDbContext));
         services.RemoveAll(typeof(IFileProvider));
 
@@ -48,6 +51,8 @@ public class IntegrationTestsFactory :
             new WriteDbContext(_dbContainer.GetConnectionString()));
         services.AddScoped<IVolunteersReadDbContext, VolunteersReadDbContext>(_ =>
             new VolunteersReadDbContext(_dbContainer.GetConnectionString()));
+        services.AddScoped<ISpeciesReadDbContext, SpeciesReadDbContext>(_ =>
+            new SpeciesReadDbContext(_dbContainer.GetConnectionString()));
         services.AddTransient(_ => _fileProviderMock);
     }
     

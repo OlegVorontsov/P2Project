@@ -34,9 +34,16 @@ namespace P2Project.Infrastructure.Repositories
             return volunteer.Id.Value;
         }
 
-        public Guid Delete(Volunteer volunteer)
+        public Result<Guid, Error> Delete(Volunteer volunteer)
         {
-            _dbContext.Volunteers.Remove(volunteer);
+            try
+            {
+                _dbContext.Volunteers.Remove(volunteer);
+            }
+            catch (Exception e)
+            {
+                return Errors.General.Failure();
+            }
             return volunteer.Id.Value;
         }
 

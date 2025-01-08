@@ -1,28 +1,29 @@
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using P2Project.Application.Interfaces.Commands;
-using P2Project.Application.Volunteers.Commands.Create;
+using P2Project.Application.Volunteers.Commands.UpdateMainInfo;
 using P2Project.IntegrationTests.Extensions;
 using P2Project.IntegrationTests.Factories;
 
-namespace P2Project.IntegrationTests.Handlers.Volunteers.CreateVolunteer;
+namespace P2Project.IntegrationTests.Handlers.Volunteers.UpdateMainInfo;
 
-public class CreateVolunteerTest : IntegrationTestBase
+public class UpdateMainInfoTest : IntegrationTestBase
 {
-    private readonly ICommandHandler<Guid, CreateCommand> _sut;
-    
-    public CreateVolunteerTest(IntegrationTestsFactory factory) : base(factory)
+    private readonly ICommandHandler<Guid, UpdateMainInfoCommand> _sut;
+
+    public UpdateMainInfoTest(IntegrationTestsFactory factory) : base(factory)
     {
         var scope = factory.Services.CreateScope();
         _sut = scope.ServiceProvider
-            .GetRequiredService<ICommandHandler<Guid, CreateCommand>>();
+            .GetRequiredService<ICommandHandler<Guid, UpdateMainInfoCommand>>();
     }
-    
+
     [Fact]
-    public async Task CreateVolunteerInDatabase()
+    public async Task UpdateMainInfo()
     {
         // Arrange
-        var command = _fixture.FakeCreateVolunteerCommand();
+        var volunteerId = await SeedVolunteer();
+        var command = _fixture.FakeUpdateMainInfoCommand(volunteerId);
 
         // Act
         var result = await _sut.Handle(command, CancellationToken.None);

@@ -12,14 +12,19 @@ namespace P2Project.Application.Interfaces.DataBase
         Task<Guid> Add(
                     Volunteer volunteer,
                     CancellationToken cancellationToken = default);
+        
         Guid Save(Volunteer volunteer);
-        Guid Delete(Volunteer volunteer);
+        
+        Result<Guid, Error> Delete(Volunteer volunteer);
+        
         Task<Result<Volunteer, Error>> GetById(
                     VolunteerId volunteerId,
                     CancellationToken cancellationToken = default);
+        
         Task<Result<Volunteer, Error>> GetByFullName(
                     FullName fullName,
                     CancellationToken cancellationToken = default);
+        
         Task<Result<Volunteer, Error>> GetByEmail(
                     Email email,
                     CancellationToken cancellationToken = default);
