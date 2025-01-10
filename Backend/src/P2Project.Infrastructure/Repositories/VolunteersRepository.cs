@@ -1,11 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 using P2Project.Application.Interfaces.DataBase;
-using P2Project.Application.Volunteers;
 using P2Project.Domain.PetManagment;
-using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.PetManagment.ValueObjects.Volunteers;
-using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.Errors;
 using P2Project.Domain.Shared.IDs;
 using P2Project.Infrastructure.DbContexts;

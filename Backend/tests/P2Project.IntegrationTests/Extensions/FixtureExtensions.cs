@@ -4,6 +4,7 @@ using P2Project.Application.Shared.Dtos.Pets;
 using P2Project.Application.Shared.Dtos.Volunteers;
 using P2Project.Application.Volunteers.Commands.AddPet;
 using P2Project.Application.Volunteers.Commands.Create;
+using P2Project.Application.Volunteers.Commands.DeletePetPhotos;
 using P2Project.Application.Volunteers.Commands.UpdateAssistanceDetails;
 using P2Project.Application.Volunteers.Commands.UpdateMainInfo;
 using P2Project.Application.Volunteers.Commands.UpdatePhoneNumbers;
@@ -92,6 +93,17 @@ public static class FixtureExtensions
             .With(c => c.BreedId, BreedId)
             .With(c => c.HealthInfo, healthInfo)
             .With(c => c.OwnerPhoneNumber, ownerPhoneNumber)
+            .Create();
+    }
+    
+    public static DeletePetPhotosCommand FakeDeletePetPhotosCommand(
+        this IFixture fixture,
+        Guid VolunteerId,
+        Guid PetId)
+    {
+        return fixture.Build<DeletePetPhotosCommand>()
+            .With(c => c.VolunteerId, VolunteerId)
+            .With(c => c.PetId, PetId)
             .Create();
     }
     

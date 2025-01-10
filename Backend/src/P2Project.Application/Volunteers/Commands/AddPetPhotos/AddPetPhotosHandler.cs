@@ -103,6 +103,8 @@ namespace P2Project.Application.Volunteers.Commands.AddPetPhotos
                     .ToList();
 
                 petResult.Value.UpdatePhotos(petPhotos);
+
+                var id = _volunteersRepository.Save(volunteerResult.Value);
                 await _unitOfWork.SaveChanges(cancellationToken);
                 
                 transaction.Commit();

@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
+using Minio;
 using Npgsql;
 using NSubstitute;
 using P2Project.API;
@@ -14,6 +16,7 @@ using P2Project.Application.Interfaces.DbContexts.Species;
 using P2Project.Application.Interfaces.DbContexts.Volunteers;
 using P2Project.Domain.Shared.Errors;
 using P2Project.Infrastructure.DbContexts;
+using P2Project.Infrastructure.Providers;
 using Respawn;
 using Testcontainers.PostgreSql;
 using FileInfo = P2Project.Application.FileProvider.Models.FileInfo;
@@ -32,8 +35,10 @@ public class IntegrationTestsFactory :
     
     private Respawner _respawner;
     private DbConnection _dbConnection;
-    private IFileProvider _fileProviderMock = Substitute.For<IFileProvider>();
-    private WriteDbContext _writeDbContext; 
+    private WriteDbContext _writeDbContext;
+    private IFileProvider _fileProvider = Substitute.For<IFileProvider>();
+    private IMinioClient _minioClient = Substitute.For<IMinioClient>();
+    private ILogger<MinioProvider> _logger = Substitute.For<ILogger<MinioProvider>>();
     
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -53,7 +58,8 @@ public class IntegrationTestsFactory :
             new VolunteersReadDbContext(_dbContainer.GetConnectionString()));
         services.AddScoped<ISpeciesReadDbContext, SpeciesReadDbContext>(_ =>
             new SpeciesReadDbContext(_dbContainer.GetConnectionString()));
-        services.AddTransient(_ => _fileProviderMock);
+        services.AddScoped<IFileProvider, MinioProvider>(_ =>
+            new MinioProvider(_minioClient, _logger));
     }
     
     public async Task InitializeAsync()
@@ -94,25 +100,22 @@ public class IntegrationTestsFactory :
         });
     }
     
-    public void SetupSuccessFileProviderMock()
+    public void SetupSuccessFileProvider()
     {
         var response = "test_file_name";
         
-        var fileData = new FileData(
-            Arg.Any<Stream>(), Arg.Any<FileInfo>());
-        
-        _fileProviderMock.UploadFile(
-                fileData, CancellationToken.None)
+        _fileProvider.UploadFile(
+                Arg.Any<FileData>(), Arg.Any<CancellationToken>())
             .Returns(Result.Success<string, Error>(response));
     }
     
-    public void SetupFailureFileProviderMock()
+    public void SetupFailureFileProvider()
     {
         var fileData = new FileData(
             Arg.Any<Stream>(), Arg.Any<FileInfo>());
         
-        _fileProviderMock.UploadFile(
-                fileData, CancellationToken.None)
+        _fileProvider.UploadFile(
+                fileData, Arg.Any<CancellationToken>())
             .Returns(Errors.General.Failure("Интеграционный тест"));
     }
 }

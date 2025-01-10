@@ -1,6 +1,8 @@
 using AutoFixture;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
+using NSubstitute;
 using P2Project.Application.Interfaces.DbContexts.Species;
 using P2Project.Application.Interfaces.DbContexts.Volunteers;
 using P2Project.Application.Shared.Dtos.Pets;
@@ -23,7 +25,7 @@ public class IntegrationTestBase :
     protected readonly IVolunteersReadDbContext _volunteersReadDbContext;
     private readonly ISpeciesReadDbContext _speciesReadDbContext;
     protected readonly WriteDbContext _writeDbContext;
-
+    
     public IntegrationTestBase(IntegrationTestsFactory factory)
     {
         _factory = factory;
@@ -33,7 +35,7 @@ public class IntegrationTestBase :
         _speciesReadDbContext = _scope.ServiceProvider.GetRequiredService<ISpeciesReadDbContext>();
         _writeDbContext = _scope.ServiceProvider.GetRequiredService<WriteDbContext>();
     }
-    
+
     public Task InitializeAsync()
     {
         return Task.CompletedTask;
@@ -74,11 +76,15 @@ public class IntegrationTestBase :
     
     protected async Task<Guid> SeedPet(Guid volunteerId)
     {
-        var volunteer = await _writeDbContext.Volunteers.FindAsync(VolunteerId.Create(volunteerId));
+        var volunteer = await _writeDbContext.Volunteers
+            .FindAsync(VolunteerId.Create(volunteerId));
         if (volunteer is null)
             return Guid.Empty;
+        
+        var species = _speciesReadDbContext
+            .Species.Include(s => s.Breeds).First();
 
-        var pet = PetFabric.CreatePet();
+        var pet = PetFabric.CreatePet(species.Id, species.Breeds.First().Id);
 
         volunteer.AddPet(pet);
 
