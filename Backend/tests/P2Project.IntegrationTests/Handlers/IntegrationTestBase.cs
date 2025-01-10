@@ -6,6 +6,7 @@ using NSubstitute;
 using P2Project.Application.Interfaces.DbContexts.Species;
 using P2Project.Application.Interfaces.DbContexts.Volunteers;
 using P2Project.Application.Shared.Dtos.Pets;
+using P2Project.Domain.PetManagment.ValueObjects.Pets;
 using P2Project.Domain.Shared.IDs;
 using P2Project.Domain.SpeciesManagment;
 using P2Project.Domain.SpeciesManagment.Entities;
@@ -85,6 +86,29 @@ public class IntegrationTestBase :
             .Species.Include(s => s.Breeds).First();
 
         var pet = PetFabric.CreatePet(species.Id, species.Breeds.First().Id);
+
+        volunteer.AddPet(pet);
+
+        await _writeDbContext.SaveChangesAsync();
+
+        return pet.Id.Value;
+    }
+    
+    protected async Task<Guid> SeedPetWithPhoto(Guid volunteerId)
+    {
+        var volunteer = await _writeDbContext.Volunteers
+            .FindAsync(VolunteerId.Create(volunteerId));
+        if (volunteer is null)
+            return Guid.Empty;
+        
+        var species = _speciesReadDbContext
+            .Species.Include(s => s.Breeds).First();
+
+        var pet = PetFabric.CreatePet(species.Id, species.Breeds.First().Id);
+        
+        var photos = new List<PetPhoto>{PetPhoto.Create("test_file_name.jpg", false).Value};
+        
+        pet.UpdatePhotos(photos);
 
         volunteer.AddPet(pet);
 

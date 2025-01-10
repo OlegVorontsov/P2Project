@@ -3,10 +3,15 @@ using P2Project.Application.Shared.Dtos.Common;
 using P2Project.Application.Shared.Dtos.Pets;
 using P2Project.Application.Shared.Dtos.Volunteers;
 using P2Project.Application.Volunteers.Commands.AddPet;
+using P2Project.Application.Volunteers.Commands.ChangePetMainPhoto;
+using P2Project.Application.Volunteers.Commands.ChangePetStatus;
 using P2Project.Application.Volunteers.Commands.Create;
 using P2Project.Application.Volunteers.Commands.DeletePetPhotos;
+using P2Project.Application.Volunteers.Commands.HardDeletePet;
+using P2Project.Application.Volunteers.Commands.SoftDeletePet;
 using P2Project.Application.Volunteers.Commands.UpdateAssistanceDetails;
 using P2Project.Application.Volunteers.Commands.UpdateMainInfo;
+using P2Project.Application.Volunteers.Commands.UpdatePet;
 using P2Project.Application.Volunteers.Commands.UpdatePhoneNumbers;
 using P2Project.Application.Volunteers.Commands.UpdateSocialNetworks;
 using P2Project.Domain.PetManagment;
@@ -29,8 +34,7 @@ public static class FixtureExtensions
     }
     
     public static UpdateMainInfoCommand FakeUpdateMainInfoCommand(
-        this IFixture fixture,
-        Guid VolunteerId)
+        this IFixture fixture, Guid VolunteerId)
     {
         var volunteerInfo = new VolunteerInfoDto(33, 5);
         
@@ -42,8 +46,7 @@ public static class FixtureExtensions
     }
     
     public static UpdatePhoneNumbersCommand FakeUpdatePhoneNumbersCommand(
-        this IFixture fixture,
-        Guid VolunteerId)
+        this IFixture fixture, Guid VolunteerId)
     {
         var phoneNumber = new PhoneNumberDto("+7 123 456-78-11", false);
         
@@ -54,8 +57,7 @@ public static class FixtureExtensions
     }
     
     public static UpdateSocialNetworksCommand FakeUpdateSocialNetworksCommand(
-        this IFixture fixture,
-        Guid VolunteerId)
+        this IFixture fixture, Guid VolunteerId)
     {
         var socialNetwork = new SocialNetworkDto("test_name", "test_link");
         
@@ -66,8 +68,7 @@ public static class FixtureExtensions
     }
     
     public static UpdateAssistanceDetailsCommand FakeUpdateAssistanceDetailsCommand(
-        this IFixture fixture,
-        Guid VolunteerId)
+        this IFixture fixture, Guid VolunteerId)
     {
         var assistanceDetail = new AssistanceDetailDto(
             "test_name", "test_description", "test_account_number");
@@ -97,9 +98,7 @@ public static class FixtureExtensions
     }
     
     public static DeletePetPhotosCommand FakeDeletePetPhotosCommand(
-        this IFixture fixture,
-        Guid VolunteerId,
-        Guid PetId)
+        this IFixture fixture, Guid VolunteerId, Guid PetId)
     {
         return fixture.Build<DeletePetPhotosCommand>()
             .With(c => c.VolunteerId, VolunteerId)
@@ -107,19 +106,62 @@ public static class FixtureExtensions
             .Create();
     }
     
-    /*public static AddPetPhotosCommand CreateAddPetPhotosCommand(
-        this Fixture fixture,
+    public static UpdatePetCommand FakeUpdatePetCommand(
+        this IFixture fixture,
         Guid VolunteerId,
-        Guid PetId)
+        Guid PetId,
+        Guid SpeciesId,
+        Guid BreedId)
     {
-        var stream = new MemoryStream();
-        var fileName = "test.jpg";
-        var uploadFileDto = new UploadFileDto(stream, fileName);
-
-        return fixture.Build<AddPetPhotosCommand>()
+        var healthInfo = new HealthInfoDto(20, 20, true, true, "test_health_description");
+        var ownerPhoneNumber = new PhoneNumberDto("+7 123 456-78-11", false);
+        
+        return fixture.Build<UpdatePetCommand>()
             .With(c => c.VolunteerId, VolunteerId)
             .With(c => c.PetId, PetId)
-            .With(c => c.Files, [uploadFileDto, uploadFileDto])
+            .With(c => c.SpeciesId, SpeciesId)
+            .With(c => c.BreedId, BreedId)
+            .With(c => c.HealthInfo, healthInfo)
+            .With(c => c.OwnerPhoneNumber, ownerPhoneNumber)
             .Create();
-    }*/
+    }
+    
+    public static ChangePetStatusCommand FakeChangePetStatusCommand(
+        this IFixture fixture, Guid VolunteerId, Guid PetId)
+    {
+        return fixture.Build<ChangePetStatusCommand>()
+            .With(c => c.VolunteerId, VolunteerId)
+            .With(c => c.PetId, PetId)
+            .Create();
+    }
+    
+    public static ChangePetMainPhotoCommand FakeChangePetMainPhotoCommand(
+        this IFixture fixture, Guid VolunteerId, Guid PetId)
+    {
+        var newMainPhotoObjectName = "test_file_name.jpg";
+        
+        return fixture.Build<ChangePetMainPhotoCommand>()
+            .With(c => c.VolunteerId, VolunteerId)
+            .With(c => c.PetId, PetId)
+            .With(c => c.ObjectName, newMainPhotoObjectName)
+            .Create();
+    }
+    
+    public static SoftDeletePetCommand FakeSoftDeletePetCommand(
+        this IFixture fixture, Guid VolunteerId, Guid PetId)
+    {
+        return fixture.Build<SoftDeletePetCommand>()
+            .With(c => c.VolunteerId, VolunteerId)
+            .With(c => c.PetId, PetId)
+            .Create();
+    }
+    
+    public static HardDeletePetCommand FakeHardDeletePetCommand(
+        this IFixture fixture, Guid VolunteerId, Guid PetId)
+    {
+        return fixture.Build<HardDeletePetCommand>()
+            .With(c => c.VolunteerId, VolunteerId)
+            .With(c => c.PetId, PetId)
+            .Create();
+    }
 }
