@@ -11,7 +11,8 @@ using P2Project.Domain.Shared.IDs;
 
 namespace P2Project.Application.Species.Commands.DeleteSpeciesById;
 
-public class DeleteSpeciesByIdHandler : ICommandHandler<Guid, DeleteSpeciesByIdCommand>
+public class DeleteSpeciesByIdHandler :
+    ICommandHandler<Guid, DeleteSpeciesByIdCommand>
 {
     private readonly IValidator<DeleteSpeciesByIdCommand> _validator;
     private readonly ISpeciesRepository _speciesRepository;

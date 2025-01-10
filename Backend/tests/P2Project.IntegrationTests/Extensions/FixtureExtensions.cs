@@ -2,6 +2,9 @@ using AutoFixture;
 using P2Project.Application.Shared.Dtos.Common;
 using P2Project.Application.Shared.Dtos.Pets;
 using P2Project.Application.Shared.Dtos.Volunteers;
+using P2Project.Application.Species.Commands.AddBreeds;
+using P2Project.Application.Species.Commands.DeleteBreedById;
+using P2Project.Application.Species.Commands.DeleteSpeciesById;
 using P2Project.Application.Volunteers.Commands.AddPet;
 using P2Project.Application.Volunteers.Commands.ChangePetMainPhoto;
 using P2Project.Application.Volunteers.Commands.ChangePetStatus;
@@ -162,6 +165,38 @@ public static class FixtureExtensions
         return fixture.Build<HardDeletePetCommand>()
             .With(c => c.VolunteerId, VolunteerId)
             .With(c => c.PetId, PetId)
+            .Create();
+    }
+    
+    public static Application.Species.Commands.Create.CreateCommand FakeCreateSpeciesCommand(
+        this IFixture fixture)
+    {
+        return fixture.Build<Application.Species.Commands.Create.CreateCommand>()
+            .Create();
+    }
+    
+    public static AddBreedsCommand FakeAddBreedsCommand(
+        this IFixture fixture, Guid SpeciesId)
+    {
+        return fixture.Build<AddBreedsCommand>()
+            .With(c => c.SpeciesId, SpeciesId)
+            .Create();
+    }
+    
+    public static DeleteSpeciesByIdCommand FakeDeleteSpeciesCommand(
+        this IFixture fixture, Guid SpeciesId)
+    {
+        return fixture.Build<DeleteSpeciesByIdCommand>()
+            .With(c => c.Id, SpeciesId)
+            .Create();
+    }
+    
+    public static DeleteBreedByIdCommand FakeDeleteBreedCommand(
+        this IFixture fixture, Guid SpeciesId, Guid BreedId)
+    {
+        return fixture.Build<DeleteBreedByIdCommand>()
+            .With(c => c.SpeciesId, SpeciesId)
+            .With(c => c.BreedId, BreedId)
             .Create();
     }
 }

@@ -1,14 +1,11 @@
 using AutoFixture;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
-using NSubstitute;
 using P2Project.Application.Interfaces.DbContexts.Species;
 using P2Project.Application.Interfaces.DbContexts.Volunteers;
 using P2Project.Application.Shared.Dtos.Pets;
 using P2Project.Domain.PetManagment.ValueObjects.Pets;
 using P2Project.Domain.Shared.IDs;
-using P2Project.Domain.SpeciesManagment;
 using P2Project.Domain.SpeciesManagment.Entities;
 using P2Project.Domain.SpeciesManagment.ValueObjects;
 using P2Project.Infrastructure.DbContexts;
@@ -62,7 +59,7 @@ public class IntegrationTestBase :
     {
         var breed = new Breed(BreedId.New(), Name.Create("test_breed_name").Value);
         
-        var newSpecies = new Species(
+        var newSpecies = new Domain.SpeciesManagment.Species(
             SpeciesId.New(), Name.Create("test_species_name").Value,
             [breed]);
 
