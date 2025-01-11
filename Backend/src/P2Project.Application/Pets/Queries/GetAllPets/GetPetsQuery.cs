@@ -1,6 +1,6 @@
 ﻿using P2Project.Application.Interfaces.Queries;
 
-namespace P2Project.Application.Volunteers.Queries.GetPets
+namespace P2Project.Application.Pets.Queries.GetAllPets
 {
     public record GetPetsQuery(
         Guid? VolunteerId,
