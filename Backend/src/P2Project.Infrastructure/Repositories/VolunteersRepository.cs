@@ -1,11 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 using P2Project.Application.Interfaces.DataBase;
-using P2Project.Application.Volunteers;
 using P2Project.Domain.PetManagment;
-using P2Project.Domain.PetManagment.ValueObjects;
 using P2Project.Domain.PetManagment.ValueObjects.Volunteers;
-using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.Errors;
 using P2Project.Domain.Shared.IDs;
 using P2Project.Infrastructure.DbContexts;
@@ -34,9 +31,16 @@ namespace P2Project.Infrastructure.Repositories
             return volunteer.Id.Value;
         }
 
-        public Guid Delete(Volunteer volunteer)
+        public Result<Guid, Error> Delete(Volunteer volunteer)
         {
-            _dbContext.Volunteers.Remove(volunteer);
+            try
+            {
+                _dbContext.Volunteers.Remove(volunteer);
+            }
+            catch (Exception e)
+            {
+                return Errors.General.Failure();
+            }
             return volunteer.Id.Value;
         }
 

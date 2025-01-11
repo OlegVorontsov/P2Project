@@ -12,7 +12,8 @@ using P2Project.Domain.Shared.IDs;
 
 namespace P2Project.Application.Volunteers.Commands.UpdateAssistanceDetails
 {
-    public class UpdateAssistanceDetailsHandler : ICommandHandler<Guid, UpdateAssistanceDetailsCommand>
+    public class UpdateAssistanceDetailsHandler :
+        ICommandHandler<Guid, UpdateAssistanceDetailsCommand>
     {
         private readonly IValidator<UpdateAssistanceDetailsCommand> _validator;
         private readonly IVolunteersRepository _volunteersRepository;

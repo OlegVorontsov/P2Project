@@ -20,7 +20,7 @@ namespace P2Project.Application.Volunteers.Commands.Create
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<CreateHandler> _logger;
 
-        public CreateHandler(   
+        public CreateHandler(
             IValidator<CreateCommand> validator,
             IVolunteersRepository volunteersRepository,
             IUnitOfWork unitOfWork,

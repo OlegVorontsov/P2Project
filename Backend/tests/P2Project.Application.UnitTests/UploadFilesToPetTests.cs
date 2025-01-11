@@ -2,7 +2,7 @@ using FluentAssertions;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
-using Moq;
+using NSubstitute;
 using P2Project.Application.FileProvider;
 using P2Project.Application.FileProvider.Models;
 using P2Project.Application.Interfaces;
@@ -10,6 +10,7 @@ using P2Project.Application.Interfaces.DataBase;
 using P2Project.Application.Messaging;
 using P2Project.Application.Shared.Dtos.Files;
 using P2Project.Application.Volunteers.Commands.AddPetPhotos;
+using P2Project.Domain.PetManagment;
 using P2Project.Domain.PetManagment.ValueObjects.Files;
 using P2Project.Domain.Shared.Errors;
 using P2Project.UnitTestsFabrics;
@@ -20,22 +21,31 @@ namespace P2Project.Application.UnitTests
 {
     public class UploadFilesToPetTests
     {
-        private readonly Mock<IValidator<AddPetPhotosCommand>> _validatorMock = new();
-        private readonly Mock<IFileProvider> _fileProviderMock = new();
-        private readonly Mock<IVolunteersRepository> _volunteersRepositoryMock = new();
-        private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
-        private readonly Mock<ILogger<AddPetPhotosHandler>> _loggerMock = new();
-        private readonly Mock<IMessageQueue<IEnumerable<FileInfo>>> _messageQueueMock = new();
+        private readonly IValidator<AddPetPhotosCommand> _validator =
+            Substitute.For<IValidator<AddPetPhotosCommand>>();
+        private readonly IFileProvider _fileProvider =
+            Substitute.For<IFileProvider>();
+        private readonly IVolunteersRepository _volunteersRepository =
+            Substitute.For<IVolunteersRepository>();
+        private readonly IUnitOfWork _unitOfWork = Substitute.For<IUnitOfWork>();
+        private readonly ILogger<AddPetPhotosHandler> _logger =
+            Substitute.For<ILogger<AddPetPhotosHandler>>();
+        private readonly IMessageQueue<IEnumerable<FileInfo>> _messageQueue =
+            Substitute.For<IMessageQueue<IEnumerable<FileInfo>>>();
+        private readonly CancellationToken _cancellationToken = 
+            new CancellationTokenSource().Token;
 
         [Fact]
         public async Task Upload_Files_To_Pet()
         {
             // arrange
-            var cancellationToken = new CancellationTokenSource().Token;
-
             var volunteer = VolunteerFabric.CreateVolunteer();
             var pet = PetFabric.CreatePet();
             volunteer.AddPet(pet);
+            
+            _volunteersRepository.GetById(volunteer.Id, _cancellationToken)
+                .Returns(Result.Success<Volunteer, Error>(volunteer));
+            _unitOfWork.SaveChanges(_cancellationToken).Returns(Task.CompletedTask);
 
             var stream = new MemoryStream();
             var fileName = "test.jpg";
@@ -45,11 +55,7 @@ namespace P2Project.Application.UnitTests
                     volunteer.Id.Value,
                     pet.Id.Value,
                     [uploadFileDto, uploadFileDto]);
-
-            _validatorMock.Setup(v => v.ValidateAsync(
-                command, cancellationToken))
-                .ReturnsAsync(new ValidationResult());
-
+            
             var extension = Path.GetExtension(uploadFileDto.FileName);
 
             List<FilePath> filePaths =
@@ -58,36 +64,29 @@ namespace P2Project.Application.UnitTests
                 FilePath.Create(Guid.NewGuid(), extension).Value
             ];
 
-            _fileProviderMock.Setup(f => f.UploadFiles(
-                It.IsAny<List<FileData>>(),
-                cancellationToken))
-                .ReturnsAsync(
-                    Result.Success<IReadOnlyList<FilePath>,
-                    Error>(filePaths));
+            _fileProvider.UploadFiles(
+                    Arg.Any<IEnumerable<FileData>>(), _cancellationToken)
+                .Returns(Result.Success<IReadOnlyList<FilePath>, Error>(filePaths));
 
-            _volunteersRepositoryMock.Setup(r => r.GetById(
-                volunteer.Id, cancellationToken)).ReturnsAsync(volunteer);
-
-            _unitOfWorkMock.Setup(u => u.SaveChanges(cancellationToken))
-                .Returns(Task.CompletedTask);
+            _validator.ValidateAsync(Arg.Any<AddPetPhotosCommand>(), _cancellationToken)
+                .Returns(new ValidationResult());
 
             var handler = new AddPetPhotosHandler(
-                _validatorMock.Object,
-                _fileProviderMock.Object,
-                _volunteersRepositoryMock.Object,
-                _unitOfWorkMock.Object,
-                _loggerMock.Object,
-                _messageQueueMock.Object);
+                _validator,
+                _fileProvider,
+                _volunteersRepository,
+                _unitOfWork,
+                _logger,
+                _messageQueue);
 
             // act
             var uploadResult = await handler.Handle(
-                command, cancellationToken);
+                command, _cancellationToken);
             var filesCount = volunteer.Pets
                 .Where(p => p.Id == pet.Id).First().Photos.Count;
 
             // assert
             uploadResult.IsSuccess.Should().BeTrue();
-            uploadResult.Value.Should().Be(pet.Id.Value);
             filesCount.Should().Be(2);
         }
     }

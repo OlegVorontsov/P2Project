@@ -49,4 +49,7 @@ app.MapControllers();
 
 app.Run();
 
-public partial class Program;
+namespace P2Project.API
+{
+    public partial class Program;
+}

@@ -13,7 +13,8 @@ using P2Project.Domain.Shared.IDs;
 
 namespace P2Project.Application.Volunteers.Commands.UpdateSocialNetworks
 {
-    public class UpdateSocialNetworksHandler : ICommandHandler<Guid, UpdateSocialNetworksCommand>
+    public class UpdateSocialNetworksHandler :
+        ICommandHandler<Guid, UpdateSocialNetworksCommand>
     {
         private readonly IValidator<UpdateSocialNetworksCommand> _validator;
         private readonly IVolunteersRepository _volunteersRepository;

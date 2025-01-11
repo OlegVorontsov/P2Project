@@ -5,24 +5,22 @@ using P2Project.Application.Extensions;
 using P2Project.Application.Interfaces;
 using P2Project.Application.Interfaces.Commands;
 using P2Project.Application.Interfaces.DataBase;
-using P2Project.Application.Shared;
-using P2Project.Domain.Shared;
 using P2Project.Domain.Shared.Errors;
 using P2Project.Domain.Shared.IDs;
 
-namespace P2Project.Application.Volunteers.Commands.Delete
+namespace P2Project.Application.Volunteers.Commands.SoftDelete
 {
-    public class DeleteHandler : ICommandHandler<Guid, DeleteCommand>
+    public class SoftDeleteHandler : ICommandHandler<Guid, SoftDeleteCommand>
     {
-        private readonly IValidator<DeleteCommand> _validator;
+        private readonly IValidator<SoftDeleteCommand> _validator;
         private readonly IVolunteersRepository _volunteersRepository;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<DeleteHandler> _logger;
-        public DeleteHandler(
-            IValidator<DeleteCommand> validator,
+        private readonly ILogger<SoftDeleteHandler> _logger;
+        public SoftDeleteHandler(
+            IValidator<SoftDeleteCommand> validator,
             IVolunteersRepository volunteersRepository,
             IUnitOfWork unitOfWork,
-            ILogger<DeleteHandler> logger)
+            ILogger<SoftDeleteHandler> logger)
         {
             _validator = validator;
             _volunteersRepository = volunteersRepository;
@@ -30,7 +28,7 @@ namespace P2Project.Application.Volunteers.Commands.Delete
             _logger = logger;
         }
         public async Task<Result<Guid, ErrorList>> Handle(
-            DeleteCommand command,
+            SoftDeleteCommand command,
             CancellationToken cancellationToken = default)
         {
             var validationResult = await _validator.ValidateAsync(

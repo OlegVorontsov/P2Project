@@ -31,8 +31,4 @@
       <ProjectReference Include="..\P2Project.UnitTestsFabric\P2Project.UnitTestsFabrics.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Handlers\Pets\" />
-    </ItemGroup>
-
 </Project>

@@ -1,28 +1,28 @@
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using P2Project.Application.Interfaces.Commands;
-using P2Project.Application.Volunteers.Commands.Create;
+using P2Project.Application.Volunteers.Commands.UpdateSocialNetworks;
 using P2Project.IntegrationTests.Extensions;
 using P2Project.IntegrationTests.Factories;
 
-namespace P2Project.IntegrationTests.Handlers.Volunteers.CreateVolunteer;
+namespace P2Project.IntegrationTests.Handlers.Volunteers.UpdateSocialNetworks;
 
-public class CreateVolunteerTest : IntegrationTestBase
+public class UpdateSocialNetworksTest : IntegrationTestBase
 {
-    private readonly ICommandHandler<Guid, CreateCommand> _sut;
-    
-    public CreateVolunteerTest(IntegrationTestsFactory factory) : base(factory)
+    private readonly ICommandHandler<Guid, UpdateSocialNetworksCommand> _sut;
+    public UpdateSocialNetworksTest(IntegrationTestsFactory factory) : base(factory)
     {
         var scope = factory.Services.CreateScope();
         _sut = scope.ServiceProvider
-            .GetRequiredService<ICommandHandler<Guid, CreateCommand>>();
+            .GetRequiredService<ICommandHandler<Guid, UpdateSocialNetworksCommand>>();
     }
     
     [Fact]
-    public async Task CreateVolunteerInDatabase()
+    public async Task UpdateSocialNetworks()
     {
         // Arrange
-        var command = _fixture.FakeCreateVolunteerCommand();
+        var volunteerId = await SeedVolunteer();
+        var command = _fixture.FakeUpdateSocialNetworksCommand(volunteerId);
 
         // Act
         var result = await _sut.Handle(command, CancellationToken.None);
