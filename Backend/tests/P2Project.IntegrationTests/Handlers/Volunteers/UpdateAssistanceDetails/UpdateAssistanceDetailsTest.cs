@@ -1,9 +1,9 @@
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using P2Project.Application.Interfaces.Commands;
-using P2Project.Application.Volunteers.Commands.UpdateAssistanceDetails;
+using P2Project.Core.Interfaces.Commands;
 using P2Project.IntegrationTests.Extensions;
 using P2Project.IntegrationTests.Factories;
+using P2Project.Volunteers.Application.Commands.UpdateAssistanceDetails;
 
 namespace P2Project.IntegrationTests.Handlers.Volunteers.UpdateAssistanceDetails;
 
@@ -32,7 +32,7 @@ public class UpdateAssistanceDetailsTest : IntegrationTestBase
         result.IsSuccess.Should().Be(true);
         result.Value.Should().NotBeEmpty();
 
-        var volunteers = _writeDbContext.Volunteers.ToList();
+        var volunteers = _volunteersWriteDbContext.Volunteers.ToList();
         volunteers.Should().NotBeEmpty();
         volunteers.Should().HaveCount(1);
     }

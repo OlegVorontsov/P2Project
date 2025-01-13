@@ -4,9 +4,9 @@ using P2Project.Application.Agreements;
 using P2Project.Application.Files.DeleteFile;
 using P2Project.Application.Files.GetFile;
 using P2Project.Application.Files.UploadFile;
-using P2Project.Application.Interfaces.Agreements;
-using P2Project.Application.Interfaces.Commands;
-using P2Project.Application.Interfaces.Queries;
+using P2Project.Core.Interfaces.Agreements;
+using P2Project.Core.Interfaces.Commands;
+using P2Project.Core.Interfaces.Queries;
 
 namespace P2Project.Application.Shared
 {

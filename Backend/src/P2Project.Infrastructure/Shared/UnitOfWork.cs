@@ -1,12 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
 using P2Project.Application.Shared;
 using System.Data;
-using P2Project.Application.Interfaces;
-using P2Project.Infrastructure.DbContexts;
+using P2Project.Core.Interfaces;
 
 namespace P2Project.Infrastructure.Shared
 {
-    internal class UnitOfWork : IUnitOfWork
+    /*internal class UnitOfWork : IUnitOfWork
     {
         private readonly WriteDbContext _dbContext;
 
@@ -29,5 +28,5 @@ namespace P2Project.Infrastructure.Shared
         {
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
-    }
+    }*/
 }

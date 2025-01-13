@@ -1,23 +1,23 @@
 using AutoFixture;
-using P2Project.Application.Shared.Dtos.Common;
-using P2Project.Application.Shared.Dtos.Pets;
-using P2Project.Application.Shared.Dtos.Volunteers;
-using P2Project.Application.Species.Commands.AddBreeds;
-using P2Project.Application.Species.Commands.DeleteBreedById;
-using P2Project.Application.Species.Commands.DeleteSpeciesById;
-using P2Project.Application.Volunteers.Commands.AddPet;
-using P2Project.Application.Volunteers.Commands.ChangePetMainPhoto;
-using P2Project.Application.Volunteers.Commands.ChangePetStatus;
-using P2Project.Application.Volunteers.Commands.Create;
-using P2Project.Application.Volunteers.Commands.DeletePetPhotos;
-using P2Project.Application.Volunteers.Commands.HardDeletePet;
-using P2Project.Application.Volunteers.Commands.SoftDeletePet;
-using P2Project.Application.Volunteers.Commands.UpdateAssistanceDetails;
-using P2Project.Application.Volunteers.Commands.UpdateMainInfo;
-using P2Project.Application.Volunteers.Commands.UpdatePet;
-using P2Project.Application.Volunteers.Commands.UpdatePhoneNumbers;
-using P2Project.Application.Volunteers.Commands.UpdateSocialNetworks;
-using P2Project.Domain.PetManagment;
+using P2Project.Core.Dtos.Common;
+using P2Project.Core.Dtos.Pets;
+using P2Project.Core.Dtos.Volunteers;
+using P2Project.Species.Application.Commands.AddBreeds;
+using P2Project.Species.Application.Commands.DeleteBreedById;
+using P2Project.Species.Application.Commands.DeleteSpeciesById;
+using P2Project.Volunteers.Application.Commands.AddPet;
+using P2Project.Volunteers.Application.Commands.ChangePetMainPhoto;
+using P2Project.Volunteers.Application.Commands.ChangePetStatus;
+using P2Project.Volunteers.Application.Commands.Create;
+using P2Project.Volunteers.Application.Commands.DeletePetPhotos;
+using P2Project.Volunteers.Application.Commands.HardDeletePet;
+using P2Project.Volunteers.Application.Commands.SoftDeletePet;
+using P2Project.Volunteers.Application.Commands.UpdateAssistanceDetails;
+using P2Project.Volunteers.Application.Commands.UpdateMainInfo;
+using P2Project.Volunteers.Application.Commands.UpdatePet;
+using P2Project.Volunteers.Application.Commands.UpdatePhoneNumbers;
+using P2Project.Volunteers.Application.Commands.UpdateSocialNetworks;
+using P2Project.Volunteers.Domain;
 
 namespace P2Project.IntegrationTests.Extensions;
 
@@ -168,10 +168,10 @@ public static class FixtureExtensions
             .Create();
     }
     
-    public static Application.Species.Commands.Create.CreateCommand FakeCreateSpeciesCommand(
+    public static Species.Application.Commands.Create.CreateCommand FakeCreateSpeciesCommand(
         this IFixture fixture)
     {
-        return fixture.Build<Application.Species.Commands.Create.CreateCommand>()
+        return fixture.Build<Species.Application.Commands.Create.CreateCommand>()
             .Create();
     }
     

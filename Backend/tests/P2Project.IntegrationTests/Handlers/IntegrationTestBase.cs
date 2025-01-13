@@ -1,16 +1,15 @@
 using AutoFixture;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using P2Project.Application.Interfaces.DbContexts.Species;
-using P2Project.Application.Interfaces.DbContexts.Volunteers;
-using P2Project.Application.Shared.Dtos.Pets;
-using P2Project.Domain.PetManagment.ValueObjects.Pets;
-using P2Project.Domain.Shared.IDs;
-using P2Project.Domain.SpeciesManagment.Entities;
-using P2Project.Domain.SpeciesManagment.ValueObjects;
-using P2Project.Infrastructure.DbContexts;
+using P2Project.Core.Dtos.Pets;
+using P2Project.Core.IDs;
 using P2Project.IntegrationTests.Factories;
+using P2Project.Species.Domain.Entities;
+using P2Project.Species.Domain.ValueObjects;
 using P2Project.UnitTestsFabrics;
+using P2Project.Volunteers.Application;
+using P2Project.Volunteers.Domain.ValueObjects.Pets;
+using P2Project.Volunteers.Infrastructure.DbContexts;
 
 namespace P2Project.IntegrationTests.Handlers;
 
@@ -20,18 +19,22 @@ public class IntegrationTestBase :
     protected readonly IntegrationTestsFactory _factory;
     protected readonly Fixture _fixture;
     protected readonly IServiceScope _scope;
-    protected readonly IVolunteersReadDbContext _volunteersReadDbContext;
-    private readonly ISpeciesReadDbContext _speciesReadDbContext;
-    protected readonly WriteDbContext _writeDbContext;
+    protected readonly IReadDbContext _volunteersReadDbContext;
+    private readonly P2Project.Species.Application.IReadDbContext _speciesReadDbContext;
+    protected readonly WriteDbContext _volunteersWriteDbContext;
+    protected readonly P2Project.Species.Infrastructure.DbContexts.WriteDbContext _speciesWriteDbContext;
     
     public IntegrationTestBase(IntegrationTestsFactory factory)
     {
         _factory = factory;
         _fixture = new Fixture();
         _scope = factory.Services.CreateScope();
-        _volunteersReadDbContext = _scope.ServiceProvider.GetRequiredService<IVolunteersReadDbContext>();
-        _speciesReadDbContext = _scope.ServiceProvider.GetRequiredService<ISpeciesReadDbContext>();
-        _writeDbContext = _scope.ServiceProvider.GetRequiredService<WriteDbContext>();
+        _volunteersReadDbContext = _scope.ServiceProvider.GetRequiredService<IReadDbContext>();
+        _speciesReadDbContext = _scope.ServiceProvider.GetRequiredService<P2Project.Species.Application.IReadDbContext>();
+        _volunteersWriteDbContext = _scope.ServiceProvider.GetRequiredService<WriteDbContext>();
+        _speciesWriteDbContext = _scope
+            .ServiceProvider
+            .GetRequiredService<P2Project.Species.Infrastructure.DbContexts.WriteDbContext>();
     }
 
     public Task InitializeAsync()
@@ -49,8 +52,8 @@ public class IntegrationTestBase :
     {
         var volunteer = VolunteerFabric.CreateVolunteer();
 
-        await _writeDbContext.AddAsync(volunteer);
-        await _writeDbContext.SaveChangesAsync();
+        await _volunteersWriteDbContext.AddAsync(volunteer);
+        await _volunteersWriteDbContext.SaveChangesAsync();
 
         return volunteer.Id.Value;
     }
@@ -59,12 +62,12 @@ public class IntegrationTestBase :
     {
         var breed = new Breed(BreedId.New(), Name.Create("test_breed_name").Value);
         
-        var newSpecies = new Domain.SpeciesManagment.Species(
+        var newSpecies = new P2Project.Species.Domain.Species(
             SpeciesId.New(), Name.Create("test_species_name").Value,
             [breed]);
 
-        await _writeDbContext.AddAsync(newSpecies);
-        await _writeDbContext.SaveChangesAsync();
+        await _speciesWriteDbContext.AddAsync(newSpecies);
+        await _speciesWriteDbContext.SaveChangesAsync();
 
         var species = _speciesReadDbContext
             .Species.Include(s => s.Breeds).First();
@@ -74,7 +77,7 @@ public class IntegrationTestBase :
     
     protected async Task<Guid> SeedPet(Guid volunteerId)
     {
-        var volunteer = await _writeDbContext.Volunteers
+        var volunteer = await _volunteersWriteDbContext.Volunteers
             .FindAsync(VolunteerId.Create(volunteerId));
         if (volunteer is null)
             return Guid.Empty;
@@ -86,14 +89,14 @@ public class IntegrationTestBase :
 
         volunteer.AddPet(pet);
 
-        await _writeDbContext.SaveChangesAsync();
+        await _volunteersWriteDbContext.SaveChangesAsync();
 
         return pet.Id.Value;
     }
     
     protected async Task<Guid> SeedPetWithPhoto(Guid volunteerId)
     {
-        var volunteer = await _writeDbContext.Volunteers
+        var volunteer = await _volunteersWriteDbContext.Volunteers
             .FindAsync(VolunteerId.Create(volunteerId));
         if (volunteer is null)
             return Guid.Empty;
@@ -109,7 +112,7 @@ public class IntegrationTestBase :
 
         volunteer.AddPet(pet);
 
-        await _writeDbContext.SaveChangesAsync();
+        await _volunteersWriteDbContext.SaveChangesAsync();
 
         return pet.Id.Value;
     }

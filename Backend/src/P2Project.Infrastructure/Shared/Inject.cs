@@ -1,21 +1,25 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Minio;
-using P2Project.Application.FileProvider;
-using P2Project.Application.Interfaces;
-using P2Project.Application.Interfaces.DataBase;
-using P2Project.Application.Interfaces.DbContexts.Species;
-using P2Project.Application.Interfaces.DbContexts.Volunteers;
-using P2Project.Application.Interfaces.Services;
-using P2Project.Application.Messaging;
-using P2Project.Infrastructure.BackroundServices;
+using P2Project.Core.BackroundServices;
+using P2Project.Core.Factories;
+using P2Project.Core.Files;
+using P2Project.Core.Interfaces;
+using P2Project.Core.Interfaces.DataBase;
+using P2Project.Core.Interfaces.Services;
+using P2Project.Core.MessageQueues;
+using P2Project.Core.Messaging;
+using P2Project.Core.Options;
 using P2Project.Infrastructure.DbContexts;
-using P2Project.Infrastructure.MessageQueues;
-using P2Project.Infrastructure.Options;
 using P2Project.Infrastructure.Providers;
 using P2Project.Infrastructure.Repositories;
-using static P2Project.Infrastructure.BackroundServices.FilesCleanerBackgroundService;
-using FileInfo = P2Project.Application.FileProvider.Models.FileInfo;
+using P2Project.Shared.Interfaces;
+using P2Project.Shared.Interfaces.DataBase;
+using P2Project.Shared.Interfaces.DbContexts.Species;
+using P2Project.Shared.Interfaces.DbContexts.Volunteers;
+using P2Project.Shared.Interfaces.Services;
+using static P2Project.Core.BackroundServices.FilesCleanerBackgroundService;
+using FileInfo = P2Project.Core.Files.Models.FileInfo;
 
 namespace P2Project.Infrastructure.Shared
 {

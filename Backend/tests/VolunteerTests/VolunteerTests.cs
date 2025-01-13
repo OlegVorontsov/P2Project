@@ -1,6 +1,6 @@
 using FluentAssertions;
-using P2Project.Domain.PetManagment.ValueObjects.Pets;
 using P2Project.UnitTestsFabrics;
+using P2Project.Volunteers.Domain.ValueObjects.Pets;
 
 namespace P2Project.Domain.UnitTests
 {

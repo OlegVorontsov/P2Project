@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
-using P2Project.API.Response;
-using P2Project.Domain.Shared;
 using System.Globalization;
-using P2Project.Domain.Shared.Errors;
+using P2Project.Core.Errors;
+using P2Project.Core.Models;
 
 namespace P2Project.API.Middlewares
 {

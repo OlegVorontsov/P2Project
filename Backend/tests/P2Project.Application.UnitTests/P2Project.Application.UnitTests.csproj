@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\P2Project.Application\P2Project.Application.csproj" />
+    <ProjectReference Include="..\..\src\Volunteers\P2Project.Volunteers.Application\P2Project.Volunteers.Application.csproj" />
     <ProjectReference Include="..\P2Project.UnitTestsFabric\P2Project.UnitTestsFabrics.csproj" />
   </ItemGroup>
 
