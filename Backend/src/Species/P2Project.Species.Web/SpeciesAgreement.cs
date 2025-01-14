@@ -1,5 +1,5 @@
 using CSharpFunctionalExtensions;
-using P2Project.Core.Errors;
+using P2Project.SharedKernel.Errors;
 using P2Project.Species.Agreements;
 using P2Project.Species.Application.Queries.SpeciesAndBreedExists;
 

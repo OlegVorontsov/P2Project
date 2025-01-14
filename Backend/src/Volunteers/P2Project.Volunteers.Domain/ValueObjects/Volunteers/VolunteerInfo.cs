@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using P2Project.Core;
-using P2Project.Core.Errors;
+using P2Project.SharedKernel;
+using P2Project.SharedKernel.Errors;
 
 namespace P2Project.Volunteers.Domain.ValueObjects.Volunteers
 {

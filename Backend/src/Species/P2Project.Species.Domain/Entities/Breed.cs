@@ -1,5 +1,5 @@
-﻿using P2Project.Core.BaseClasses;
-using P2Project.Core.IDs;
+﻿using P2Project.SharedKernel.BaseClasses;
+using P2Project.SharedKernel.IDs;
 using P2Project.Species.Domain.ValueObjects;
 
 namespace P2Project.Species.Domain.Entities

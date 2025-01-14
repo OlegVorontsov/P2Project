@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using P2Project.Core;
 using P2Project.Core.Dtos.Files;
 using P2Project.Core.Extensions;
+using P2Project.Framework;
 using P2Project.Volunteers.Application.Files.DeleteFile;
 using P2Project.Volunteers.Application.Files.GetFile;
 using P2Project.Volunteers.Application.Files.UploadFile;

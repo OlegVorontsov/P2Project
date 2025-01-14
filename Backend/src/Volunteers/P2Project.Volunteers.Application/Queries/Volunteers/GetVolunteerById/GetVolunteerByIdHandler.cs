@@ -2,8 +2,8 @@ using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using P2Project.Core.Dtos.Volunteers;
-using P2Project.Core.Errors;
 using P2Project.Core.Interfaces.Queries;
+using P2Project.SharedKernel.Errors;
 
 namespace P2Project.Volunteers.Application.Queries.Volunteers.GetVolunteerById;
 

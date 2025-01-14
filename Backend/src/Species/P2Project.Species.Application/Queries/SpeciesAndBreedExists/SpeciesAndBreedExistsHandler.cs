@@ -1,7 +1,7 @@
 using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
-using P2Project.Core.Errors;
 using P2Project.Core.Interfaces.Queries;
+using P2Project.SharedKernel.Errors;
 
 namespace P2Project.Species.Application.Queries.SpeciesAndBreedExists;
 

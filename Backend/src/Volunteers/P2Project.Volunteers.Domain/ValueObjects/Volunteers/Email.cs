@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
-using P2Project.Core.Errors;
+using P2Project.SharedKernel.Errors;
 
 namespace P2Project.Volunteers.Domain.ValueObjects.Volunteers
 {

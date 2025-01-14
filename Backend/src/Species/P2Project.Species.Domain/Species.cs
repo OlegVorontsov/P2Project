@@ -1,12 +1,12 @@
 ﻿using CSharpFunctionalExtensions;
-using P2Project.Core.Errors;
-using P2Project.Core.IDs;
+using P2Project.SharedKernel.Errors;
+using P2Project.SharedKernel.IDs;
 using P2Project.Species.Domain.Entities;
 using P2Project.Species.Domain.ValueObjects;
 
 namespace P2Project.Species.Domain
 {
-    public class Species : Core.BaseClasses.Entity<SpeciesId>
+    public class Species : SharedKernel.BaseClasses.Entity<SpeciesId>
     {
         private Species(SpeciesId id) : base(id) { }
         private readonly List<Breed> _breeds = [];

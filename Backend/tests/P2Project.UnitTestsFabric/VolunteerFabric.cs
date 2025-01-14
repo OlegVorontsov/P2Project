@@ -1,6 +1,7 @@
 ﻿using P2Project.Core;
-using P2Project.Core.IDs;
-using P2Project.Core.ValueObjects;
+using P2Project.SharedKernel;
+using P2Project.SharedKernel.IDs;
+using P2Project.SharedKernel.ValueObjects;
 using P2Project.Volunteers.Domain;
 using P2Project.Volunteers.Domain.ValueObjects.Volunteers;
 

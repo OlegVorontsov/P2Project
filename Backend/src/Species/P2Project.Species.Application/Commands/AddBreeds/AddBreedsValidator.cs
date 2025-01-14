@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
-using P2Project.Core.Errors;
 using P2Project.Core.Validation;
+using P2Project.SharedKernel.Errors;
 using P2Project.Species.Domain.ValueObjects;
 
 namespace P2Project.Species.Application.Commands.AddBreeds

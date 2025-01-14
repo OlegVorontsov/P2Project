@@ -1,8 +1,9 @@
 ﻿using CSharpFunctionalExtensions;
 using P2Project.Core;
-using P2Project.Core.Errors;
 using P2Project.Core.Files;
 using P2Project.Core.Files.Models;
+using P2Project.SharedKernel;
+using P2Project.SharedKernel.Errors;
 
 namespace P2Project.Volunteers.Application.Files.GetFile
 {

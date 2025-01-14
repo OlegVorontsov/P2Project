@@ -1,8 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
-using P2Project.Core.BaseClasses;
-using P2Project.Core.Errors;
-using P2Project.Core.IDs;
-using P2Project.Core.ValueObjects;
+using P2Project.SharedKernel.BaseClasses;
+using P2Project.SharedKernel.Errors;
+using P2Project.SharedKernel.IDs;
+using P2Project.SharedKernel.ValueObjects;
 using P2Project.Volunteers.Domain.ValueObjects.Pets;
 using Result = CSharpFunctionalExtensions.Result;
 

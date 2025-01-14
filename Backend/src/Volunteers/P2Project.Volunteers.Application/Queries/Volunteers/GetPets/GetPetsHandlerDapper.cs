@@ -4,11 +4,11 @@ using CSharpFunctionalExtensions;
 using Dapper;
 using FluentValidation;
 using P2Project.Core.Dtos.Pets;
-using P2Project.Core.Errors;
 using P2Project.Core.Extensions;
 using P2Project.Core.Interfaces.DataBase;
 using P2Project.Core.Interfaces.Queries;
 using P2Project.Core.Models;
+using P2Project.SharedKernel.Errors;
 
 namespace P2Project.Volunteers.Application.Queries.Volunteers.GetPets;
 

@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
-using P2Project.Core.Errors;
-using P2Project.Core.IDs;
+using P2Project.SharedKernel.Errors;
+using P2Project.SharedKernel.IDs;
 using P2Project.Species.Domain.ValueObjects;
 
 namespace P2Project.Species.Application

@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using P2Project.Core.Errors;
 using P2Project.Core.Validation;
-using P2Project.Core.ValueObjects;
+using P2Project.SharedKernel.Errors;
+using P2Project.SharedKernel.ValueObjects;
 using P2Project.Volunteers.Domain;
 using P2Project.Volunteers.Domain.ValueObjects.Volunteers;
 

@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using P2Project.Core;
-using P2Project.Core.IDs;
+using P2Project.SharedKernel;
+using P2Project.SharedKernel.IDs;
 
 namespace P2Project.Species.Infrastructure.Configurations.Write
 {

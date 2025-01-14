@@ -4,8 +4,9 @@ using P2Project.Core;
 using P2Project.Core.Dtos.Common;
 using P2Project.Core.Dtos.Pets;
 using P2Project.Core.Extensions;
-using P2Project.Core.IDs;
-using P2Project.Core.ValueObjects;
+using P2Project.SharedKernel;
+using P2Project.SharedKernel.IDs;
+using P2Project.SharedKernel.ValueObjects;
 using P2Project.Volunteers.Domain.Entities;
 using P2Project.Volunteers.Domain.ValueObjects.Pets;
 

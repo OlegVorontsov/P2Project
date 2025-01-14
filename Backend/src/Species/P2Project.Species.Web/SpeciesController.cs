@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using P2Project.Core;
-using P2Project.Core.Extensions;
+using P2Project.Framework;
 using P2Project.Species.Application.Commands.AddBreeds;
 using P2Project.Species.Application.Commands.Create;
 using P2Project.Species.Application.Commands.DeleteBreedById;

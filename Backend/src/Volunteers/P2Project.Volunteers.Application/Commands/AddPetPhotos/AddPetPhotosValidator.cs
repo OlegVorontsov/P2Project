@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using P2Project.Core.Dtos.Validators;
-using P2Project.Core.Errors;
 using P2Project.Core.Validation;
+using P2Project.SharedKernel.Errors;
 
 namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
 {

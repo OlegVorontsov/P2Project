@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\P2Project.Domain\P2Project.Domain.csproj" />
     <ProjectReference Include="..\..\src\Volunteers\P2Project.Volunteers.Domain\P2Project.Volunteers.Domain.csproj" />
   </ItemGroup>
 

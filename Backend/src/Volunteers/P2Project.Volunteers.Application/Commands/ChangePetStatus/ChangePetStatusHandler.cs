@@ -1,11 +1,11 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
-using P2Project.Core.Errors;
 using P2Project.Core.Extensions;
-using P2Project.Core.IDs;
 using P2Project.Core.Interfaces;
 using P2Project.Core.Interfaces.Commands;
+using P2Project.SharedKernel.Errors;
+using P2Project.SharedKernel.IDs;
 using P2Project.Volunteers.Domain.ValueObjects.Pets;
 
 namespace P2Project.Volunteers.Application.Commands.ChangePetStatus;

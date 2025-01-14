@@ -1,4 +1,4 @@
-﻿using P2Project.Core.IDs;
+﻿using P2Project.SharedKernel.IDs;
 
 namespace P2Project.Volunteers.Domain.ValueObjects.Pets
 {
