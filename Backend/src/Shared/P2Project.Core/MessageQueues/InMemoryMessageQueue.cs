@@ -1,5 +1,5 @@
 ﻿using System.Threading.Channels;
-using P2Project.Core.Messaging;
+using P2Project.Core.Interfaces;
 
 namespace P2Project.Core.MessageQueues
 {

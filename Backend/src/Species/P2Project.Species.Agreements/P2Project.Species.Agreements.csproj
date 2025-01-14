@@ -10,4 +10,8 @@
       <ProjectReference Include="..\..\Shared\P2Project.Core\P2Project.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Scrutor" Version="5.0.2" />
+    </ItemGroup>
+
 </Project>

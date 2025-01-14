@@ -2,7 +2,6 @@
 using P2Project.Core.Files.Models;
 using P2Project.SharedKernel.Errors;
 using P2Project.SharedKernel.ValueObjects;
-using FileInfo = P2Project.Core.Files.Models.FileInfo;
 
 namespace P2Project.Core.Files
 {
@@ -21,7 +20,7 @@ namespace P2Project.Core.Files
             CancellationToken cancellationToken = default);
 
         Task<UnitResult<Error>> DeleteFileByFileInfo(
-            FileInfo fileInfo,
+            FileInfoDto fileInfoDto,
             CancellationToken cancellationToken = default);
 
         Task<Result<string, Error>> GetFile(

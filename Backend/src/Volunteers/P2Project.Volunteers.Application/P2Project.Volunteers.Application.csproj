@@ -16,4 +16,8 @@
       <Folder Include="Queries\Volunteers\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Scrutor" Version="5.0.2" />
+    </ItemGroup>
+
 </Project>

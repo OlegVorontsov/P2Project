@@ -5,7 +5,6 @@ using Minio.DataModel.Args;
 using P2Project.Core.Files.Models;
 using P2Project.SharedKernel.Errors;
 using P2Project.SharedKernel.ValueObjects;
-using FileInfo = P2Project.Core.Files.Models.FileInfo;
 
 namespace P2Project.Core.Files
 {
@@ -32,13 +31,13 @@ namespace P2Project.Core.Files
             try
             {
                 await CreateBucketIfNotExists(
-                    fileData.FileInfo.BucketName, cancellationToken);
+                    fileData.FileInfoDto.BucketName, cancellationToken);
 
                 var putObjectArgs = new PutObjectArgs()
-                    .WithBucket(fileData.FileInfo.BucketName)
+                    .WithBucket(fileData.FileInfoDto.BucketName)
                     .WithStreamData(fileData.FileStream)
                     .WithObjectSize(fileData.FileStream.Length)
-                    .WithObject(fileData.FileInfo.FilePath.Path);
+                    .WithObject(fileData.FileInfoDto.FilePath.Path);
 
                 var result = await _minioClient.PutObjectAsync(
                     putObjectArgs, cancellationToken);
@@ -60,7 +59,7 @@ namespace P2Project.Core.Files
             try
             {
                 await CreateBucketsIfNotExist(
-                    filesList.Select(file => file.FileInfo.BucketName),
+                    filesList.Select(file => file.FileInfoDto.BucketName),
                     cancellationToken);
 
                 var tasks = filesList.Select(
@@ -117,28 +116,28 @@ namespace P2Project.Core.Files
         }
 
         public async Task<UnitResult<Error>> DeleteFileByFileInfo(
-            FileInfo fileInfo,
+            FileInfoDto fileInfoDto,
             CancellationToken cancellationToken = default)
         {
             try
             {
                 var isBucketExist = await IsBucketExist(
-                    fileInfo.BucketName, cancellationToken);
+                    fileInfoDto.BucketName, cancellationToken);
 
                 if (isBucketExist == false)
-                    throw new Exception($"Bucket {fileInfo.BucketName} not exist");
+                    throw new Exception($"Bucket {fileInfoDto.BucketName} not exist");
 
                 var statObjectArgs = new StatObjectArgs()
-                    .WithBucket(fileInfo.BucketName)
-                    .WithObject(fileInfo.FilePath.Path);
+                    .WithBucket(fileInfoDto.BucketName)
+                    .WithObject(fileInfoDto.FilePath.Path);
 
                 var statObject = await _minioClient.StatObjectAsync(statObjectArgs, cancellationToken);
                 if (statObject.Size == 0)
                     return Result.Success<Error>();
 
                 var removeArgs = new RemoveObjectArgs()
-                    .WithBucket(fileInfo.BucketName)
-                    .WithObject(fileInfo.FilePath.Path);
+                    .WithBucket(fileInfoDto.BucketName)
+                    .WithObject(fileInfoDto.FilePath.Path);
 
                 await _minioClient.RemoveObjectAsync(removeArgs, cancellationToken);
             }
@@ -146,8 +145,8 @@ namespace P2Project.Core.Files
             {
                 _logger.LogError(ex,
                "Failed to remove file in minio with path {path} in bucket {bucket}",
-               fileInfo.FilePath.Path,
-               fileInfo.BucketName);
+               fileInfoDto.FilePath.Path,
+               fileInfoDto.BucketName);
 
                 return Error.Failure("file.remove", "Failed to remove file in minio");
             }
@@ -250,24 +249,24 @@ namespace P2Project.Core.Files
             await semaphoreSlim.WaitAsync(cancellationToken);
 
             var putObjectArgs = new PutObjectArgs()
-                .WithBucket(fileData.FileInfo.BucketName)
+                .WithBucket(fileData.FileInfoDto.BucketName)
                 .WithStreamData(fileData.FileStream)
                 .WithObjectSize(fileData.FileStream.Length)
-                .WithObject(fileData.FileInfo.FilePath.Path);
+                .WithObject(fileData.FileInfoDto.FilePath.Path);
 
             try
             {
                 await _minioClient
                     .PutObjectAsync(putObjectArgs, cancellationToken);
 
-                return fileData.FileInfo.FilePath;
+                return fileData.FileInfoDto.FilePath;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex,
                     "Fail to upload file in minio with path {path} in bucket {bucket}",
-                    fileData.FileInfo.FilePath.Path,
-                    fileData.FileInfo.BucketName);
+                    fileData.FileInfoDto.FilePath.Path,
+                    fileData.FileInfoDto.BucketName);
 
                 return Error.Failure("file.upload", "Fail to upload file in minio");
             }

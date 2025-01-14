@@ -27,7 +27,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\P2Project.Web\P2Project.Web.csproj" />
+      <ProjectReference Include="..\..\src\P2Project.API\P2Project.API.csproj" />
       <ProjectReference Include="..\..\src\Species\P2Project.Species.Application\P2Project.Species.Application.csproj" />
       <ProjectReference Include="..\..\src\Species\P2Project.Species.Infrastructure\P2Project.Species.Infrastructure.csproj" />
       <ProjectReference Include="..\..\src\Volunteers\P2Project.Volunteers.Application\P2Project.Volunteers.Application.csproj" />

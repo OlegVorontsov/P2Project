@@ -5,7 +5,6 @@ using P2Project.Core.Files.Models;
 using P2Project.SharedKernel;
 using P2Project.SharedKernel.Errors;
 using P2Project.SharedKernel.ValueObjects;
-using FileInfo = P2Project.Core.Files.Models.FileInfo;
 using IFileProvider = P2Project.Core.Files.IFileProvider;
 
 namespace P2Project.Volunteers.Application.Files.UploadFile
@@ -29,7 +28,7 @@ namespace P2Project.Volunteers.Application.Files.UploadFile
             if (filePathResult.IsFailure)
                 return filePathResult.Error.ToErrorList();
 
-            var fileInfo = new FileInfo(
+            var fileInfo = new FileInfoDto(
                 filePathResult.Value, Constants.BUCKET_NAME_FILES);
 
             var uploadFileResult = await _fileProvider.UploadFile(

@@ -2,7 +2,7 @@
 
 namespace P2Project.Core.Files.Models
 {
-    public record FileInfo(
+    public record FileInfoDto(
         FilePath FilePath,
         string BucketName);
 }

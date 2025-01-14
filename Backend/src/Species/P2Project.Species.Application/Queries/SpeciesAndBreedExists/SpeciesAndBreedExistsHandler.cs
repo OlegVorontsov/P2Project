@@ -11,9 +11,9 @@ public class SpeciesAndBreedExistsHandler :
     private readonly IReadDbContext _readDbContext;
 
     public SpeciesAndBreedExistsHandler(
-        IReadDbContext _readDbContext)
+        IReadDbContext readDbContext)
     {
-        _readDbContext = _readDbContext;
+        _readDbContext = readDbContext;
     }
 
     public async Task<UnitResult<Error>> Handle(

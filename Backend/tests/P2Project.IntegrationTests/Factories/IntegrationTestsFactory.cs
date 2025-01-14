@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 using Minio;
 using Npgsql;
 using NSubstitute;
-using P2Project.Web;
+using P2Project.API;
 using P2Project.Core.Files;
 using P2Project.Core.Files.Models;
 using P2Project.SharedKernel.Errors;
@@ -17,7 +17,6 @@ using P2Project.Volunteers.Application;
 using P2Project.Volunteers.Infrastructure.DbContexts;
 using Respawn;
 using Testcontainers.PostgreSql;
-using FileInfo = P2Project.Core.Files.Models.FileInfo;
 
 namespace P2Project.IntegrationTests.Factories;
 
@@ -114,7 +113,7 @@ public class IntegrationTestsFactory :
     public void SetupFailureFileProvider()
     {
         var fileData = new FileData(
-            Arg.Any<Stream>(), Arg.Any<FileInfo>());
+            Arg.Any<Stream>(), Arg.Any<FileInfoDto>());
         
         _fileProvider.UploadFile(
                 fileData, Arg.Any<CancellationToken>())

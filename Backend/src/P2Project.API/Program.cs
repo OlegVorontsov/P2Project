@@ -1,8 +1,7 @@
-using P2Project.Web.Middlewares;
-using P2Project.Core.Extensions;
+using P2Project.API.Middlewares;
 using P2Project.Species.Web;
 using P2Project.Volunteers.Web;
-using P2Project.Web;
+using P2Project.API;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,8 +15,6 @@ services
     .AddSpeciesModule(config);
 
 services.AddControllers();
-
-builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -33,7 +30,6 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "P2Project.Api");
         c.InjectStylesheet("/swagger-ui/SwaggerDark.css");
     });
-    //await app.ApplyMigrations();
 }
 
 app.UseHttpsRedirection();
@@ -42,7 +38,7 @@ app.MapControllers();
 
 app.Run();
 
-namespace P2Project.Web
+namespace P2Project.API
 {
     public partial class Program;
 }

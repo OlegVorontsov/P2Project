@@ -1,7 +1,7 @@
 ﻿using P2Project.Core.Models;
 using P2Project.SharedKernel.Errors;
 
-namespace P2Project.Web.Middlewares
+namespace P2Project.API.Middlewares
 {
     public class ExceptionMiddleware
     {

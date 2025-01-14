@@ -1,19 +1,16 @@
 ﻿using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
-using P2Project.Core;
 using P2Project.Core.Extensions;
 using P2Project.Core.Files;
 using P2Project.Core.Files.Models;
 using P2Project.Core.Interfaces;
 using P2Project.Core.Interfaces.Commands;
-using P2Project.Core.Messaging;
 using P2Project.SharedKernel;
 using P2Project.SharedKernel.Errors;
 using P2Project.SharedKernel.IDs;
 using P2Project.SharedKernel.ValueObjects;
 using P2Project.Volunteers.Domain.ValueObjects.Pets;
-using FileInfo = P2Project.Core.Files.Models.FileInfo;
 
 namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
 {
@@ -25,7 +22,7 @@ namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
         private readonly IVolunteersRepository _volunteersRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<AddPetPhotosHandler> _logger;
-        private readonly IMessageQueue<IEnumerable<FileInfo>> _messageQueue;
+        private readonly IMessageQueue<IEnumerable<FileInfoDto>> _messageQueue;
 
         public AddPetPhotosHandler(
             IValidator<AddPetPhotosCommand> validator,
@@ -33,7 +30,7 @@ namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
             IVolunteersRepository volunteersRepository,
             IUnitOfWork unitOfWork,
             ILogger<AddPetPhotosHandler> logger,
-            IMessageQueue<IEnumerable<FileInfo>> messageQueue)
+            IMessageQueue<IEnumerable<FileInfoDto>> messageQueue)
         {
             _validator = validator;
             _fileProvider = fileProvider;
@@ -79,7 +76,7 @@ namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
                     if (filePath.IsFailure)
                         return filePath.Error.ToErrorList();
 
-                    var fileInfo = new FileInfo(
+                    var fileInfo = new FileInfoDto(
                         filePath.Value, Constants.BUCKET_NAME_PHOTOS);
 
                     var fileData = new FileData(
@@ -93,7 +90,7 @@ namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
                 if (filePathsResult.IsFailure)
                 {
                     await _messageQueue.WriteAsync(
-                        filesData.Select(f => f.FileInfo), cancellationToken);
+                        filesData.Select(f => f.FileInfoDto), cancellationToken);
 
                     return filePathsResult.Error.ToErrorList();
                 }

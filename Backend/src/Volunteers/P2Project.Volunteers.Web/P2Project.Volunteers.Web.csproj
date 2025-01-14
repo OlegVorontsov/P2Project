@@ -13,4 +13,8 @@
       <ProjectReference Include="..\P2Project.Volunteers.Infrastructure\P2Project.Volunteers.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Scrutor" Version="5.0.2" />
+    </ItemGroup>
+
 </Project>

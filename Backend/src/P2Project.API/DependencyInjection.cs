@@ -2,7 +2,7 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Events;
 
-namespace P2Project.Web;
+namespace P2Project.API;
 
 public static class DependencyInjection
 {
@@ -42,7 +42,7 @@ public static class DependencyInjection
                 Version = "1"
             });
 
-            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            /*c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 In = ParameterLocation.Header,
                 Description = "Insert JWT token value",
@@ -51,7 +51,7 @@ public static class DependencyInjection
             });
 
             c.AddSecurityRequirement(new OpenApiSecurityRequirement
-            { 
+            {
                 {
                     new OpenApiSecurityScheme
                     {
@@ -63,7 +63,7 @@ public static class DependencyInjection
                     },
                     new string[] { }
                 }
-            });
+            });*/
         });
 
         return services;

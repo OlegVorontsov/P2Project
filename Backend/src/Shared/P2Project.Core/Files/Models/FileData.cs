@@ -2,5 +2,5 @@
 {
     public record FileData(
         Stream FileStream,
-        FileInfo FileInfo);
+        FileInfoDto FileInfoDto);
 }

@@ -4,11 +4,11 @@ using Minio;
 using P2Project.Core.BackroundServices;
 using P2Project.Core.Factories;
 using P2Project.Core.Files;
+using P2Project.Core.Files.Models;
 using P2Project.Core.Interfaces;
 using P2Project.Core.Interfaces.DataBase;
 using P2Project.Core.Interfaces.Services;
 using P2Project.Core.MessageQueues;
-using P2Project.Core.Messaging;
 using P2Project.Core.Options;
 using P2Project.SharedKernel;
 using P2Project.Volunteers.Application;
@@ -28,9 +28,9 @@ public static class DependencyInjection
             .AddHostedServices()
             .AddMinioVault(configuration);
 
-        services.AddSingleton<IMessageQueue<IEnumerable<FileInfo>>,
-            InMemoryMessageQueue<IEnumerable<FileInfo>>>();
-        services.AddScoped<IFilesCleanerService, FilesCleanerBackgroundService.FilesCleanerService>();
+        services.AddScoped<IFilesCleanerService, FilesCleanerService>();
+        services.AddSingleton<IMessageQueue<IEnumerable<FileInfoDto>>,
+            InMemoryMessageQueue<IEnumerable<FileInfoDto>>>();
         return services;
     }
 
@@ -61,6 +61,7 @@ public static class DependencyInjection
             new ReadDbContext(configuration.GetConnectionString(Constants.DATABASE)!));
 
         services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
+        
         Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 
         return services;
