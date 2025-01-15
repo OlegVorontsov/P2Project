@@ -3,7 +3,7 @@ using P2Project.Core.Dtos.Volunteers;
 
 namespace P2Project.Volunteers.Application
 {
-    public interface IReadDbContext
+    public interface IVolunteersReadDbContext
     {
         IQueryable<VolunteerDto> Volunteers { get; }
         IQueryable<PetDto> Pets { get; }

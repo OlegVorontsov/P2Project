@@ -3,11 +3,11 @@ using Microsoft.Extensions.Logging;
 
 namespace P2Project.Species.Infrastructure.DbContexts
 {
-    public class WriteDbContext : DbContext
+    public class SpeciesWriteDbContext : DbContext
     {
         private readonly string _connectionString;
 
-        public WriteDbContext(string connectionString)
+        public SpeciesWriteDbContext(string connectionString)
         {
             _connectionString = connectionString;
         }
@@ -26,7 +26,7 @@ namespace P2Project.Species.Infrastructure.DbContexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(
-                typeof(WriteDbContext).Assembly,
+                typeof(SpeciesWriteDbContext).Assembly,
                 type => type.FullName?.Contains("Configurations.Write") ?? false);
         }
 

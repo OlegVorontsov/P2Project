@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using P2Project.Core;
 using P2Project.Core.Factories;
 using P2Project.Core.Interfaces;
 using P2Project.Core.Interfaces.DataBase;
@@ -24,7 +25,7 @@ public static class DependencyInjection
     private static IServiceCollection AddUnitOfWork(
         this IServiceCollection services)
     {
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddKeyedScoped<IUnitOfWork, UnitOfWork>(Modules.Species);
 
         return services;
     }
@@ -33,11 +34,11 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddScoped<WriteDbContext>(_ =>
-            new WriteDbContext(configuration.GetConnectionString(Constants.DATABASE)!));
+        services.AddScoped<SpeciesWriteDbContext>(_ =>
+            new SpeciesWriteDbContext(configuration.GetConnectionString(Constants.DATABASE)!));
             
-        services.AddScoped<IReadDbContext, ReadDbContext>(_ =>
-            new ReadDbContext(configuration.GetConnectionString(Constants.DATABASE)!));
+        services.AddScoped<ISpeciesReadDbContext, SpeciesReadDbContext>(_ =>
+            new SpeciesReadDbContext(configuration.GetConnectionString(Constants.DATABASE)!));
             
         services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
         Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;

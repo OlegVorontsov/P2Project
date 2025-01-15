@@ -14,8 +14,8 @@ namespace P2Project.Species.Domain.ValueObjects
         {
             if (string.IsNullOrWhiteSpace(name))
                 return Errors.General.ValueIsInvalid(nameof(Name));
-            var newname = new Name(name);
-            return newname;
+            var newName = new Name(name);
+            return newName;
         }
         protected override IEnumerable<object> GetEqualityComponents()
         {

@@ -1,6 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
 using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using P2Project.Core;
 using P2Project.Core.Extensions;
 using P2Project.Core.Interfaces;
 using P2Project.Core.Interfaces.Commands;
@@ -20,7 +22,8 @@ namespace P2Project.Species.Application.Commands.AddBreeds
         public AddBreedsHandler(
             IValidator<AddBreedsCommand> validator,
             ISpeciesRepository speciesRepository,
-            ILogger<AddBreedsHandler> logger, IUnitOfWork unitOfWork)
+            ILogger<AddBreedsHandler> logger,
+            [FromKeyedServices(Modules.Species)] IUnitOfWork unitOfWork)
         {
             _validator = validator;
             _speciesRepository = speciesRepository;

@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using P2Project.Core;
 using P2Project.Core.Extensions;
@@ -26,7 +27,7 @@ public class HardDeletePetHandler :
         IValidator<HardDeletePetCommand> validator,
         IVolunteersRepository volunteersRepository,
         IFileProvider fileProvider,
-        IUnitOfWork unitOfWork,
+        [FromKeyedServices(Modules.Volunteers)] IUnitOfWork unitOfWork,
         ILogger<HardDeletePetHandler> logger)
     {
         _validator = validator;

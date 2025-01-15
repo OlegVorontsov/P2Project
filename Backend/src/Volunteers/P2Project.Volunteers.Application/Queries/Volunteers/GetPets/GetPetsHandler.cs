@@ -13,10 +13,10 @@ namespace P2Project.Volunteers.Application.Queries.Volunteers.GetPets
         IQueryValidationHandler<PagedList<PetDto>, GetPetsQuery>
     {
         private readonly IValidator<GetPetsQuery> _validator;
-        private readonly IReadDbContext _readDbContext;
+        private readonly IVolunteersReadDbContext _readDbContext;
 
         public GetPetsHandler(
-            IReadDbContext readDbContext, IValidator<GetPetsQuery> validator)
+            IVolunteersReadDbContext readDbContext, IValidator<GetPetsQuery> validator)
         {
             _readDbContext = readDbContext;
             _validator = validator;

@@ -7,11 +7,11 @@ namespace P2Project.Volunteers.Application.Queries.Pets.IsAnyPetByBreed;
 public class IsAnyPetByBreedHandler :
     IQueryHandler<bool, IsAnyPetByBreedQuery>
 {
-    private readonly IReadDbContext _readDbContext;
+    private readonly IVolunteersReadDbContext _readDbContext;
     private readonly ILogger<IsAnyPetByBreedHandler> _logger;
 
     public IsAnyPetByBreedHandler(
-        IReadDbContext readDbContext,
+        IVolunteersReadDbContext readDbContext,
         ILogger<IsAnyPetByBreedHandler> logger)
     {
         _readDbContext = readDbContext;

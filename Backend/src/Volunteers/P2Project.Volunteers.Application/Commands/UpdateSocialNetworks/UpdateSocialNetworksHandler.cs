@@ -1,6 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
 using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using P2Project.Core;
 using P2Project.Core.Extensions;
 using P2Project.Core.Interfaces;
 using P2Project.Core.Interfaces.Commands;
@@ -20,7 +22,7 @@ namespace P2Project.Volunteers.Application.Commands.UpdateSocialNetworks
         public UpdateSocialNetworksHandler(
             IValidator<UpdateSocialNetworksCommand> validator,
             IVolunteersRepository volunteersRepository,
-            IUnitOfWork unitOfWork,
+            [FromKeyedServices(Modules.Volunteers)] IUnitOfWork unitOfWork,
             ILogger<UpdateSocialNetworksHandler> logger)
         {
             _validator = validator;

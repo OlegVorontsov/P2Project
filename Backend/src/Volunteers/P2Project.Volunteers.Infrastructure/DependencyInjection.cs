@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Minio;
+using P2Project.Core;
 using P2Project.Core.BackroundServices;
 using P2Project.Core.Factories;
 using P2Project.Core.Files;
@@ -38,15 +39,13 @@ public static class DependencyInjection
         this IServiceCollection services)
     {
         services.AddHostedService<FilesCleanerBackgroundService>();
-
         return services;
     }
 
     private static IServiceCollection AddUnitOfWork(
         this IServiceCollection services)
     {
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
-
+        services.AddKeyedScoped<IUnitOfWork, UnitOfWork>(Modules.Volunteers);
         return services;
     }
 
@@ -54,11 +53,11 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddScoped<WriteDbContext>(_ =>
-            new WriteDbContext(configuration.GetConnectionString(Constants.DATABASE)!));
+        services.AddScoped<VolunteersWriteDbContext>(_ =>
+            new VolunteersWriteDbContext(configuration.GetConnectionString(Constants.DATABASE)!));
 
-        services.AddScoped<IReadDbContext, ReadDbContext>(_ =>
-            new ReadDbContext(configuration.GetConnectionString(Constants.DATABASE)!));
+        services.AddScoped<IVolunteersReadDbContext, VolunteersReadDbContext>(_ =>
+            new VolunteersReadDbContext(configuration.GetConnectionString(Constants.DATABASE)!));
 
         services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
         
@@ -71,7 +70,6 @@ public static class DependencyInjection
         this IServiceCollection services)
     {
         services.AddScoped<IVolunteersRepository, VolunteersRepository>();
-        
         return services;
     }
 

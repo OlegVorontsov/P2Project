@@ -15,12 +15,12 @@ public class GetAllBreedsPaginatedBySpeciesIdHandler :
     IQueryValidationHandler<PagedList<BreedReadDto>, GetAllBreedsPaginatedBySpeciesIdQuery>
 {
     private readonly IValidator<GetAllBreedsPaginatedBySpeciesIdQuery> _validator;
-    private readonly IReadDbContext _readDbContext;
+    private readonly ISpeciesReadDbContext _readDbContext;
     private readonly ILogger<GetAllBreedsPaginatedBySpeciesIdHandler> _logger;
 
     public GetAllBreedsPaginatedBySpeciesIdHandler(
         IValidator<GetAllBreedsPaginatedBySpeciesIdQuery> validator,
-        IReadDbContext readDbContext,
+        ISpeciesReadDbContext readDbContext,
         ILogger<GetAllBreedsPaginatedBySpeciesIdHandler> logger)
     {
         _validator = validator;

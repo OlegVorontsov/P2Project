@@ -4,11 +4,11 @@ using P2Project.Volunteers.Domain;
 
 namespace P2Project.Volunteers.Infrastructure.DbContexts
 {
-    public class WriteDbContext : DbContext
+    public class VolunteersWriteDbContext : DbContext
     {
         private readonly string _connectionString;
 
-        public WriteDbContext(string connectionString)
+        public VolunteersWriteDbContext(string connectionString)
         {
             _connectionString = connectionString;
         }
@@ -25,7 +25,7 @@ namespace P2Project.Volunteers.Infrastructure.DbContexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(
-                typeof(WriteDbContext).Assembly,
+                typeof(VolunteersWriteDbContext).Assembly,
                 type => type.FullName?.Contains("Configurations.Write") ?? false);
         }
         public DbSet<Volunteer> Volunteers => Set<Volunteer>();

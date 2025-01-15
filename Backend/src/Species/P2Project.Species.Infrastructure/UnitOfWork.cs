@@ -7,9 +7,9 @@ namespace P2Project.Species.Infrastructure;
 
 public class UnitOfWork : IUnitOfWork
 {
-    private readonly WriteDbContext _context;
+    private readonly SpeciesWriteDbContext _context;
 
-    public UnitOfWork(WriteDbContext context)
+    public UnitOfWork(SpeciesWriteDbContext context)
     {
         _context = context;
     }

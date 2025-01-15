@@ -13,11 +13,11 @@ public class GetAllSpeciesFilteredPaginatedQueryHandler :
     IQueryValidationHandler<PagedList<SpeciesDto>, GetAllSpeciesFilteredPaginatedQuery>
 {
     private readonly IValidator<GetAllSpeciesFilteredPaginatedQuery> _validator;
-    private readonly IReadDbContext _readDbContext;
+    private readonly ISpeciesReadDbContext _readDbContext;
     
     public GetAllSpeciesFilteredPaginatedQueryHandler(
         IValidator<GetAllSpeciesFilteredPaginatedQuery> validator,
-        IReadDbContext readDbContext)
+        ISpeciesReadDbContext readDbContext)
     {
         _validator = validator;
         _readDbContext = readDbContext;

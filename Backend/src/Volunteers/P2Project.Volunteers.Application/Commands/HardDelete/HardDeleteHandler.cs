@@ -1,8 +1,9 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using P2Project.Core;
 using P2Project.Core.Extensions;
-using P2Project.Core.Files;
 using P2Project.Core.Interfaces;
 using P2Project.Core.Interfaces.Commands;
 using P2Project.SharedKernel.Errors;
@@ -15,20 +16,17 @@ public class HardDeleteHandler :
 {
     private readonly IValidator<HardDeleteCommand> _validator;
     private readonly IVolunteersRepository _volunteersRepository;
-    private readonly IFileProvider _fileProvider;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<HardDeleteHandler> _logger;
 
     public HardDeleteHandler(
         IValidator<HardDeleteCommand> validator,
         IVolunteersRepository volunteersRepository,
-        IFileProvider fileProvider,
-        IUnitOfWork unitOfWork,
+        [FromKeyedServices(Modules.Volunteers)] IUnitOfWork unitOfWork,
         ILogger<HardDeleteHandler> logger)
     {
         _validator = validator;
         _volunteersRepository = volunteersRepository;
-        _fileProvider = fileProvider;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }

@@ -1,6 +1,8 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using P2Project.Core;
 using P2Project.Core.Extensions;
 using P2Project.Core.Interfaces;
 using P2Project.Core.Interfaces.Commands;
@@ -23,7 +25,7 @@ public class DeleteSpeciesByIdHandler :
         IValidator<DeleteSpeciesByIdCommand> validator,
         ISpeciesRepository speciesRepository,
         IPetsAgreement petsAgreement,
-        IUnitOfWork unitOfWork,
+        [FromKeyedServices(Modules.Species)] IUnitOfWork unitOfWork,
         ILogger<DeleteSpeciesByIdHandler> logger)
     {
         _validator = validator;

@@ -1,5 +1,4 @@
 ﻿using CSharpFunctionalExtensions;
-using P2Project.Core;
 using P2Project.Core.Files;
 using P2Project.Core.Files.Models;
 using P2Project.SharedKernel;

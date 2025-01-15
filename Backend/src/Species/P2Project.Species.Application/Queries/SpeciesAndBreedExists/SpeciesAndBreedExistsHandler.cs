@@ -8,10 +8,10 @@ namespace P2Project.Species.Application.Queries.SpeciesAndBreedExists;
 public class SpeciesAndBreedExistsHandler :
     IQueryHandler<UnitResult<Error>, SpeciesAndBreedExistsQuery>
 {
-    private readonly IReadDbContext _readDbContext;
+    private readonly ISpeciesReadDbContext _readDbContext;
 
     public SpeciesAndBreedExistsHandler(
-        IReadDbContext readDbContext)
+        ISpeciesReadDbContext readDbContext)
     {
         _readDbContext = readDbContext;
     }

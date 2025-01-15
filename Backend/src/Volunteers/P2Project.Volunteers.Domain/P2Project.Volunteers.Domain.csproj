@@ -10,8 +10,4 @@
       <ProjectReference Include="..\..\Shared\P2Project.Core\P2Project.Core.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="ValueObjects\Files\" />
-    </ItemGroup>
-
 </Project>

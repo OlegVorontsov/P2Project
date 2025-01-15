@@ -10,11 +10,11 @@ namespace P2Project.Volunteers.Application.Queries.Volunteers.GetVolunteerById;
 public class GetVolunteerByIdHandler :
     IQueryValidationHandler<VolunteerDto, GetVolunteerByIdQuery>
 {
-    private readonly IReadDbContext _readDbContext;
+    private readonly IVolunteersReadDbContext _readDbContext;
     private readonly ILogger<GetVolunteerByIdHandler> _logger;
 
     public GetVolunteerByIdHandler(
-        IReadDbContext readDbContext,
+        IVolunteersReadDbContext readDbContext,
         ILogger<GetVolunteerByIdHandler> logger)
     {
         _readDbContext = readDbContext;

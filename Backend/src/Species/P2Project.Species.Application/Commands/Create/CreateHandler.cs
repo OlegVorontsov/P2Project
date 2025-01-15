@@ -1,6 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
 using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using P2Project.Core;
 using P2Project.Core.Extensions;
 using P2Project.Core.Interfaces;
 using P2Project.Core.Interfaces.Commands;
@@ -21,7 +23,8 @@ namespace P2Project.Species.Application.Commands.Create
         public CreateHandler(
             IValidator<CreateCommand> validator,
             ISpeciesRepository speciesRepository,
-            ILogger<CreateHandler> logger, IUnitOfWork unitOfWork)
+            ILogger<CreateHandler> logger,
+            [FromKeyedServices(Modules.Species)] IUnitOfWork unitOfWork)
         {
             _validator = validator;
             _speciesRepository = speciesRepository;

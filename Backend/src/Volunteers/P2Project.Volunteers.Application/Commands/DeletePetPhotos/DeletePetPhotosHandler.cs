@@ -1,6 +1,7 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using P2Project.Core;
 using P2Project.Core.Extensions;
@@ -19,7 +20,7 @@ public class DeletePetPhotosHandler :
 {
     private readonly IValidator<DeletePetPhotosCommand> _validator;
     private readonly IVolunteersRepository _volunteersRepository;
-    private readonly IReadDbContext _readDbContext;
+    private readonly IVolunteersReadDbContext _readDbContext;
     private readonly IFileProvider _fileProvider;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<DeletePetPhotosHandler> _logger;
@@ -27,9 +28,9 @@ public class DeletePetPhotosHandler :
     public DeletePetPhotosHandler(
         IValidator<DeletePetPhotosCommand> validator,
         IVolunteersRepository volunteersRepository,
-        IReadDbContext readDbContext,
+        IVolunteersReadDbContext readDbContext,
         IFileProvider fileProvider,
-        IUnitOfWork unitOfWork,
+        [FromKeyedServices(Modules.Volunteers)] IUnitOfWork unitOfWork,
         ILogger<DeletePetPhotosHandler> logger)
     {
         _validator = validator;

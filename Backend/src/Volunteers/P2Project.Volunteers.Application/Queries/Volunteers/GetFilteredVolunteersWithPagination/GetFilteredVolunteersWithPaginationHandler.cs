@@ -14,10 +14,10 @@ public class GetFilteredVolunteersWithPaginationHandler :
         GetFilteredVolunteersWithPaginationQuery>
 {
     private readonly IValidator<GetFilteredVolunteersWithPaginationQuery> _validator;
-    private readonly IReadDbContext _readDbContext;
+    private readonly IVolunteersReadDbContext _readDbContext;
     
     public GetFilteredVolunteersWithPaginationHandler(
-        IReadDbContext readDbContext,
+        IVolunteersReadDbContext readDbContext,
         IValidator<GetFilteredVolunteersWithPaginationQuery> validator)
     {
         _readDbContext = readDbContext;

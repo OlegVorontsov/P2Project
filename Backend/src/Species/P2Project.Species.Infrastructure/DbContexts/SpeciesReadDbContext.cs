@@ -1,16 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using P2Project.Core.Dtos.Pets;
-using P2Project.Core.Dtos.Volunteers;
-using P2Project.Volunteers.Application;
+using P2Project.Species.Application;
 
-namespace P2Project.Volunteers.Infrastructure.DbContexts
+namespace P2Project.Species.Infrastructure.DbContexts
 {
-    public class ReadDbContext : DbContext, IReadDbContext
+    public class SpeciesReadDbContext :
+        DbContext, ISpeciesReadDbContext
     {
         private readonly string _connectionString;
 
-        public ReadDbContext(string connectionString)
+        public SpeciesReadDbContext(string connectionString)
         {
             _connectionString = connectionString;
         }
@@ -26,13 +26,15 @@ namespace P2Project.Volunteers.Infrastructure.DbContexts
 
             optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         }
+    
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(
-                typeof(ReadDbContext).Assembly,
+                typeof(SpeciesReadDbContext).Assembly,
                 type => type.FullName?.Contains("Configurations.Read") ?? false);
         }
-        public IQueryable<VolunteerDto> Volunteers => Set<VolunteerDto>();
-        public IQueryable<PetDto> Pets => Set<PetDto>();
+
+        public IQueryable<SpeciesDto> Species => Set<SpeciesDto>();
+        public IQueryable<BreedReadDto> Breeds => Set<BreedReadDto>();
     }
 }

@@ -13,6 +13,8 @@ using P2Project.API;
 using P2Project.Core.Files;
 using P2Project.Core.Files.Models;
 using P2Project.SharedKernel.Errors;
+using P2Project.Species.Application;
+using P2Project.Species.Infrastructure.DbContexts;
 using P2Project.Volunteers.Application;
 using P2Project.Volunteers.Infrastructure.DbContexts;
 using Respawn;
@@ -32,8 +34,7 @@ public class IntegrationTestsFactory :
     
     private Respawner _respawner;
     private DbConnection _dbConnection;
-    private WriteDbContext _volunteersWriteDbContext;
-    private Species.Infrastructure.DbContexts.WriteDbContext _speciesWriteDbContext;
+    private VolunteersWriteDbContext _volunteersWriteDbContext;
     private IFileProvider _fileProvider = Substitute.For<IFileProvider>();
     private IMinioClient _minioClient = Substitute.For<IMinioClient>();
     private ILogger<MinioProvider> _logger = Substitute.For<ILogger<MinioProvider>>();
@@ -45,20 +46,20 @@ public class IntegrationTestsFactory :
     
     private void ConfigureDefault(IServiceCollection services)
     {
-        services.RemoveAll(typeof(IReadDbContext));
-        services.RemoveAll(typeof(Species.Application.IReadDbContext));
-        services.RemoveAll(typeof(WriteDbContext));
-        services.RemoveAll(typeof(Species.Infrastructure.DbContexts.WriteDbContext));
+        services.RemoveAll(typeof(IVolunteersReadDbContext));
+        services.RemoveAll(typeof(ISpeciesReadDbContext));
+        services.RemoveAll(typeof(VolunteersWriteDbContext));
+        services.RemoveAll(typeof(SpeciesWriteDbContext));
         services.RemoveAll(typeof(IFileProvider));
 
         services.AddScoped(_ =>
-            new WriteDbContext(_dbContainer.GetConnectionString()));
+            new VolunteersWriteDbContext(_dbContainer.GetConnectionString()));
         services.AddScoped(_ =>
-            new Species.Infrastructure.DbContexts.WriteDbContext(_dbContainer.GetConnectionString()));
-        services.AddScoped<IReadDbContext, ReadDbContext>(_ =>
-            new ReadDbContext(_dbContainer.GetConnectionString()));
-        services.AddScoped<Species.Application.IReadDbContext, Species.Infrastructure.DbContexts.ReadDbContext>(_ =>
-            new Species.Infrastructure.DbContexts.ReadDbContext(_dbContainer.GetConnectionString()));
+            new SpeciesWriteDbContext(_dbContainer.GetConnectionString()));
+        services.AddScoped<IVolunteersReadDbContext, VolunteersReadDbContext>(_ =>
+            new VolunteersReadDbContext(_dbContainer.GetConnectionString()));
+        services.AddScoped<ISpeciesReadDbContext, SpeciesReadDbContext>(_ =>
+            new SpeciesReadDbContext(_dbContainer.GetConnectionString()));
         services.AddScoped<IFileProvider, MinioProvider>(_ =>
             new MinioProvider(_minioClient, _logger));
     }
@@ -68,8 +69,11 @@ public class IntegrationTestsFactory :
         await _dbContainer.StartAsync();
 
         using var scope = Services.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<WriteDbContext>();
-        await dbContext.Database.EnsureCreatedAsync();
+        
+        await _volunteersWriteDbContext.Database.EnsureCreatedAsync();
+        
+        var speciesDbContext = scope.ServiceProvider.GetRequiredService<VolunteersWriteDbContext>();
+        await speciesDbContext.Database.EnsureCreatedAsync();
 
         _dbConnection = new NpgsqlConnection(_dbContainer.GetConnectionString());
         await InitializeRespawner();
