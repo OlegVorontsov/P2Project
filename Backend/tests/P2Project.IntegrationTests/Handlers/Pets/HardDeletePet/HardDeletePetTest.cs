@@ -7,7 +7,7 @@ using P2Project.Volunteers.Application.Commands.HardDeletePet;
 
 namespace P2Project.IntegrationTests.Handlers.Pets.HardDeletePet;
 
-public class HardDeletePetTest : IntegrationTestBase
+public class HardDeletePetTest : VolunteerFactory
 {
     private readonly ICommandHandler<Guid, HardDeletePetCommand> _sut;
 
@@ -22,8 +22,7 @@ public class HardDeletePetTest : IntegrationTestBase
     public async Task HardDeletePet()
     {
         // Arrange
-        var volunteerId = await SeedVolunteer();
-        var species = await SeedSpecies();
+        var (volunteerId, species) = await SeedVolunteerAndSpecies();
         var petId = await SeedPet(volunteerId);
         
         var command = _fixture.FakeHardDeletePetCommand(volunteerId, petId);

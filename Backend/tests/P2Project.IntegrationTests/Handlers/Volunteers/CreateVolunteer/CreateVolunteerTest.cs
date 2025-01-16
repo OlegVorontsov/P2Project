@@ -7,7 +7,7 @@ using P2Project.Volunteers.Application.Commands.Create;
 
 namespace P2Project.IntegrationTests.Handlers.Volunteers.CreateVolunteer;
 
-public class CreateVolunteerTest : IntegrationTestBase
+public class CreateVolunteerTest : VolunteerFactory
 {
     private readonly ICommandHandler<Guid, CreateCommand> _sut;
     
@@ -32,7 +32,7 @@ public class CreateVolunteerTest : IntegrationTestBase
         result.IsSuccess.Should().Be(true);
         result.Value.Should().NotBeEmpty();
 
-        var volunteers = _volunteersWriteDbContext.Volunteers.ToList();
+        var volunteers = _volunteersReadDbContext.Volunteers.ToList();
         volunteers.Should().NotBeEmpty();
         volunteers.Should().HaveCount(1);
     }

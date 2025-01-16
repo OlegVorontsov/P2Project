@@ -5,7 +5,7 @@ using P2Project.IntegrationTests.Handlers;
 
 namespace P2Project.IntegrationTests.Factories;
 
-public class FileProviderFactory : IntegrationTestBase
+public class FileProviderFactory : VolunteerFactory
 {    
     protected readonly IFileProvider _fileProvider = Substitute.For<IFileProvider>();
     private static IntegrationTestsFactory _factory;

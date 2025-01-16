@@ -34,7 +34,9 @@ public class IntegrationTestsFactory :
     
     private Respawner _respawner;
     private DbConnection _dbConnection;
+    
     private VolunteersWriteDbContext _volunteersWriteDbContext;
+    
     private IFileProvider _fileProvider = Substitute.For<IFileProvider>();
     private IMinioClient _minioClient = Substitute.For<IMinioClient>();
     private ILogger<MinioProvider> _logger = Substitute.For<ILogger<MinioProvider>>();
@@ -46,10 +48,10 @@ public class IntegrationTestsFactory :
     
     private void ConfigureDefault(IServiceCollection services)
     {
-        services.RemoveAll(typeof(IVolunteersReadDbContext));
-        services.RemoveAll(typeof(ISpeciesReadDbContext));
         services.RemoveAll(typeof(VolunteersWriteDbContext));
         services.RemoveAll(typeof(SpeciesWriteDbContext));
+        services.RemoveAll(typeof(IVolunteersReadDbContext));
+        services.RemoveAll(typeof(ISpeciesReadDbContext));
         services.RemoveAll(typeof(IFileProvider));
 
         services.AddScoped(_ =>
@@ -60,6 +62,7 @@ public class IntegrationTestsFactory :
             new VolunteersReadDbContext(_dbContainer.GetConnectionString()));
         services.AddScoped<ISpeciesReadDbContext, SpeciesReadDbContext>(_ =>
             new SpeciesReadDbContext(_dbContainer.GetConnectionString()));
+        
         services.AddScoped<IFileProvider, MinioProvider>(_ =>
             new MinioProvider(_minioClient, _logger));
     }
@@ -67,35 +70,31 @@ public class IntegrationTestsFactory :
     public async Task InitializeAsync()
     {
         await _dbContainer.StartAsync();
-
-        using var scope = Services.CreateScope();
         
+        _dbConnection = new NpgsqlConnection(_dbContainer.GetConnectionString());
+        _volunteersWriteDbContext = Services
+            .CreateScope().ServiceProvider.GetRequiredService<VolunteersWriteDbContext>();
         await _volunteersWriteDbContext.Database.EnsureCreatedAsync();
         
-        var speciesDbContext = scope.ServiceProvider.GetRequiredService<VolunteersWriteDbContext>();
-        await speciesDbContext.Database.EnsureCreatedAsync();
-
-        _dbConnection = new NpgsqlConnection(_dbContainer.GetConnectionString());
         await InitializeRespawner();
-        await Task.CompletedTask;
-    }   
+    }
     
-    public new async Task DisposeAsync()
+    async Task IAsyncLifetime.DisposeAsync()
     {
         await _dbContainer.StopAsync();
         await _dbContainer.DisposeAsync();
-
-        await Task.CompletedTask;
     }
     
     public async Task ResetDatabaseAsync()
     {
-        await _respawner.ResetAsync(_dbConnection);
+        if (_respawner is not null)
+            await _respawner.ResetAsync(_dbConnection);
     }
     
     private async Task InitializeRespawner()
     {
         await _dbConnection.OpenAsync();
+        
         _respawner = await Respawner.CreateAsync(
             _dbConnection,
             new RespawnerOptions

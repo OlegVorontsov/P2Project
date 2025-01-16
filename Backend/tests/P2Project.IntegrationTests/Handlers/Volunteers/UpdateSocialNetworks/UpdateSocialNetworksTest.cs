@@ -7,7 +7,7 @@ using P2Project.Volunteers.Application.Commands.UpdateSocialNetworks;
 
 namespace P2Project.IntegrationTests.Handlers.Volunteers.UpdateSocialNetworks;
 
-public class UpdateSocialNetworksTest : IntegrationTestBase
+public class UpdateSocialNetworksTest : VolunteerFactory
 {
     private readonly ICommandHandler<Guid, UpdateSocialNetworksCommand> _sut;
     public UpdateSocialNetworksTest(IntegrationTestsFactory factory) : base(factory)
@@ -32,7 +32,7 @@ public class UpdateSocialNetworksTest : IntegrationTestBase
         result.IsSuccess.Should().Be(true);
         result.Value.Should().NotBeEmpty();
 
-        var volunteers = _volunteersWriteDbContext.Volunteers.ToList();
+        var volunteers = _volunteersReadDbContext.Volunteers.ToList();
         volunteers.Should().NotBeEmpty();
         volunteers.Should().HaveCount(1);
     }

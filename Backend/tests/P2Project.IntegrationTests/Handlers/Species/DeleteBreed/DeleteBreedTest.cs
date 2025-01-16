@@ -7,7 +7,7 @@ using P2Project.Species.Application.Commands.DeleteBreedById;
 
 namespace P2Project.IntegrationTests.Handlers.Species.DeleteBreed;
 
-public class DeleteBreedTest : IntegrationTestBase
+public class DeleteBreedTest : SpeciesFactory
 {
     private readonly ICommandHandler<Guid, DeleteBreedByIdCommand> _sut;
 
@@ -34,7 +34,7 @@ public class DeleteBreedTest : IntegrationTestBase
         result.IsSuccess.Should().Be(true);
         result.Value.Should().NotBeEmpty();
 
-        var speciesExist = _speciesWriteDbContext.Species.ToList();
+        var speciesExist = _speciesReadDbContext.Species.ToList();
         speciesExist.Should().NotBeEmpty();
         speciesExist.Should().HaveCount(1);
     }

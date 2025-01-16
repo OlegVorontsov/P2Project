@@ -7,7 +7,7 @@ using P2Project.Volunteers.Application.Commands.UpdatePhoneNumbers;
 
 namespace P2Project.IntegrationTests.Handlers.Volunteers.UpdatePhoneNumbers;
 
-public class UpdatePhoneNumbersTest : IntegrationTestBase
+public class UpdatePhoneNumbersTest : VolunteerFactory
 {
     private readonly ICommandHandler<Guid, UpdatePhoneNumbersCommand> _sut;
 
@@ -33,7 +33,7 @@ public class UpdatePhoneNumbersTest : IntegrationTestBase
         result.IsSuccess.Should().Be(true);
         result.Value.Should().NotBeEmpty();
 
-        var volunteers = _volunteersWriteDbContext.Volunteers.ToList();
+        var volunteers = _volunteersReadDbContext.Volunteers.ToList();
         volunteers.Should().NotBeEmpty();
         volunteers.Should().HaveCount(1);
     }

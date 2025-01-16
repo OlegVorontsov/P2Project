@@ -21,7 +21,7 @@ using P2Project.Volunteers.Domain;
 
 namespace P2Project.IntegrationTests.Extensions;
 
-public static class FixtureExtensions
+public static class FixtureExtension
 {
     public static CreateCommand FakeCreateVolunteerCommand(this IFixture fixture)
     {

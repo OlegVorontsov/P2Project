@@ -7,7 +7,7 @@ using P2Project.Volunteers.Application.Commands.UpdatePet;
 
 namespace P2Project.IntegrationTests.Handlers.Pets.UpdatePet;
 
-public class UpdatePetTest : IntegrationTestBase
+public class UpdatePetTest : VolunteerFactory
 {
     private readonly ICommandHandler<Guid, UpdatePetCommand> _sut;
 
@@ -22,8 +22,7 @@ public class UpdatePetTest : IntegrationTestBase
     public async Task UpdatePet()
     {
         // Arrange
-        var volunteerId = await SeedVolunteer();
-        var species = await SeedSpecies();
+        var (volunteerId, species) = await SeedVolunteerAndSpecies();
         var petId = await SeedPet(volunteerId);
         
         var command = _fixture.FakeUpdatePetCommand(

@@ -22,8 +22,7 @@ public class DeletePetPhotosTest : FileProviderFactory
     public async Task DeletePetPhotos()
     {
         // Arrange
-        var volunteerId = await SeedVolunteer();
-        var species = await SeedSpecies();
+        var (volunteerId, species) = await SeedVolunteerAndSpecies();
         var petId = await SeedPet(volunteerId);
         
         var command = _fixture.FakeDeletePetPhotosCommand(

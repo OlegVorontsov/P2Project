@@ -7,7 +7,7 @@ using P2Project.Volunteers.Application.Commands.UpdateAssistanceDetails;
 
 namespace P2Project.IntegrationTests.Handlers.Volunteers.UpdateAssistanceDetails;
 
-public class UpdateAssistanceDetailsTest : IntegrationTestBase
+public class UpdateAssistanceDetailsTest : VolunteerFactory
 {
     private readonly ICommandHandler<Guid, UpdateAssistanceDetailsCommand> _sut;
     public UpdateAssistanceDetailsTest(IntegrationTestsFactory factory) : base(factory)
@@ -32,7 +32,7 @@ public class UpdateAssistanceDetailsTest : IntegrationTestBase
         result.IsSuccess.Should().Be(true);
         result.Value.Should().NotBeEmpty();
 
-        var volunteers = _volunteersWriteDbContext.Volunteers.ToList();
+        var volunteers = _volunteersReadDbContext.Volunteers.ToList();
         volunteers.Should().NotBeEmpty();
         volunteers.Should().HaveCount(1);
     }

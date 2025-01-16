@@ -7,7 +7,7 @@ using P2Project.Volunteers.Application.Commands.AddPet;
 
 namespace P2Project.IntegrationTests.Handlers.Pets.AddPet;
 
-public class AddPetTest : IntegrationTestBase
+public class AddPetTest : VolunteerFactory
 {
     private readonly ICommandHandler<Guid, AddPetCommand> _sut;
 
@@ -22,12 +22,10 @@ public class AddPetTest : IntegrationTestBase
     public async Task AddPet()
     {
         // Arrange
-        var volunteerId = await SeedVolunteer();
-        var species = await SeedSpecies();
+        var (volunteerId, species) = await SeedVolunteerAndSpecies();
         
         var command = _fixture.FakeAddPetCommand(
-            volunteerId,
-            species.Id,
+            volunteerId, species.Id,
             species.Breeds.First().Id);
 
         // Act

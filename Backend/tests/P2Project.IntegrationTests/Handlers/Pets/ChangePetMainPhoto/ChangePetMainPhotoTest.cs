@@ -22,8 +22,7 @@ public class ChangePetMainPhotoTest : FileProviderFactory
     public async Task ChangePetMainPhoto()
     {
         // Arrange
-        var volunteerId = await SeedVolunteer();
-        var species = await SeedSpecies();
+        var (volunteerId, species) = await SeedVolunteerAndSpecies();
         var petId = await SeedPetWithPhoto(volunteerId);
         
         var command = _fixture.FakeChangePetMainPhotoCommand(

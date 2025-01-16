@@ -8,7 +8,7 @@ using P2Project.Species.Application.Commands.Create;
 
 namespace P2Project.IntegrationTests.Handlers.Species.Create;
 
-public class CreateTest : IntegrationTestBase
+public class CreateTest : SpeciesFactory
 {
     private readonly ICommandHandler<Guid, CreateCommand> _sut;
 
@@ -37,7 +37,8 @@ public class CreateTest : IntegrationTestBase
         species.Should().NotBeEmpty();
         species.Should().HaveCount(1);
 
-        var breeds = _speciesWriteDbContext.Species.Include(s => s.Breeds).ToList().First().Breeds.ToList();
+        var breeds = _speciesReadDbContext.Species
+            .Include(s => s.Breeds).ToList().First().Breeds.ToList();
         breeds.Should().NotBeEmpty();
     }
 }

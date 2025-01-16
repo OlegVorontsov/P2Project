@@ -7,7 +7,7 @@ using P2Project.Species.Application.Commands.DeleteSpeciesById;
 
 namespace P2Project.IntegrationTests.Handlers.Species.DeleteSpecies;
 
-public class DeleteSpeciesTest : IntegrationTestBase
+public class DeleteSpeciesTest : SpeciesFactory
 {
     private readonly ICommandHandler<Guid, DeleteSpeciesByIdCommand> _sut;
 
@@ -33,7 +33,7 @@ public class DeleteSpeciesTest : IntegrationTestBase
         result.IsSuccess.Should().Be(true);
         result.Value.Should().NotBeEmpty();
 
-        var speciesExist = _speciesWriteDbContext.Species.ToList();
+        var speciesExist = _speciesReadDbContext.Species.ToList();
         speciesExist.Should().BeEmpty();
         speciesExist.Should().HaveCount(0);
     }
