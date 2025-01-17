@@ -2,7 +2,7 @@ using FluentValidation;
 using P2Project.Core.Validation;
 using P2Project.SharedKernel.Errors;
 
-namespace P2Project.Volunteers.Application.Queries.Volunteers.GetPets;
+namespace P2Project.Volunteers.Application.Queries.Pets.GetAllPets;
 
 public class GetPetsValidator :
     AbstractValidator<GetPetsQuery>
