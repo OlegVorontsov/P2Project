@@ -18,7 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\P2Project.Domain\P2Project.Domain.csproj" />
     <ProjectReference Include="..\P2Project.UnitTestsFabric\P2Project.UnitTestsFabrics.csproj" />
   </ItemGroup>
 

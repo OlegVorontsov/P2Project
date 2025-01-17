@@ -3,18 +3,16 @@ using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
-using P2Project.Application.FileProvider;
-using P2Project.Application.FileProvider.Models;
-using P2Project.Application.Interfaces;
-using P2Project.Application.Interfaces.DataBase;
-using P2Project.Application.Messaging;
-using P2Project.Application.Shared.Dtos.Files;
-using P2Project.Application.Volunteers.Commands.AddPetPhotos;
-using P2Project.Domain.PetManagment;
-using P2Project.Domain.PetManagment.ValueObjects.Files;
-using P2Project.Domain.Shared.Errors;
+using P2Project.Core.Dtos.Files;
+using P2Project.Core.Files;
+using P2Project.Core.Files.Models;
+using P2Project.Core.Interfaces;
+using P2Project.SharedKernel.Errors;
+using P2Project.SharedKernel.ValueObjects;
 using P2Project.UnitTestsFabrics;
-using FileInfo = P2Project.Application.FileProvider.Models.FileInfo;
+using P2Project.Volunteers.Application;
+using P2Project.Volunteers.Application.Commands.AddPetPhotos;
+using P2Project.Volunteers.Domain;
 using Result = CSharpFunctionalExtensions.Result;
 
 namespace P2Project.Application.UnitTests
@@ -30,8 +28,8 @@ namespace P2Project.Application.UnitTests
         private readonly IUnitOfWork _unitOfWork = Substitute.For<IUnitOfWork>();
         private readonly ILogger<AddPetPhotosHandler> _logger =
             Substitute.For<ILogger<AddPetPhotosHandler>>();
-        private readonly IMessageQueue<IEnumerable<FileInfo>> _messageQueue =
-            Substitute.For<IMessageQueue<IEnumerable<FileInfo>>>();
+        private readonly IMessageQueue<IEnumerable<FileInfoDto>> _messageQueue =
+            Substitute.For<IMessageQueue<IEnumerable<FileInfoDto>>>();
         private readonly CancellationToken _cancellationToken = 
             new CancellationTokenSource().Token;
 

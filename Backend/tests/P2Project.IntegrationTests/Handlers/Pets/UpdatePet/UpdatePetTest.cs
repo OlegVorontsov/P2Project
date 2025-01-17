@@ -1,13 +1,13 @@
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using P2Project.Application.Interfaces.Commands;
-using P2Project.Application.Volunteers.Commands.UpdatePet;
+using P2Project.Core.Interfaces.Commands;
 using P2Project.IntegrationTests.Extensions;
 using P2Project.IntegrationTests.Factories;
+using P2Project.Volunteers.Application.Commands.UpdatePet;
 
 namespace P2Project.IntegrationTests.Handlers.Pets.UpdatePet;
 
-public class UpdatePetTest : IntegrationTestBase
+public class UpdatePetTest : VolunteerFactory
 {
     private readonly ICommandHandler<Guid, UpdatePetCommand> _sut;
 
@@ -22,8 +22,7 @@ public class UpdatePetTest : IntegrationTestBase
     public async Task UpdatePet()
     {
         // Arrange
-        var volunteerId = await SeedVolunteer();
-        var species = await SeedSpecies();
+        var (volunteerId, species) = await SeedVolunteerAndSpecies();
         var petId = await SeedPet(volunteerId);
         
         var command = _fixture.FakeUpdatePetCommand(
@@ -40,7 +39,7 @@ public class UpdatePetTest : IntegrationTestBase
         result.IsSuccess.Should().Be(true);
         result.Value.Should().NotBeEmpty();
 
-        var volunteers = _writeDbContext.Volunteers.ToList();
+        var volunteers = _volunteersWriteDbContext.Volunteers.ToList();
         volunteers.Should().NotBeEmpty();
         volunteers.Should().HaveCount(1);
         

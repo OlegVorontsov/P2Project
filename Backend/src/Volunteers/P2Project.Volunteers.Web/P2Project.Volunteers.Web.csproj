@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Shared\P2Project.Framework\P2Project.Framework.csproj" />
+      <ProjectReference Include="..\..\Species\P2Project.Species.Application\P2Project.Species.Application.csproj" />
+      <ProjectReference Include="..\P2Project.Volunteers.Application\P2Project.Volunteers.Application.csproj" />
+      <ProjectReference Include="..\P2Project.Volunteers.Infrastructure\P2Project.Volunteers.Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Scrutor" Version="5.0.2" />
+    </ItemGroup>
+
+</Project>

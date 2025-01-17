@@ -1,15 +1,13 @@
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using P2Project.Application.Interfaces.Commands;
-using P2Project.Application.Species.Commands.AddBreeds;
-using P2Project.Application.Species.Commands.DeleteBreedById;
+using P2Project.Core.Interfaces.Commands;
 using P2Project.IntegrationTests.Extensions;
 using P2Project.IntegrationTests.Factories;
+using P2Project.Species.Application.Commands.DeleteBreedById;
 
 namespace P2Project.IntegrationTests.Handlers.Species.DeleteBreed;
 
-public class DeleteBreedTest : IntegrationTestBase
+public class DeleteBreedTest : SpeciesFactory
 {
     private readonly ICommandHandler<Guid, DeleteBreedByIdCommand> _sut;
 
@@ -36,7 +34,7 @@ public class DeleteBreedTest : IntegrationTestBase
         result.IsSuccess.Should().Be(true);
         result.Value.Should().NotBeEmpty();
 
-        var speciesExist = _writeDbContext.Species.ToList();
+        var speciesExist = _speciesReadDbContext.Species.ToList();
         speciesExist.Should().NotBeEmpty();
         speciesExist.Should().HaveCount(1);
     }

@@ -1,9 +1,9 @@
-﻿using P2Project.Domain.PetManagment.Entities;
-using P2Project.Domain.PetManagment.ValueObjects;
-using P2Project.Domain.PetManagment.ValueObjects.Common;
-using P2Project.Domain.PetManagment.ValueObjects.Pets;
-using P2Project.Domain.Shared;
-using P2Project.Domain.Shared.IDs;
+﻿using P2Project.Core;
+using P2Project.SharedKernel;
+using P2Project.SharedKernel.IDs;
+using P2Project.SharedKernel.ValueObjects;
+using P2Project.Volunteers.Domain.Entities;
+using P2Project.Volunteers.Domain.ValueObjects.Pets;
 
 namespace P2Project.UnitTestsFabrics
 {

@@ -1,12 +1,12 @@
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using P2Project.Application.Interfaces.Commands;
-using P2Project.Application.Volunteers.Commands.SoftDelete;
+using P2Project.Core.Interfaces.Commands;
 using P2Project.IntegrationTests.Factories;
+using P2Project.Volunteers.Application.Commands.SoftDelete;
 
 namespace P2Project.IntegrationTests.Handlers.Volunteers.SoftDelete;
 
-public class SoftDeleteTest : IntegrationTestBase
+public class SoftDeleteTest : VolunteerFactory
 {
     private readonly ICommandHandler<Guid, SoftDeleteCommand> _sut;
     public SoftDeleteTest(IntegrationTestsFactory factory) : base(factory)
@@ -31,7 +31,7 @@ public class SoftDeleteTest : IntegrationTestBase
         result.IsSuccess.Should().Be(true);
         result.Value.Should().NotBeEmpty();
 
-        var volunteers = _writeDbContext.Volunteers.ToList();
+        var volunteers = _volunteersReadDbContext.Volunteers.ToList();
         volunteers.Should().NotBeEmpty();
         volunteers.Should().HaveCount(1);
     }

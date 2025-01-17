@@ -18,6 +18,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.10" />
+    <PackageReference Include="Scrutor" Version="5.0.2" />
     <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
     <PackageReference Include="Serilog.Enrichers.Environment" Version="3.0.1" />
     <PackageReference Include="Serilog.Enrichers.Thread" Version="4.0.0" />
@@ -27,13 +28,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\P2Project.Application\P2Project.Application.csproj" />
-    <ProjectReference Include="..\P2Project.Domain\P2Project.Domain.csproj" />
-    <ProjectReference Include="..\P2Project.Infrastructure\P2Project.Infrastructure.csproj" />
+    <ProjectReference Include="..\Accounts\P2Project.Accounts.Agreements\P2Project.Accounts.Agreements.csproj" />
+    <ProjectReference Include="..\Accounts\P2Project.Accounts.Application\P2Project.Accounts.Application.csproj" />
+    <ProjectReference Include="..\Accounts\P2Project.Accounts.Domain\P2Project.Accounts.Domain.csproj" />
+    <ProjectReference Include="..\Accounts\P2Project.Accounts.Infrastructure\P2Project.Accounts.Infrastructure.csproj" />
+    <ProjectReference Include="..\Shared\P2Project.Framework\P2Project.Framework.csproj" />
+    <ProjectReference Include="..\Shared\P2Project.SharedKernel\P2Project.SharedKernel.csproj" />
+    <ProjectReference Include="..\Species\P2Project.Species.Web\P2Project.Species.Web.csproj" />
+    <ProjectReference Include="..\Volunteers\P2Project.Volunteers.Web\P2Project.Volunteers.Web.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Shared\" />
     <Folder Include="wwwroot\swagger-ui\" />
   </ItemGroup>
 

@@ -10,16 +10,15 @@ using Minio;
 using Npgsql;
 using NSubstitute;
 using P2Project.API;
-using P2Project.Application.FileProvider;
-using P2Project.Application.FileProvider.Models;
-using P2Project.Application.Interfaces.DbContexts.Species;
-using P2Project.Application.Interfaces.DbContexts.Volunteers;
-using P2Project.Domain.Shared.Errors;
-using P2Project.Infrastructure.DbContexts;
-using P2Project.Infrastructure.Providers;
+using P2Project.Core.Files;
+using P2Project.Core.Files.Models;
+using P2Project.SharedKernel.Errors;
+using P2Project.Species.Application;
+using P2Project.Species.Infrastructure.DbContexts;
+using P2Project.Volunteers.Application;
+using P2Project.Volunteers.Infrastructure.DbContexts;
 using Respawn;
 using Testcontainers.PostgreSql;
-using FileInfo = P2Project.Application.FileProvider.Models.FileInfo;
 
 namespace P2Project.IntegrationTests.Factories;
 
@@ -35,7 +34,9 @@ public class IntegrationTestsFactory :
     
     private Respawner _respawner;
     private DbConnection _dbConnection;
-    private WriteDbContext _writeDbContext;
+    
+    private VolunteersWriteDbContext _volunteersWriteDbContext;
+    
     private IFileProvider _fileProvider = Substitute.For<IFileProvider>();
     private IMinioClient _minioClient = Substitute.For<IMinioClient>();
     private ILogger<MinioProvider> _logger = Substitute.For<ILogger<MinioProvider>>();
@@ -47,17 +48,21 @@ public class IntegrationTestsFactory :
     
     private void ConfigureDefault(IServiceCollection services)
     {
+        services.RemoveAll(typeof(VolunteersWriteDbContext));
+        services.RemoveAll(typeof(SpeciesWriteDbContext));
         services.RemoveAll(typeof(IVolunteersReadDbContext));
         services.RemoveAll(typeof(ISpeciesReadDbContext));
-        services.RemoveAll(typeof(WriteDbContext));
         services.RemoveAll(typeof(IFileProvider));
 
         services.AddScoped(_ =>
-            new WriteDbContext(_dbContainer.GetConnectionString()));
+            new VolunteersWriteDbContext(_dbContainer.GetConnectionString()));
+        services.AddScoped(_ =>
+            new SpeciesWriteDbContext(_dbContainer.GetConnectionString()));
         services.AddScoped<IVolunteersReadDbContext, VolunteersReadDbContext>(_ =>
             new VolunteersReadDbContext(_dbContainer.GetConnectionString()));
         services.AddScoped<ISpeciesReadDbContext, SpeciesReadDbContext>(_ =>
             new SpeciesReadDbContext(_dbContainer.GetConnectionString()));
+        
         services.AddScoped<IFileProvider, MinioProvider>(_ =>
             new MinioProvider(_minioClient, _logger));
     }
@@ -65,32 +70,31 @@ public class IntegrationTestsFactory :
     public async Task InitializeAsync()
     {
         await _dbContainer.StartAsync();
-
-        using var scope = Services.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<WriteDbContext>();
-        await dbContext.Database.EnsureCreatedAsync();
-
+        
         _dbConnection = new NpgsqlConnection(_dbContainer.GetConnectionString());
+        _volunteersWriteDbContext = Services
+            .CreateScope().ServiceProvider.GetRequiredService<VolunteersWriteDbContext>();
+        await _volunteersWriteDbContext.Database.EnsureCreatedAsync();
+        
         await InitializeRespawner();
-        await Task.CompletedTask;
-    }   
+    }
     
-    public new async Task DisposeAsync()
+    async Task IAsyncLifetime.DisposeAsync()
     {
         await _dbContainer.StopAsync();
         await _dbContainer.DisposeAsync();
-
-        await Task.CompletedTask;
     }
     
     public async Task ResetDatabaseAsync()
     {
-        await _respawner.ResetAsync(_dbConnection);
+        if (_respawner is not null)
+            await _respawner.ResetAsync(_dbConnection);
     }
     
     private async Task InitializeRespawner()
     {
         await _dbConnection.OpenAsync();
+        
         _respawner = await Respawner.CreateAsync(
             _dbConnection,
             new RespawnerOptions
@@ -112,7 +116,7 @@ public class IntegrationTestsFactory :
     public void SetupFailureFileProvider()
     {
         var fileData = new FileData(
-            Arg.Any<Stream>(), Arg.Any<FileInfo>());
+            Arg.Any<Stream>(), Arg.Any<FileInfoDto>());
         
         _fileProvider.UploadFile(
                 fileData, Arg.Any<CancellationToken>())

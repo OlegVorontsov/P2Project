@@ -1,30 +1,20 @@
-using P2Project.API.Extensions;
 using P2Project.API.Middlewares;
-using P2Project.Application.Shared;
-using P2Project.Infrastructure.Shared;
+using P2Project.Species.Web;
+using P2Project.Volunteers.Web;
+using P2Project.API;
 using Serilog;
-using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
-Log.Logger = new LoggerConfiguration()
-    .WriteTo.Console()
-    .Enrich.WithThreadName()
-    .WriteTo.Seq(builder.Configuration.GetConnectionString("Seq") ??
-        throw new ArgumentNullException("Seq"))
-    .MinimumLevel.Override("Microsoft.AspNetCore.Hosting", LogEventLevel.Warning)
-    .MinimumLevel.Override("Microsoft.AspNetCore.Mvc", LogEventLevel.Warning)
-    .MinimumLevel.Override("Microsoft.AspNetCore.Routing", LogEventLevel.Warning)
-    .CreateLogger();
+var services = builder.Services;
+var config = builder.Configuration;
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+services
+    .AddApi(config)
+    .AddVolunteersModule(config)
+    .AddSpeciesModule(config);
 
-builder.Services.AddInfrastructure(builder.Configuration)
-                .AddApplication();
-
-builder.Services.AddSerilog();
+services.AddControllers();
 
 var app = builder.Build();
 
@@ -40,7 +30,6 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "P2Project.Api");
         c.InjectStylesheet("/swagger-ui/SwaggerDark.css");
     });
-    await app.ApplyMigrations();
 }
 
 app.UseHttpsRedirection();

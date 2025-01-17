@@ -1,9 +1,9 @@
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using P2Project.Application.Interfaces.Commands;
-using P2Project.Application.Volunteers.Commands.ChangePetMainPhoto;
+using P2Project.Core.Interfaces.Commands;
 using P2Project.IntegrationTests.Extensions;
 using P2Project.IntegrationTests.Factories;
+using P2Project.Volunteers.Application.Commands.ChangePetMainPhoto;
 
 namespace P2Project.IntegrationTests.Handlers.Pets.ChangePetMainPhoto;
 
@@ -22,8 +22,7 @@ public class ChangePetMainPhotoTest : FileProviderFactory
     public async Task ChangePetMainPhoto()
     {
         // Arrange
-        var volunteerId = await SeedVolunteer();
-        var species = await SeedSpecies();
+        var (volunteerId, species) = await SeedVolunteerAndSpecies();
         var petId = await SeedPetWithPhoto(volunteerId);
         
         var command = _fixture.FakeChangePetMainPhotoCommand(
@@ -36,7 +35,7 @@ public class ChangePetMainPhotoTest : FileProviderFactory
         result.Should().NotBeNull();
         result.IsSuccess.Should().Be(true);
 
-        var volunteers = _writeDbContext.Volunteers.ToList();
+        var volunteers = _volunteersWriteDbContext.Volunteers.ToList();
         volunteers.Should().NotBeEmpty();
         volunteers.Should().HaveCount(1);
         
