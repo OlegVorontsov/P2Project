@@ -1,3 +1,6 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using P2Project.API.Middlewares;
 using P2Project.Species.Web;
 using P2Project.Volunteers.Web;
@@ -17,6 +20,24 @@ services
 
 services.AddControllers();
 
+services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidIssuer = "test",
+            ValidAudience = "test",
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes("ajnbpiusrtoibahiutbheatpihgpeiaughpiauhgpitugha")),
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = false,
+            ValidateIssuerSigningKey = true,
+        };
+    });
+
+services.AddAuthorization();
+
 var app = builder.Build();
 
 app.UseStaticFiles();
@@ -31,10 +52,11 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "P2Project.Api");
         c.InjectStylesheet("/swagger-ui/SwaggerDark.css");
     });
-    app.ApplyMigrations();
+    await app.ApplyMigrations();
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
