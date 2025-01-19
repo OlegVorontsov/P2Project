@@ -1,6 +1,4 @@
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
+using P2Project.Accounts.Web;
 using P2Project.API.Middlewares;
 using P2Project.Species.Web;
 using P2Project.Volunteers.Web;
@@ -16,27 +14,10 @@ var config = builder.Configuration;
 services
     .AddApi(config)
     .AddVolunteersModule(config)
-    .AddSpeciesModule(config);
+    .AddSpeciesModule(config)
+    .AddAccountModule();
 
 services.AddControllers();
-
-services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters()
-        {
-            ValidIssuer = "test",
-            ValidAudience = "test",
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes("ajnbpiusrtoibahiutbheatpihgpeiaughpiauhgpitugha")),
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = false,
-            ValidateIssuerSigningKey = true,
-        };
-    });
-
-services.AddAuthorization();
 
 var app = builder.Build();
 

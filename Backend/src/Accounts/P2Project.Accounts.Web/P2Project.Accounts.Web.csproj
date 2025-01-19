@@ -10,6 +10,7 @@
       <ProjectReference Include="..\..\Shared\P2Project.Core\P2Project.Core.csproj" />
       <ProjectReference Include="..\P2Project.Accounts.Application\P2Project.Accounts.Application.csproj" />
       <ProjectReference Include="..\P2Project.Accounts.Domain\P2Project.Accounts.Domain.csproj" />
+      <ProjectReference Include="..\P2Project.Accounts.Infrastructure\P2Project.Accounts.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>

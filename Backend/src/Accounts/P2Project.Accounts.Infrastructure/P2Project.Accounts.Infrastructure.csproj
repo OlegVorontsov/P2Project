@@ -12,4 +12,9 @@
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.10" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\Shared\P2Project.SharedKernel\P2Project.SharedKernel.csproj" />
+      <ProjectReference Include="..\P2Project.Accounts.Domain\P2Project.Accounts.Domain.csproj" />
+    </ItemGroup>
+
 </Project>

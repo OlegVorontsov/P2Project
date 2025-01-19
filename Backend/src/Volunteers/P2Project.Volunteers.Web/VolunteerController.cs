@@ -33,8 +33,6 @@ namespace P2Project.Volunteers.Web
         [HttpPost("jwt")]
         public string Login(CancellationToken cancellationToken = default)
         {
-            Guid jti = Guid.NewGuid();
-
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, "userId"),
