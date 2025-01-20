@@ -11,4 +11,8 @@
       <ProjectReference Include="..\P2Project.Accounts.Domain\P2Project.Accounts.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Scrutor" Version="5.0.2" />
+    </ItemGroup>
+
 </Project>

@@ -1,10 +1,6 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using P2Project.Framework;
 using P2Project.Framework.Files;
 using P2Project.Volunteers.Application.Commands.AddPet;
@@ -30,27 +26,6 @@ namespace P2Project.Volunteers.Web
 {
     public class VolunteerController : ApplicationController
     {
-        [HttpPost("jwt")]
-        public string Login(CancellationToken cancellationToken = default)
-        {
-            var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, "userId"),
-            };
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("ajnbpiusrtoibahiutbheatpihgpeiaughpiauhgpitugha"));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var token = new JwtSecurityToken(
-                issuer: "test",
-                audience: "test",
-                claims: claims,
-                signingCredentials: creds,
-                expires: DateTime.UtcNow.AddMinutes(10));
-
-            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-            return tokenString;
-        }
-        
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAll(

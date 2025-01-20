@@ -15,7 +15,7 @@ services
     .AddApi(config)
     .AddVolunteersModule(config)
     .AddSpeciesModule(config)
-    .AddAccountModule();
+    .AddAccountsModule(config);
 
 services.AddControllers();
 

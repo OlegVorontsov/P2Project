@@ -72,5 +72,14 @@ namespace P2Project.SharedKernel.Errors
                     $"Breed is already exist");
             }
         }
+        
+        public static class AccountError
+        {
+            public static Error AlreadyExist(string value)
+            {
+                return Error.Validation("record.is.already.exist",
+                    $"Account with {value} is already exist");
+            }
+        }
     }
 }
