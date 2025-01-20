@@ -5,10 +5,10 @@ using P2Project.Accounts.Domain.User;
 using P2Project.Core.Interfaces.Commands;
 using P2Project.SharedKernel.Errors;
 
-namespace P2Project.Accounts.Application.Commands;
+namespace P2Project.Accounts.Application.Commands.Register;
 
 public class RegisterHandler :
-    ICommandHandler<RegisterCommand>
+    ICommandHandler<string, RegisterCommand>
 {
     private readonly UserManager<User> _userManager;
     private readonly ILogger<RegisterHandler> _logger;
@@ -21,14 +21,10 @@ public class RegisterHandler :
         _logger = logger;
     }
     
-    public async Task<UnitResult<ErrorList>> Handle(
+    public async Task<Result<string, ErrorList>> Handle(
         RegisterCommand command,
         CancellationToken cancellationToken = default)
     {
-        /*var userExists = await _userManager.FindByEmailAsync(command.Email);
-        if (userExists != null)
-            return Errors.AccountError.AlreadyExist(command.Email).ToErrorList();*/
-
         var user = new User()
         {
             Email = command.Email,
@@ -39,7 +35,7 @@ public class RegisterHandler :
         if (result.Succeeded)
         {
             _logger.LogInformation("User: {userName} created a new account", command.UserName);
-            return Result.Success<ErrorList>();
+            return command.UserName;
         }
         
         var errors = result.Errors.Select(e => Error.Failure(e.Code, e.Description)).ToList();

@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace P2Project.Accounts.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialAcc : Migration
+    public partial class InitialAccounts : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,8 +19,7 @@ namespace P2Project.Accounts.Infrastructure.Migrations
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     normalized_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    concurrency_stamp = table.Column<string>(type: "text", nullable: true),
-                    discriminator = table.Column<string>(type: "character varying(21)", maxLength: 21, nullable: false)
+                    concurrency_stamp = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -45,8 +44,7 @@ namespace P2Project.Accounts.Infrastructure.Migrations
                     two_factor_enabled = table.Column<bool>(type: "boolean", nullable: false),
                     lockout_end = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     lockout_enabled = table.Column<bool>(type: "boolean", nullable: false),
-                    access_failed_count = table.Column<int>(type: "integer", nullable: false),
-                    discriminator = table.Column<string>(type: "character varying(21)", maxLength: 21, nullable: false)
+                    access_failed_count = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {

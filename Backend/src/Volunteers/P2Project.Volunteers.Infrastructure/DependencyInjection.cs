@@ -77,7 +77,8 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.Configure<MinioOptions>(configuration.GetSection(MinioOptions.MINIO));
+        services.Configure<MinioOptions>(
+            configuration.GetSection(MinioOptions.MINIO));
 
         services.AddMinio(options =>
         {

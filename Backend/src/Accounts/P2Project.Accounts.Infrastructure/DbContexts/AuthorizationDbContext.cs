@@ -10,7 +10,7 @@ using P2Project.SharedKernel;
 namespace P2Project.Accounts.Infrastructure.DbContexts;
         
 public class AuthorizationDbContext(IConfiguration configuration) :
-    IdentityDbContext<IdentityUser<Guid>, IdentityRole<Guid>, Guid>
+    IdentityDbContext<User, Role, Guid>
 {       
     public DbSet<User> Users => Set<User>();
     public DbSet<Role> Roles => Set<Role>();
@@ -30,7 +30,7 @@ public class AuthorizationDbContext(IConfiguration configuration) :
     {
         base.OnModelCreating(builder);
         
-        builder.Entity<IdentityUser<Guid>>()
+        builder.Entity<User>()
             .ToTable("users");
         
         builder.Entity<IdentityUserClaim<Guid>>()
@@ -45,7 +45,7 @@ public class AuthorizationDbContext(IConfiguration configuration) :
         builder.Entity<IdentityUserRole<Guid>>()
             .ToTable("user_roles");
         
-        builder.Entity<IdentityRole<Guid>>()
+        builder.Entity<Role>()
             .ToTable("roles");
         
         builder.Entity<IdentityRoleClaim<Guid>>()

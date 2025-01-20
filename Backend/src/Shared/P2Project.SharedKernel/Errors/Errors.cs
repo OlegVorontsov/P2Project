@@ -75,10 +75,10 @@ namespace P2Project.SharedKernel.Errors
         
         public static class AccountError
         {
-            public static Error AlreadyExist(string value)
+            public static Error InvalidCredentials()
             {
-                return Error.Validation("record.is.already.exist",
-                    $"Account with {value} is already exist");
+                return Error.Validation("credentials.is.invalid",
+                    "credentials is invalid");
             }
         }
     }

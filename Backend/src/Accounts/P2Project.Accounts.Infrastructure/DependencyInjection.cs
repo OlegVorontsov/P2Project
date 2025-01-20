@@ -9,7 +9,9 @@ public static class DependencyInjection
     public static IServiceCollection AddAccountsInfrastructure(
         this IServiceCollection services, IConfiguration configuration)
     {
-        //services.AddRepositories()
+        services.Configure<JwtOptions>(
+            configuration.GetSection(JwtOptions.NAME)); 
+            
         services.AddDataBase(configuration);
             //.AddUnitOfWork();
         
