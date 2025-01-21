@@ -1,5 +1,6 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -16,9 +17,10 @@ public static class DependencyInjection
     public static IServiceCollection AddAccountsModule(
         this IServiceCollection services, IConfiguration configuration)
     {
-        return services.AddUsersIdentity()
+        return services.AddTransient<ITokenProvider, TokenProvider>()
+                       .AddUsersIdentity()
                        .AddAccountsInfrastructure(configuration)
-                       .AddUsersAuthentication()
+                       .AddUsersAuthentication(configuration)
                        .AddAuthorization()
                        .AddAccountsApplication();
     }
@@ -30,26 +32,37 @@ public static class DependencyInjection
             {
                 options.User.RequireUniqueEmail = true;
             })
-            .AddEntityFrameworkStores<AuthorizationDbContext>();
+            .AddEntityFrameworkStores<AuthorizationDbContext>()
+            .AddDefaultTokenProviders();
         
         return services;
     }
 
     private static IServiceCollection AddUsersAuthentication(
-        this IServiceCollection services)
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
             .AddJwtBearer(options =>
             {
+                var jwtOptions = configuration
+                                     .GetSection(JwtOptions.NAME).Get<JwtOptions>() ??
+                                 throw new ApplicationException("Jwt configuration missed");
                 options.TokenValidationParameters = new TokenValidationParameters()
                 {
-                    ValidIssuer = "test",
-                    ValidAudience = "test",
+                    ValidIssuer = jwtOptions.Issuer,
+                    ValidAudience = jwtOptions.Audience,
                     IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes("ajnbpiusrtoibahiutbheatpihgpeiaughpiauhgpitugha")),
+                        Encoding.UTF8.GetBytes(jwtOptions.Key)),
                     ValidateIssuer = true,
                     ValidateAudience = true,
-                    ValidateLifetime = false,
+                    ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
                 };
             });

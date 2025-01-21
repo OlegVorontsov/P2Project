@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using P2Project.Accounts.Application.Commands.Login;
 using P2Project.Accounts.Application.Commands.Register;
 using P2Project.Accounts.Web.Requests;
 using P2Project.Framework;
@@ -25,8 +26,8 @@ public class AccountsController : ApplicationController
     
     [HttpPost("login")]
     public async Task<ActionResult> Login(
-        [FromBody] RegisterRequest request,
-        [FromServices] RegisterHandler handler,
+        [FromBody] LoginRequest request,
+        [FromServices] LoginHandler handler,
         CancellationToken cancellationToken)
     {
         var result = await handler.Handle(

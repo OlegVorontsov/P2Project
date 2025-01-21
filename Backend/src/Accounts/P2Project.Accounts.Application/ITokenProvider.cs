@@ -4,5 +4,5 @@ namespace P2Project.Accounts.Application;
 
 public interface ITokenProvider
 {
-    public Task<string> GenerateAccessToken(User user);
+    public string GenerateAccessToken(User user);
 }

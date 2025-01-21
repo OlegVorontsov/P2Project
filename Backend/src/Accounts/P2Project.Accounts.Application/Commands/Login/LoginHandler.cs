@@ -37,7 +37,7 @@ public class LoginHandler :
         if(!passwordConfirmed)
             return Errors.AccountError.InvalidCredentials().ToErrorList();
         
-        var token = await _tokenProvider.GenerateAccessToken(userExist);
+        var token = _tokenProvider.GenerateAccessToken(userExist);
 
         return token;
     }
