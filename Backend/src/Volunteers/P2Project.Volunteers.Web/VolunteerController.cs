@@ -26,7 +26,6 @@ namespace P2Project.Volunteers.Web
 {
     public class VolunteerController : ApplicationController
     {
-        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAll(
             [FromQuery] GetFilteredVolunteersWithPaginationRequest request,

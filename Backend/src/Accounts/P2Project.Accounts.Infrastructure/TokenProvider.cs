@@ -26,7 +26,8 @@ public class TokenProvider : ITokenProvider
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Jti, jti.ToString()),
-            new Claim(JwtRegisteredClaimNames.Email, user.Email?? string.Empty)
+            new Claim(JwtRegisteredClaimNames.Email, user.Email?? string.Empty),
+            new Claim("Permission", "species.create")
         };
 
         var token = new JwtSecurityToken(

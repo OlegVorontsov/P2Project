@@ -1,5 +1,6 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,6 +10,7 @@ using P2Project.Accounts.Domain.Role;
 using P2Project.Accounts.Domain.User;
 using P2Project.Accounts.Infrastructure;
 using P2Project.Accounts.Infrastructure.DbContexts;
+using P2Project.Accounts.Infrastructure.Permissions;
 
 namespace P2Project.Accounts.Web;
 
@@ -21,7 +23,7 @@ public static class DependencyInjection
                        .AddUsersIdentity()
                        .AddAccountsInfrastructure(configuration)
                        .AddUsersAuthentication(configuration)
-                       .AddAuthorization()
+                       .AddUsersAuthorization()
                        .AddAccountsApplication();
     }
 
@@ -66,6 +68,17 @@ public static class DependencyInjection
                     ValidateIssuerSigningKey = true,
                 };
             });
+        return services;
+    }
+    
+    private static IServiceCollection AddUsersAuthorization(
+        this IServiceCollection services)
+    {
+        services.AddAuthorization();
+        
+        services.AddSingleton<IAuthorizationHandler, PermissionAttributeHandler>();
+        services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+        
         return services;
     }
 }
