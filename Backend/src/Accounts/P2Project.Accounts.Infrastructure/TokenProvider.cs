@@ -22,12 +22,12 @@ public class TokenProvider : ITokenProvider
         var key = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(_jwtOptions.Key));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Jti, jti.ToString()),
-            new Claim(JwtRegisteredClaimNames.Email, user.Email?? string.Empty),
-            new Claim("Permission", "species.create")
+            new Claim(JwtRegisteredClaimNames.Email, user.Email?? string.Empty)
         };
 
         var token = new JwtSecurityToken(

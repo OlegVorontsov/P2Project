@@ -22,7 +22,7 @@ public class PermissionPolicyProvider : IAuthorizationPolicyProvider
     {
         var formattedPolicyName = policyName.Trim().ToLower();
 
-        if (string.IsNullOrEmpty(formattedPolicyName))
+        if (string.IsNullOrWhiteSpace(formattedPolicyName))
             return Task.FromResult<AuthorizationPolicy?>(null);
 
         var policy = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)

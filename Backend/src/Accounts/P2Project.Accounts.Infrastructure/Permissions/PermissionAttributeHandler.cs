@@ -9,12 +9,6 @@ public class PermissionAttributeHandler : AuthorizationHandler<PermissionAttribu
         AuthorizationHandlerContext context,
         PermissionAttribute attribute)
     {
-        var userId= context.User.Claims
-            .FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)!.Value;
-        if (permission is null)
-            return;
-        
-        if(permission.Value == attribute.Code)
-            context.Succeed(attribute);
+        context.Succeed(attribute);
     }
 }

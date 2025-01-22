@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using P2Project.Accounts.Application;
-using P2Project.Accounts.Domain.Role;
+using P2Project.Accounts.Domain.RolePermission.Roles;
 using P2Project.Accounts.Domain.User;
 using P2Project.Accounts.Infrastructure;
 using P2Project.Accounts.Infrastructure.DbContexts;
@@ -20,8 +20,8 @@ public static class DependencyInjection
         this IServiceCollection services, IConfiguration configuration)
     {
         return services.AddTransient<ITokenProvider, TokenProvider>()
-                       .AddUsersIdentity()
                        .AddAccountsInfrastructure(configuration)
+                       .AddUsersIdentity()
                        .AddUsersAuthentication(configuration)
                        .AddUsersAuthorization()
                        .AddAccountsApplication();
@@ -66,6 +66,7 @@ public static class DependencyInjection
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
+                    ClockSkew = TimeSpan.Zero
                 };
             });
         return services;

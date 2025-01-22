@@ -35,6 +35,9 @@ public class RegisterHandler :
         if (result.Succeeded)
         {
             _logger.LogInformation("User: {userName} created a new account", command.UserName);
+            
+            await _userManager.AddToRoleAsync(user, "participant");
+            
             return command.UserName;
         }
         
