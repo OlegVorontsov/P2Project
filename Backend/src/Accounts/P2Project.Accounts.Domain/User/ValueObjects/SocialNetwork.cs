@@ -5,8 +5,6 @@ namespace P2Project.Accounts.Domain.User.ValueObjects
 {
     public record SocialNetwork
     {
-        public const string DB_COLUMN_SOCIAL_NETWORK = "social_network";
-
         private SocialNetwork(string name, string link)
         {
             Name = name;
