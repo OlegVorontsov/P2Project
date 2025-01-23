@@ -1,12 +1,10 @@
 ﻿using CSharpFunctionalExtensions;
 using P2Project.SharedKernel.Errors;
 
-namespace P2Project.Volunteers.Domain.ValueObjects.Volunteers
+namespace P2Project.Accounts.Domain.User.ValueObjects
 {
-    public class SocialNetwork
+    public record SocialNetwork
     {
-        public const string DB_COLUMN_SOCIAL_NETWORK = "social_network";
-
         private SocialNetwork(string name, string link)
         {
             Name = name;

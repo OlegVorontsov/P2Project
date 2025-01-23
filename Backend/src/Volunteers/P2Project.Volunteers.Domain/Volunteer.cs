@@ -7,6 +7,7 @@ using P2Project.Volunteers.Domain.Entities;
 using P2Project.Volunteers.Domain.ValueObjects.Pets;
 using P2Project.Volunteers.Domain.ValueObjects.Volunteers;
 using Result = CSharpFunctionalExtensions.Result;
+using SocialNetwork = P2Project.Volunteers.Domain.ValueObjects.Volunteers.SocialNetwork;
 
 namespace P2Project.Volunteers.Domain
 {

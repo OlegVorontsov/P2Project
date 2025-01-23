@@ -12,7 +12,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Queries\Pets\" />
       <Folder Include="Queries\Volunteers\" />
     </ItemGroup>
 

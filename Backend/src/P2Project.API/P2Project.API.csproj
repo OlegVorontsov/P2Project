@@ -32,6 +32,7 @@
     <ProjectReference Include="..\Accounts\P2Project.Accounts.Application\P2Project.Accounts.Application.csproj" />
     <ProjectReference Include="..\Accounts\P2Project.Accounts.Domain\P2Project.Accounts.Domain.csproj" />
     <ProjectReference Include="..\Accounts\P2Project.Accounts.Infrastructure\P2Project.Accounts.Infrastructure.csproj" />
+    <ProjectReference Include="..\Accounts\P2Project.Accounts.Web\P2Project.Accounts.Web.csproj" />
     <ProjectReference Include="..\Shared\P2Project.Framework\P2Project.Framework.csproj" />
     <ProjectReference Include="..\Shared\P2Project.SharedKernel\P2Project.SharedKernel.csproj" />
     <ProjectReference Include="..\Species\P2Project.Species.Web\P2Project.Species.Web.csproj" />

@@ -1,4 +1,4 @@
-﻿using P2Project.Volunteers.Application.Queries.Volunteers.GetPets;
+﻿using P2Project.Volunteers.Application.Queries.Pets.GetAllPets;
 
 namespace P2Project.Volunteers.Web.Requests
 {

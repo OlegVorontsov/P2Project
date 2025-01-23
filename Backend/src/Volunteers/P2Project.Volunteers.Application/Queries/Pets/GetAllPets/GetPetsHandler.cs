@@ -7,7 +7,7 @@ using P2Project.Core.Interfaces.Queries;
 using P2Project.Core.Models;
 using P2Project.SharedKernel.Errors;
 
-namespace P2Project.Volunteers.Application.Queries.Volunteers.GetPets
+namespace P2Project.Volunteers.Application.Queries.Pets.GetAllPets
 {
     public class GetPetsHandler :
         IQueryValidationHandler<PagedList<PetDto>, GetPetsQuery>

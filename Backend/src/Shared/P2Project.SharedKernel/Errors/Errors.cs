@@ -72,5 +72,14 @@ namespace P2Project.SharedKernel.Errors
                     $"Breed is already exist");
             }
         }
+        
+        public static class AccountError
+        {
+            public static Error InvalidCredentials()
+            {
+                return Error.Validation("credentials.is.invalid",
+                    "credentials is invalid");
+            }
+        }
     }
 }
