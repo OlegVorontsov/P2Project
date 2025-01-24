@@ -12,10 +12,10 @@ using P2Project.Accounts.Domain.User.ValueObjects;
 using P2Project.SharedKernel;
 
 namespace P2Project.Accounts.Infrastructure.DbContexts;
-        
+
 public class AuthorizationDbContext(IConfiguration configuration) :
     IdentityDbContext<User, Role, Guid>
-{       
+{
     public DbSet<User> Users => Set<User>();
     public DbSet<Role> Roles => Set<Role>();
 
@@ -33,6 +33,8 @@ public class AuthorizationDbContext(IConfiguration configuration) :
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+        
+        builder.HasDefaultSchema("accounts");
         
         builder.Entity<User>()
             .ToTable("users");

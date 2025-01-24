@@ -23,9 +23,11 @@ namespace P2Project.Species.Infrastructure.DbContexts
             optionsBuilder.UseLoggerFactory(CreateLoggerFactory());
         }
         
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder builder)
         {
-            modelBuilder.ApplyConfigurationsFromAssembly(
+            builder.HasDefaultSchema("species");
+
+            builder.ApplyConfigurationsFromAssembly(
                 typeof(SpeciesWriteDbContext).Assembly,
                 type => type.FullName?.Contains("Configurations.Write") ?? false);
         }

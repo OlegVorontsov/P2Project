@@ -11,6 +11,7 @@ using P2Project.Accounts.Domain.User;
 using P2Project.Accounts.Infrastructure;
 using P2Project.Accounts.Infrastructure.DbContexts;
 using P2Project.Accounts.Infrastructure.Permissions;
+using P2Project.Accounts.Infrastructure.Seedings;
 
 namespace P2Project.Accounts.Web;
 
@@ -24,7 +25,8 @@ public static class DependencyInjection
                        .AddUsersIdentity()
                        .AddUsersAuthentication(configuration)
                        .AddUsersAuthorization()
-                       .AddAccountsApplication();
+                       .AddAccountsApplication()
+                       .AddSeedings();
     }
 
     private static IServiceCollection AddUsersIdentity(
@@ -80,6 +82,16 @@ public static class DependencyInjection
         services.AddSingleton<IAuthorizationHandler, PermissionAttributeHandler>();
         services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
         
+        return services;
+    }
+    
+    private static IServiceCollection AddSeedings(
+        this IServiceCollection services)
+    {
+        //services.SeedRolesWithPermissions();
+        //services.SeedAdmins(configuration);
+        services.AddSingleton<RolesWithPermissionsSeeding>();
+
         return services;
     }
 }

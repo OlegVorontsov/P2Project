@@ -1,3 +1,4 @@
+using P2Project.Accounts.Infrastructure.Seedings;
 using P2Project.Accounts.Web;
 using P2Project.API.Middlewares;
 using P2Project.Species.Web;
@@ -20,6 +21,9 @@ services
 services.AddControllers();
 
 var app = builder.Build();
+
+var seeder = app.Services.GetRequiredService<RolesWithPermissionsSeeding>();
+await seeder.SeedRolesWithPermissions();
 
 app.UseStaticFiles();
 app.UseExceptionMiddleware();
