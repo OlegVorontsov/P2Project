@@ -23,6 +23,7 @@ namespace P2Project.SharedKernel
         public const string BUCKET_NAME_FILES = "files";
         
         public static string ACCOUNTS_CONFIGURATIONS_FOLDER_PATH = "..\\Accounts\\P2Project.Accounts.Infrastructure\\JsonConfigurations\\";
+        public static string ACCOUNTS_JSON_FILE_NAME = "Accounts.json";
         public static string ROLES_JSON_FILE_NAME = "Roles.json";
         public static string PERMISSIONS_JSON_FILE_NAME = "Permissions.json";
     }
