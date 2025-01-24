@@ -1,12 +1,8 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using P2Project.Accounts.Domain.RolePermission;
-using P2Project.Accounts.Domain.RolePermission.Permissions;
 using P2Project.Accounts.Domain.RolePermission.Roles;
-using P2Project.Accounts.Infrastructure.DbContexts;
 using P2Project.Accounts.Infrastructure.Permissions;
 using P2Project.SharedKernel;
 
@@ -40,13 +36,25 @@ public class RolesWithPermissionsSeeding
             ?? throw new ApplicationException("RolePermissionConfig couldn't be deserialized");
 
         await SeedPermissions(seedData, permissionManager);
+        await SeedRoles(seedData, roleManager);
     }
 
-    private async Task SeedPermissions(RolePermissionConfig seedData, PermissionManager permissionManager)
+    private async Task SeedRoles(
+        RolePermissionConfig seedData, RoleManager<Role> roleManager)
+    {
+        foreach (var role in seedData.Roles.Keys)
+        {
+            var roleExist = await roleManager.FindByNameAsync(role);
+            if (roleExist is null)
+                await roleManager.CreateAsync(new Role { Name = role });
+        }
+    }
+
+    private async Task SeedPermissions(
+        RolePermissionConfig seedData, PermissionManager permissionManager)
     {
         var permissionsToSeed = seedData.Permissions.SelectMany(group => group.Value);
         await permissionManager.AddRangeIfDoesNotExist(permissionsToSeed);
-        _logger.LogInformation("Permissions added to database");
     }
 }
 
