@@ -7,8 +7,8 @@ using P2Project.API;
 using P2Project.API.Extensions;
 using Serilog;
 
+DotNetEnv.Env.Load();
 var builder = WebApplication.CreateBuilder(args);
-
 var services = builder.Services;
 var config = builder.Configuration;
 
@@ -16,14 +16,13 @@ services
     .AddApi(config)
     .AddVolunteersModule(config)
     .AddSpeciesModule(config)
-    .AddAccountsModule(config);
-
-services.AddControllers();
+    .AddAccountsModule(config)
+    .AddControllers();
 
 var app = builder.Build();
 
-var seeder = app.Services.GetRequiredService<RolesWithPermissionsSeeding>();
-await seeder.SeedRolesWithPermissions();
+var seeder = app.Services.GetRequiredService<AccountSeeder>();
+await seeder.SeedAsync();
 
 app.UseStaticFiles();
 app.UseExceptionMiddleware();

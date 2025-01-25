@@ -11,9 +11,10 @@ public class RolePermissionManager(AuthorizationDbContext dbContext)
         foreach (var code in permissionCodes)
         {
             var permission = await dbContext.Permissions.FirstOrDefaultAsync(p => p.Code == code);
+            if (permission is null) throw new Exception($"Permission {code} is not found");
                 
             var rolePermissionExist = await dbContext.RolePermissions
-                .AnyAsync(rp => rp.RoleId == roleId && rp.PermissionId == permission!.Id);
+                .AnyAsync(rp => rp.RoleId == roleId && rp.PermissionId == permission.Id);
             if(rolePermissionExist) continue;
 
             dbContext.RolePermissions.Add(new RolePermission

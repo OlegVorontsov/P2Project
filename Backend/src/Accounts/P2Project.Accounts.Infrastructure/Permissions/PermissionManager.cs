@@ -14,7 +14,7 @@ public class PermissionManager(AuthorizationDbContext dbContext)
         foreach (var code in codes)
         {
             var permissionExist = await dbContext.Permissions.AnyAsync(p => p.Code == code);
-            if(permissionExist) return;
+            if(permissionExist) continue;
             await dbContext.Permissions.AddAsync(new Permission { Code = code });
         }
         await dbContext.SaveChangesAsync();
