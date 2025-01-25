@@ -31,30 +31,43 @@ public class RolesWithPermissionsSeeding
         using var scope = _factory.CreateScope();
         var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
         var permissionManager = scope.ServiceProvider.GetRequiredService<PermissionManager>();
+        var rolePermissionManager = scope.ServiceProvider.GetRequiredService<RolePermissionManager>();
         
         var seedData = JsonSerializer.Deserialize<RolePermissionConfig>(json)
             ?? throw new ApplicationException("RolePermissionConfig couldn't be deserialized");
 
         await SeedPermissions(seedData, permissionManager);
         await SeedRoles(seedData, roleManager);
+        await SeedRolePermissions(seedData, roleManager, rolePermissionManager);
     }
-
-    private async Task SeedRoles(
-        RolePermissionConfig seedData, RoleManager<Role> roleManager)
-    {
-        foreach (var role in seedData.Roles.Keys)
-        {
-            var roleExist = await roleManager.FindByNameAsync(role);
-            if (roleExist is null)
-                await roleManager.CreateAsync(new Role { Name = role });
-        }
-    }
-
+    
     private async Task SeedPermissions(
         RolePermissionConfig seedData, PermissionManager permissionManager)
     {
         var permissionsToSeed = seedData.Permissions.SelectMany(group => group.Value);
         await permissionManager.AddRangeIfDoesNotExist(permissionsToSeed);
+    }
+    
+    private async Task SeedRoles(
+        RolePermissionConfig seedData, RoleManager<Role> roleManager)
+    {
+        foreach (var roleName in seedData.Roles.Keys)
+        {
+            var roleExist = await roleManager.FindByNameAsync(roleName);
+            if (roleExist is null)
+                await roleManager.CreateAsync(new Role { Name = roleName });
+        }
+    }
+
+    private async Task SeedRolePermissions(RolePermissionConfig seedData, RoleManager<Role> roleManager,
+        RolePermissionManager rolePermissionManager)
+    {
+        foreach (var roleName in seedData.Roles.Keys)
+        {
+            var role = await roleManager.FindByNameAsync(roleName);
+            var rolePermissions = seedData.Roles[roleName];
+            await rolePermissionManager.AddRangeIfDoesNotExist(role!.Id, seedData.Roles[roleName]);
+        }
     }
 }
 

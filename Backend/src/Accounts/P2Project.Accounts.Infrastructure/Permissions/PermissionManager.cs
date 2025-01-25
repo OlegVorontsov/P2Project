@@ -6,6 +6,9 @@ namespace P2Project.Accounts.Infrastructure.Permissions;
 
 public class PermissionManager(AuthorizationDbContext dbContext)
 {
+    public async Task<Permission?> FindByCode(string code) =>
+        await dbContext.Permissions.FirstOrDefaultAsync(p => p.Code == code);
+    
     public async Task AddRangeIfDoesNotExist(IEnumerable<string> codes)
     {
         foreach (var code in codes)
