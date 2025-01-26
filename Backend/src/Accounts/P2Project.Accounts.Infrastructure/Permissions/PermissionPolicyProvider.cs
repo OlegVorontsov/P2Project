@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 
-namespace P2Project.Accounts.Infrastructure;
+namespace P2Project.Accounts.Infrastructure.Permissions;
 
 public class PermissionPolicyProvider : IAuthorizationPolicyProvider
 {

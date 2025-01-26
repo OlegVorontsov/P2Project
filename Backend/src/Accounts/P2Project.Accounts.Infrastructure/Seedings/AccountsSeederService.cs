@@ -2,11 +2,14 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using P2Project.Accounts.Domain;
+using P2Project.Accounts.Domain.Accounts;
 using P2Project.Accounts.Domain.RolePermission.Roles;
-using P2Project.Accounts.Domain.User;
 using P2Project.Accounts.Infrastructure.Admin;
+using P2Project.Accounts.Infrastructure.Managers;
 using P2Project.Accounts.Infrastructure.Permissions;
 using P2Project.SharedKernel;
+using P2Project.Volunteers.Domain.ValueObjects.Volunteers;
 
 namespace P2Project.Accounts.Infrastructure.Seedings;
 
@@ -16,6 +19,7 @@ public class AccountsSeederService(
     PermissionManager permissionManager,
     RolePermissionManager rolePermissionManager,
     IOptions<AdminOptions> adminOptions,
+    AdminAccountManager adminAccountManager,
     ILogger<AccountsSeederService> logger)
 {
     private readonly AdminOptions _adminOptions = adminOptions.Value;
@@ -33,12 +37,16 @@ public class AccountsSeederService(
         await SeedRoles(seedData);
         await SeedRolePermissions(seedData);
 
-        var adminUser = new User
-        {
-            UserName = _adminOptions.UserName,
-            Email = _adminOptions.Email
-        };
+        var adminRole = await roleManager.FindByNameAsync(AdminAccount.ADMIN)
+            ?? throw new ApplicationException("Role admin couldn't be found");
+        var adminUser = User.CreateAdmin(
+            _adminOptions.UserName, _adminOptions.Email, adminRole);
         await userManager.CreateAsync(adminUser, _adminOptions.Password);
+
+        var adminFullName = FullName.Create(
+            _adminOptions.UserName, _adminOptions.UserName, null).Value;
+        var adminAccount = new AdminAccount(adminFullName, adminUser);
+        await adminAccountManager.CreateAdminAccount(adminAccount);
     }
     
     private async Task SeedPermissions(RolePermissionConfig seedData)

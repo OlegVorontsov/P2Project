@@ -1,4 +1,4 @@
-using P2Project.Accounts.Domain.User;
+using P2Project.Accounts.Domain;
 
 namespace P2Project.Accounts.Application;
 

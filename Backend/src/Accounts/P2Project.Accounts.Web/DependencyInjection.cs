@@ -6,10 +6,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using P2Project.Accounts.Application;
+using P2Project.Accounts.Domain;
 using P2Project.Accounts.Domain.RolePermission.Roles;
-using P2Project.Accounts.Domain.User;
 using P2Project.Accounts.Infrastructure;
 using P2Project.Accounts.Infrastructure.DbContexts;
+using P2Project.Accounts.Infrastructure.Jwt;
+using P2Project.Accounts.Infrastructure.Managers;
 using P2Project.Accounts.Infrastructure.Permissions;
 using P2Project.Accounts.Infrastructure.Seedings;
 
@@ -91,8 +93,9 @@ public static class DependencyInjection
         //services.SeedRolesWithPermissions();
         //services.SeedAdmins(configuration);
         services.AddScoped<AccountsSeederService>()
-                .AddScoped<PermissionManager>()
-                .AddScoped<RolePermissionManager>();
+            .AddScoped<PermissionManager>()
+            .AddScoped<RolePermissionManager>()
+            .AddScoped<AdminAccountManager>();
 
         return services;
     }

@@ -1,13 +1,13 @@
 using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using P2Project.Accounts.Domain.User;
+using P2Project.Accounts.Domain;
 using P2Project.Core.Interfaces.Commands;
 using P2Project.SharedKernel.Errors;
 
 namespace P2Project.Accounts.Application.Commands.Register;
 
-public class RegisterHandler :
+/*public class RegisterHandler :
     ICommandHandler<string, RegisterCommand>
 {
     private readonly UserManager<User> _userManager;
@@ -45,4 +45,4 @@ public class RegisterHandler :
         
         return new ErrorList(errors);
     }
-}
+}*/

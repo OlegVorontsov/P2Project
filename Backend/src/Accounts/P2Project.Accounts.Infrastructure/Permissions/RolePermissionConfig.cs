@@ -1,4 +1,4 @@
-namespace P2Project.Accounts.Infrastructure.Seedings;
+namespace P2Project.Accounts.Infrastructure.Permissions;
 
 public class RolePermissionConfig
 {

@@ -2,6 +2,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using P2Project.Accounts.Infrastructure.Admin;
 using P2Project.Accounts.Infrastructure.DbContexts;
+using P2Project.Accounts.Infrastructure.Jwt;
 
 namespace P2Project.Accounts.Infrastructure;
 

@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using P2Project.Accounts.Domain.RolePermission.Permissions;
 using P2Project.Accounts.Infrastructure.DbContexts;
 
-namespace P2Project.Accounts.Infrastructure.Permissions;
+namespace P2Project.Accounts.Infrastructure.Managers;
 
 public class PermissionManager(AuthorizationDbContext dbContext)
 {

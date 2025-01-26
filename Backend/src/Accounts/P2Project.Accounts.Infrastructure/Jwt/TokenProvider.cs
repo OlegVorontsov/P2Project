@@ -4,9 +4,9 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using P2Project.Accounts.Application;
-using P2Project.Accounts.Domain.User;
+using P2Project.Accounts.Domain;
 
-namespace P2Project.Accounts.Infrastructure;
+namespace P2Project.Accounts.Infrastructure.Jwt;
 
 public class TokenProvider : ITokenProvider
 {
