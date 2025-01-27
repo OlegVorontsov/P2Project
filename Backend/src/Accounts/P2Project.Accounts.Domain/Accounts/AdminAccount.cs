@@ -10,6 +10,7 @@ public class AdminAccount
     {
         Id = Guid.NewGuid();
         FullName = fullName;
+        User = user;
     }
     public Guid Id { get; set; }
     public Guid UserId { get; set; }

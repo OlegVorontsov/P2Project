@@ -92,7 +92,8 @@ public static class DependencyInjection
     {
         //services.SeedRolesWithPermissions();
         //services.SeedAdmins(configuration);
-        services.AddScoped<AccountsSeederService>()
+        services.AddSingleton<AccountSeeder>()
+            .AddScoped<AccountsSeederService>()
             .AddScoped<PermissionManager>()
             .AddScoped<RolePermissionManager>()
             .AddScoped<AdminAccountManager>();

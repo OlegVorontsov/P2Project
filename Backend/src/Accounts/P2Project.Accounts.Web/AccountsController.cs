@@ -11,7 +11,7 @@ namespace P2Project.Accounts.Web;
 
 public class AccountsController : ApplicationController
 {
-    [Permission("species.create")]
+    [Permission(PermissionsConfig.Volunteer.GetVolunteer)]
     [HttpGet("test-admin")]
     public ActionResult TestAdmin()
     {
