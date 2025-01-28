@@ -51,9 +51,6 @@ namespace P2Project.Volunteers.Infrastructure.Configurations.Write
                 .IsRequired()
                 .HasColumnName(Volunteer.DB_COLUMN_REGISTERED_AT);
 
-            builder.Property(v => v.YearsOfExperience)
-                   .HasColumnName(Volunteer.DB_COLUMN_YEARS_OF_EXPERIENCE);
-
             builder.HasMany(v => v.Pets)
                    .WithOne()
                    .HasForeignKey(p => p.VolunteerId)

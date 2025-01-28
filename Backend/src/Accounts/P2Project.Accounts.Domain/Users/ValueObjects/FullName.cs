@@ -1,7 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using P2Project.SharedKernel.Errors;
 
-namespace P2Project.Volunteers.Domain.ValueObjects.Volunteers
+namespace P2Project.Accounts.Domain.Users.ValueObjects
 {
     public record FullName
     {

@@ -9,6 +9,7 @@ using P2Project.Accounts.Domain.Accounts;
 using P2Project.Accounts.Domain.RolePermission;
 using P2Project.Accounts.Domain.RolePermission.Permissions;
 using P2Project.Accounts.Domain.RolePermission.Roles;
+using P2Project.Accounts.Domain.Users.ValueObjects;
 using P2Project.SharedKernel;
 using P2Project.Volunteers.Domain.ValueObjects.Volunteers;
 using SocialNetwork = P2Project.Accounts.Domain.Users.ValueObjects.SocialNetwork;

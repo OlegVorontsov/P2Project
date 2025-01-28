@@ -15,6 +15,9 @@ namespace P2Project.SharedKernel
         
         public const int MIN_GRADE = 0;
         public const int MAX_GRADE = 10;
+        
+        public const int MIN_EXPERIENCE = 0;
+        public const int MAX_EXPERIENCE = 90;
 
         public const int MIN_WEIGHT_HEIGHT = 0;
         public const int MAX_WEIGHT_HEIGHT = 1000;

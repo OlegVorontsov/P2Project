@@ -1,5 +1,4 @@
 ﻿using CSharpFunctionalExtensions;
-using P2Project.Core;
 using P2Project.SharedKernel;
 using P2Project.SharedKernel.Errors;
 

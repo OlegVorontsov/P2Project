@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using P2Project.Accounts.Domain;
 using P2Project.Accounts.Domain.Accounts;
 using P2Project.Accounts.Domain.RolePermission.Roles;
+using P2Project.Accounts.Domain.Users.ValueObjects;
 using P2Project.Accounts.Infrastructure.Admin;
 using P2Project.Accounts.Infrastructure.Managers;
 using P2Project.Accounts.Infrastructure.Permissions;
