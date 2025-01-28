@@ -43,36 +43,12 @@ namespace P2Project.Volunteers.Application.Commands.Create
                 return validationResult.ToErrorList();
 
             var volunteerId = VolunteerId.New();
-
-            var fullName = FullName.Create(
-                                   command.FullName.FirstName,
-                                   command.FullName.SecondName,
-                                   command.FullName.LastName).Value;
-            var volunteerByFullName = await _volunteersRepository.GetByFullName(
-                                                                  fullName,
-                                                                  cancellationToken);
-            if (volunteerByFullName.IsSuccess)
-            {
-                var error = Errors.VolunteerError.AlreadyExist();
-                return error.ToErrorList();
-            }
             
             var volunteerInfo = VolunteerInfo.Create(
                 command.VolunteerInfo.Age,
                 command.VolunteerInfo.Grade).Value;
 
             var gender = Enum.Parse<Gender>(command.Gender);
-
-            var email = Email.Create(command.Email).Value;
-
-            var volunteerByEmail = await _volunteersRepository.GetByEmail(
-                                                               email,
-                                                               cancellationToken);
-            if (volunteerByEmail.IsSuccess)
-            {
-                var error = Errors.VolunteerError.AlreadyExist();
-                return error.ToErrorList();
-            }
 
             var description = Description.Create(command.Description).Value;
 
@@ -87,39 +63,12 @@ namespace P2Project.Volunteers.Application.Commands.Create
             }
             var volunteerPhoneNumbers = phoneNumbers;
 
-            var socialNetworks = new List<SocialNetwork>();
-            if (command.SocialNetworks != null)
-            {
-                var networks = command.SocialNetworks.Select(sn =>
-                                                      SocialNetwork.Create(
-                                                         sn.Name,
-                                                         sn.Link).Value);
-                socialNetworks.AddRange(networks);
-            }
-            var volunteerSocialNetworks = socialNetworks;
-
-            var assistanceDetails = new List<AssistanceDetail>();
-            if (command.AssistanceDetails != null)
-            {
-                var details = command.AssistanceDetails.Select(ad =>
-                                                        AssistanceDetail.Create(
-                                                            ad.Name,
-                                                            ad.Description,
-                                                            ad.AccountNumber).Value);
-                assistanceDetails.AddRange(details);
-            }
-            var volunteerAssistanceDetails = assistanceDetails;
-
             var volunteer = new Volunteer(
                             volunteerId,
-                            fullName,
                             volunteerInfo,
                             gender,
-                            email,
                             description,
-                            volunteerPhoneNumbers,
-                            volunteerSocialNetworks,
-                            volunteerAssistanceDetails);
+                            volunteerPhoneNumbers);
 
             await _volunteersRepository.Add(volunteer, cancellationToken);
             await _unitOfWork.SaveChanges(cancellationToken);

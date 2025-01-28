@@ -5,22 +5,14 @@ using P2Project.Volunteers.Application.Commands.Create;
 namespace P2Project.Volunteers.Web.Requests;
 
 public record CreateRequest(
-            FullNameDto FullName,
             VolunteerInfoDto VolunteerInfo,
             string Gender,
-            string Email,
             string? Description,
-            IEnumerable<PhoneNumberDto> PhoneNumbers,
-            IEnumerable<SocialNetworkDto>? SocialNetworks,
-            IEnumerable<AssistanceDetailDto>? AssistanceDetails)
+            IEnumerable<PhoneNumberDto> PhoneNumbers)
 {
     public CreateCommand ToCommand() =>
-        new(FullName,
-            VolunteerInfo,
+        new(VolunteerInfo,
             Gender,
-            Email,
             Description,
-            PhoneNumbers,
-            SocialNetworks,
-            AssistanceDetails);
+            PhoneNumbers);
 }

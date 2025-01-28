@@ -16,12 +16,6 @@ namespace P2Project.Volunteers.Application.Commands.UpdateMainInfo
                 .NotEmpty()
                 .WithError(Errors.General.ValueIsRequired());
 
-            RuleFor(i => i.FullName)
-                .MustBeValueObject(fn => FullName.Create(
-                                                  fn.FirstName,
-                                                  fn.SecondName,
-                                                  fn.LastName));
-
             RuleFor(i => i.VolunteerInfo)
                 .MustBeValueObject(vi => VolunteerInfo.Create(
                     vi.Age, vi.Grade));

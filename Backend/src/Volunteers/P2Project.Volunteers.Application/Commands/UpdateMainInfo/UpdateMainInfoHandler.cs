@@ -52,11 +52,6 @@ namespace P2Project.Volunteers.Application.Commands.UpdateMainInfo
             if (volunteerResult.IsFailure)
                 return volunteerResult.Error.ToErrorList();
 
-            var fullName = FullName.Create(
-                                    command.FullName.FirstName,
-                                    command.FullName.SecondName,
-                                    command.FullName.LastName).Value;
-
             var volunteerInfo = VolunteerInfo.Create(
                 command.VolunteerInfo.Age,
                 command.VolunteerInfo.Grade).Value;
@@ -67,7 +62,6 @@ namespace P2Project.Volunteers.Application.Commands.UpdateMainInfo
                 command.Description).Value;
 
             volunteerResult.Value.UpdateMainInfo(
-                fullName,
                 volunteerInfo,
                 gender,
                 description);
@@ -78,13 +72,9 @@ namespace P2Project.Volunteers.Application.Commands.UpdateMainInfo
 
             _logger.LogInformation(
                     "For volunteer with ID: {id} was updated main info to " +
-                    "full name: {SecondName} {FirstName} {LastName} " +
                     "age: {Age} grade: {Grade} gender: {gender} " +
                     "description: {Value}",
                     id,
-                    fullName.SecondName,
-                    fullName.FirstName,
-                    fullName.LastName,
                     volunteerInfo.Age,
                     volunteerInfo.Grade,
                     gender,

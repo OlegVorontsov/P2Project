@@ -5,7 +5,6 @@ namespace P2Project.Volunteers.Application.Commands.UpdateMainInfo
 {
     public record UpdateMainInfoCommand(
                   Guid VolunteerId,
-                  FullNameDto FullName,
                   VolunteerInfoDto VolunteerInfo,
                   string Gender,
                   string? Description) : ICommand;

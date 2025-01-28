@@ -153,7 +153,7 @@ namespace P2Project.Volunteers.Infrastructure.Configurations.Write
             builder.Property(p => p.Photos)
                 .ValueObjectsCollectionJsonConversion(
                     photo => new PetPhotoDto(photo.FilePath, photo.IsMain),
-                    dto => PetPhoto.Create(dto.Path, dto.IsMain).Value)
+                    dto => Photo.Create(dto.Path, dto.IsMain).Value)
                 .HasColumnName(Pet.DB_COLUMN_PHOTOS);
 
             builder.Property(p => p.CreatedAt)

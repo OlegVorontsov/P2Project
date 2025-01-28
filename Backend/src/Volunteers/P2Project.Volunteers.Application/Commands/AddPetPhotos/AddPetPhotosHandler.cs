@@ -98,7 +98,7 @@ namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
                 }
 
                 var petPhotos = filePathsResult.Value
-                    .Select(f => PetPhoto.Create(f.Path, false).Value)
+                    .Select(f => Photo.Create(f.Path, false).Value)
                     .ToList();
 
                 petResult.Value.UpdatePhotos(petPhotos);

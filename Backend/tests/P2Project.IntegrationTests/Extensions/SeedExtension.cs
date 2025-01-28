@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using P2Project.IntegrationTests.Factories;
 using P2Project.SharedKernel.IDs;
+using P2Project.SharedKernel.ValueObjects;
 using P2Project.Species.Domain.Entities;
 using P2Project.Species.Domain.ValueObjects;
 using P2Project.UnitTestsFabrics;
@@ -88,7 +89,7 @@ public class SeedExtension
 
         var pet = PetFabric.CreatePet(species.Id, species.Breeds.First().Id);
         
-        var photos = new List<PetPhoto>{PetPhoto.Create("test_file_name.jpg", false).Value};
+        var photos = new List<Photo>{Photo.Create("test_file_name.jpg", false).Value};
         
         pet.UpdatePhotos(photos);
 

@@ -8,8 +8,8 @@ public class User : IdentityUser<Guid>
 {
     private User(){}
     private List<Role> _roles = [];
-    public IReadOnlyList<Role> Roles => _roles;
     public IReadOnlyList<SocialNetwork>? SocialNetworks { get; private set; } = [];
+    public IReadOnlyList<Role> Roles => _roles;
 
     public static User CreateAdmin(string userName, string email, Role role)
     {

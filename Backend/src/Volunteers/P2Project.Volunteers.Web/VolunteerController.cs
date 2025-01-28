@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using P2Project.Framework;
 using P2Project.Framework.Files;
@@ -13,11 +12,9 @@ using P2Project.Volunteers.Application.Commands.HardDelete;
 using P2Project.Volunteers.Application.Commands.HardDeletePet;
 using P2Project.Volunteers.Application.Commands.SoftDelete;
 using P2Project.Volunteers.Application.Commands.SoftDeletePet;
-using P2Project.Volunteers.Application.Commands.UpdateAssistanceDetails;
 using P2Project.Volunteers.Application.Commands.UpdateMainInfo;
 using P2Project.Volunteers.Application.Commands.UpdatePet;
 using P2Project.Volunteers.Application.Commands.UpdatePhoneNumbers;
-using P2Project.Volunteers.Application.Commands.UpdateSocialNetworks;
 using P2Project.Volunteers.Application.Queries.Volunteers.GetFilteredVolunteersWithPagination;
 using P2Project.Volunteers.Application.Queries.Volunteers.GetVolunteerById;
 using P2Project.Volunteers.Web.Requests;
@@ -88,38 +85,6 @@ namespace P2Project.Volunteers.Web
             [FromRoute] Guid id,
             [FromBody] UpdatePhoneNumbersRequest request,
             [FromServices] UpdatePhoneNumbersHandler handler,
-            CancellationToken cancellationToken)
-        {
-            var result = await handler.Handle(
-                request.ToCommand(id), cancellationToken);
-
-            if (result.IsFailure)
-                return result.Error.ToResponse();
-
-            return Ok(result.Value);
-        }
-
-        [HttpPatch("{id:guid}/social-networks")]
-        public async Task<ActionResult<Guid>> UpdateSocialNetworks(
-            [FromRoute] Guid id,
-            [FromBody] UpdateSocialNetworksRequest request,
-            [FromServices] UpdateSocialNetworksHandler handler,
-            CancellationToken cancellationToken)
-        {
-            var result = await handler.Handle(
-                request.ToCommand(id), cancellationToken);
-
-            if (result.IsFailure)
-                return result.Error.ToResponse();
-
-            return Ok(result.Value);
-        }
-
-        [HttpPatch("{id:guid}/assistance-details")]
-        public async Task<ActionResult<Guid>> UpdateAssistanceDetails(
-            [FromRoute] Guid id,
-            [FromBody] UpdateAssistanceDetailsRequest request,
-            [FromServices] UpdateAssistanceDetailsHandler handler,
             CancellationToken cancellationToken)
         {
             var result = await handler.Handle(

@@ -20,7 +20,7 @@ public class PermissionAttributeHandler :
         AuthorizationHandlerContext context,
         PermissionAttribute attribute)
     {
-        using var scope = _factory.CreateScope();
+        /*using var scope = _factory.CreateScope();
         var permissionManager = scope.ServiceProvider.GetRequiredService<PermissionManager>();
         
         var userIdString = context.User.Claims
@@ -29,8 +29,12 @@ public class PermissionAttributeHandler :
         {
             context.Fail();
             return;
-        }
-        var permissions = await permissionManager.GetUserPermissions(userId);
+        }*/
+        var permissions = context.User.Claims
+            .Where(c => c.Type == CustomClaims.PERMISSION)
+            .Select(c => c.Value)
+            .ToList();
+        
         if (permissions.Contains(attribute.Code))
         {
             context.Succeed(attribute);

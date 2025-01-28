@@ -7,7 +7,6 @@ using P2Project.Volunteers.Domain.Entities;
 using P2Project.Volunteers.Domain.ValueObjects.Pets;
 using P2Project.Volunteers.Domain.ValueObjects.Volunteers;
 using Result = CSharpFunctionalExtensions.Result;
-using SocialNetwork = P2Project.Volunteers.Domain.ValueObjects.Volunteers.SocialNetwork;
 
 namespace P2Project.Volunteers.Domain
 {
@@ -30,29 +29,19 @@ namespace P2Project.Volunteers.Domain
 
         public Volunteer(
                 VolunteerId id,
-                FullName fullName,
                 VolunteerInfo volunteerInfo,
                 Gender gender,
-                Email email,
                 Description description,
-                List<PhoneNumber>? phoneNumbers,
-                List<SocialNetwork>? socialNetworks,
-                List<AssistanceDetail>? assistanceDetails) : base(id)
+                List<PhoneNumber>? phoneNumbers) : base(id)
         {
-            FullName = fullName;
             VolunteerInfo = volunteerInfo;
             Gender = gender;
-            Email = email;
             Description = description;
             RegisteredAt = DateTime.UtcNow;
             PhoneNumbers = phoneNumbers ?? new List<PhoneNumber>();
-            SocialNetworks = socialNetworks ?? new List<SocialNetwork>();
-            AssistanceDetails = assistanceDetails ?? new List<AssistanceDetail>();
         }
-        public FullName FullName { get; private set; }
         public VolunteerInfo VolunteerInfo { get; private set; }
         public Gender Gender { get; private set; }
-        public Email Email { get; private set; } = default!;
         public Description Description { get; private set; } = default!;
         public DateTime RegisteredAt { get; private set; }
         public string YearsOfExperience
@@ -88,8 +77,6 @@ namespace P2Project.Volunteers.Domain
         }
         public int UnknownStatusPets{ get; private set; } = default!;
         public IReadOnlyList<PhoneNumber> PhoneNumbers { get; private set; } = null!;
-        public IReadOnlyList<SocialNetwork> SocialNetworks { get; private set; } = null!;
-        public IReadOnlyList<AssistanceDetail> AssistanceDetails { get; private set; } = null!;
         private string GetYearsOfExperience()
         {
             var registrationDate = RegisteredAt;
@@ -139,12 +126,10 @@ namespace P2Project.Volunteers.Domain
         }
 
         public void UpdateMainInfo(
-                    FullName fullName,
                     VolunteerInfo volunteerInfo,
                     Gender gender,
                     Description description)
         {
-            FullName = fullName;
             VolunteerInfo = volunteerInfo;
             Gender = gender;
             Description = description;
@@ -153,14 +138,6 @@ namespace P2Project.Volunteers.Domain
         public void UpdatePhoneNumbers(
             List<PhoneNumber> phoneNumbers) =>
             PhoneNumbers = phoneNumbers;
-
-        public void UpdateSocialNetworks(
-            List<SocialNetwork> socialNetworks) =>
-            SocialNetworks = socialNetworks;
-
-        public void UpdateAssistanceDetails(
-            List<AssistanceDetail> assistanceDetails) =>
-            AssistanceDetails = assistanceDetails;
 
         public UnitResult<Error> AddPet(Pet pet)
         {
@@ -243,7 +220,7 @@ namespace P2Project.Volunteers.Domain
 
         public Result<string, Error> ChangePetMainPhoto(
             PetId petId,
-            PetPhoto newMainPhoto)
+            Photo newMainPhoto)
         {
             var petExist = _pets.FirstOrDefault(p => p.Id == petId);
             if (petExist is null)

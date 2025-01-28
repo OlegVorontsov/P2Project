@@ -31,7 +31,7 @@ namespace P2Project.Volunteers.Domain.Entities
                AssistanceStatus assistanceStatus,
                DateOnly createdAt,
                List<AssistanceDetail>? assistanceDetails,
-               List<PetPhoto>? photos = null) : base(id)
+               List<Photo>? photos = null) : base(id)
         {
             NickName = nickName;
             SpeciesBreed = speciesBreed;
@@ -46,7 +46,7 @@ namespace P2Project.Volunteers.Domain.Entities
             AssistanceDetails = assistanceDetails ??
                                 new List<AssistanceDetail>([]);
             Photos = photos ??
-                     new List<PetPhoto>([]);
+                     new List<Photo>([]);
         }
         public NickName NickName { get; private set; } = default!;
         public SpeciesBreed SpeciesBreed { get; private set; } = default!;
@@ -59,7 +59,7 @@ namespace P2Project.Volunteers.Domain.Entities
         public AssistanceStatus AssistanceStatus { get; private set; }
         public DateOnly CreatedAt { get; private set; }
         public IReadOnlyList<AssistanceDetail> AssistanceDetails { get; private set; } = null!;
-        public IReadOnlyList<PetPhoto> Photos { get; private set; } = null!;
+        public IReadOnlyList<Photo> Photos { get; private set; } = null!;
         public Position Position { get; private set; }
         public VolunteerId VolunteerId { get; private set; } = null!;
 
@@ -88,7 +88,7 @@ namespace P2Project.Volunteers.Domain.Entities
             return Result.Success<Error>();
         }
 
-        public void UpdatePhotos(List<PetPhoto> photos) =>
+        public void UpdatePhotos(List<Photo> photos) =>
             Photos = photos;
 
         internal Result<string[], Error> DeleteAllPhotos()
@@ -129,7 +129,7 @@ namespace P2Project.Volunteers.Domain.Entities
         }
 
         public Result<string, Error> ChangeMainPhoto(
-            PetPhoto petPhoto)
+            Photo petPhoto)
         {
             var photoExist = Photos.FirstOrDefault(p =>
                 p.FilePath == petPhoto.FilePath);
@@ -139,12 +139,12 @@ namespace P2Project.Volunteers.Domain.Entities
             if (photoExist.IsMain)
                 return Errors.General.Failure(petPhoto.FilePath);
 
-            var newPhotos = new List<PetPhoto>();
+            var newPhotos = new List<Photo>();
             foreach (var photo in Photos)
             {
                 if (photo.FilePath != petPhoto.FilePath)
                 {
-                    newPhotos.Add(PetPhoto.Create(photo.FilePath, false).Value);
+                    newPhotos.Add(Photo.Create(photo.FilePath, false).Value);
                 }
             }
             

@@ -19,13 +19,5 @@ namespace P2Project.Volunteers.Application
         Task<Result<Volunteer, Error>> GetById(
                     VolunteerId volunteerId,
                     CancellationToken cancellationToken = default);
-        
-        Task<Result<Volunteer, Error>> GetByFullName(
-                    FullName fullName,
-                    CancellationToken cancellationToken = default);
-        
-        Task<Result<Volunteer, Error>> GetByEmail(
-                    Email email,
-                    CancellationToken cancellationToken = default);
     }
 }

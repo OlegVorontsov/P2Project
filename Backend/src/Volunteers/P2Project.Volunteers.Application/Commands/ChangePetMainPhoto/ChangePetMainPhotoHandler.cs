@@ -8,6 +8,7 @@ using P2Project.Core.Interfaces;
 using P2Project.Core.Interfaces.Commands;
 using P2Project.SharedKernel.Errors;
 using P2Project.SharedKernel.IDs;
+using P2Project.SharedKernel.ValueObjects;
 using P2Project.Volunteers.Domain.ValueObjects.Pets;
 
 namespace P2Project.Volunteers.Application.Commands.ChangePetMainPhoto;
@@ -49,7 +50,7 @@ public class ChangePetMainPhotoHandler :
             return volunteerResult.Error.ToErrorList();
         
         var petId = PetId.Create(command.PetId);
-        var newMainPhoto = PetPhoto.Create(command.ObjectName, true).Value;
+        var newMainPhoto = Photo.Create(command.ObjectName, true).Value;
         
         var changeResult = volunteerResult.Value
             .ChangePetMainPhoto(petId, newMainPhoto);
