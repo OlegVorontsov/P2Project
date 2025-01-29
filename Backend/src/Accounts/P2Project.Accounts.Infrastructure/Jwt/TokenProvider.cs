@@ -3,10 +3,10 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using P2Project.Accounts.Application;
+using P2Project.Accounts.Application.Interfaces;
 using P2Project.Accounts.Domain;
 using P2Project.Accounts.Infrastructure.Managers;
-using P2Project.Accounts.Infrastructure.Models;
+using P2Project.Framework.Authorization;
 
 namespace P2Project.Accounts.Infrastructure.Jwt;
 

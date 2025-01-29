@@ -1,32 +1,67 @@
 {
   "Roles": {
     "Admin": [
-      "get.volunteer",
-      "create.volunteer",
-      "update.volunteer",
-      "delete.volunteer",
-      "get.pet",
-      "create.pet",
-      "update.pet",
-      "delete.pet"
+      "volunteers.create",
+      "volunteers.read",
+      "volunteers.update",
+      "volunteers.delete",
+      "pets.read",
+      "species.create",
+      "species.read",
+      "species.update",
+      "species.delete",
+      "breeds.create",
+      "breeds.read",
+      "breeds.update",
+      "breeds.delete",
+      "files.read",
+      "files.upload",
+      "files.delete"
     ],
-    "Visitor": [
-      "get.pet",
-      "get.volunteer"
+    "Volunteer": [
+      "volunteers.read",
+      "volunteers.update",
+      "pets.read",
+      "species.read",
+      "breeds.read",
+      "files.read",
+      "files.upload",
+      "files.delete"
+    ],
+    "Participant": [
+      "volunteers.read",
+      "pets.read",
+      "species.read",
+      "breeds.read",
+      "files.read"
     ]
   },
   "Permissions": {
-    "Volunteer": [
-      "get.volunteer",
-      "create.volunteer",
-      "update.volunteer",
-      "delete.volunteer"
+    "Volunteers": [
+      "volunteers.create",
+      "volunteers.read",
+      "volunteers.update",
+      "volunteers.delete"
     ],
-    "Pet": [
-      "get.pet",
-      "create.pet",
-      "update.pet",
-      "delete.pet"
+    "Pets": [
+      "pets.read"
+    ],
+    "Species": [
+      "species.create",
+      "species.read",
+      "species.update",
+      "species.delete"
+    ],
+    "Breeds": [
+      "breeds.create",
+      "breeds.read",
+      "breeds.update",
+      "breeds.delete"
+    ],
+    "Files": [
+      "files.read",
+      "files.upload",
+      "files.delete"
     ]
   }
 }

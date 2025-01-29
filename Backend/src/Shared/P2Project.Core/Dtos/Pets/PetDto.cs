@@ -28,6 +28,6 @@ public class PetDto
     public string CreatedAt { get; init; } = string.Empty;
     public int Position { get; init; }
     public IEnumerable<AssistanceDetailDto> AssistanceDetails { get; set; } = default!;
-    public IEnumerable<PetPhotoDto> Photos { get; set; } = default!;
+    public IEnumerable<PhotoDto> Photos { get; set; } = default!;
     public bool IsDeleted { get; init; }
 }

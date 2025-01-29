@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using P2Project.Framework;
+using P2Project.Framework.Authorization;
 using P2Project.Species.Application.Commands.AddBreeds;
 using P2Project.Species.Application.Commands.Create;
 using P2Project.Species.Application.Commands.DeleteBreedById;
@@ -10,8 +12,10 @@ using P2Project.Species.Web.Requests;
 
 namespace P2Project.Species.Web
 {
+    [Authorize]
     public class SpeciesController : ApplicationController
     {
+        [Permission(PermissionsConfig.Species.Create)]
         [HttpPost]
         public async Task<ActionResult<Guid>> Create(
             [FromBody] CreateSpeciesRequest request,
@@ -27,6 +31,7 @@ namespace P2Project.Species.Web
             return Ok(result.Value);
         }
 
+        [Permission(PermissionsConfig.Breeds.Create)]
         [HttpPatch("{id:guid}/breeds")]
         public async Task<ActionResult<Guid>> AddBreeds(
             [FromRoute] Guid id,
@@ -43,6 +48,7 @@ namespace P2Project.Species.Web
             return Ok(result.Value);
         }
         
+        [Permission(PermissionsConfig.Species.Delete)]
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteSpecies(
             [FromRoute] Guid id,
@@ -57,6 +63,7 @@ namespace P2Project.Species.Web
             return Ok(result.Value);
         }
         
+        [Permission(PermissionsConfig.Breeds.Delete)]
         [HttpDelete("{speciesId:guid}/breeds/{breedId:guid}")]
         public async Task<IActionResult> DeleteBreed(
             [FromRoute] Guid speciesId,
@@ -73,6 +80,7 @@ namespace P2Project.Species.Web
             return Ok(result.Value);
         }
         
+        [Permission(PermissionsConfig.Species.Read)]
         [HttpGet]
         public async Task<IActionResult> GetAllSpecies(
             [FromQuery] GetAllSpeciesFilteredPaginatedRequest request,
@@ -85,6 +93,7 @@ namespace P2Project.Species.Web
             return Ok(species.Value);
         }
         
+        [Permission(PermissionsConfig.Species.Read)]
         [HttpGet("{id:guid}/breeds")]
         public async Task<IActionResult> GetBreedsBySpeciesId(
             [FromRoute] Guid id,

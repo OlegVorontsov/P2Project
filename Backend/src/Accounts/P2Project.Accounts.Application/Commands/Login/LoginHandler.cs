@@ -1,6 +1,7 @@
 using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using P2Project.Accounts.Application.Interfaces;
 using P2Project.Accounts.Domain;
 using P2Project.Core.Interfaces.Commands;
 using P2Project.SharedKernel.Errors;

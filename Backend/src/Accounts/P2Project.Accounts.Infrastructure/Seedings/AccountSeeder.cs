@@ -15,6 +15,6 @@ public class AccountSeeder
     {
         using var scope = _factory.CreateScope();
         var service = scope.ServiceProvider.GetRequiredService<AccountsSeederService>();
-        await service.SeedRolesWithPermissions();
+        await service.SeedAsync();
     }
 }

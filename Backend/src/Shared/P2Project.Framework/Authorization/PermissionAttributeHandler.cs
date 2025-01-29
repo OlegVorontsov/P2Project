@@ -1,11 +1,7 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
-using P2Project.Accounts.Infrastructure.Managers;
-using P2Project.Accounts.Infrastructure.Models;
 
-namespace P2Project.Accounts.Infrastructure.Permissions;
+namespace P2Project.Framework.Authorization;
 
 public class PermissionAttributeHandler :
     AuthorizationHandler<PermissionAttribute>

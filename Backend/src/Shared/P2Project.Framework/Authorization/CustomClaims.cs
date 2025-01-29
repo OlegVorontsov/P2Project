@@ -1,4 +1,4 @@
-namespace P2Project.Accounts.Infrastructure.Models;
+namespace P2Project.Framework.Authorization;
 
 public static class CustomClaims
 {

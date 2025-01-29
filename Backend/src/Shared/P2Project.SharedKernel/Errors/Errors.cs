@@ -16,6 +16,12 @@ namespace P2Project.SharedKernel.Errors
                 return Error.NotFound("record.not.found",
                                       $"record not found {forId}");
             }
+            
+            public static Error AlreadyExists(string? name = null)
+            {
+                var label = name == null ? "" : " " + name + " ";
+                return Error.Validation("record.already.exist", $"record with name: {label} already exist");
+            }
 
             public static Error Failure(string? name = null)
             {

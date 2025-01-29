@@ -22,17 +22,32 @@ public class User : IdentityUser<Guid>
     public ParticipantAccount? ParticipantAccount { get; set; }
 
     public static User CreateAdmin(
-        string userName,
         string email,
+        string userName,
         FullName fullName,
         Role role)
     {
         return new User
         {
-            UserName = userName,
             Email = email,
+            UserName = userName,
             FullName = fullName,
             _roles = [role]
+        };
+    }
+    
+    public static User CreateParticipant(
+        string email,
+        string userName,
+        FullName fullName,
+        Role role)
+    {
+        return new User
+        {
+            Email = email,
+            UserName = userName,
+            FullName = fullName,
+            _roles = [role],
         };
     }
 }

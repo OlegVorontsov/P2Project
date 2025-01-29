@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 
-namespace P2Project.Accounts.Infrastructure.Permissions;
+namespace P2Project.Framework.Authorization;
 
 public class PermissionAttribute :
     AuthorizeAttribute, IAuthorizationRequirement

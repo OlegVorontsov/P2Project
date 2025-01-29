@@ -30,7 +30,7 @@ namespace P2Project.Volunteers.Infrastructure.Configurations.Read
                         .Serialize(string.Empty, JsonSerializerOptions.Default),
                     
                     json => JsonSerializer
-                        .Deserialize<IEnumerable<PetPhotoDto>>(
+                        .Deserialize<IEnumerable<PhotoDto>>(
                             json, JsonSerializerOptions.Default)!)
                 .HasColumnName(Pet.DB_COLUMN_PHOTOS);
         }
