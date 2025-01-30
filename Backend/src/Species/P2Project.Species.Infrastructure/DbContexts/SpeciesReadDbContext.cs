@@ -29,6 +29,8 @@ namespace P2Project.Species.Infrastructure.DbContexts
     
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.HasDefaultSchema("volunteers");
+
             builder.ApplyConfigurationsFromAssembly(
                 typeof(SpeciesReadDbContext).Assembly,
                 type => type.FullName?.Contains("Configurations.Read") ?? false);
