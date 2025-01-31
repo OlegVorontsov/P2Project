@@ -11,7 +11,6 @@ namespace P2Project.Core.Dtos.Volunteers
         public string Gender { get; init; } = string.Empty;
         public string Description { get; init; } = string.Empty;
         public DateTime RegisteredAt { get; init; }
-        public string YearsOfExperience { get; init; } = string.Empty;
         public int NeedsHelpPets { get; init; }
         public int NeedsFoodPets { get; init; }
         public int OnMedicationPets { get; init; }
