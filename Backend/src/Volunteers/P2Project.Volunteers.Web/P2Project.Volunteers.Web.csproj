@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Accounts\P2Project.Accounts.Infrastructure\P2Project.Accounts.Infrastructure.csproj" />
       <ProjectReference Include="..\..\Shared\P2Project.Framework\P2Project.Framework.csproj" />
       <ProjectReference Include="..\..\Species\P2Project.Species.Application\P2Project.Species.Application.csproj" />
       <ProjectReference Include="..\P2Project.Volunteers.Application\P2Project.Volunteers.Application.csproj" />

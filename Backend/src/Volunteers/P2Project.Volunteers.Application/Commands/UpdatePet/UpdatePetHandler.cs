@@ -23,22 +23,19 @@ public class UpdatePetHandler : ICommandHandler<Guid, UpdatePetCommand>
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<AddPetHandler> _petLogger;
-    private readonly ILogger<CreateHandler> _speciesLogger;
-
+    
     public UpdatePetHandler(
         IValidator<UpdatePetCommand> validator,
         ISpeciesAgreement speciesAgreement,
         IVolunteersRepository volunteersRepository,
         [FromKeyedServices(Modules.Volunteers)] IUnitOfWork unitOfWork,
-        ILogger<AddPetHandler> petLogger,
-        ILogger<CreateHandler> speciesLogger)
+        ILogger<AddPetHandler> petLogger)
     {
         _validator = validator;
         _speciesAgreement = speciesAgreement;
         _volunteersRepository = volunteersRepository;
         _unitOfWork = unitOfWork;
         _petLogger = petLogger;
-        _speciesLogger = speciesLogger;
     }
 
     public async Task<Result<Guid, ErrorList>> Handle(
@@ -54,7 +51,7 @@ public class UpdatePetHandler : ICommandHandler<Guid, UpdatePetCommand>
             command.SpeciesId, command.BreedId, cancellationToken);
         if (speciesExistsResult.IsFailure)
         {
-            _speciesLogger.LogInformation(
+            _petLogger.LogInformation(
                 "Tried to create pet with unexisting species or breed id");
             return speciesExistsResult.Error.ToErrorList();
         }

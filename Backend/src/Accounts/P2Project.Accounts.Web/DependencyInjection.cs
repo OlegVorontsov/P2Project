@@ -6,11 +6,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using P2Project.Accounts.Application;
+using P2Project.Accounts.Application.Interfaces;
+using P2Project.Accounts.Domain;
 using P2Project.Accounts.Domain.RolePermission.Roles;
-using P2Project.Accounts.Domain.User;
 using P2Project.Accounts.Infrastructure;
 using P2Project.Accounts.Infrastructure.DbContexts;
+using P2Project.Accounts.Infrastructure.Jwt;
+using P2Project.Accounts.Infrastructure.Managers;
 using P2Project.Accounts.Infrastructure.Permissions;
+using P2Project.Accounts.Infrastructure.Seedings;
+using P2Project.Framework.Authorization;
 
 namespace P2Project.Accounts.Web;
 
@@ -24,7 +29,8 @@ public static class DependencyInjection
                        .AddUsersIdentity()
                        .AddUsersAuthentication(configuration)
                        .AddUsersAuthorization()
-                       .AddAccountsApplication();
+                       .AddAccountsApplication()
+                       .AddSeedings();
     }
 
     private static IServiceCollection AddUsersIdentity(
@@ -80,6 +86,18 @@ public static class DependencyInjection
         services.AddSingleton<IAuthorizationHandler, PermissionAttributeHandler>();
         services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
         
+        return services;
+    }
+    
+    private static IServiceCollection AddSeedings(
+        this IServiceCollection services)
+    {
+        services.AddScoped<PermissionManager>()
+            .AddScoped<RolePermissionManager>()
+            .AddScoped<IAccountsManager, AccountsManager>()
+            .AddSingleton<AccountSeeder>()
+            .AddScoped<AccountsSeederService>();
+
         return services;
     }
 }

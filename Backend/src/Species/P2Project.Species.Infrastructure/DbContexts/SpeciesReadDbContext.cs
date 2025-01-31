@@ -27,9 +27,11 @@ namespace P2Project.Species.Infrastructure.DbContexts
             optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         }
     
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder builder)
         {
-            modelBuilder.ApplyConfigurationsFromAssembly(
+            builder.HasDefaultSchema("volunteers");
+
+            builder.ApplyConfigurationsFromAssembly(
                 typeof(SpeciesReadDbContext).Assembly,
                 type => type.FullName?.Contains("Configurations.Read") ?? false);
         }

@@ -1,23 +1,27 @@
-using System.Text.Json;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using P2Project.Accounts.Domain;
+using P2Project.Accounts.Domain.Accounts;
 using P2Project.Accounts.Domain.RolePermission;
 using P2Project.Accounts.Domain.RolePermission.Permissions;
 using P2Project.Accounts.Domain.RolePermission.Roles;
-using P2Project.Accounts.Domain.User;
-using P2Project.Accounts.Domain.User.ValueObjects;
 using P2Project.SharedKernel;
 
 namespace P2Project.Accounts.Infrastructure.DbContexts;
-        
+
 public class AuthorizationDbContext(IConfiguration configuration) :
     IdentityDbContext<User, Role, Guid>
-{       
+{
     public DbSet<User> Users => Set<User>();
     public DbSet<Role> Roles => Set<Role>();
+    public DbSet<Permission> Permissions => Set<Permission>();
+    public DbSet<RolePermission> RolePermissions => Set<RolePermission>();
+    public DbSet<AdminAccount> AdminAccounts => Set<AdminAccount>();
+    public DbSet<ParticipantAccount> ParticipantAccounts => Set<ParticipantAccount>();
+    public DbSet<VolunteerAccount> VolunteerAccounts => Set<VolunteerAccount>();
 
     private ILoggerFactory CreateLoggerFactory() =>
         LoggerFactory.Create(builder => { builder.AddConsole(); });
@@ -34,34 +38,14 @@ public class AuthorizationDbContext(IConfiguration configuration) :
     {
         base.OnModelCreating(builder);
         
-        builder.Entity<User>()
-            .ToTable("users");
-
-        builder.Entity<User>()
-            .Property(u => u.SocialNetworks)
-            .HasConversion(
-                u => JsonSerializer
-                    .Serialize(u, JsonSerializerOptions.Default),
-                json => JsonSerializer
-                    .Deserialize<IReadOnlyList<SocialNetwork>>(json, JsonSerializerOptions.Default)!);
+        builder.HasDefaultSchema("accounts");
         
-        builder.Entity<IdentityUserClaim<Guid>>()
-            .ToTable("user_claims");
-        
-        builder.Entity<IdentityUserToken<Guid>>()
-            .ToTable("user_tokens");
-        
-        builder.Entity<IdentityUserLogin<Guid>>()
-            .ToTable("user_logins");
-        
-        builder.Entity<IdentityUserRole<Guid>>()
-            .ToTable("user_roles");
+        builder.ApplyConfigurationsFromAssembly(
+            typeof(AuthorizationDbContext).Assembly,
+            x => x.FullName!.Contains("Configurations.Write"));
         
         builder.Entity<Role>()
             .ToTable("roles");
-        
-        builder.Entity<IdentityRoleClaim<Guid>>()
-            .ToTable("role_claims");
         
         builder.Entity<Permission>()
             .ToTable("permissions");
@@ -74,20 +58,19 @@ public class AuthorizationDbContext(IConfiguration configuration) :
             .Property(p => p.Description)
             .HasMaxLength(500);
         
-        builder.Entity<RolePermission>()
-            .ToTable("role_permissions");
+        builder.Entity<IdentityUserClaim<Guid>>()
+            .ToTable("user_claims");
         
-        builder.Entity<RolePermission>()
-            .HasOne(rp => rp.Role)
-            .WithMany(r => r.RolePermissions)
-            .HasForeignKey(rp => rp.RoleId);
+        builder.Entity<IdentityUserToken<Guid>>()
+            .ToTable("user_tokens");
         
-        builder.Entity<RolePermission>()
-            .HasOne(rp => rp.Permission)
-            .WithMany()
-            .HasForeignKey(rp => rp.PermissionId);
+        builder.Entity<IdentityUserLogin<Guid>>()
+            .ToTable("user_logins");
         
-        builder.Entity<RolePermission>()
-            .HasKey(rp => new { rp.RoleId, rp.PermissionId });
+        builder.Entity<IdentityRoleClaim<Guid>>()
+            .ToTable("role_claims");
+        
+        builder.Entity<IdentityUserRole<Guid>>()
+            .ToTable("user_roles");
     }
 }

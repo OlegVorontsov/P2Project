@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using P2Project.Framework;
+using P2Project.Framework.Authorization;
 using P2Project.Framework.Files;
 using P2Project.Volunteers.Application.Commands.AddPet;
 using P2Project.Volunteers.Application.Commands.AddPetPhotos;
@@ -13,19 +14,19 @@ using P2Project.Volunteers.Application.Commands.HardDelete;
 using P2Project.Volunteers.Application.Commands.HardDeletePet;
 using P2Project.Volunteers.Application.Commands.SoftDelete;
 using P2Project.Volunteers.Application.Commands.SoftDeletePet;
-using P2Project.Volunteers.Application.Commands.UpdateAssistanceDetails;
 using P2Project.Volunteers.Application.Commands.UpdateMainInfo;
 using P2Project.Volunteers.Application.Commands.UpdatePet;
 using P2Project.Volunteers.Application.Commands.UpdatePhoneNumbers;
-using P2Project.Volunteers.Application.Commands.UpdateSocialNetworks;
 using P2Project.Volunteers.Application.Queries.Volunteers.GetFilteredVolunteersWithPagination;
 using P2Project.Volunteers.Application.Queries.Volunteers.GetVolunteerById;
 using P2Project.Volunteers.Web.Requests;
 
 namespace P2Project.Volunteers.Web
 {
+    [Authorize]
     public class VolunteerController : ApplicationController
     {
+        [Permission(PermissionsConfig.Volunteers.Read)]
         [HttpGet]
         public async Task<IActionResult> GetAll(
             [FromQuery] GetFilteredVolunteersWithPaginationRequest request,
@@ -39,6 +40,7 @@ namespace P2Project.Volunteers.Web
             return Ok(response.Value);
         }
         
+        [Permission(PermissionsConfig.Volunteers.Read)]
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById(
             [FromRoute] Guid id,
@@ -52,6 +54,7 @@ namespace P2Project.Volunteers.Web
             return Ok(response.Value);
         }
         
+        [Permission(PermissionsConfig.Volunteers.Create)]
         [HttpPost]
         public async Task<ActionResult<Guid>> Create(
             [FromBody] CreateRequest request,
@@ -67,6 +70,7 @@ namespace P2Project.Volunteers.Web
             return Ok(result.Value);
         }
 
+        [Permission(PermissionsConfig.Volunteers.Update)]
         [HttpPatch("{id:guid}/main-info")]
         public async Task<ActionResult<Guid>> UpdateMainInfo(
             [FromRoute] Guid id,
@@ -83,6 +87,7 @@ namespace P2Project.Volunteers.Web
             return Ok(result.Value);
         }
 
+        [Permission(PermissionsConfig.Volunteers.Update)]
         [HttpPatch("{id:guid}/phone-numbers")]
         public async Task<ActionResult<Guid>> UpdatePhoneNumbers(
             [FromRoute] Guid id,
@@ -99,38 +104,7 @@ namespace P2Project.Volunteers.Web
             return Ok(result.Value);
         }
 
-        [HttpPatch("{id:guid}/social-networks")]
-        public async Task<ActionResult<Guid>> UpdateSocialNetworks(
-            [FromRoute] Guid id,
-            [FromBody] UpdateSocialNetworksRequest request,
-            [FromServices] UpdateSocialNetworksHandler handler,
-            CancellationToken cancellationToken)
-        {
-            var result = await handler.Handle(
-                request.ToCommand(id), cancellationToken);
-
-            if (result.IsFailure)
-                return result.Error.ToResponse();
-
-            return Ok(result.Value);
-        }
-
-        [HttpPatch("{id:guid}/assistance-details")]
-        public async Task<ActionResult<Guid>> UpdateAssistanceDetails(
-            [FromRoute] Guid id,
-            [FromBody] UpdateAssistanceDetailsRequest request,
-            [FromServices] UpdateAssistanceDetailsHandler handler,
-            CancellationToken cancellationToken)
-        {
-            var result = await handler.Handle(
-                request.ToCommand(id), cancellationToken);
-
-            if (result.IsFailure)
-                return result.Error.ToResponse();
-
-            return Ok(result.Value);
-        }
-
+        [Permission(PermissionsConfig.Volunteers.Delete)]
         [HttpDelete("{id:guid}/soft")]
         public async Task<ActionResult<Guid>> SoftDelete(
             [FromRoute] Guid id,
@@ -146,6 +120,7 @@ namespace P2Project.Volunteers.Web
             return Ok(result.Value);
         }
         
+        [Permission(PermissionsConfig.Volunteers.Delete)]
         [HttpDelete("{id:guid}/hard")]
         public async Task<IActionResult> HardDelete(
             [FromRoute] Guid id,
@@ -160,6 +135,7 @@ namespace P2Project.Volunteers.Web
             return Ok(result.Value);
         }
 
+        [Permission(PermissionsConfig.Volunteers.Update)]
         [HttpPost("{id:guid}/pet")]
         public async Task<IActionResult> AddPet(
             [FromRoute] Guid id,
@@ -175,6 +151,7 @@ namespace P2Project.Volunteers.Web
             return Ok(result.Value);
         }
 
+        [Permission(PermissionsConfig.Volunteers.Update)]
         [HttpPost("{volunteerId:guid}/pet/{petId:guid}/files")]
         public async Task<ActionResult> AddPetPhotos(
             [FromRoute] Guid volunteerId,
@@ -197,6 +174,7 @@ namespace P2Project.Volunteers.Web
             return Ok(result.Value);
         }
         
+        [Permission(PermissionsConfig.Volunteers.Delete)]
         [HttpDelete("{volunteerId:guid}/pets/{petId:guid}/photos")]
         public async Task<IActionResult> DeletePetPhotos(
             [FromRoute] Guid volunteerId,
@@ -212,6 +190,7 @@ namespace P2Project.Volunteers.Web
             return Ok();
         }
         
+        [Permission(PermissionsConfig.Volunteers.Update)]
         [HttpPut("{volunteerId:guid}/pets/{petId:guid}")]
         public async Task<IActionResult> UpdatePet(
             [FromRoute] Guid volunteerId,
@@ -228,6 +207,7 @@ namespace P2Project.Volunteers.Web
             return Ok(result.Value);
         }
         
+        [Permission(PermissionsConfig.Volunteers.Update)]
         [HttpPut("{volunteerId:guid}/pets/{petId:guid}/status")]
         public async Task<IActionResult> ChangePetStatus(
             [FromRoute] Guid volunteerId,
@@ -244,6 +224,7 @@ namespace P2Project.Volunteers.Web
             return Ok(result.Value);
         }
         
+        [Permission(PermissionsConfig.Volunteers.Update)]
         [HttpPut("{volunteerId:guid}/pets/{petId:guid}/main-photo")]
         public async Task<IActionResult> ChangePetMainPhoto(
             [FromRoute] Guid volunteerId,
@@ -260,6 +241,7 @@ namespace P2Project.Volunteers.Web
             return Ok(result.Value);
         }
         
+        [Permission(PermissionsConfig.Volunteers.Delete)]
         [HttpDelete("{volunteerId:guid}/pets/{petId:guid}/soft")]
         public async Task<IActionResult> SoftDeletePet(
             [FromRoute] Guid volunteerId,
@@ -275,6 +257,7 @@ namespace P2Project.Volunteers.Web
             return Ok(result.Value);
         }
         
+        [Permission(PermissionsConfig.Volunteers.Delete)]
         [HttpDelete("{volunteerId:guid}/pets/{petId:guid}/hard")]
         public async Task<IActionResult> HardDeletePet(
             [FromRoute] Guid volunteerId,

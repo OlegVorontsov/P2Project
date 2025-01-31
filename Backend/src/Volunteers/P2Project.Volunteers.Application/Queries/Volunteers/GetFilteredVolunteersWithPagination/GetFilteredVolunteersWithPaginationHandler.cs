@@ -41,9 +41,9 @@ public class GetFilteredVolunteersWithPaginationHandler :
             ? volunteersQuery.OrderByDescending(keySelector)
             : volunteersQuery.OrderBy(keySelector);
 
-        volunteersQuery = volunteersQuery.WhereIf(
+        /*volunteersQuery = volunteersQuery.WhereIf(
             !string.IsNullOrWhiteSpace(query.Name),
-            v => v.FirstName.Contains(query.Name!));
+            v => v.FirstName.Contains(query.Name!));*/
 
         return await volunteersQuery
             .ToPagedList(query.Page, query.PageSize, cancellationToken);
@@ -56,9 +56,9 @@ public class GetFilteredVolunteersWithPaginationHandler :
 
         Expression<Func<VolunteerDto, object>> keySelector = sortBy?.ToLower() switch
         {
-            "firstname" => v => v.FirstName,
-            "secondname" => v => v.SecondName,
-            "lastname" => v => v.LastName,
+            //"firstname" => v => v.FirstName,
+            //"secondname" => v => v.SecondName,
+            //"lastname" => v => v.LastName,
             _ => v => v.Id
         };
 

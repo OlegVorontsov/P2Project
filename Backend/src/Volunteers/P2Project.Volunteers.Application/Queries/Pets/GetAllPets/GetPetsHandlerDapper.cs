@@ -3,6 +3,7 @@ using System.Text.Json;
 using CSharpFunctionalExtensions;
 using Dapper;
 using FluentValidation;
+using P2Project.Core.Dtos.Common;
 using P2Project.Core.Dtos.Pets;
 using P2Project.Core.Extensions;
 using P2Project.Core.Interfaces.DataBase;
@@ -61,7 +62,7 @@ public class GetPetsHandlerDapper :
             sql.ToString(),
             (pet, jsonPhotos) =>
             {
-                var photos = JsonSerializer.Deserialize<IEnumerable<PetPhotoDto>>(jsonPhotos) ?? new List<PetPhotoDto>();
+                var photos = JsonSerializer.Deserialize<IEnumerable<PhotoDto>>(jsonPhotos) ?? new List<PhotoDto>();
                 pet.Photos = photos;
                 return pet;
             },

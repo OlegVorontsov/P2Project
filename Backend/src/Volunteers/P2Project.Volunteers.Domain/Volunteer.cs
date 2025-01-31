@@ -7,7 +7,6 @@ using P2Project.Volunteers.Domain.Entities;
 using P2Project.Volunteers.Domain.ValueObjects.Pets;
 using P2Project.Volunteers.Domain.ValueObjects.Volunteers;
 using Result = CSharpFunctionalExtensions.Result;
-using SocialNetwork = P2Project.Volunteers.Domain.ValueObjects.Volunteers.SocialNetwork;
 
 namespace P2Project.Volunteers.Domain
 {
@@ -21,45 +20,28 @@ namespace P2Project.Volunteers.Domain
         public const string DB_TABLE_VOLUNTEERS = "volunteers";
         public const string DB_COLUMN_GENDER = "gender";
         public const string DB_COLUMN_REGISTERED_AT = "registered_at";
-        public const string DB_COLUMN_YEARS_OF_EXPERIENCE = "years_of_experience";
         public const string DB_COLUMN_PHONE_NUMBERS = "phone_numbers";
-        public const string DB_COLUMN_SOCIAL_NETWORKS = "social_networks";
-        public const string DB_COLUMN_ASSISTANCE_DETAILS = "assistance_details";
+        
         private Volunteer(VolunteerId id) : base(id) { }
         private readonly List<Pet> _pets = [];
 
         public Volunteer(
                 VolunteerId id,
-                FullName fullName,
                 VolunteerInfo volunteerInfo,
                 Gender gender,
-                Email email,
                 Description description,
-                List<PhoneNumber>? phoneNumbers,
-                List<SocialNetwork>? socialNetworks,
-                List<AssistanceDetail>? assistanceDetails) : base(id)
+                List<PhoneNumber>? phoneNumbers) : base(id)
         {
-            FullName = fullName;
             VolunteerInfo = volunteerInfo;
             Gender = gender;
-            Email = email;
             Description = description;
             RegisteredAt = DateTime.UtcNow;
             PhoneNumbers = phoneNumbers ?? new List<PhoneNumber>();
-            SocialNetworks = socialNetworks ?? new List<SocialNetwork>();
-            AssistanceDetails = assistanceDetails ?? new List<AssistanceDetail>();
         }
-        public FullName FullName { get; private set; }
         public VolunteerInfo VolunteerInfo { get; private set; }
         public Gender Gender { get; private set; }
-        public Email Email { get; private set; } = default!;
         public Description Description { get; private set; } = default!;
         public DateTime RegisteredAt { get; private set; }
-        public string YearsOfExperience
-        {
-            get => GetYearsOfExperience();
-            private set { }
-        }
         public IReadOnlyList<Pet> Pets => _pets;
         public int NeedsHelpPets
         {
@@ -87,36 +69,7 @@ namespace P2Project.Volunteers.Domain
             private set { }
         }
         public int UnknownStatusPets{ get; private set; } = default!;
-        public IReadOnlyList<PhoneNumber> PhoneNumbers { get; private set; } = null!;
-        public IReadOnlyList<SocialNetwork> SocialNetworks { get; private set; } = null!;
-        public IReadOnlyList<AssistanceDetail> AssistanceDetails { get; private set; } = null!;
-        private string GetYearsOfExperience()
-        {
-            var registrationDate = RegisteredAt;
-            var currentDate = DateTime.Now;
-            
-            var years = currentDate.Year - registrationDate.Year;
-            var months = currentDate.Month - registrationDate.Month;
-            var days = currentDate.Day - registrationDate.Day;
-            
-            if (days < 0)
-            {
-                months--;
-                days += DateTime.DaysInMonth(currentDate.Year, currentDate.Month);
-            }
-            
-            if (months < 0)
-            {
-                years--;
-                months += 12;
-            }
-            
-            string yearString = years == 1 ? "1 год" : years + " лет";
-            string monthString = months == 1 ? "1 месяц" : months + " месяцев";
-            string dayString = days == 1 ? "1 день" : days + " дней";
-
-            return $"{yearString} {monthString} {dayString}";
-        }
+        public IReadOnlyList<PhoneNumber> PhoneNumbers { get; private set; } = [];
         
         public override void SoftDelete()
         {
@@ -139,12 +92,10 @@ namespace P2Project.Volunteers.Domain
         }
 
         public void UpdateMainInfo(
-                    FullName fullName,
                     VolunteerInfo volunteerInfo,
                     Gender gender,
                     Description description)
         {
-            FullName = fullName;
             VolunteerInfo = volunteerInfo;
             Gender = gender;
             Description = description;
@@ -153,14 +104,6 @@ namespace P2Project.Volunteers.Domain
         public void UpdatePhoneNumbers(
             List<PhoneNumber> phoneNumbers) =>
             PhoneNumbers = phoneNumbers;
-
-        public void UpdateSocialNetworks(
-            List<SocialNetwork> socialNetworks) =>
-            SocialNetworks = socialNetworks;
-
-        public void UpdateAssistanceDetails(
-            List<AssistanceDetail> assistanceDetails) =>
-            AssistanceDetails = assistanceDetails;
 
         public UnitResult<Error> AddPet(Pet pet)
         {
@@ -243,7 +186,7 @@ namespace P2Project.Volunteers.Domain
 
         public Result<string, Error> ChangePetMainPhoto(
             PetId petId,
-            PetPhoto newMainPhoto)
+            Photo newMainPhoto)
         {
             var petExist = _pets.FirstOrDefault(p => p.Id == petId);
             if (petExist is null)

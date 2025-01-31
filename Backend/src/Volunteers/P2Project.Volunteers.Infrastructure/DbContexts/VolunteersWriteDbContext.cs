@@ -24,12 +24,14 @@ namespace P2Project.Volunteers.Infrastructure.DbContexts
             optionsBuilder.EnableSensitiveDataLogging(false);
             optionsBuilder.UseLoggerFactory(CreateLoggerFactory());
         }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder builder)
         {
-            modelBuilder.ApplyConfigurationsFromAssembly(
+            builder.HasDefaultSchema("volunteers");
+
+            builder.ApplyConfigurationsFromAssembly(
                 typeof(VolunteersWriteDbContext).Assembly,
                 type => type.FullName?.Contains("Configurations.Write") ?? false);
-            modelBuilder.ApplyConfigurationsFromAssembly(
+            builder.ApplyConfigurationsFromAssembly(
                 typeof(SpeciesWriteDbContext).Assembly,
                 type => type.FullName?.Contains("Configurations.Write") ?? false);
         }

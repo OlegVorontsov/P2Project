@@ -14,19 +14,12 @@ namespace P2Project.UnitTestsFabrics
         {
             return new Volunteer(
                 VolunteerId.New(),
-                FullName.Create(
-                    "FirstName",
-                    "SecondName",
-                    "LastName").Value,
                 VolunteerInfo.Create(
                     random.Next(Constants.MIN_AGE, Constants.MAX_AGE),
                     random.Next(Constants.MIN_GRADE, Constants.MAX_GRADE)).Value,
                 Gender.Male,
-                Email.Create("test@domain.com").Value,
                 Description.Create("description").Value,
-                new List<PhoneNumber>(),
-                new List<SocialNetwork>(),
-                new List<AssistanceDetail>());
+                new List<PhoneNumber>());
         }
 
         public static Volunteer CreateVolunteerWithPets(int petsCount)

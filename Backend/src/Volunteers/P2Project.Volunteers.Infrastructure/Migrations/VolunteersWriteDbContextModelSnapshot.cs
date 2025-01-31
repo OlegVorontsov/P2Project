@@ -18,6 +18,7 @@ namespace P2Project.Volunteers.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasDefaultSchema("volunteers")
                 .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
@@ -50,7 +51,7 @@ namespace P2Project.Volunteers.Infrastructure.Migrations
                     b.HasIndex("SpeciesId")
                         .HasDatabaseName("ix_breeds_species_id");
 
-                    b.ToTable("breeds", (string)null);
+                    b.ToTable("breeds", "volunteers");
                 });
 
             modelBuilder.Entity("P2Project.Species.Domain.Species", b =>
@@ -73,7 +74,7 @@ namespace P2Project.Volunteers.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("pk_species");
 
-                    b.ToTable("species", (string)null);
+                    b.ToTable("species", "volunteers");
                 });
 
             modelBuilder.Entity("P2Project.Volunteers.Domain.Entities.Pet", b =>
@@ -264,7 +265,7 @@ namespace P2Project.Volunteers.Infrastructure.Migrations
                     b.HasIndex("VolunteerId")
                         .HasDatabaseName("ix_pets_volunteer_id");
 
-                    b.ToTable("pets", (string)null);
+                    b.ToTable("pets", "volunteers");
                 });
 
             modelBuilder.Entity("P2Project.Volunteers.Domain.Volunteer", b =>
@@ -272,11 +273,6 @@ namespace P2Project.Volunteers.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
                         .HasColumnName("id");
-
-                    b.Property<string>("AssistanceDetails")
-                        .IsRequired()
-                        .HasColumnType("jsonb")
-                        .HasColumnName("assistance_details");
 
                     b.Property<DateTime?>("DeletionDateTime")
                         .HasColumnType("timestamp with time zone")
@@ -320,19 +316,9 @@ namespace P2Project.Volunteers.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("registered_at");
 
-                    b.Property<string>("SocialNetworks")
-                        .IsRequired()
-                        .HasColumnType("jsonb")
-                        .HasColumnName("social_networks");
-
                     b.Property<int>("UnknownStatusPets")
                         .HasColumnType("integer")
                         .HasColumnName("unknown_status_pets");
-
-                    b.Property<string>("YearsOfExperience")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("years_of_experience");
 
                     b.ComplexProperty<Dictionary<string, object>>("Description", "P2Project.Volunteers.Domain.Volunteer.Description#Description", b1 =>
                         {
@@ -342,39 +328,6 @@ namespace P2Project.Volunteers.Infrastructure.Migrations
                                 .HasMaxLength(1000)
                                 .HasColumnType("character varying(1000)")
                                 .HasColumnName("description");
-                        });
-
-                    b.ComplexProperty<Dictionary<string, object>>("Email", "P2Project.Volunteers.Domain.Volunteer.Email#Email", b1 =>
-                        {
-                            b1.IsRequired();
-
-                            b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasMaxLength(300)
-                                .HasColumnType("character varying(300)")
-                                .HasColumnName("email");
-                        });
-
-                    b.ComplexProperty<Dictionary<string, object>>("FullName", "P2Project.Volunteers.Domain.Volunteer.FullName#FullName", b1 =>
-                        {
-                            b1.IsRequired();
-
-                            b1.Property<string>("FirstName")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("character varying(100)")
-                                .HasColumnName("first_name");
-
-                            b1.Property<string>("LastName")
-                                .HasMaxLength(100)
-                                .HasColumnType("character varying(100)")
-                                .HasColumnName("last_name");
-
-                            b1.Property<string>("SecondName")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("character varying(100)")
-                                .HasColumnName("second_name");
                         });
 
                     b.ComplexProperty<Dictionary<string, object>>("VolunteerInfo", "P2Project.Volunteers.Domain.Volunteer.VolunteerInfo#VolunteerInfo", b1 =>
@@ -393,7 +346,7 @@ namespace P2Project.Volunteers.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("pk_volunteers");
 
-                    b.ToTable("volunteers", (string)null);
+                    b.ToTable("volunteers", "volunteers");
                 });
 
             modelBuilder.Entity("P2Project.Species.Domain.Entities.Breed", b =>

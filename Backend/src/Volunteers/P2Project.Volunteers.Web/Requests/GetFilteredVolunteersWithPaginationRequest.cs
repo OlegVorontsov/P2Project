@@ -3,12 +3,12 @@ using P2Project.Volunteers.Application.Queries.Volunteers.GetFilteredVolunteersW
 namespace P2Project.Volunteers.Web.Requests;
 
 public record GetFilteredVolunteersWithPaginationRequest(
-    string? Name,
+    //string? Name,
     string? SortBy,
     string? SortDirection,
     int Page,
     int PageSize)
 {
     public GetFilteredVolunteersWithPaginationQuery ToQuery() =>
-        new(Name, SortBy, SortDirection, Page, PageSize);
+        new(SortBy, SortDirection, Page, PageSize);
 }

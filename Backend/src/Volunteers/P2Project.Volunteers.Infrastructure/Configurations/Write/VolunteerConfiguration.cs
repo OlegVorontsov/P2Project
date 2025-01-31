@@ -23,24 +23,6 @@ namespace P2Project.Volunteers.Infrastructure.Configurations.Write
                     id => id.Value,
                     value => VolunteerId.Create(value));
 
-            builder.ComplexProperty(v => v.FullName, fnb =>
-            {
-                fnb.Property(fn => fn.FirstName)
-                   .IsRequired()
-                   .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH)
-                   .HasColumnName(FullName.DB_COLUMN_FIRST_NAME);
-
-                fnb.Property(snb => snb.SecondName)
-                   .IsRequired()
-                   .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH)
-                   .HasColumnName(FullName.DB_COLUMN_SECOND_NAME);
-
-                fnb.Property(lnb => lnb.LastName)
-                   .IsRequired(false)
-                   .HasMaxLength(Constants.MAX_SMALL_TEXT_LENGTH)
-                   .HasColumnName(FullName.DB_COLUMN_LAST_NAME);
-            });
-
             builder.ComplexProperty(v => v.VolunteerInfo, vib =>
             {
                 vib.Property(vi => vi.Age)
@@ -57,14 +39,6 @@ namespace P2Project.Volunteers.Infrastructure.Configurations.Write
                    .HasConversion<string>()
                    .HasColumnName(Volunteer.DB_COLUMN_GENDER);
 
-            builder.ComplexProperty(v => v.Email, eb =>
-            {
-                eb.Property(e => e.Value)
-                  .IsRequired()
-                  .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH)
-                  .HasColumnName(Email.DB_COLUMN_EMAIL);
-            });
-
             builder.ComplexProperty(v => v.Description, db =>
             {
                 db.Property(d => d.Value)
@@ -76,9 +50,6 @@ namespace P2Project.Volunteers.Infrastructure.Configurations.Write
             builder.Property(v => v.RegisteredAt)
                 .IsRequired()
                 .HasColumnName(Volunteer.DB_COLUMN_REGISTERED_AT);
-
-            builder.Property(v => v.YearsOfExperience)
-                   .HasColumnName(Volunteer.DB_COLUMN_YEARS_OF_EXPERIENCE);
 
             builder.HasMany(v => v.Pets)
                    .WithOne()
@@ -110,22 +81,6 @@ namespace P2Project.Volunteers.Infrastructure.Configurations.Write
                     dto => PhoneNumber.Create(
                         dto.Value, dto.IsMain).Value)
                 .HasColumnName(Volunteer.DB_COLUMN_PHONE_NUMBERS);
-
-            builder.Property(v => v.SocialNetworks)
-                .ValueObjectsCollectionJsonConversion(
-                    social => new SocialNetworkDto(
-                        social.Name, social.Link),
-                    dto => SocialNetwork.Create(
-                        dto.Name, dto.Link).Value)
-                .HasColumnName(Volunteer.DB_COLUMN_SOCIAL_NETWORKS);
-
-            builder.Property(v => v.AssistanceDetails)
-                .ValueObjectsCollectionJsonConversion(
-                    detail => new AssistanceDetailDto(
-                        detail.Name, detail.Description, detail.AccountNumber),
-                    dto => AssistanceDetail.Create(
-                        dto.Name, dto.Description, dto.AccountNumber).Value)
-                .HasColumnName(Volunteer.DB_COLUMN_ASSISTANCE_DETAILS);
             
             builder.Property(v => v.IsDeleted)
                 .HasColumnName("is_deleted")

@@ -12,11 +12,9 @@ using P2Project.Volunteers.Application.Commands.Create;
 using P2Project.Volunteers.Application.Commands.DeletePetPhotos;
 using P2Project.Volunteers.Application.Commands.HardDeletePet;
 using P2Project.Volunteers.Application.Commands.SoftDeletePet;
-using P2Project.Volunteers.Application.Commands.UpdateAssistanceDetails;
 using P2Project.Volunteers.Application.Commands.UpdateMainInfo;
 using P2Project.Volunteers.Application.Commands.UpdatePet;
 using P2Project.Volunteers.Application.Commands.UpdatePhoneNumbers;
-using P2Project.Volunteers.Application.Commands.UpdateSocialNetworks;
 using P2Project.Volunteers.Domain;
 
 namespace P2Project.IntegrationTests.Extensions;
@@ -31,7 +29,6 @@ public static class FixtureExtension
         return fixture.Build<CreateCommand>()
             .With(c => c.VolunteerInfo, volunteerInfo)
             .With(c => c.Gender, Gender.Male.ToString())
-            .With(c => c.Email, "email@mail.com")
             .With(c => c.PhoneNumbers, [phoneNumber])
             .Create();
     }
@@ -56,29 +53,6 @@ public static class FixtureExtension
         return fixture.Build<UpdatePhoneNumbersCommand>()
             .With(c => c.VolunteerId, VolunteerId)
             .With(c => c.PhoneNumbers, [phoneNumber, phoneNumber])
-            .Create();
-    }
-    
-    public static UpdateSocialNetworksCommand FakeUpdateSocialNetworksCommand(
-        this IFixture fixture, Guid VolunteerId)
-    {
-        var socialNetwork = new SocialNetworkDto("test_name", "test_link");
-        
-        return fixture.Build<UpdateSocialNetworksCommand>()
-            .With(c => c.VolunteerId, VolunteerId)
-            .With(c => c.SocialNetworks, [socialNetwork, socialNetwork])
-            .Create();
-    }
-    
-    public static UpdateAssistanceDetailsCommand FakeUpdateAssistanceDetailsCommand(
-        this IFixture fixture, Guid VolunteerId)
-    {
-        var assistanceDetail = new AssistanceDetailDto(
-            "test_name", "test_description", "test_account_number");
-        
-        return fixture.Build<UpdateAssistanceDetailsCommand>()
-            .With(c => c.VolunteerId, VolunteerId)
-            .With(c => c.AssistanceDetails, [assistanceDetail, assistanceDetail])
             .Create();
     }
     

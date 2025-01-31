@@ -27,24 +27,6 @@ namespace P2Project.Volunteers.Infrastructure.Configurations.Read
                         .Deserialize<IEnumerable<PhoneNumberDto>>(
                             json, JsonSerializerOptions.Default)!)
                 .HasColumnName(Volunteer.DB_COLUMN_PHONE_NUMBERS);
-            
-            builder.Property(x => x.SocialNetworks)
-                .HasConversion(
-                    values => JsonSerializer
-                        .Serialize(string.Empty, JsonSerializerOptions.Default),
-                    json => JsonSerializer
-                        .Deserialize<IEnumerable<SocialNetworkDto>>(
-                            json, JsonSerializerOptions.Default)!)
-                .HasColumnName(Volunteer.DB_COLUMN_SOCIAL_NETWORKS);
-            
-            builder.Property(x => x.AssistanceDetails)
-                .HasConversion(
-                    values => JsonSerializer
-                        .Serialize(string.Empty, JsonSerializerOptions.Default),
-                    json => JsonSerializer
-                        .Deserialize<IEnumerable<AssistanceDetailDto>>(
-                            json, JsonSerializerOptions.Default)!)
-                .HasColumnName(Volunteer.DB_COLUMN_ASSISTANCE_DETAILS);
         }
     }
 }

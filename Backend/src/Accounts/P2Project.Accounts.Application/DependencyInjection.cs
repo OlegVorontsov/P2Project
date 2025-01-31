@@ -11,8 +11,7 @@ public static class DependencyInjection
     public static IServiceCollection AddAccountsApplication(
         this IServiceCollection services)
     {
-        services
-            .AddCommands();
+        services.AddCommands();
             //.AddQueries()
             //.AddValidatorsFromAssembly(_assembly);
 

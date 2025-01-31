@@ -57,30 +57,5 @@ namespace P2Project.Volunteers.Infrastructure
                 return Errors.General.NotFound(volunteerId);
             return volunteer;
         }
-
-        public async Task<Result<Volunteer, Error>> GetByFullName(
-                                FullName fullName,
-                                CancellationToken cancellationToken = default)
-        {
-            var volunteer = await _dbContext.Volunteers
-                                            .FirstOrDefaultAsync(v =>
-                                            v.FullName == fullName,
-                                            cancellationToken);
-            if (volunteer is null)
-                return Errors.General.NotFound();
-            return volunteer;
-        }
-        public async Task<Result<Volunteer, Error>> GetByEmail(
-                                Email email,
-                                CancellationToken cancellationToken = default)
-        {
-            var volunteer = await _dbContext.Volunteers
-                                            .FirstOrDefaultAsync(v =>
-                                            v.Email == email,
-                                            cancellationToken);
-            if (volunteer is null)
-                return Errors.General.NotFound();
-            return volunteer;
-        }
     }
 }
