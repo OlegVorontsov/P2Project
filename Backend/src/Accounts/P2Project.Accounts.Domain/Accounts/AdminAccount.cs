@@ -6,7 +6,7 @@ namespace P2Project.Accounts.Domain.Accounts;
 public class AdminAccount
 {
     private  AdminAccount(){}
-    public const string ADMIN = "Admin";
+    public const string ADMIN = "admin";
     public AdminAccount(User user)
     {
         Id = Guid.NewGuid();

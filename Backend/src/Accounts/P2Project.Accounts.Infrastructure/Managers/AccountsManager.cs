@@ -6,21 +6,24 @@ namespace P2Project.Accounts.Infrastructure.Managers;
 
 public class AccountsManager(AuthorizationDbContext dbContext) : IAccountsManager
 {
-    public async Task CreateAdminAccount(AdminAccount adminAccount)
+    public async Task CreateAdminAccount(
+        AdminAccount adminAccount, CancellationToken cancellationToken)
     {
-        await dbContext.AdminAccounts.AddAsync(adminAccount);
-        await dbContext.SaveChangesAsync();
+        dbContext.AdminAccounts.Add(adminAccount);
+        await dbContext.SaveChangesAsync(cancellationToken);
     }
     
-    public async Task CreateVolunteerAccount(VolunteerAccount volunteerAccount)
+    public async Task CreateVolunteerAccount(
+        VolunteerAccount volunteerAccount, CancellationToken cancellationToken)
     {
-        await dbContext.VolunteerAccounts.AddAsync(volunteerAccount);
-        await dbContext.SaveChangesAsync();
+        dbContext.VolunteerAccounts.Add(volunteerAccount);
+        await dbContext.SaveChangesAsync(cancellationToken);
     }
     
-    public async Task CreateParticipantAccount(ParticipantAccount participantAccount)
+    public async Task CreateParticipantAccount(
+        ParticipantAccount participantAccount, CancellationToken cancellationToken)
     {
-        await dbContext.ParticipantAccounts.AddAsync(participantAccount);
-        await dbContext.SaveChangesAsync();
+        dbContext.ParticipantAccounts.Add(participantAccount);
+        await dbContext.SaveChangesAsync(cancellationToken);
     }
 }

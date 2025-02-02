@@ -22,6 +22,7 @@ public class AuthorizationDbContext(IConfiguration configuration) :
     public DbSet<AdminAccount> AdminAccounts => Set<AdminAccount>();
     public DbSet<ParticipantAccount> ParticipantAccounts => Set<ParticipantAccount>();
     public DbSet<VolunteerAccount> VolunteerAccounts => Set<VolunteerAccount>();
+    public DbSet<RefreshSession> RefreshSessions => Set<RefreshSession>();
 
     private ILoggerFactory CreateLoggerFactory() =>
         LoggerFactory.Create(builder => { builder.AddConsole(); });
@@ -46,17 +47,6 @@ public class AuthorizationDbContext(IConfiguration configuration) :
         
         builder.Entity<Role>()
             .ToTable("roles");
-        
-        builder.Entity<Permission>()
-            .ToTable("permissions");
-        
-        builder.Entity<Permission>()
-            .HasIndex(p => p.Code)
-            .IsUnique();
-        
-        builder.Entity<Permission>()
-            .Property(p => p.Description)
-            .HasMaxLength(500);
         
         builder.Entity<IdentityUserClaim<Guid>>()
             .ToTable("user_claims");

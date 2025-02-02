@@ -81,11 +81,14 @@ namespace P2Project.SharedKernel.Errors
         
         public static class AccountError
         {
-            public static Error InvalidCredentials()
-            {
-                return Error.Validation("credentials.is.invalid",
-                    "credentials is invalid");
-            }
+            public static Error InvalidCredentials() =>
+                Error.Validation("credentials.is.invalid", "credentials is invalid");
+            
+            public static Error TokenExpired() =>
+                Error.Validation("token.is.expired", "Token is expired");
+            
+            public static Error InvalidToken() =>
+                Error.Validation("token.is.invalid", "Token is invalid");
         }
     }
 }

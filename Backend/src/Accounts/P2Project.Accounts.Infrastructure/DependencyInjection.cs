@@ -5,6 +5,7 @@ using P2Project.Accounts.Infrastructure.DbContexts;
 using P2Project.Accounts.Infrastructure.Jwt;
 using P2Project.Core;
 using P2Project.Core.Interfaces;
+using P2Project.Core.Options;
 
 namespace P2Project.Accounts.Infrastructure;
 

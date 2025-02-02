@@ -9,18 +9,22 @@ public class PermissionManager(AuthorizationDbContext dbContext)
     public async Task<Permission?> FindByCode(string code) =>
         await dbContext.Permissions.FirstOrDefaultAsync(p => p.Code == code);
     
-    public async Task AddRangeIfDoesNotExist(IEnumerable<string> codes)
+    public async Task AddRangeIfDoesNotExist(
+        IEnumerable<string> codes, CancellationToken cancellationToken = default)
     {
         foreach (var code in codes)
         {
-            var permissionExist = await dbContext.Permissions.AnyAsync(p => p.Code == code);
+            var permissionExist = await dbContext.Permissions
+                .AnyAsync(p => p.Code == code, cancellationToken);
             if(permissionExist) continue;
-            await dbContext.Permissions.AddAsync(new Permission { Code = code });
+            await dbContext.Permissions.AddAsync(
+                new Permission { Code = code }, cancellationToken);
         }
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<HashSet<string>> GetUserPermissions(Guid userId)
+    public async Task<HashSet<string>> GetUserPermissions(
+        Guid userId, CancellationToken cancellationToken = default)
     {
         var permissions = await dbContext.Users
             .Include(u => u.Roles)
@@ -28,7 +32,8 @@ public class PermissionManager(AuthorizationDbContext dbContext)
             .SelectMany(u => u.Roles)
             .SelectMany(r => r.RolePermissions)
             .Select(rp => rp.Permission.Code)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
+        
         return permissions.ToHashSet();
     }
 }

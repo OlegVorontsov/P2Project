@@ -6,7 +6,10 @@ namespace P2Project.Accounts.Infrastructure.Managers;
 
 public class RolePermissionManager(AuthorizationDbContext dbContext)
 {
-    public async Task AddRangeIfDoesNotExist(Guid roleId, IEnumerable<string> permissionCodes)
+    public async Task AddRangeIfDoesNotExist(
+        Guid roleId,
+        IEnumerable<string> permissionCodes,
+        CancellationToken cancellationToken = default)
     {
         foreach (var code in permissionCodes)
         {
@@ -14,7 +17,7 @@ public class RolePermissionManager(AuthorizationDbContext dbContext)
             if (permission is null) throw new Exception($"Permission {code} is not found");
                 
             var rolePermissionExist = await dbContext.RolePermissions
-                .AnyAsync(rp => rp.RoleId == roleId && rp.PermissionId == permission.Id);
+                .AnyAsync(rp => rp.RoleId == roleId && rp.PermissionId == permission.Id, cancellationToken);
             if(rolePermissionExist) continue;
 
             dbContext.RolePermissions.Add(new RolePermission
@@ -23,6 +26,6 @@ public class RolePermissionManager(AuthorizationDbContext dbContext)
                 PermissionId = permission!.Id
             });
         }
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
     }
 }

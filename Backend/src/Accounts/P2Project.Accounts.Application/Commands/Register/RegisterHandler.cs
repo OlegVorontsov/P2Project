@@ -39,7 +39,7 @@ public class RegisterHandler :
     
     public async Task<Result<string, ErrorList>> Handle(
         RegisterCommand command,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken)
     {
         var transaction = await _unitOfWork.BeginTransaction(cancellationToken);
         try
@@ -61,7 +61,8 @@ public class RegisterHandler :
         
             var result = await _userManager.CreateAsync(user, command.Password);
             var participantAccount = new ParticipantAccount(user);
-            await _accountManager.CreateParticipantAccount(participantAccount);
+            await _accountManager
+                .CreateParticipantAccount(participantAccount, cancellationToken);
         
             user.ParticipantAccount = participantAccount;
         

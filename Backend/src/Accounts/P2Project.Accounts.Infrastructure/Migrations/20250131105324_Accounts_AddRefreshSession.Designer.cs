@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using P2Project.Accounts.Infrastructure.DbContexts;
@@ -12,9 +13,11 @@ using P2Project.Accounts.Infrastructure.DbContexts;
 namespace P2Project.Accounts.Infrastructure.Migrations
 {
     [DbContext(typeof(AuthorizationDbContext))]
-    partial class AuthorizationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250131105324_Accounts_AddRefreshSession")]
+    partial class Accounts_AddRefreshSession
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -248,10 +251,6 @@ namespace P2Project.Accounts.Infrastructure.Migrations
                     b.Property<DateTime>("ExpiresIn")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("expires_in");
-
-                    b.Property<Guid>("Jti")
-                        .HasColumnType("uuid")
-                        .HasColumnName("jti");
 
                     b.Property<Guid>("RefreshToken")
                         .HasColumnType("uuid")
