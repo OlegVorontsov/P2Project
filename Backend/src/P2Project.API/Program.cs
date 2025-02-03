@@ -22,7 +22,7 @@ services
 var app = builder.Build();
 
 var seeder = app.Services.GetRequiredService<AccountSeeder>();
-//await seeder.SeedAsync();
+await seeder.SeedAsync();
 
 app.UseStaticFiles();
 app.UseExceptionMiddleware();

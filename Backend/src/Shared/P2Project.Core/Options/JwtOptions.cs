@@ -1,4 +1,4 @@
-namespace P2Project.Accounts.Infrastructure.Jwt;
+namespace P2Project.Core.Options;
 
 public class JwtOptions
 {

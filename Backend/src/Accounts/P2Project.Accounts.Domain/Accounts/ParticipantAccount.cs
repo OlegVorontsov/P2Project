@@ -2,7 +2,7 @@ namespace P2Project.Accounts.Domain.Accounts;
 
 public class ParticipantAccount
 {
-    public const string RoleName = "Participant";
+    public const string RoleName = "participant";
     private ParticipantAccount(){}
     public ParticipantAccount(User user)
     {
