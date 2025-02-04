@@ -65,9 +65,7 @@ public class HardDeletePetHandler :
             return deletingResult.Error.ToErrorList();
         }
 
-        var filePathsToDelete = deletingResult.Value;
-
-        foreach (var filePath in filePathsToDelete)
+        foreach (var filePath in deletingResult.Value)
         {
             var fileDeletingResult = await _fileProvider.DeleteFileByFileMetadata(
                 new FileMetadata(Constants.BUCKET_NAME_PHOTOS, filePath),

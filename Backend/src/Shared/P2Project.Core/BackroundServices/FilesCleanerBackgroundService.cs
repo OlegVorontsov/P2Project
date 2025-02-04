@@ -7,8 +7,8 @@ namespace P2Project.Core.BackroundServices
 {
     public partial class FilesCleanerBackgroundService : BackgroundService
     {
-        private readonly ILogger<FilesCleanerBackgroundService> _logger;
         private readonly IServiceScopeFactory _scopeFactory;
+        private readonly ILogger<FilesCleanerBackgroundService> _logger;
 
         public FilesCleanerBackgroundService(
             ILogger<FilesCleanerBackgroundService> logger,
