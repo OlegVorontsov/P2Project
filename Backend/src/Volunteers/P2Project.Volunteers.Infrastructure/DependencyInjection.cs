@@ -13,6 +13,7 @@ using P2Project.Core.MessageQueues;
 using P2Project.Core.Options;
 using P2Project.SharedKernel;
 using P2Project.Volunteers.Application;
+using P2Project.Volunteers.Infrastructure.BackgroundServices;
 using P2Project.Volunteers.Infrastructure.DbContexts;
 
 namespace P2Project.Volunteers.Infrastructure;
@@ -30,6 +31,7 @@ public static class DependencyInjection
             .AddMinioVault(configuration);
 
         services.AddScoped<IFilesCleanerService, FilesCleanerService>();
+        services.AddScoped<DeleteExpiredSoftDeletedEntityService>();
         services.AddSingleton<IMessageQueue<IEnumerable<FileInfoDto>>,
             InMemoryMessageQueue<IEnumerable<FileInfoDto>>>();
         return services;
@@ -39,6 +41,7 @@ public static class DependencyInjection
         this IServiceCollection services)
     {
         services.AddHostedService<FilesCleanerBackgroundService>();
+        services.AddHostedService<DeleteExpiredSoftDeletedEntityBackgroundService>();
         return services;
     }
 

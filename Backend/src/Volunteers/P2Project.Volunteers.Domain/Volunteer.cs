@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using P2Project.SharedKernel;
 using P2Project.SharedKernel.BaseClasses;
 using P2Project.SharedKernel.Errors;
 using P2Project.SharedKernel.IDs;
@@ -235,6 +236,13 @@ namespace P2Project.Volunteers.Domain
             _pets.Remove(petResult.Value);
 
             return filesToDelete;
+        }
+
+        public void DeleteExpiredPets()
+        {
+            _pets.RemoveAll(p => p.DeletionDateTime != null &&
+                                 DateTime.UtcNow >= p.DeletionDateTime.Value
+                                     .AddDays(Constants.LIFETIME_AFTER_SOFT_DELETION));
         }
         
         public Result<Pet, Error> GetPetById(PetId petId)

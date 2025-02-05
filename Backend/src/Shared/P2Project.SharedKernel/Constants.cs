@@ -29,5 +29,8 @@ namespace P2Project.SharedKernel
         public static string ACCOUNTS_JSON_FILE_NAME = "Accounts.json";
         public static string ROLES_JSON_FILE_NAME = "Roles.json";
         public static string PERMISSIONS_JSON_FILE_NAME = "Permissions.json";
+        
+        public static double DELETE_EXPIRED_SOFT_DELETED_SERVICE_DELAY_HOURS = 24;
+        public static double LIFETIME_AFTER_SOFT_DELETION = 30;
     }
 }
