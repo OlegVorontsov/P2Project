@@ -13,7 +13,7 @@ using P2Project.Accounts.Infrastructure.DbContexts;
 namespace P2Project.Accounts.Infrastructure.Migrations
 {
     [DbContext(typeof(AuthorizationDbContext))]
-    [Migration("20250204154007_Accounts_init")]
+    [Migration("20250205142713_Accounts_init")]
     partial class Accounts_init
     {
         /// <inheritdoc />
