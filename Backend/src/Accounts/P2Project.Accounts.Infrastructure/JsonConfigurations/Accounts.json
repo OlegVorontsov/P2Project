@@ -1,6 +1,7 @@
 {
   "Roles": {
     "Admin": [
+      "accounts.read",
       "volunteers.create",
       "volunteers.read",
       "volunteers.update",
@@ -37,6 +38,9 @@
     ]
   },
   "Permissions": {
+    "Accounts": [
+      "accounts.read"
+    ],
     "Volunteers": [
       "volunteers.create",
       "volunteers.read",

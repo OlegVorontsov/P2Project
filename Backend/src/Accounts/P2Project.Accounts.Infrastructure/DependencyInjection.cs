@@ -1,8 +1,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using P2Project.Accounts.Application.Interfaces;
 using P2Project.Accounts.Infrastructure.Admin;
 using P2Project.Accounts.Infrastructure.DbContexts;
-using P2Project.Accounts.Infrastructure.Jwt;
 using P2Project.Core;
 using P2Project.Core.Interfaces;
 using P2Project.Core.Options;
@@ -28,7 +28,8 @@ public static class DependencyInjection
     private static IServiceCollection AddDataBase(
         this IServiceCollection services)
     {
-        services.AddScoped<AuthorizationDbContext>();
+        services.AddScoped<AccountsWriteDbContext>();
+        services.AddScoped<IAccountsReadDbContext, AccountsReadDbContext>();
 
         return services;
     }

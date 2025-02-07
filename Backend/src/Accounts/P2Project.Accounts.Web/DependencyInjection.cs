@@ -38,7 +38,7 @@ public static class DependencyInjection
         this IServiceCollection services)
     {
         services.AddIdentity<User, Role>(options => { options.User.RequireUniqueEmail = true; })
-            .AddEntityFrameworkStores<AuthorizationDbContext>()
+            .AddEntityFrameworkStores<AccountsWriteDbContext>()
             .AddDefaultTokenProviders();
 
         return services;

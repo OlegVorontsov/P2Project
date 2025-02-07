@@ -11,7 +11,7 @@ using P2Project.Accounts.Infrastructure.DbContexts;
 
 namespace P2Project.Accounts.Infrastructure.Migrations
 {
-    [DbContext(typeof(AuthorizationDbContext))]
+    [DbContext(typeof(AccountsWriteDbContext))]
     partial class AuthorizationDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

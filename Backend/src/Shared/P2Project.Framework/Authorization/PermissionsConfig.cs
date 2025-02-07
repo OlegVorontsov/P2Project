@@ -2,6 +2,11 @@ namespace P2Project.Framework.Authorization;
 
 public static class PermissionsConfig
 {
+    public static class Accounts
+    {
+        public const string Read = "accounts.read";
+    }
+    
     public static class Volunteers
     {
         public const string Create = "volunteers.create";

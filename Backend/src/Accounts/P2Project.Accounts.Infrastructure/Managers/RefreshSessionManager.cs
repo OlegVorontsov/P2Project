@@ -8,12 +8,12 @@ using P2Project.SharedKernel.Errors;
 namespace P2Project.Accounts.Infrastructure.Managers;
 
 public class RefreshSessionManager(
-    AuthorizationDbContext dbContext) : IRefreshSessionManager
+    AccountsWriteDbContext writeDbContext) : IRefreshSessionManager
 {
     public async Task<Result<RefreshSession, Error>> GetByRefreshToken(
         Guid refreshToken, CancellationToken cancellationToken)
     {
-        var refreshSession = await dbContext.RefreshSessions
+        var refreshSession = await writeDbContext.RefreshSessions
             .Include(r => r.User)
             .FirstOrDefaultAsync(t => t.RefreshToken == refreshToken, cancellationToken);
         
@@ -25,6 +25,6 @@ public class RefreshSessionManager(
     
     public void Delete(RefreshSession refreshSession)
     {
-        dbContext.RefreshSessions.Remove(refreshSession);
+        writeDbContext.RefreshSessions.Remove(refreshSession);
     }
 }

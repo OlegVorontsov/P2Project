@@ -4,29 +4,29 @@ using P2Project.Accounts.Infrastructure.DbContexts;
 
 namespace P2Project.Accounts.Infrastructure.Managers;
 
-public class PermissionManager(AuthorizationDbContext dbContext)
+public class PermissionManager(AccountsWriteDbContext writeDbContext)
 {
     public async Task<Permission?> FindByCode(string code) =>
-        await dbContext.Permissions.FirstOrDefaultAsync(p => p.Code == code);
+        await writeDbContext.Permissions.FirstOrDefaultAsync(p => p.Code == code);
     
     public async Task AddRangeIfDoesNotExist(
         IEnumerable<string> codes, CancellationToken cancellationToken = default)
     {
         foreach (var code in codes)
         {
-            var permissionExist = await dbContext.Permissions
+            var permissionExist = await writeDbContext.Permissions
                 .AnyAsync(p => p.Code == code, cancellationToken);
             if(permissionExist) continue;
-            await dbContext.Permissions.AddAsync(
+            await writeDbContext.Permissions.AddAsync(
                 new Permission { Code = code }, cancellationToken);
         }
-        await dbContext.SaveChangesAsync(cancellationToken);
+        await writeDbContext.SaveChangesAsync(cancellationToken);
     }
 
     public async Task<HashSet<string>> GetUserPermissions(
         Guid userId, CancellationToken cancellationToken = default)
     {
-        var permissions = await dbContext.Users
+        var permissions = await writeDbContext.Users
             .Include(u => u.Roles)
             .Where(u => u.Id == userId)
             .SelectMany(u => u.Roles)

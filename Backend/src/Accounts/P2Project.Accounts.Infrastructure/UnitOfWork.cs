@@ -7,17 +7,17 @@ namespace P2Project.Accounts.Infrastructure;
 
 public class UnitOfWork : IUnitOfWork
 {
-    private readonly AuthorizationDbContext _dbContext;
+    private readonly AccountsWriteDbContext _writeDbContext;
 
-    public UnitOfWork(AuthorizationDbContext dbContext)
+    public UnitOfWork(AccountsWriteDbContext writeDbContext)
     {
-        _dbContext = dbContext;
+        _writeDbContext = writeDbContext;
     }
 
     public async Task<IDbTransaction> BeginTransaction(
         CancellationToken cancellationToken = default)
     {
-        var transaction = await _dbContext
+        var transaction = await _writeDbContext
             .Database.BeginTransactionAsync(cancellationToken);
 
         return transaction.GetDbTransaction();
@@ -26,6 +26,6 @@ public class UnitOfWork : IUnitOfWork
     public async Task SaveChanges(
         CancellationToken cancellationToken = default)
     {
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        await _writeDbContext.SaveChangesAsync(cancellationToken);
     }
 }

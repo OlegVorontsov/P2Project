@@ -17,15 +17,15 @@ namespace P2Project.Accounts.Infrastructure.Jwt;
 
 public class TokenProvider : ITokenProvider
 {
-    private readonly AuthorizationDbContext _dbContext;
+    private readonly AccountsWriteDbContext _writeDbContext;
     private readonly PermissionManager _permissionManager;
     private readonly JwtOptions _jwtOptions;
     public TokenProvider(
-        AuthorizationDbContext dbContext,
+        AccountsWriteDbContext writeDbContext,
         IOptions<JwtOptions> jwtOptions,
         PermissionManager permissionManager)
     {
-        _dbContext = dbContext;
+        _writeDbContext = writeDbContext;
         _permissionManager = permissionManager;
         _jwtOptions = jwtOptions.Value;
     }
@@ -79,8 +79,8 @@ public class TokenProvider : ITokenProvider
             ExpiresIn = DateTime.UtcNow.AddDays(60),
             RefreshToken = Guid.NewGuid()
         };
-        _dbContext.RefreshSessions.Add(refreshSession);
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        _writeDbContext.RefreshSessions.Add(refreshSession);
+        await _writeDbContext.SaveChangesAsync(cancellationToken);
 
         return refreshSession.RefreshToken;
     }
