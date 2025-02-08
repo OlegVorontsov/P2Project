@@ -18,9 +18,9 @@ public class AccountsReadDbContext(IConfiguration configuration) :
     DbContext, IAccountsReadDbContext
 {
     public IQueryable<UserDto> Users => Set<UserDto>();
-    public IQueryable<AdminAccountDto> AdminAccounts => Set<AdminAccountDto>();
+    /*public IQueryable<AdminAccountDto> AdminAccounts => Set<AdminAccountDto>();
     public IQueryable<VolunteerAccountDto> VolunteerAccounts => Set<VolunteerAccountDto>();
-    public IQueryable<ParticipantAccountDto> ParticipantAccounts => Set<ParticipantAccountDto>();
+    public IQueryable<ParticipantAccountDto> ParticipantAccounts => Set<ParticipantAccountDto>();*/
 
     private ILoggerFactory CreateLoggerFactory() =>
         LoggerFactory.Create(builder => { builder.AddConsole(); });

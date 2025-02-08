@@ -32,7 +32,7 @@ public class VolunteerAccountDtoConfiguration :
                 json => JsonSerializer
                     .Deserialize<IEnumerable<AssistanceDetailDto>>(
                         json, JsonSerializerOptions.Default)!)
-            .HasColumnName(Pet.DB_COLUMN_ASSISTANCE_DETAILS);
+            .HasColumnName("assistance_details");
         
         builder.Property(p => p.Certificates)
             .HasConversion(
@@ -41,6 +41,6 @@ public class VolunteerAccountDtoConfiguration :
                 json => JsonSerializer
                     .Deserialize<IEnumerable<CertificateDto>>(
                         json, JsonSerializerOptions.Default)!)
-            .HasColumnName(Pet.DB_COLUMN_ASSISTANCE_DETAILS);
+            .HasColumnName("certificates");
     }
 }

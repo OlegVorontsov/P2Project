@@ -13,7 +13,7 @@ using P2Project.Volunteers.Infrastructure.DbContexts;
 namespace P2Project.Volunteers.Infrastructure.Migrations
 {
     [DbContext(typeof(VolunteersWriteDbContext))]
-    [Migration("20250205142717_Volunteers_init")]
+    [Migration("20250208081531_Volunteers_init")]
     partial class Volunteers_init
     {
         /// <inheritdoc />

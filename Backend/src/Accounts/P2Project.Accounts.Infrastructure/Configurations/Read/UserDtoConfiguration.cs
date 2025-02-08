@@ -33,7 +33,7 @@ public class UserDtoConfiguration : IEntityTypeConfiguration<UserDto>
         builder.Property(u => u.Email)
             .HasColumnName("email");
         
-        builder.Property(x => x.SocialNetworks)
+        /*builder.Property(x => x.SocialNetworks)
             .HasConversion(
                 values => JsonSerializer
                     .Serialize(string.Empty, JsonSerializerOptions.Default),
@@ -62,6 +62,6 @@ public class UserDtoConfiguration : IEntityTypeConfiguration<UserDto>
         
         builder.HasOne(u => u.ParticipantAccount)
             .WithOne()
-            .HasForeignKey<ParticipantAccountDto>(p => p.UserId);
+            .HasForeignKey<ParticipantAccountDto>(p => p.UserId);*/
     }
 }

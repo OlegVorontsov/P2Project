@@ -32,15 +32,15 @@ public class GetUserInfoWithAccountsHandler :
         if (validationResult.IsValid == false)
             return validationResult.ToErrorList();
         
-        var userDto = await _readDbContext.Users
-            .Include(u => u.AdminAccount)
+        var userDto = await _readDbContext.Users.ToListAsync(cancellationToken);
+            /*.Include(u => u.AdminAccount)
             .Include(u => u.VolunteerAccount)
             .Include(u => u.ParticipantAccount)
-            .FirstOrDefaultAsync(u => u.Id == query.Id, cancellationToken);
+            .FirstOrDefaultAsync(u => u.Id == query.Id, cancellationToken);*/
         
         if (userDto is null)
             return Errors.General.NotFound(query.Id).ToErrorList();
         
-        return userDto;
+        return new UserDto();
     }
 }
