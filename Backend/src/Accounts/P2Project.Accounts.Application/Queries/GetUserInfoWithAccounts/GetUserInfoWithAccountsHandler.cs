@@ -2,7 +2,6 @@ using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using P2Project.Accounts.Application.Interfaces;
-using P2Project.Accounts.Domain;
 using P2Project.Core.Dtos.Accounts;
 using P2Project.Core.Extensions;
 using P2Project.Core.Interfaces.Queries;
