@@ -11,9 +11,9 @@ public class UserDto
     public string? LastName { get; init; } = string.Empty;
     public string UserName { get; init; } = string.Empty;
     public string Email { get; init; } = string.Empty;
-    /*public IEnumerable<SocialNetworkDto> SocialNetworks { get; set; } = default!;
+    public IEnumerable<SocialNetworkDto> SocialNetworks { get; set; } = default!;
     public IEnumerable<PhotoDto> Photos { get; set; } = default!;
     public AdminAccountDto? AdminAccount { get; init; }
     public VolunteerAccountDto? VolunteerAccount { get; init; }
-    public ParticipantAccountDto? ParticipantAccount { get; init; } = null!;*/
+    public ParticipantAccountDto? ParticipantAccount { get; init; } = null!;
 }

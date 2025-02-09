@@ -33,24 +33,23 @@ public class UserDtoConfiguration : IEntityTypeConfiguration<UserDto>
         builder.Property(u => u.Email)
             .HasColumnName("email");
         
-        /*builder.Property(x => x.SocialNetworks)
+        builder.Property(x => x.SocialNetworks)
             .HasConversion(
                 values => JsonSerializer
                     .Serialize(string.Empty, JsonSerializerOptions.Default),
                 json => JsonSerializer
                     .Deserialize<IEnumerable<SocialNetworkDto>>(
                         json, JsonSerializerOptions.Default)!)
-            .HasColumnName(Volunteer.DB_COLUMN_PHONE_NUMBERS);
+            .HasColumnName("social_networks");
         
         builder.Property(p => p.Photos)
             .HasConversion(
                 photos => JsonSerializer
                     .Serialize(string.Empty, JsonSerializerOptions.Default),
-                    
                 json => JsonSerializer
                     .Deserialize<IEnumerable<PhotoDto>>(
                         json, JsonSerializerOptions.Default)!)
-            .HasColumnName(Pet.DB_COLUMN_PHOTOS);
+            .HasColumnName("photos");
 
         builder.HasOne(u => u.AdminAccount)
             .WithOne()
@@ -62,6 +61,6 @@ public class UserDtoConfiguration : IEntityTypeConfiguration<UserDto>
         
         builder.HasOne(u => u.ParticipantAccount)
             .WithOne()
-            .HasForeignKey<ParticipantAccountDto>(p => p.UserId);*/
+            .HasForeignKey<ParticipantAccountDto>(p => p.UserId);
     }
 }
