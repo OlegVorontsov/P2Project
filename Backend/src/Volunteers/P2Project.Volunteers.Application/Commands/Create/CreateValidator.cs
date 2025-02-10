@@ -3,7 +3,6 @@ using P2Project.Core.Validation;
 using P2Project.SharedKernel.Errors;
 using P2Project.SharedKernel.ValueObjects;
 using P2Project.Volunteers.Domain;
-using P2Project.Volunteers.Domain.ValueObjects.Volunteers;
 
 namespace P2Project.Volunteers.Application.Commands.Create
 {

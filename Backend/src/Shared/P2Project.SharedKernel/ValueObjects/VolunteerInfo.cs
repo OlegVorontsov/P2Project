@@ -1,8 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
-using P2Project.SharedKernel;
 using P2Project.SharedKernel.Errors;
 
-namespace P2Project.Volunteers.Domain.ValueObjects.Volunteers
+namespace P2Project.SharedKernel.ValueObjects
 {
     public record VolunteerInfo
     {
@@ -21,10 +20,10 @@ namespace P2Project.Volunteers.Domain.ValueObjects.Volunteers
             int age, int grade)
         {
             if (Constants.MIN_AGE >= age || age >= Constants.MAX_AGE)
-                return Errors.General.ValueIsInvalid(nameof(age));
+                return Errors.Errors.General.ValueIsInvalid(nameof(age));
             
             if (Constants.MIN_GRADE >= grade || grade >= Constants.MAX_GRADE)
-                return Errors.General.ValueIsInvalid(nameof(grade));
+                return Errors.Errors.General.ValueIsInvalid(nameof(grade));
 
             var newVolunteerInfo = new VolunteerInfo(age, grade);
 

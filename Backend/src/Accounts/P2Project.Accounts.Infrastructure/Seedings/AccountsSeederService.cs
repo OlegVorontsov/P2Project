@@ -12,6 +12,7 @@ using P2Project.Accounts.Infrastructure.Admin;
 using P2Project.Accounts.Infrastructure.Managers;
 using P2Project.Accounts.Infrastructure.Permissions;
 using P2Project.SharedKernel;
+using P2Project.SharedKernel.ValueObjects;
 
 namespace P2Project.Accounts.Infrastructure.Seedings;
 

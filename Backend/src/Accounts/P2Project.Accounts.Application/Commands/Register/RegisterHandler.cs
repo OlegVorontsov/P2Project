@@ -11,6 +11,7 @@ using P2Project.Core;
 using P2Project.Core.Interfaces;
 using P2Project.Core.Interfaces.Commands;
 using P2Project.SharedKernel.Errors;
+using P2Project.SharedKernel.ValueObjects;
 
 namespace P2Project.Accounts.Application.Commands.Register;
 
