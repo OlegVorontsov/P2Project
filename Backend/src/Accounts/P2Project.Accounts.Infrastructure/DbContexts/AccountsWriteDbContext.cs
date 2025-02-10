@@ -12,7 +12,7 @@ using P2Project.SharedKernel;
 
 namespace P2Project.Accounts.Infrastructure.DbContexts;
 
-public class AuthorizationDbContext(IConfiguration configuration) :
+public class AccountsWriteDbContext(IConfiguration configuration) :
     IdentityDbContext<User, Role, Guid>
 {
     public DbSet<User> Users => Set<User>();
@@ -42,7 +42,7 @@ public class AuthorizationDbContext(IConfiguration configuration) :
         builder.HasDefaultSchema("accounts");
         
         builder.ApplyConfigurationsFromAssembly(
-            typeof(AuthorizationDbContext).Assembly,
+            typeof(AccountsWriteDbContext).Assembly,
             x => x.FullName!.Contains("Configurations.Write"));
         
         builder.Entity<Role>()
