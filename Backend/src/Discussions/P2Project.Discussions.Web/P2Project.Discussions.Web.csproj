@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\P2Project.Discussions.Agreements\P2Project.Discussions.Agreements.csproj" />
+      <ProjectReference Include="..\P2Project.Discussions.Application\P2Project.Discussions.Application.csproj" />
+      <ProjectReference Include="..\P2Project.Discussions.Domain\P2Project.Discussions.Domain.csproj" />
+      <ProjectReference Include="..\P2Project.Discussions.Infrastructure\P2Project.Discussions.Infrastructure.csproj" />
+    </ItemGroup>
+
+</Project>
