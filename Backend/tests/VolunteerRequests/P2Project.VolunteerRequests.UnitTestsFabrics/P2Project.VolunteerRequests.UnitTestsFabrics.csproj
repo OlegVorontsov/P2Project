@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Shared\P2Project.SharedKernel\P2Project.SharedKernel.csproj" />
+      <ProjectReference Include="..\..\..\src\VolunteerRequests\P2Project.VolunteerRequests.Domain\P2Project.VolunteerRequests.Domain.csproj" />
     </ItemGroup>
 
 </Project>

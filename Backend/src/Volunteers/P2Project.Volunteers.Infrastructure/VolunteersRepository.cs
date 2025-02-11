@@ -4,7 +4,6 @@ using P2Project.SharedKernel.Errors;
 using P2Project.SharedKernel.IDs;
 using P2Project.Volunteers.Application;
 using P2Project.Volunteers.Domain;
-using P2Project.Volunteers.Domain.ValueObjects.Volunteers;
 using P2Project.Volunteers.Infrastructure.DbContexts;
 
 namespace P2Project.Volunteers.Infrastructure

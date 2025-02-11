@@ -1,5 +1,4 @@
 using P2Project.Accounts.Domain.Users.ValueObjects;
-using P2Project.Volunteers.Domain.ValueObjects.Volunteers;
 
 namespace P2Project.Accounts.Domain.Accounts;
 

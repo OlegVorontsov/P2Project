@@ -1,7 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using P2Project.SharedKernel.Errors;
 
-namespace P2Project.Accounts.Domain.Users.ValueObjects
+namespace P2Project.SharedKernel.ValueObjects
 {
     public record FullName
     {
@@ -24,9 +24,9 @@ namespace P2Project.Accounts.Domain.Users.ValueObjects
                                              string? lastName)
         {
             if (string.IsNullOrWhiteSpace(firstName))
-                return Errors.General.ValueIsInvalid(nameof(FirstName));
+                return Errors.Errors.General.ValueIsInvalid(nameof(FirstName));
             if (string.IsNullOrWhiteSpace(secondName))
-                return Errors.General.ValueIsInvalid(nameof(SecondName));
+                return Errors.Errors.General.ValueIsInvalid(nameof(SecondName));
             var newFullName = new FullName(firstName, secondName, lastName);
             return newFullName;
         }

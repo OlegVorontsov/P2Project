@@ -2,7 +2,6 @@
 using P2Project.SharedKernel.Errors;
 using P2Project.SharedKernel.IDs;
 using P2Project.Volunteers.Domain;
-using P2Project.Volunteers.Domain.ValueObjects.Volunteers;
 
 namespace P2Project.Volunteers.Application
 {
