@@ -90,5 +90,14 @@ namespace P2Project.SharedKernel.Errors
             public static Error InvalidToken() =>
                 Error.Validation("token.is.invalid", "Token is invalid");
         }
+
+        public static class Discussions
+        {
+            public static Error Failure(string? name = null)
+            {
+                var label = name == null ? "" : name;
+                return Error.Failure(label, $"{label}");
+            }
+        }
     }
 }
