@@ -32,5 +32,12 @@ namespace P2Project.SharedKernel
         
         public static double DELETE_EXPIRED_SOFT_DELETED_SERVICE_DELAY_HOURS = 24;
         public static double LIFETIME_AFTER_SOFT_DELETION = 30;
+
+        public static class Discussions
+        {
+            public const string IS_CLOSED = "Discussion is closed";
+            public const string USER_NOT_IN = "User isn't in discussion";
+            public const string NOT_USERS_MESSAGE = "Can't manage with not yours message";
+        }
     }
 }
