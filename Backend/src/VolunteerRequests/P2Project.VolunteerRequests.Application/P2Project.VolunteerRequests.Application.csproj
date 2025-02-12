@@ -7,7 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Shared\P2Project.Core\P2Project.Core.csproj" />
       <ProjectReference Include="..\P2Project.VolunteerRequests.Domain\P2Project.VolunteerRequests.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="VolunteerRequestsManagement\Queries\" />
     </ItemGroup>
 
 </Project>

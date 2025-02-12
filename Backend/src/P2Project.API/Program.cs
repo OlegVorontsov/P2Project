@@ -5,6 +5,7 @@ using P2Project.Species.Web;
 using P2Project.Volunteers.Web;
 using P2Project.API;
 using P2Project.API.Extensions;
+using P2Project.VolunteerRequests.Web;
 using Serilog;
 
 DotNetEnv.Env.Load();
@@ -17,6 +18,7 @@ services
     .AddVolunteersModule(config)
     .AddSpeciesModule(config)
     .AddAccountsModule(config)
+    .AddVolunteerRequestsModule(config)
     .AddControllers();
 
 var app = builder.Build();
