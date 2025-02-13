@@ -6,18 +6,18 @@ namespace P2Project.VolunteerRequests.Domain.ValueObjects
     public class RejectionComment
     {
         private RejectionComment() { }
-        private RejectionComment(string comment)
+        private RejectionComment(string value)
         {
-            Comment = comment;
+            Value = value;
         }
-        public string Comment { get; } = default!;
+        public string Value { get; } = default!;
 
-        public static Result<RejectionComment, Error> Create(string comment)
+        public static Result<RejectionComment, Error> Create(string value)
         {
-            if (string.IsNullOrWhiteSpace(comment))
-                return Errors.General.ValueIsInvalid(nameof(Comment));
+            if (string.IsNullOrWhiteSpace(value))
+                return Errors.General.ValueIsInvalid(nameof(RejectionComment));
 
-            var newComment = new RejectionComment(comment);
+            var newComment = new RejectionComment(value);
 
             return newComment;
         }

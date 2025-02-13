@@ -17,4 +17,8 @@
       <PackageReference Include="Scrutor" Version="5.0.2" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Configurations\Read\" />
+    </ItemGroup>
+
 </Project>

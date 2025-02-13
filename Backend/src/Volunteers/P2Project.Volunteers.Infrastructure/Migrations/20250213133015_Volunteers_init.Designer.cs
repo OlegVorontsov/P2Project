@@ -13,7 +13,7 @@ using P2Project.Volunteers.Infrastructure.DbContexts;
 namespace P2Project.Volunteers.Infrastructure.Migrations
 {
     [DbContext(typeof(VolunteersWriteDbContext))]
-    [Migration("20250208081531_Volunteers_init")]
+    [Migration("20250213133015_Volunteers_init")]
     partial class Volunteers_init
     {
         /// <inheritdoc />
@@ -297,6 +297,11 @@ namespace P2Project.Volunteers.Infrastructure.Migrations
                     b.Property<int>("LooksForHomePets")
                         .HasColumnType("integer")
                         .HasColumnName("looks_for_home_pets");
+
+                    b.Property<int[]>("MyArray")
+                        .IsRequired()
+                        .HasColumnType("integer[]")
+                        .HasColumnName("my_array");
 
                     b.Property<int>("NeedsFoodPets")
                         .HasColumnType("integer")
