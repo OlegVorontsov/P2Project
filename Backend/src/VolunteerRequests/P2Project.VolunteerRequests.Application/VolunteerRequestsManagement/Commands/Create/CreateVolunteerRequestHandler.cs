@@ -11,7 +11,7 @@ using P2Project.SharedKernel.ValueObjects;
 using P2Project.VolunteerRequests.Application.Interfaces;
 using P2Project.VolunteerRequests.Domain;
 
-namespace P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Commands;
+namespace P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Commands.Create;
 
 public class CreateVolunteerRequestHandler :
     ICommandHandler<Guid, CreateVolunteerRequestCommand>

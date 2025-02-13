@@ -3,7 +3,7 @@ using P2Project.Core.Validation;
 using P2Project.SharedKernel.Errors;
 using P2Project.SharedKernel.ValueObjects;
 
-namespace P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Commands;
+namespace P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Commands.Create;
 
 public class CreateVolunteerRequestValidator :
     AbstractValidator<CreateVolunteerRequestCommand>

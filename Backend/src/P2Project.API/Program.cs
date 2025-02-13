@@ -5,6 +5,7 @@ using P2Project.Species.Web;
 using P2Project.Volunteers.Web;
 using P2Project.API;
 using P2Project.API.Extensions;
+using P2Project.Discussions.Web;
 using P2Project.VolunteerRequests.Web;
 using Serilog;
 
@@ -19,6 +20,7 @@ services
     .AddSpeciesModule(config)
     .AddAccountsModule(config)
     .AddVolunteerRequestsModule(config)
+    .AddDiscussionsModule(config)
     .AddControllers();
 
 var app = builder.Build();
