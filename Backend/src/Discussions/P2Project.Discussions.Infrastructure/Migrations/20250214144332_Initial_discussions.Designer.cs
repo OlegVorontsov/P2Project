@@ -13,8 +13,8 @@ using P2Project.Discussions.Infrastructure.DbContexts;
 namespace P2Project.Discussions.Infrastructure.Migrations
 {
     [DbContext(typeof(DiscussionsWriteDbContext))]
-    [Migration("20250214112940_Discussions")]
-    partial class Discussions
+    [Migration("20250214144332_Initial_discussions")]
+    partial class Initial_discussions
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -60,10 +60,10 @@ namespace P2Project.Discussions.Infrastructure.Migrations
 
             modelBuilder.Entity("P2Project.Discussions.Domain.Entities.Message", b =>
                 {
-                    b.Property<Guid>("MessageId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
-                        .HasColumnName("message_id");
+                        .HasColumnName("id");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -86,7 +86,7 @@ namespace P2Project.Discussions.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("sender_id");
 
-                    b.HasKey("MessageId")
+                    b.HasKey("Id")
                         .HasName("pk_messages");
 
                     b.HasIndex("DiscussionId")

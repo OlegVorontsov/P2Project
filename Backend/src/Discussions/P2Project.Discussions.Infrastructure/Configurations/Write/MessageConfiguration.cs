@@ -11,11 +11,7 @@ public class MessageConfiguration : IEntityTypeConfiguration<Message>
     {
         builder.ToTable("messages");
         
-        builder.HasKey(b => b.MessageId);
-        
-        builder.Property(s => s.MessageId)
-            .IsRequired()
-            .HasColumnName("message_id");
+        builder.HasKey(b => b.Id);
         
         builder.Property(v => v.Content)
             .HasConversion(

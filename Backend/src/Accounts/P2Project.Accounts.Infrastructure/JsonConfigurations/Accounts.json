@@ -37,6 +37,7 @@
     "Participant": [
       "request.create",
       "request.read",
+      "request.update",
       "volunteers.read",
       "pets.read",
       "species.read",

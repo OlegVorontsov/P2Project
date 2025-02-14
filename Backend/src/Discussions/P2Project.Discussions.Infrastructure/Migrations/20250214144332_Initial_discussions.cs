@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace P2Project.Discussions.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Discussions : Migration
+    public partial class Initial_discussions : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -34,7 +34,7 @@ namespace P2Project.Discussions.Infrastructure.Migrations
                 schema: "discussions",
                 columns: table => new
                 {
-                    message_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
                     message_content = table.Column<string>(type: "text", nullable: false),
                     sender_id = table.Column<Guid>(type: "uuid", nullable: false),
                     discussion_id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -43,7 +43,7 @@ namespace P2Project.Discussions.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_messages", x => x.message_id);
+                    table.PrimaryKey("pk_messages", x => x.id);
                     table.ForeignKey(
                         name: "fk_messages_discussions_discussion_id",
                         column: x => x.discussion_id,
