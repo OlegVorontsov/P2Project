@@ -2,6 +2,7 @@ using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using P2Project.Accounts.Agreements;
 using P2Project.Core;
 using P2Project.Core.Extensions;
 using P2Project.Core.Interfaces;
@@ -16,6 +17,7 @@ public class TakeInReviewHandler :
     ICommandHandler<Guid, TakeInReviewCommand>
 {
     private readonly IValidator<TakeInReviewCommand> _validator;
+    private readonly IAdminAccountsAgreement _adminAccountsAgreement;
     private readonly IDiscussionsAgreement _discussionsAgreement;
     private readonly IVolunteerRequestsRepository _volunteerRequestsRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -23,12 +25,14 @@ public class TakeInReviewHandler :
 
     public TakeInReviewHandler(
         IValidator<TakeInReviewCommand> validator,
+        IAdminAccountsAgreement adminAccountsAgreement,
         IDiscussionsAgreement discussionsAgreement,
         IVolunteerRequestsRepository volunteerRequestsRepository,
         [FromKeyedServices(Modules.VolunteerRequests)] IUnitOfWork unitOfWork,
         ILogger<TakeInReviewHandler> logger)
     {
         _validator = validator;
+        _adminAccountsAgreement = adminAccountsAgreement;
         _discussionsAgreement = discussionsAgreement;
         _volunteerRequestsRepository = volunteerRequestsRepository;
         _unitOfWork = unitOfWork;
@@ -43,6 +47,11 @@ public class TakeInReviewHandler :
             command, cancellationToken);
         if (validationResult.IsValid == false)
             return validationResult.ToErrorList();
+
+        var adminExist = await _adminAccountsAgreement.IsAnyAdminAccountByUserId(
+            command.AdminId, cancellationToken);
+        if (adminExist == false)
+            return Errors.General.NotFound(command.AdminId).ToErrorList();
         
         var existedRequest = await _volunteerRequestsRepository.GetById(
             command.RequestId, cancellationToken);

@@ -10,6 +10,7 @@ public static class PermissionsConfig
     public static class VolunteerRequests
     {
         public const string Create = "request.create";
+        public const string Review = "request.review";
         public const string Read = "request.read";
         public const string Update = "request.update";
         public const string Delete = "request.delete";

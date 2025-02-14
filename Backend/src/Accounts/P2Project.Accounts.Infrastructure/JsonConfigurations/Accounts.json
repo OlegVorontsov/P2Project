@@ -2,6 +2,7 @@
   "Roles": {
     "Admin": [
       "accounts.read",
+      "request.review",
       "request.create",
       "request.read",
       "request.update",
@@ -49,6 +50,7 @@
     ],
     "VolunteerRequests": [
       "request.create",
+      "request.review",
       "request.read",
       "request.update",
       "request.delete"

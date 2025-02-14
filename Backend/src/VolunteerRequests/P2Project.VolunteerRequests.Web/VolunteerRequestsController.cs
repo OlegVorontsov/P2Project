@@ -27,7 +27,7 @@ public class VolunteerRequestsController : ApplicationController
         return Ok(result.Value);
     }
     
-    [Permission(PermissionsConfig.VolunteerRequests.Update)]
+    [Permission(PermissionsConfig.VolunteerRequests.Review)]
     [HttpPut("{adminId:guid}/take-in-review")]
     public async Task<ActionResult> TakeInReview(
         [FromRoute] Guid adminId,

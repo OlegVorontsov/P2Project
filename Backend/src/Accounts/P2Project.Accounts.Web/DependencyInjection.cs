@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using P2Project.Accounts.Agreements;
 using P2Project.Accounts.Application;
 using P2Project.Accounts.Application.Interfaces;
 using P2Project.Accounts.Domain;
@@ -26,6 +27,7 @@ public static class DependencyInjection
         this IServiceCollection services, IConfiguration configuration)
     {
         return services.AddTransient<ITokenProvider, TokenProvider>()
+            .AddScoped<IAdminAccountsAgreement, AdminAccountsAgreement>()
             .AddAccountsInfrastructure(configuration)
             .AddUsersIdentity()
             .AddUsersAuthentication(configuration)
