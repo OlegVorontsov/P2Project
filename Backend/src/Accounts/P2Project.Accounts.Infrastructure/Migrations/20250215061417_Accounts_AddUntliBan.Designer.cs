@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using P2Project.Accounts.Infrastructure.DbContexts;
@@ -12,9 +13,11 @@ using P2Project.Accounts.Infrastructure.DbContexts;
 namespace P2Project.Accounts.Infrastructure.Migrations
 {
     [DbContext(typeof(AccountsWriteDbContext))]
-    partial class AccountsWriteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250215061417_Accounts_AddUntliBan")]
+    partial class Accounts_AddUntliBan
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -18,7 +18,6 @@ public class SetRevisionRequiredStatusHandler :
     ICommandHandler<Guid, SetRevisionRequiredStatusCommand>
 {
     private readonly IValidator<SetRevisionRequiredStatusCommand> _validator;
-    private readonly IAdminAccountsAgreement _adminAccountsAgreement;
     private readonly IDiscussionsAgreement _discussionsAgreement;
     private readonly IVolunteerRequestsRepository _volunteerRequestsRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -26,14 +25,12 @@ public class SetRevisionRequiredStatusHandler :
 
     public SetRevisionRequiredStatusHandler(
         IValidator<SetRevisionRequiredStatusCommand> validator,
-        IAdminAccountsAgreement adminAccountsAgreement,
         IDiscussionsAgreement discussionsAgreement,
         IVolunteerRequestsRepository volunteerRequestsRepository,
         [FromKeyedServices(Modules.VolunteerRequests)] IUnitOfWork unitOfWork,
         ILogger<SetRevisionRequiredStatusHandler> logger)
     {
         _validator = validator;
-        _adminAccountsAgreement = adminAccountsAgreement;
         _discussionsAgreement = discussionsAgreement;
         _volunteerRequestsRepository = volunteerRequestsRepository;
         _unitOfWork = unitOfWork;
@@ -48,11 +45,6 @@ public class SetRevisionRequiredStatusHandler :
             command, cancellationToken);
         if (validationResult.IsValid == false)
             return validationResult.ToErrorList();
-
-        var adminExist = await _adminAccountsAgreement.IsAnyAdminAccountByUserId(
-            command.AdminId, cancellationToken);
-        if (adminExist == false)
-            return Errors.General.NotFound(command.AdminId).ToErrorList();
         
         var existedRequest = await _volunteerRequestsRepository.GetById(
             command.RequestId, cancellationToken);

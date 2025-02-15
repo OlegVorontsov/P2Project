@@ -10,34 +10,37 @@ using P2Project.Core.Interfaces.Commands;
 using P2Project.Discussions.Agreements;
 using P2Project.SharedKernel.Errors;
 using P2Project.VolunteerRequests.Application.Interfaces;
+using P2Project.VolunteerRequests.Domain.ValueObjects;
 
-namespace P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Commands.TakeInReview;
+namespace P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Commands.SetRejectStatus;
 
-public class TakeInReviewHandler :
-    ICommandHandler<Guid, TakeInReviewCommand>
+public class SetRejectStatusHandler :
+    ICommandHandler<Guid, SetRejectStatusCommand>
 {
-    private readonly IValidator<TakeInReviewCommand> _validator;
+    private readonly IValidator<SetRejectStatusCommand> _validator;
     private readonly IDiscussionsAgreement _discussionsAgreement;
     private readonly IVolunteerRequestsRepository _volunteerRequestsRepository;
+    private readonly IAccountsAgreements _accountsAgreements;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly ILogger<TakeInReviewHandler> _logger;
-
-    public TakeInReviewHandler(
-        IValidator<TakeInReviewCommand> validator,
+    private readonly ILogger<SetRejectStatusHandler> _logger;
+    
+    public SetRejectStatusHandler(
+        IValidator<SetRejectStatusCommand> validator,
         IDiscussionsAgreement discussionsAgreement,
         IVolunteerRequestsRepository volunteerRequestsRepository,
         [FromKeyedServices(Modules.VolunteerRequests)] IUnitOfWork unitOfWork,
-        ILogger<TakeInReviewHandler> logger)
+        ILogger<SetRejectStatusHandler> logger,
+        IAccountsAgreements accountsAgreements)
     {
         _validator = validator;
         _discussionsAgreement = discussionsAgreement;
         _volunteerRequestsRepository = volunteerRequestsRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _accountsAgreements = accountsAgreements;
     }
-
     public async Task<Result<Guid, ErrorList>> Handle(
-        TakeInReviewCommand command,
+        SetRejectStatusCommand command,
         CancellationToken cancellationToken = default)
     {
         var validationResult = await _validator.ValidateAsync(
@@ -50,18 +53,19 @@ public class TakeInReviewHandler :
         if (existedRequest.IsFailure)
             return Errors.General.NotFound(command.RequestId).ToErrorList();
         
-        var newDiscussionId = await _discussionsAgreement.CreateDiscussion(
-            command.AdminId,
-            existedRequest.Value.UserId,
-            cancellationToken);
-        if(newDiscussionId.IsFailure)
-            return Errors.General.Failure("discussion").ToErrorList();
-            
-        existedRequest.Value.TakeInReview(command.AdminId, newDiscussionId.Value);
+        var rejectionComment = RejectionComment.Create(command.Comment).Value;
+        existedRequest.Value.SetRejectStatus(rejectionComment);
+        
+        var messageId = await _discussionsAgreement.CreateMessage(
+            command.AdminId, command.Comment, cancellationToken);
+        if(messageId.IsFailure)
+            return Errors.General.Failure("message").ToErrorList();
+        
+        await _accountsAgreements.BanUser(existedRequest.Value.UserId, cancellationToken);
         
         await _unitOfWork.SaveChanges(cancellationToken);
         
-        _logger.LogInformation("Volunteer request {requestId} was taken in review", command.RequestId);
+        _logger.LogInformation("Volunteer request with id {requestId} was rejected", command.RequestId);
 
         return existedRequest.Value.RequestId;
     }

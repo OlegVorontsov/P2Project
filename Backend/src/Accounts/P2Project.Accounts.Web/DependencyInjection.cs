@@ -27,7 +27,7 @@ public static class DependencyInjection
         this IServiceCollection services, IConfiguration configuration)
     {
         return services.AddTransient<ITokenProvider, TokenProvider>()
-            .AddScoped<IAdminAccountsAgreement, AdminAccountsAgreement>()
+            .AddScoped<IAccountsAgreements, AccountsAgreements>()
             .AddAccountsInfrastructure(configuration)
             .AddUsersIdentity()
             .AddUsersAuthentication(configuration)
