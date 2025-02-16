@@ -10,7 +10,7 @@ public interface IDiscussionsAgreement
         CancellationToken cancellationToken = default);
     
     public Task<Result<Guid, ErrorList>> CreateMessage(
-        Guid senderId,
+        Guid senderId, Guid reviewingUserId,
         string message,
         CancellationToken cancellationToken = default);
 }

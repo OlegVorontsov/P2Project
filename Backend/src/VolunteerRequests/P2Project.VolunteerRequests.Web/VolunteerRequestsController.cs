@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using P2Project.Framework;
 using P2Project.Framework.Authorization;
 using P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Commands.Create;
+using P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Commands.SetApprovedStatus;
 using P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Commands.SetRejectStatus;
 using P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Commands.SetRevisionRequiredStatus;
 using P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Commands.TakeInReview;
@@ -71,6 +72,24 @@ public class VolunteerRequestsController : ApplicationController
         [FromRoute] Guid requestId,
         [FromServices] SetRejectStatusHandler handler,
         [FromBody] SetRejectStatusRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        var result = await handler.Handle(
+            request.ToCommand(adminId, requestId), cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+        
+        return Ok(result.Value);
+    }
+    
+    [Permission(PermissionsConfig.VolunteerRequests.Review)]
+    [HttpPut("{adminId:guid}/approve/{requestId:guid}")]
+    public async Task<ActionResult> SetApprovedStatus(
+        [FromRoute] Guid adminId,
+        [FromRoute] Guid requestId,
+        [FromBody] SetApprovedStatusRequest request,
+        [FromServices] SetApprovedStatusHandler handler,
         CancellationToken cancellationToken = default)
     {
         var result = await handler.Handle(

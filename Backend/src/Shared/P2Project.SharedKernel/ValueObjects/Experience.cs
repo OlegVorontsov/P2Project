@@ -14,7 +14,7 @@ public record Experience
     
     public static Result<Experience, Error> Create(int experience)
     {
-        if (Constants.MIN_EXPERIENCE >= experience || experience >= Constants.MAX_EXPERIENCE)
+        if (experience is < Constants.MIN_EXPERIENCE or > Constants.MAX_EXPERIENCE)
             return Errors.Errors.General.ValueIsInvalid(nameof(experience));
 
         var newExperience = new Experience(experience);

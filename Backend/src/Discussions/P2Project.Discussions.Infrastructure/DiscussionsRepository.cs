@@ -25,14 +25,14 @@ public class DiscussionsRepository : IDiscussionsRepository
         return discussion;
     }
     
-    public async Task<Result<Discussion, Error>> GetByParticipantId(
-        Guid participantId,
+    public async Task<Result<Discussion, Error>> GetByParticipantsId(
+        Guid reviewingUserId, Guid applicantUserId,
         CancellationToken cancellationToken)
     {
         var discussion = await _dbContext.Discussions
             .Include(d => d.Messages)
-            .FirstOrDefaultAsync(d => d.DiscussionUsers.ReviewingUserId == participantId ||
-                                      d.DiscussionUsers.ApplicantUserId == participantId, cancellationToken);
+            .FirstOrDefaultAsync(d => d.DiscussionUsers.ReviewingUserId == reviewingUserId ||
+                                      d.DiscussionUsers.ApplicantUserId == applicantUserId, cancellationToken);
 
         if (discussion == null)
             return Errors.General.NotFound();

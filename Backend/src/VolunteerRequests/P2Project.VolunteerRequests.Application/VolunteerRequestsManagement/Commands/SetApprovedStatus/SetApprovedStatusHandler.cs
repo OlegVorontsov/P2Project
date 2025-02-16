@@ -10,36 +10,38 @@ using P2Project.Core.Interfaces.Commands;
 using P2Project.Discussions.Agreements;
 using P2Project.SharedKernel.Errors;
 using P2Project.VolunteerRequests.Application.Interfaces;
-using P2Project.VolunteerRequests.Domain.ValueObjects;
 
-namespace P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Commands.SetRevisionRequiredStatus;
+namespace P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Commands.SetApprovedStatus;
 
-public class SetRevisionRequiredStatusHandler :
-    ICommandHandler<Guid, SetRevisionRequiredStatusCommand>
+public class SetApprovedStatusHandler :
+    ICommandHandler<Guid, SetApprovedStatusCommand>
 {
-    private readonly IValidator<SetRevisionRequiredStatusCommand> _validator;
+    private readonly IValidator<SetApprovedStatusCommand> _validator;
+    private readonly IAccountsAgreements _accountsAgreements;
     private readonly IDiscussionsAgreement _discussionsAgreement;
     private readonly IVolunteerRequestsRepository _volunteerRequestsRepository;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly ILogger<SetRevisionRequiredStatusHandler> _logger;
+    private readonly ILogger<SetApprovedStatusHandler> _logger;
 
-    public SetRevisionRequiredStatusHandler(
-        IValidator<SetRevisionRequiredStatusCommand> validator,
+    public SetApprovedStatusHandler(
+        IValidator<SetApprovedStatusCommand> validator,
+        IAccountsAgreements accountsAgreements,
         IDiscussionsAgreement discussionsAgreement,
         IVolunteerRequestsRepository volunteerRequestsRepository,
         [FromKeyedServices(Modules.VolunteerRequests)] IUnitOfWork unitOfWork,
-        ILogger<SetRevisionRequiredStatusHandler> logger)
+        ILogger<SetApprovedStatusHandler> logger)
     {
         _validator = validator;
         _discussionsAgreement = discussionsAgreement;
         _volunteerRequestsRepository = volunteerRequestsRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _accountsAgreements = accountsAgreements;
     }
 
     public async Task<Result<Guid, ErrorList>> Handle(
-        SetRevisionRequiredStatusCommand command,
-        CancellationToken cancellationToken = default)
+        SetApprovedStatusCommand command,
+        CancellationToken cancellationToken)
     {
         var validationResult = await _validator.ValidateAsync(
             command, cancellationToken);
@@ -51,19 +53,23 @@ public class SetRevisionRequiredStatusHandler :
         if (existedRequest.IsFailure)
             return Errors.General.NotFound(command.RequestId).ToErrorList();
         
-        var rejectionComment = RejectionComment.Create(command.Comment).Value;
-        existedRequest.Value.SetRevisionRequiredStatus(rejectionComment);
+        var volunteerAccountResult = await _accountsAgreements
+            .CreateVolunteerAccountForUser(existedRequest.Value.UserId, cancellationToken);
+        if (volunteerAccountResult.IsFailure)
+            return volunteerAccountResult.Error;
+        
+        existedRequest.Value.SetApprovedStatus();
         
         var messageId = await _discussionsAgreement.CreateMessage(
             command.AdminId, existedRequest.Value.UserId,
-            command.Comment,
-            cancellationToken);
+            command.Comment, cancellationToken);
         if(messageId.IsFailure)
             return Errors.General.Failure("message").ToErrorList();
         
         await _unitOfWork.SaveChanges(cancellationToken);
         
-        _logger.LogInformation("Volunteer request with id {requestId} was rejected", command.RequestId);
+        _logger.LogInformation(
+            "Volunteer request with id {requestId} was approved", command.RequestId);
 
         return existedRequest.Value.RequestId;
     }

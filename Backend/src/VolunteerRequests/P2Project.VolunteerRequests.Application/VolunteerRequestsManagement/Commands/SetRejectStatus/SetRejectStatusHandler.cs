@@ -57,7 +57,8 @@ public class SetRejectStatusHandler :
         existedRequest.Value.SetRejectStatus(rejectionComment);
         
         var messageId = await _discussionsAgreement.CreateMessage(
-            command.AdminId, command.Comment, cancellationToken);
+            command.AdminId, existedRequest.Value.UserId,
+            command.Comment, cancellationToken);
         if(messageId.IsFailure)
             return Errors.General.Failure("message").ToErrorList();
         

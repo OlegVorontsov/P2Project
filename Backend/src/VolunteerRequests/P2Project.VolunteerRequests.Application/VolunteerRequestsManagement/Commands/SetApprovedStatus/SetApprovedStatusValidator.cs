@@ -2,24 +2,24 @@ using FluentValidation;
 using P2Project.Core.Validation;
 using P2Project.SharedKernel.Errors;
 
-namespace P2Project.Discussions.Application.DiscussionsManagement.Commands.CreateMessage;
+namespace P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Commands.SetApprovedStatus;
 
-public class CreateMessageValidator :
-    AbstractValidator<CreateMessageCommand>
+public class SetApprovedStatusValidator :
+    AbstractValidator<SetApprovedStatusCommand>
 {
-    public CreateMessageValidator()
+    public SetApprovedStatusValidator()
     {
-        RuleFor(r => r.ReviewingUserId)
+        RuleFor(r => r.AdminId)
             .NotNull()
             .NotEmpty()
             .WithError(Errors.General.ValueIsRequired());
         
-        RuleFor(r => r.ApplicantUserId)
+        RuleFor(r => r.RequestId)
             .NotNull()
             .NotEmpty()
             .WithError(Errors.General.ValueIsRequired());
         
-        RuleFor(r => r.Message)
+        RuleFor(r => r.Comment)
             .NotNull()
             .NotEmpty()
             .WithError(Errors.General.ValueIsRequired());

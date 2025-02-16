@@ -42,14 +42,14 @@ public class CreateMessageHandler :
         if (validationResult.IsValid == false)
             return validationResult.ToErrorList();
         
-        var discussionExist = await _discussionsRepository.GetByParticipantId(
-            command.SenderId, cancellationToken);
+        var discussionExist = await _discussionsRepository.GetByParticipantsId(
+            command.ReviewingUserId, command.ApplicantUserId, cancellationToken);
         if (discussionExist.IsFailure)
             return discussionExist.Error.ToErrorList();
         
         var newMessage = Message.Create(
             discussionExist.Value.DiscussionId,
-            command.SenderId,
+            command.ReviewingUserId,
             Content.Create(command.Message).Value);
 
         discussionExist.Value.AddMessage(newMessage);
