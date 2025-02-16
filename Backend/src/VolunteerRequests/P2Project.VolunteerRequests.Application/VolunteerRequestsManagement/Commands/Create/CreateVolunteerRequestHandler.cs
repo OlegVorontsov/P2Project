@@ -2,6 +2,7 @@ using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using P2Project.Accounts.Agreements;
 using P2Project.Core;
 using P2Project.Core.Extensions;
 using P2Project.Core.Interfaces;
@@ -17,6 +18,7 @@ public class CreateVolunteerRequestHandler :
     ICommandHandler<Guid, CreateVolunteerRequestCommand>
 {
     private readonly IValidator<CreateVolunteerRequestCommand> _validator;
+    private readonly IAccountsAgreements _accountsAgreements;
     private readonly IVolunteerRequestsRepository _volunteerRequestsRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<CreateVolunteerRequestHandler> _logger;
@@ -25,9 +27,10 @@ public class CreateVolunteerRequestHandler :
         IValidator<CreateVolunteerRequestCommand> validator,
         IVolunteerRequestsRepository volunteerRequestsRepository,
         [FromKeyedServices(Modules.VolunteerRequests)] IUnitOfWork unitOfWork,
-        ILogger<CreateVolunteerRequestHandler> logger)
+        ILogger<CreateVolunteerRequestHandler> logger, IAccountsAgreements accountsAgreements)
     {
         _validator = validator;
+        _accountsAgreements = accountsAgreements;
         _volunteerRequestsRepository = volunteerRequestsRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
@@ -41,6 +44,10 @@ public class CreateVolunteerRequestHandler :
             command, cancellationToken);
         if (validationResult.IsValid == false)
             return validationResult.ToErrorList();
+        
+        var isUserBanned = await _accountsAgreements.IsUserBannedForVolunteerRequests(command.UserId, cancellationToken);
+        if (isUserBanned)
+            return Errors.General.Failure("user is banned").ToErrorList();
         
         var requestId = command.UserId;
         
