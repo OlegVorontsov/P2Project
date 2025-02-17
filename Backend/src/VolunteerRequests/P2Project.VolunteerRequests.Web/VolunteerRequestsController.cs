@@ -8,6 +8,7 @@ using P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Comman
 using P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Commands.SetReopenStatus;
 using P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Commands.SetRevisionRequiredStatus;
 using P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Commands.TakeInReview;
+using P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Queries.GetAllSubmittedRequests;
 using P2Project.VolunteerRequests.Web.Requests;
 
 namespace P2Project.VolunteerRequests.Web;
@@ -116,6 +117,19 @@ public class VolunteerRequestsController : ApplicationController
 
         if (result.IsFailure)
             return result.Error.ToResponse();
+        
+        return Ok(result.Value);
+    }
+    
+    [Permission(PermissionsConfig.VolunteerRequests.Read)]
+    [HttpGet("all-submitted-requests")]
+    public async Task<ActionResult> GetAllSubmittedRequests(
+        [FromQuery] GetAllSubmittedRequestsRequest request,
+        [FromServices] GetAllSubmittedRequestsHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var result = await handler.Handle(
+            request.ToQuery(), cancellationToken);
         
         return Ok(result.Value);
     }

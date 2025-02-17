@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using P2Project.Core;
 using P2Project.Core.Interfaces;
 using P2Project.SharedKernel;
+using P2Project.VolunteerRequests.Application;
 using P2Project.VolunteerRequests.Application.Interfaces;
 using P2Project.VolunteerRequests.Infrastructure.DbContexts;
 
@@ -35,8 +36,8 @@ public static class DependencyInjection
         services.AddScoped<VolunteerRequestsWriteDbContext>(_ =>
             new VolunteerRequestsWriteDbContext(configuration.GetConnectionString(Constants.DATABASE)!));
 
-        /*services.AddScoped<IVolunteersReadDbContext, VolunteersReadDbContext>(_ =>
-            new VolunteersReadDbContext(configuration.GetConnectionString(Constants.DATABASE)!));*/
+        services.AddScoped<IVolunteerRequestsReadDbContext, VolunteerRequestsReadDbContext>(_ =>
+            new VolunteerRequestsReadDbContext(configuration.GetConnectionString(Constants.DATABASE)!));
 
         return services;
     }

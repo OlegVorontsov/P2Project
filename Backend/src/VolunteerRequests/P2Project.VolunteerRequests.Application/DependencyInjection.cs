@@ -2,6 +2,7 @@ using System.Reflection;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using P2Project.Core.Interfaces.Commands;
+using P2Project.Core.Interfaces.Queries;
 
 namespace P2Project.VolunteerRequests.Application;
 
@@ -13,7 +14,7 @@ public static class DependencyInjection
         this IServiceCollection services)
     {
         services.AddCommands()
-                //.AddQueries()
+                .AddQueries()
                 .AddValidatorsFromAssembly(_assembly);
 
         return services;
@@ -28,12 +29,12 @@ public static class DependencyInjection
             .WithScopedLifetime());
     }
     
-    /*private static IServiceCollection AddQueries(this IServiceCollection services)
+    private static IServiceCollection AddQueries(this IServiceCollection services)
     {
         return services.Scan(scan => scan.FromAssemblies(_assembly)
             .AddClasses(c => c
                 .AssignableToAny(typeof(IQueryHandler<,>), typeof(IQueryValidationHandler<,>)))
             .AsSelfWithInterfaces()
             .WithScopedLifetime());
-    }*/
+    }
 }
