@@ -7,38 +7,40 @@ using P2Project.Core;
 using P2Project.Core.Extensions;
 using P2Project.Core.Interfaces;
 using P2Project.Core.Interfaces.Commands;
+using P2Project.Discussions.Agreements;
 using P2Project.SharedKernel.Errors;
-using P2Project.SharedKernel.ValueObjects;
 using P2Project.VolunteerRequests.Application.Interfaces;
-using P2Project.VolunteerRequests.Domain;
 
-namespace P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Commands.Create;
+namespace P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Commands.SetReopenStatus;
 
-public class CreateVolunteerRequestHandler :
-    ICommandHandler<Guid, CreateVolunteerRequestCommand>
+public class SetReopenStatusHandler :
+    ICommandHandler<Guid, SetReopenStatusCommand>
 {
-    private readonly IValidator<CreateVolunteerRequestCommand> _validator;
+    private readonly IValidator<SetReopenStatusCommand> _validator;
     private readonly IAccountsAgreements _accountsAgreements;
+    private readonly IDiscussionsAgreement _discussionsAgreement;
     private readonly IVolunteerRequestsRepository _volunteerRequestsRepository;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly ILogger<CreateVolunteerRequestHandler> _logger;
+    private readonly ILogger<SetReopenStatusHandler> _logger;
 
-    public CreateVolunteerRequestHandler(
-        IValidator<CreateVolunteerRequestCommand> validator,
+    public SetReopenStatusHandler(
+        IValidator<SetReopenStatusCommand> validator,
+        IAccountsAgreements accountsAgreements,
+        IDiscussionsAgreement discussionsAgreement,
         IVolunteerRequestsRepository volunteerRequestsRepository,
         [FromKeyedServices(Modules.VolunteerRequests)] IUnitOfWork unitOfWork,
-        ILogger<CreateVolunteerRequestHandler> logger,
-        IAccountsAgreements accountsAgreements)
+        ILogger<SetReopenStatusHandler> logger)
     {
         _validator = validator;
         _accountsAgreements = accountsAgreements;
+        _discussionsAgreement = discussionsAgreement;
         _volunteerRequestsRepository = volunteerRequestsRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
 
     public async Task<Result<Guid, ErrorList>> Handle(
-        CreateVolunteerRequestCommand command,
+        SetReopenStatusCommand command,
         CancellationToken cancellationToken = default)
     {
         var validationResult = await _validator.ValidateAsync(
@@ -50,26 +52,26 @@ public class CreateVolunteerRequestHandler :
         if (isUserBanned)
             return Errors.General.Failure("user is banned").ToErrorList();
         
-        var requestId = command.UserId;
+        var existedRequest = await _volunteerRequestsRepository.GetById(
+            command.RequestId, cancellationToken);
+        if (existedRequest.IsFailure)
+            return Errors.General.NotFound(command.RequestId).ToErrorList();
         
-        var fullName = FullName.Create(
-            command.FullName.FirstName,
-            command.FullName.SecondName,
-            command.FullName.LastName).Value;
+        existedRequest.Value.Refresh();
         
-        var volunteerInfo = VolunteerInfo.Create(
-            command.VolunteerInfo.Age,
-            command.VolunteerInfo.Grade).Value;
+        var messageId = await _discussionsAgreement.CreateMessage(
+            command.UserId, existedRequest.Value.UserId,
+            command.Comment,
+            cancellationToken);
+        if(messageId.IsFailure)
+            return Errors.General.Failure("message").ToErrorList();
         
-        var newVolunteerRequest = VolunteerRequest.Create(
-            requestId, fullName, volunteerInfo).Value;
-
-        await _volunteerRequestsRepository.Add(newVolunteerRequest, cancellationToken);
         await _unitOfWork.SaveChanges(cancellationToken);
         
         _logger.LogInformation(
-            "Volunteer request was created with id {requestId}", requestId);
+            "Volunteer request with id {requestId} was reopened with submitted status",
+            command.RequestId);
 
-        return newVolunteerRequest.RequestId;
+        return existedRequest.Value.RequestId;
     }
 }

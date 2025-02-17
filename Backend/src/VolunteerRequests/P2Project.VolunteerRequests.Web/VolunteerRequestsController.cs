@@ -5,6 +5,7 @@ using P2Project.Framework.Authorization;
 using P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Commands.Create;
 using P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Commands.SetApprovedStatus;
 using P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Commands.SetRejectStatus;
+using P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Commands.SetReopenStatus;
 using P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Commands.SetRevisionRequiredStatus;
 using P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Commands.TakeInReview;
 using P2Project.VolunteerRequests.Web.Requests;
@@ -94,6 +95,24 @@ public class VolunteerRequestsController : ApplicationController
     {
         var result = await handler.Handle(
             request.ToCommand(adminId, requestId), cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+        
+        return Ok(result.Value);
+    }
+    
+    [Permission(PermissionsConfig.VolunteerRequests.Update)]
+    [HttpPut("{userId:guid}/reopen/{requestId:guid}")]
+    public async Task<ActionResult> SetReopenStatus(
+        [FromRoute] Guid userId,
+        [FromRoute] Guid requestId,
+        [FromBody] SetReopenStatusRequest request,
+        [FromServices] SetReopenStatusHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var result = await handler.Handle(
+            request.ToCommand(userId, requestId), cancellationToken);
 
         if (result.IsFailure)
             return result.Error.ToResponse();
