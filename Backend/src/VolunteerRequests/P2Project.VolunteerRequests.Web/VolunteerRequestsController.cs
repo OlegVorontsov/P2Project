@@ -9,6 +9,7 @@ using P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Comman
 using P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Commands.SetRevisionRequiredStatus;
 using P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Commands.TakeInReview;
 using P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Queries.GetAllByAdminId;
+using P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Queries.GetAllByUserId;
 using P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Queries.GetAllSubmitted;
 using P2Project.VolunteerRequests.Web.Requests;
 
@@ -136,7 +137,7 @@ public class VolunteerRequestsController : ApplicationController
     }
     
     [Permission(PermissionsConfig.VolunteerRequests.Read)]
-    [HttpGet("{adminId:guid}/all")]
+    [HttpGet("{adminId:guid}/all-by-admin")]
     public async Task<ActionResult> GetAllByAdminId(
         [FromRoute] Guid adminId,
         [FromQuery] GetAllByAdminIdRequest request,
@@ -145,6 +146,20 @@ public class VolunteerRequestsController : ApplicationController
     {
         var result = await handler.Handle(
             request.ToQuery(adminId), cancellationToken);
+        
+        return Ok(result.Value);
+    }
+    
+    [Permission(PermissionsConfig.VolunteerRequests.Read)]
+    [HttpGet("{userId:guid}/all-by-user")]
+    public async Task<ActionResult> GetAllByUserId(
+        [FromRoute] Guid userId,
+        [FromQuery] GetAllByUserIdRequest request,
+        [FromServices] GetAllByUserIdHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var result = await handler.Handle(
+            request.ToQuery(userId), cancellationToken);
         
         return Ok(result.Value);
     }
