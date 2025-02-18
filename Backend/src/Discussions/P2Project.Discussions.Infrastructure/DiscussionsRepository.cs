@@ -26,16 +26,30 @@ public class DiscussionsRepository : IDiscussionsRepository
     }
     
     public async Task<Result<Discussion, Error>> GetByParticipantsId(
-        Guid reviewingUserId, Guid applicantUserId,
+        Guid applicantUserId, Guid reviewingUserId,
         CancellationToken cancellationToken)
     {
         var discussion = await _dbContext.Discussions
             .Include(d => d.Messages)
-            .FirstOrDefaultAsync(d => d.DiscussionUsers.ReviewingUserId == reviewingUserId ||
+            .FirstOrDefaultAsync(d => d.DiscussionUsers.ReviewingUserId == reviewingUserId &&
                                       d.DiscussionUsers.ApplicantUserId == applicantUserId, cancellationToken);
 
         if (discussion == null)
             return Errors.General.NotFound();
+        
+        return discussion;
+    }
+    
+    public async Task<Result<Discussion, Error>> GetById(
+        Guid discussionId,
+        CancellationToken cancellationToken)
+    {
+        var discussion = await _dbContext.Discussions
+            .Include(d => d.Messages)
+            .FirstOrDefaultAsync(d => d.DiscussionId == discussionId, cancellationToken);
+
+        if (discussion == null)
+            return Errors.General.NotFound(discussionId);
         
         return discussion;
     }

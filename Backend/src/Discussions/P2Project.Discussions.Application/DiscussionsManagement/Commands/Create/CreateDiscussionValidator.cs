@@ -9,7 +9,7 @@ public class CreateDiscussionValidator :
 {
     public CreateDiscussionValidator()
     {
-        RuleFor(cd => cd.ReviewingUsersId)
+        RuleFor(cd => cd.ReviewingUserId)
             .NotNull()
             .NotEmpty()
             .WithError(Errors.General.ValueIsRequired());
