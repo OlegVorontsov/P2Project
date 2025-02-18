@@ -7,6 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Shared\P2Project.Core\P2Project.Core.csproj" />
+      <ProjectReference Include="..\..\Shared\P2Project.Framework\P2Project.Framework.csproj" />
       <ProjectReference Include="..\P2Project.VolunteerRequests.Application\P2Project.VolunteerRequests.Application.csproj" />
       <ProjectReference Include="..\P2Project.VolunteerRequests.Domain\P2Project.VolunteerRequests.Domain.csproj" />
       <ProjectReference Include="..\P2Project.VolunteerRequests.Infrastructure\P2Project.VolunteerRequests.Infrastructure.csproj" />

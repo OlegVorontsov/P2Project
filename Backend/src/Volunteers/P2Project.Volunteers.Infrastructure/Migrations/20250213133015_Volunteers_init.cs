@@ -33,6 +33,7 @@ namespace P2Project.Volunteers.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
+                    my_array = table.Column<int[]>(type: "integer[]", nullable: false),
                     gender = table.Column<string>(type: "text", nullable: false),
                     registered_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     needs_help_pets = table.Column<int>(type: "integer", nullable: false),

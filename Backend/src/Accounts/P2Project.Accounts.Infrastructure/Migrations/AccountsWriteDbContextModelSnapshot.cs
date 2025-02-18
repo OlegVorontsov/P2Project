@@ -182,6 +182,10 @@ namespace P2Project.Accounts.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<DateTime?>("BannedForRequestsUntil")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("banned_for_requests_until");
+
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid")
                         .HasColumnName("user_id");

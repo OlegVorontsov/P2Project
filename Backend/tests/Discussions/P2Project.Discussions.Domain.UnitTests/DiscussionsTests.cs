@@ -95,7 +95,7 @@ public class DiscussionsTests
         var newMessageText = Content.Create("New Message").Value;
         
         // Act
-        var result = discussion.EditMessage(message.MessageId, Guid.NewGuid(), newMessageText);
+        var result = discussion.EditMessage(message.Id, Guid.NewGuid(), newMessageText);
         
         //Assert
         result.IsSuccess.Should().BeFalse();
@@ -113,7 +113,7 @@ public class DiscussionsTests
         discussion.AddMessage(message);
         
         // Act
-        var result = discussion.RemoveMessage(message.MessageId, Guid.NewGuid());
+        var result = discussion.RemoveMessage(message.Id, Guid.NewGuid());
         
         //Assert
         result.IsSuccess.Should().BeFalse();

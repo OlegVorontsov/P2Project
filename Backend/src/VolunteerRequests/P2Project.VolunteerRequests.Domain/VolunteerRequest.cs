@@ -8,6 +8,7 @@ namespace P2Project.VolunteerRequests.Domain;
 
 public class VolunteerRequest
 {
+    private VolunteerRequest() { }
     public Guid RequestId { get; set; }
     public Guid? AdminId { get; private set; }
     public Guid UserId { get; private set; }

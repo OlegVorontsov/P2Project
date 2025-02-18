@@ -295,6 +295,11 @@ namespace P2Project.Volunteers.Infrastructure.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("looks_for_home_pets");
 
+                    b.Property<int[]>("MyArray")
+                        .IsRequired()
+                        .HasColumnType("integer[]")
+                        .HasColumnName("my_array");
+
                     b.Property<int>("NeedsFoodPets")
                         .HasColumnType("integer")
                         .HasColumnName("needs_food_pets");

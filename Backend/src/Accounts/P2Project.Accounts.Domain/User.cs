@@ -50,4 +50,9 @@ public class User : IdentityUser<Guid>
             _roles = [role],
         };
     }
+    
+    public void AddVolunteerRole(Role role)
+    {
+        _roles.Add(role);
+    }
 }

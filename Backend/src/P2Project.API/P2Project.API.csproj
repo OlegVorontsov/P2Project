@@ -34,9 +34,11 @@
     <ProjectReference Include="..\Accounts\P2Project.Accounts.Domain\P2Project.Accounts.Domain.csproj" />
     <ProjectReference Include="..\Accounts\P2Project.Accounts.Infrastructure\P2Project.Accounts.Infrastructure.csproj" />
     <ProjectReference Include="..\Accounts\P2Project.Accounts.Web\P2Project.Accounts.Web.csproj" />
+    <ProjectReference Include="..\Discussions\P2Project.Discussions.Web\P2Project.Discussions.Web.csproj" />
     <ProjectReference Include="..\Shared\P2Project.Framework\P2Project.Framework.csproj" />
     <ProjectReference Include="..\Shared\P2Project.SharedKernel\P2Project.SharedKernel.csproj" />
     <ProjectReference Include="..\Species\P2Project.Species.Web\P2Project.Species.Web.csproj" />
+    <ProjectReference Include="..\VolunteerRequests\P2Project.VolunteerRequests.Web\P2Project.VolunteerRequests.Web.csproj" />
     <ProjectReference Include="..\Volunteers\P2Project.Volunteers.Web\P2Project.Volunteers.Web.csproj" />
   </ItemGroup>
 

@@ -13,8 +13,8 @@ using P2Project.Accounts.Infrastructure.DbContexts;
 namespace P2Project.Accounts.Infrastructure.Migrations
 {
     [DbContext(typeof(AccountsWriteDbContext))]
-    [Migration("20250208081527_Accounts_init")]
-    partial class Accounts_init
+    [Migration("20250215061417_Accounts_AddUntliBan")]
+    partial class Accounts_AddUntliBan
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -184,6 +184,10 @@ namespace P2Project.Accounts.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
+
+                    b.Property<DateTime?>("BannedForRequestsUntil")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("banned_for_requests_until");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid")

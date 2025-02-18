@@ -6,6 +6,7 @@ using P2Project.Accounts.Infrastructure.DbContexts;
 using P2Project.Core;
 using P2Project.Core.Interfaces;
 using P2Project.Core.Options;
+using P2Project.SharedKernel;
 
 namespace P2Project.Accounts.Infrastructure;
 
@@ -19,17 +20,19 @@ public static class DependencyInjection
         services.Configure<AdminOptions>(
             configuration.GetSection(AdminOptions.NAME));
         
-        services.AddDataBase()
+        services.AddDataBase(configuration)
                 .AddUnitOfWork();
         
         return services;
     }
     
     private static IServiceCollection AddDataBase(
-        this IServiceCollection services)
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
         services.AddScoped<AccountsWriteDbContext>();
-        services.AddScoped<IAccountsReadDbContext, AccountsReadDbContext>();
+        services.AddScoped<IAccountsReadDbContext, AccountsReadDbContext>(_ =>
+            new AccountsReadDbContext(configuration.GetConnectionString(Constants.DATABASE)!));
 
         return services;
     }

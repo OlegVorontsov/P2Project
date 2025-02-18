@@ -33,9 +33,8 @@ namespace P2Project.Volunteers.Web
             [FromServices] GetFilteredVolunteersWithPaginationHandler handler,
             CancellationToken cancellationToken = default)
         {
-            var query = request.ToQuery();
-
-            var response = await handler.Handle(query, cancellationToken);
+            var response = await handler.Handle(
+                request.ToQuery(), cancellationToken);
 
             return Ok(response.Value);
         }

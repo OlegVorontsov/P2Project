@@ -54,7 +54,7 @@ public class Discussion
         if (Status == DiscussionStatus.Closed)
             return Errors.Discussions.Failure(Constants.Discussions.IS_CLOSED);
 
-        var message = _messages.FirstOrDefault(m => m.MessageId == messageId);
+        var message = _messages.FirstOrDefault(m => m.Id == messageId);
         if (message is null)
             return Errors.General.NotFound();
         
@@ -71,7 +71,7 @@ public class Discussion
         if (Status == DiscussionStatus.Closed)
             return Errors.Discussions.Failure(Constants.Discussions.IS_CLOSED);
 
-        var message = _messages.FirstOrDefault(m => m.MessageId == messageId);
+        var message = _messages.FirstOrDefault(m => m.Id == messageId);
         if (message is null)
             return Errors.General.NotFound();
         

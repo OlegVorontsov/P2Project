@@ -7,6 +7,23 @@ public static class PermissionsConfig
         public const string Read = "accounts.read";
     }
     
+    public static class VolunteerRequests
+    {
+        public const string Create = "request.create";
+        public const string Review = "request.review";
+        public const string Read = "request.read";
+        public const string Update = "request.update";
+        public const string Delete = "request.delete";
+    }
+    
+    public static class Discussions
+    {
+        public const string Create = "discussions.create";
+        public const string Read = "discussions.read";
+        public const string Update = "discussions.update";
+        public const string Delete = "discussions.delete";
+    }
+    
     public static class Volunteers
     {
         public const string Create = "volunteers.create";

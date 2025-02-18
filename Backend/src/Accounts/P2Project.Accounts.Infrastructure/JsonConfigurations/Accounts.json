@@ -2,6 +2,11 @@
   "Roles": {
     "Admin": [
       "accounts.read",
+      "request.review",
+      "request.create",
+      "request.read",
+      "request.update",
+      "request.delete",
       "volunteers.create",
       "volunteers.read",
       "volunteers.update",
@@ -30,6 +35,9 @@
       "files.delete"
     ],
     "Participant": [
+      "request.create",
+      "request.read",
+      "request.update",
       "volunteers.read",
       "pets.read",
       "species.read",
@@ -40,6 +48,13 @@
   "Permissions": {
     "Accounts": [
       "accounts.read"
+    ],
+    "VolunteerRequests": [
+      "request.create",
+      "request.review",
+      "request.read",
+      "request.update",
+      "request.delete"
     ],
     "Volunteers": [
       "volunteers.create",
