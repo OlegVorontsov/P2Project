@@ -60,7 +60,7 @@ public class DiscussionsTests
         
         // Act
         var result = discussion.AddMessage(message);
-        var messageInDiscussion = discussion.Messages.First().Content;
+        var messageInDiscussion = discussion.Messages.First().Content.Value;
         
         //Assert
         result.IsSuccess.Should().BeTrue();

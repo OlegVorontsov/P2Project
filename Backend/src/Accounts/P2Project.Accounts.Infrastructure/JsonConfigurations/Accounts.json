@@ -8,6 +8,7 @@
       "request.update",
       "request.delete",
       "discussions.update",
+      "discussions.read",
       "volunteers.create",
       "volunteers.read",
       "volunteers.update",
@@ -40,6 +41,7 @@
       "request.read",
       "request.update",
       "discussions.update",
+      "discussions.read",
       "volunteers.read",
       "pets.read",
       "species.read",
@@ -59,7 +61,8 @@
       "request.delete"
     ],
     "Discussions": [
-      "discussions.update"
+      "discussions.update",
+      "discussions.read"
     ],
     "Volunteers": [
       "volunteers.create",

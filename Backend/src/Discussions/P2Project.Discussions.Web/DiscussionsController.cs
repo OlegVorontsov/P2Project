@@ -5,6 +5,9 @@ using P2Project.Discussions.Application.DiscussionsManagement.Commands.Close;
 using P2Project.Discussions.Application.DiscussionsManagement.Commands.DeleteMessage;
 using P2Project.Discussions.Application.DiscussionsManagement.Commands.EditMessage;
 using P2Project.Discussions.Application.DiscussionsManagement.Commands.Reopen;
+using P2Project.Discussions.Application.DiscussionsManagement.Queries;
+using P2Project.Discussions.Application.DiscussionsManagement.Queries.GetById;
+using P2Project.Discussions.Application.DiscussionsManagement.Queries.GetMessageById;
 using P2Project.Discussions.Web.Requests;
 using P2Project.Framework;
 using P2Project.Framework.Authorization;
@@ -100,6 +103,34 @@ public class DiscussionsController : ApplicationController
 
         if (result.IsFailure)
             return result.Error.ToResponse();
+
+        return Ok(result.Value);
+    }
+    
+    [Permission(PermissionsConfig.Discussions.Read)]
+    [HttpGet("{discussionId:guid}")]
+    public async Task<IActionResult> GetById(
+        [FromRoute] Guid discussionId,
+        [FromServices] GetByIdHandler handler,
+        CancellationToken cancellationToken = default)
+    {
+        var result = await handler.Handle(
+            new GetByIdQuery(discussionId),
+            cancellationToken);
+
+        return Ok(result.Value);
+    }
+    
+    [Permission(PermissionsConfig.Discussions.Read)]
+    [HttpGet("{messageId:guid}/message")]
+    public async Task<IActionResult> GetMessageById(
+        [FromRoute] Guid messageId,
+        [FromServices] GetMessageByIdHandler handler,
+        CancellationToken cancellationToken = default)
+    {
+        var result = await handler.Handle(
+            new GetMessageByIdQuery(messageId),
+            cancellationToken);
 
         return Ok(result.Value);
     }
