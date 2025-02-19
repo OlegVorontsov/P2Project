@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using P2Project.Discussions.Application.DiscussionsManagement.Commands.AddMessageInDiscussionById;
 using P2Project.Discussions.Application.DiscussionsManagement.Commands.Close;
+using P2Project.Discussions.Application.DiscussionsManagement.Commands.EditMessage;
 using P2Project.Discussions.Application.DiscussionsManagement.Commands.Reopen;
 using P2Project.Discussions.Web.Requests;
 using P2Project.Framework;
@@ -63,6 +64,24 @@ public class DiscussionsController : ApplicationController
         if (result.IsFailure)
             return result.Error.ToResponse();
         
+        return Ok(result.Value);
+    }
+    
+    [Permission(PermissionsConfig.Discussions.Update)]
+    [HttpPut("{userId:guid}/edit-message/{discussionId:guid}")]
+    public async Task<ActionResult<Guid>> EditMessage(
+        [FromRoute] Guid userId,
+        [FromRoute] Guid discussionId,
+        [FromBody] EditMessageRequest request,
+        [FromServices] EditMessageHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var result = await handler.Handle(
+            request.ToCommand(userId, discussionId), cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
         return Ok(result.Value);
     }
 }
