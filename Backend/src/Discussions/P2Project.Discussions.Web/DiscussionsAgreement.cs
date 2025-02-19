@@ -33,12 +33,12 @@ public class DiscussionsAgreement : IDiscussionsAgreement
     }
 
     public async Task<Result<Guid, ErrorList>> CreateMessage(
-        Guid senderId, Guid reviewingUserId,
+        Guid senderId, Guid participantId,
         string message,
         CancellationToken cancellationToken = default)
     {
         var createMessageCommand = new CreateMessageCommand(
-            senderId, reviewingUserId, message);
+            senderId, participantId, message);
         
         var messageCreate = await _createMessageHandler.Handle(
             createMessageCommand, cancellationToken);

@@ -3,13 +3,13 @@ using P2Project.SharedKernel.Errors;
 
 namespace P2Project.SharedKernel.ValueObjects;
 
-public record Content
+public class Content : ValueObject
 {
     private Content(string value)
     {
         Value = value;
     }
-    public string Value { get; }
+    public string Value { get; } = default!;
 
     public static Result<Content, Error> Create(string value)
     {
@@ -17,7 +17,9 @@ public record Content
             return Errors.Errors.General.ValueIsInvalid(nameof(Content));
         
         return new Content(value);
-    } 
-
-    public static implicit operator string(Content content) => content.Value;
+    }
+    protected override IEnumerable<IComparable> GetEqualityComponents()
+    {
+        yield return Value;
+    }
 }

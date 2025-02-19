@@ -9,12 +9,12 @@ public class CreateMessageValidator :
 {
     public CreateMessageValidator()
     {
-        RuleFor(r => r.ReviewingUserId)
+        RuleFor(r => r.SenderId)
             .NotNull()
             .NotEmpty()
             .WithError(Errors.General.ValueIsRequired());
         
-        RuleFor(r => r.ApplicantUserId)
+        RuleFor(r => r.ParticipantId)
             .NotNull()
             .NotEmpty()
             .WithError(Errors.General.ValueIsRequired());
