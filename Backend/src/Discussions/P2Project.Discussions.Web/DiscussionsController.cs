@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using P2Project.Discussions.Application.DiscussionsManagement.Commands.AddMessageInDiscussionById;
 using P2Project.Discussions.Application.DiscussionsManagement.Commands.Close;
 using P2Project.Discussions.Application.DiscussionsManagement.Commands.Reopen;
 using P2Project.Discussions.Web.Requests;
@@ -36,6 +37,24 @@ public class DiscussionsController : ApplicationController
         [FromRoute] Guid discussionId,
         [FromBody] ReopenRequest request,
         [FromServices] ReopenHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var result = await handler.Handle(
+            request.ToCommand(userId, discussionId), cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+        
+        return Ok(result.Value);
+    }
+    
+    [Permission(PermissionsConfig.Discussions.Update)]
+    [HttpPut("{userId:guid}/message/{discussionId:guid}")]
+    public async Task<ActionResult> AddMessage(
+        [FromRoute] Guid userId,
+        [FromRoute] Guid discussionId,
+        [FromBody] AddMessageRequest request,
+        [FromServices] AddMessageHandler handler,
         CancellationToken cancellationToken)
     {
         var result = await handler.Handle(
