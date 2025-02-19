@@ -1,4 +1,16 @@
-services:
+﻿services:
+  p2project.api:
+    build:
+      context: .
+      dockerfile: src/P2Project.API/Dockerfile
+    depends_on:
+      - postgres
+      - minio
+      - seq
+    ports:
+      - "8080:8080"
+    restart: always
+    
   postgres:
     container_name: postgresP2P
     image: postgres:latest
@@ -7,10 +19,10 @@ services:
       POSTGRES_DB: "P2Project"
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "123"
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
     ports:
       - "5434:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
 
   seq:
     container_name: seqP2P
@@ -27,8 +39,8 @@ services:
     image: minio/minio
     restart: always
     ports:
-      - 9000:9000
-      - 9001:9001
+      - "9000:9000"
+      - "9001:9001"
     volumes:
       - minio-data:/data
     command: server --console-address ":9001" /data
