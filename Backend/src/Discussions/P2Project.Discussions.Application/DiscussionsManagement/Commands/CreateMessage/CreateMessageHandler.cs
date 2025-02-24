@@ -43,13 +43,13 @@ public class CreateMessageHandler :
             return validationResult.ToErrorList();
         
         var discussionExist = await _discussionsRepository.GetByParticipantsId(
-            command.ReviewingUserId, command.ApplicantUserId, cancellationToken);
+            command.SenderId, command.ParticipantId, cancellationToken);
         if (discussionExist.IsFailure)
             return discussionExist.Error.ToErrorList();
         
         var newMessage = Message.Create(
             discussionExist.Value.DiscussionId,
-            command.ReviewingUserId,
+            command.SenderId,
             Content.Create(command.Message).Value);
 
         discussionExist.Value.AddMessage(newMessage);

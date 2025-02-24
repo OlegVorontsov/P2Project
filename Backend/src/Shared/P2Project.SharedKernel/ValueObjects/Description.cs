@@ -16,9 +16,7 @@ namespace P2Project.SharedKernel.ValueObjects
             if (string.IsNullOrWhiteSpace(value))
                 return Errors.Errors.General.ValueIsInvalid(nameof(Description));
 
-            var newDescription = new Description(value);
-
-            return newDescription;
+            return new Description(value);;
         }
         protected override IEnumerable<IComparable> GetEqualityComponents()
         {

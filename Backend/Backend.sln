@@ -97,6 +97,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "P2Project.Discussions.Domai
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "P2Project.Discussions.UnitTestsFabrics", "tests\Discussions\P2Project.Discussions.UnitTestsFabrics\P2Project.Discussions.UnitTestsFabrics.csproj", "{47165E19-6A19-4853-87A0-69CEEA6DDF92}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E1F0E1AF-6C95-42FE-9F13-6BABB6B3BD01}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

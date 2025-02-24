@@ -9,6 +9,10 @@ public interface IDiscussionsRepository
     public Task<Discussion> Add(Discussion discussion, CancellationToken cancellationToken);
 
     public Task<Result<Discussion, Error>> GetByParticipantsId(
-        Guid ReviewingUserId, Guid ApplicantUserId,
+        Guid ApplicantUserId, Guid ReviewingUserId,
+        CancellationToken cancellationToken);
+
+    public Task<Result<Discussion, Error>> GetById(
+        Guid discussionId,
         CancellationToken cancellationToken);
 }

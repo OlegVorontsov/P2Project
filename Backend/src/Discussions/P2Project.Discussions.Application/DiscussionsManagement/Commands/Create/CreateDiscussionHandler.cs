@@ -42,8 +42,13 @@ public class CreateDiscussionHandler :
         if (validationResult.IsValid == false)
             return validationResult.ToErrorList();
         
+        var discussionExist = await _discussionsRepository.GetByParticipantsId(
+            command.ReviewingUserId, command.ApplicantUserId, cancellationToken);
+        if (discussionExist.IsSuccess)
+            return Errors.General.AlreadyExists("discussion").ToErrorList();
+        
         var discussionUsers = DiscussionUsers.Create(
-            command.ReviewingUsersId, command.ApplicantUserId);
+            command.ReviewingUserId, command.ApplicantUserId);
         
         var discussion = Discussion.Open(discussionUsers);
         if (discussion.IsFailure)
