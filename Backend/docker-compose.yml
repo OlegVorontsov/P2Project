@@ -1,8 +1,6 @@
 ﻿services:
   web:
-    build:
-      context: .
-      dockerfile: src/P2Project.API/Dockerfile
+    image: olegvorontsov/p2project-backend:1.0
     depends_on:
       - postgres
       - minio
@@ -12,7 +10,7 @@
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
-        
+
   nginx:
     container_name: nginx_main
     image: nginx:latest

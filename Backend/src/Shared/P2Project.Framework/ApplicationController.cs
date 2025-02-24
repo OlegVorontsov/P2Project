@@ -4,7 +4,7 @@ using P2Project.Core.Models;
 namespace P2Project.Framework
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public abstract class ApplicationController : ControllerBase
     {
         public override OkObjectResult Ok(object? value)
