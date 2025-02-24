@@ -1,0 +1,38 @@
+services:
+  postgres:
+    container_name: postgresP2P
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_DB: "P2Project"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "123"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+
+  seq:
+    container_name: seqP2P
+    image: datalust/seq:latest
+    restart: always
+    environment:
+      - "ACCEPT_EULA=Y"
+    ports:
+      - "5341:5341"
+      - "8081:80"
+
+  minio:
+    container_name: minioP2P
+    image: minio/minio
+    restart: always
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio-data:/data
+    command: server --console-address ":9001" /data
+
+volumes:
+  postgres-data:
+  minio-data:

@@ -1,5 +1,5 @@
 ﻿services:
-  p2project.api:
+  web:
     build:
       context: .
       dockerfile: src/P2Project.API/Dockerfile
@@ -10,10 +10,23 @@
     ports:
       - "8080:8080"
     restart: always
-    
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+        
+  nginx:
+    container_name: nginx_main
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - web
+    restart: always
+
   postgres:
-    container_name: postgresP2P
-    image: postgres:latest
+    container_name: postgresWeb
+    image: postgres
     restart: always
     environment:
       POSTGRES_DB: "P2Project"
@@ -25,7 +38,7 @@
       - postgres-data:/var/lib/postgresql/data
 
   seq:
-    container_name: seqP2P
+    container_name: seqWeb
     image: datalust/seq:latest
     restart: always
     environment:
@@ -35,7 +48,7 @@
       - "8081:80"
 
   minio:
-    container_name: minioP2P
+    container_name: minioWeb
     image: minio/minio
     restart: always
     ports:
