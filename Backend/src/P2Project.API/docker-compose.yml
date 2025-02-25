@@ -1,42 +1,19 @@
-﻿services:
-  web:
-    image: olegvorontsov/p2project-backend:1.0
-    depends_on:
-      - postgres
-      - minio
-      - seq
-    ports:
-      - "8080:8080"
-    restart: always
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Docker
-
-  nginx:
-    container_name: nginx_main
-    image: nginx:latest
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
-    depends_on:
-      - web
-    restart: always
-
+services:
   postgres:
-    container_name: postgresWeb
-    image: postgres
+    container_name: postgresP2P
+    image: postgres:latest
     restart: always
     environment:
       POSTGRES_DB: "P2Project"
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "123"
-    ports:
-      - "5434:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
 
   seq:
-    container_name: seqWeb
+    container_name: seqP2P
     image: datalust/seq:latest
     restart: always
     environment:
@@ -46,7 +23,7 @@
       - "8081:80"
 
   minio:
-    container_name: minioWeb
+    container_name: minioP2P
     image: minio/minio
     restart: always
     ports:
