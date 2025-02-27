@@ -19,6 +19,7 @@ public static class GetPresignedUrl
 
     private static async Task<IResult> Handler(
         Guid key,
+        string bucket,
         IAmazonS3 s3Client,
         CancellationToken cancellationToken)
     {
@@ -28,7 +29,7 @@ public static class GetPresignedUrl
             
             var presignedRequest = new GetPreSignedUrlRequest
             {
-                BucketName = "photos",
+                BucketName = bucket,
                 Key = keyString,
                 Verb = HttpVerb.GET,
                 Expires = DateTime.UtcNow.AddDays(14),
