@@ -1,5 +1,3 @@
-using FilesService.Builders;
-
 namespace FilesService.Builders;
 
 public static class BuildersRegister
@@ -8,7 +6,9 @@ public static class BuildersRegister
         this IServiceCollection services, IConfiguration configuration)
     {
         services.AddEndpoints();
+        services.AddCors();
         services.AddAmazonS3(configuration);
+        services.SetMinioOptions(configuration);
         
         return services;
     }

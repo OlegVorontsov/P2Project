@@ -16,7 +16,7 @@ public static class AmazonS3Builder
         {
             var config = new AmazonS3Config()
             { 
-                ServiceURL = minioOptions.EndPoint,
+                ServiceURL = minioOptions.S3EndPoint,
                 ForcePathStyle = true,
                 UseHttp = true,
             };

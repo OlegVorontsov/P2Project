@@ -7,14 +7,10 @@ namespace P2Project.Volunteers.Web;
 public class TestController : ApplicationController
 {
     [HttpGet]
-    public ActionResult Get()
+    public ActionResult<string[]> Get()
     {
-        List<FullNameDto> fullNames = [
-            new ("Vorontsov", "Oleg", "Ruslanovich"),
-            new ("Vorontsova", "Ekaterina", "Aleksandrovna"),
-            new ("Vorontsova", "Kapitolina", "Olegovna"),
-        ];
+        var names = new[] {"Oleg", "Kate", "Morris"};
 
-        return Ok(fullNames);
+        return names;
     }
 }

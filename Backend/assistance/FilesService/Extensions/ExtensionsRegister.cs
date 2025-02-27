@@ -8,6 +8,13 @@ public static class ExtensionsRegister
     {
         app.MapEndpoints();
         
+        app.UseCors(config =>
+        {
+            config.AllowAnyOrigin()
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        });
+        
         return app;
     }
 }
