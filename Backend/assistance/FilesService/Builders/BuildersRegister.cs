@@ -1,3 +1,7 @@
+using FilesService.Application.Interfaces;
+using FilesService.Infrastructure.MongoDb;
+using MongoDB.Driver;
+
 namespace FilesService.Builders;
 
 public static class BuildersRegister
@@ -9,6 +13,11 @@ public static class BuildersRegister
         services.AddCors();
         services.AddAmazonS3(configuration);
         services.SetMinioOptions(configuration);
+        
+        services.AddSingleton<IMongoClient>(new MongoClient(
+            configuration.GetConnectionString("Mongo")));
+        services.AddScoped<MongoDbContext>();
+        services.AddScoped<IFilesRepository, MongoDbRepository>();
         
         return services;
     }

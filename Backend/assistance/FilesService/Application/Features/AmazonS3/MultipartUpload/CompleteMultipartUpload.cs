@@ -1,6 +1,7 @@
 using Amazon.S3;
 using Amazon.S3.Model;
 using FilesService.Application.Interfaces;
+using FilesService.Core.Models;
 using FilesService.Core.Requests;
 using FilesService.Core.Responses;
 using Microsoft.AspNetCore.Mvc;
@@ -20,14 +21,14 @@ public static class CompleteMultipartUpload
         [FromRoute] string key,
         [FromBody] CompleteMultipartRequest request,
         IAmazonS3 s3Client,
-        //MongoDbRepository repository,
+        IFilesRepository repository,
         CancellationToken cancellationToken)
     {
         try
         {
-            /*var fileId = Guid.NewGuid();
+            var fileId = Guid.NewGuid();
 
-            //job проверки файла в mongo и s3
+            /*//job проверки файла в mongo и s3
             var enqueueAt = TimeSpan.FromHours(24);
             var jobId = BackgroundJob.Schedule<ConfirmConsistencyJob>(j => j.Execute(fileId, key, request.BucketName, ct), enqueueAt);*/
 
@@ -43,14 +44,14 @@ public static class CompleteMultipartUpload
             var response = await s3Client.CompleteMultipartUploadAsync(
                 presignedRequest, cancellationToken);
 
-            /*var metaDataRequest = new GetObjectMetadataRequest
+            var metaDataRequest = new GetObjectMetadataRequest
             {
                 BucketName = request.BucketName,
                 Key = key,
             };
-            var metaData = await s3Client.GetObjectMetadataAsync(metaDataRequest, cancellationToken: ct);
+            var metaData = await s3Client.GetObjectMetadataAsync(metaDataRequest, cancellationToken);
 
-            FileData fileData = new FileData
+            var fileData = new FileData
             {
                 Id = fileId,
                 StoragePath = key,
@@ -59,9 +60,9 @@ public static class CompleteMultipartUpload
                 ContentType = metaData.Headers.ContentType,
             };
 
-            await repository.Add(fileData, ct);
+            await repository.Add(fileData, cancellationToken);
 
-            BackgroundJob.Delete(jobId);
+            /*BackgroundJob.Delete(jobId);
 
             FileLocationResponse fileLocation = new FileLocationResponse(key, response.Location);*/
             
