@@ -1,9 +1,11 @@
 using Amazon.S3;
 using Amazon.S3.Model;
 using FilesService.Application.Interfaces;
+using FilesService.Application.Jobs;
 using FilesService.Core.Models;
 using FilesService.Core.Requests;
 using FilesService.Core.Responses;
+using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FilesService.Application.Features.AmazonS3.MultipartUpload;
@@ -28,9 +30,10 @@ public static class CompleteMultipartUpload
         {
             var fileId = Guid.NewGuid();
 
-            /*//job проверки файла в mongo и s3
+            //job проверки файла в mongo и s3
             var enqueueAt = TimeSpan.FromHours(24);
-            var jobId = BackgroundJob.Schedule<ConfirmConsistencyJob>(j => j.Execute(fileId, key, request.BucketName, ct), enqueueAt);*/
+            var jobId = BackgroundJob.Schedule<ConfirmConsistencyJob>(j =>
+                j.Execute(fileId, key, request.BucketName, cancellationToken), enqueueAt);
 
             var presignedRequest = new CompleteMultipartUploadRequest
             {
@@ -62,9 +65,9 @@ public static class CompleteMultipartUpload
 
             await repository.Add(fileData, cancellationToken);
 
-            /*BackgroundJob.Delete(jobId);
+            BackgroundJob.Delete(jobId);
 
-            FileLocationResponse fileLocation = new FileLocationResponse(key, response.Location);*/
+            var fileLocation = new FileLocationResponse(key, response.Location);
             
             return Results.Ok(new
             {

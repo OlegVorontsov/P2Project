@@ -18,6 +18,8 @@ public static class BuildersRegister
             configuration.GetConnectionString("Mongo")));
         services.AddScoped<MongoDbContext>();
         services.AddScoped<IFilesRepository, MongoDbRepository>();
+
+        services.AddHangfire(configuration);
         
         return services;
     }
