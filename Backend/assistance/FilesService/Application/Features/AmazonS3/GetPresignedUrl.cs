@@ -1,9 +1,7 @@
 using Amazon.S3;
 using Amazon.S3.Model;
 using FilesService.Application.Interfaces;
-using FilesService.Core.Requests;
 using FilesService.Core.Responses;
-using Microsoft.AspNetCore.Mvc;
 
 namespace FilesService.Application.Features.AmazonS3;
 

@@ -58,6 +58,7 @@ public static class CompleteMultipartUpload
             {
                 Id = fileId,
                 StoragePath = key,
+                BucketName = request.BucketName,
                 UploadDate = DateTime.UtcNow,
                 FileSize = metaData.Headers.ContentLength,
                 ContentType = metaData.Headers.ContentType,
