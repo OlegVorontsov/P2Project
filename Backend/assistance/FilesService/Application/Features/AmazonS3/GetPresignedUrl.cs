@@ -13,7 +13,7 @@ public static class GetPresignedUrl
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("amazon/files/{key:guid}/presigned", Handler);
+            app.MapPost("files/{key:guid}/presigned", Handler);
         }
     }
 
