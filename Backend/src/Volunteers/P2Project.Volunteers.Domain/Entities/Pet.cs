@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using FilesService.Core.Models;
 using P2Project.SharedKernel.BaseClasses;
 using P2Project.SharedKernel.Errors;
 using P2Project.SharedKernel.IDs;
@@ -31,7 +32,8 @@ namespace P2Project.Volunteers.Domain.Entities
                AssistanceStatus assistanceStatus,
                DateOnly createdAt,
                List<AssistanceDetail>? assistanceDetails,
-               List<Photo>? photos = null) : base(id)
+               MediaFile avatar = null,
+               List<MediaFile>? photos = null) : base(id)
         {
             NickName = nickName;
             SpeciesBreed = speciesBreed;
@@ -45,8 +47,8 @@ namespace P2Project.Volunteers.Domain.Entities
             CreatedAt = createdAt;
             AssistanceDetails = assistanceDetails ??
                                 new List<AssistanceDetail>([]);
-            Photos = photos ??
-                     new List<Photo>([]);
+            Avatar = avatar;
+            Photos = photos ?? [];
         }
         public NickName NickName { get; private set; } = default!;
         public SpeciesBreed SpeciesBreed { get; private set; } = default!;
@@ -59,7 +61,8 @@ namespace P2Project.Volunteers.Domain.Entities
         public AssistanceStatus AssistanceStatus { get; private set; }
         public DateOnly CreatedAt { get; private set; }
         public IReadOnlyList<AssistanceDetail> AssistanceDetails { get; private set; } = null!;
-        public IReadOnlyList<Photo> Photos { get; private set; } = null!;
+        public MediaFile? Avatar { get; private set; }
+        public IReadOnlyList<MediaFile> Photos { get; private set; } = null!;
         public Position Position { get; private set; }
         public VolunteerId VolunteerId { get; private set; } = null!;
 
@@ -88,12 +91,12 @@ namespace P2Project.Volunteers.Domain.Entities
             return Result.Success<Error>();
         }
 
-        public void UpdatePhotos(List<Photo> photos) =>
+        public void UpdatePhotos(List<MediaFile> photos) =>
             Photos = photos;
 
         internal Result<string[], Error> DeleteAllPhotos()
         {
-            var photosToDelete = Photos.Select(p => p.FilePath);
+            var photosToDelete = Photos.Select(p => p.FileName);
             Photos = [];
             return photosToDelete.ToArray();
         }
@@ -129,30 +132,31 @@ namespace P2Project.Volunteers.Domain.Entities
         }
 
         public Result<string, Error> ChangeMainPhoto(
-            Photo petPhoto)
+            MediaFile media)
         {
             var photoExist = Photos.FirstOrDefault(p =>
-                p.FilePath == petPhoto.FilePath);
+                p.FileName == media.FileName);
             if (photoExist is null)
                 return Errors.General.NotFound();
 
             if (photoExist.IsMain)
-                return Errors.General.Failure(petPhoto.FilePath);
+                return Errors.General.Failure(media.FileName);
 
-            var newPhotos = new List<Photo>();
+            var newPhotos = new List<MediaFile>();
             foreach (var photo in Photos)
             {
-                if (photo.FilePath != petPhoto.FilePath)
+                if (photo.FileName != media.FileName)
                 {
-                    newPhotos.Add(Photo.Create(photo.FilePath, false).Value);
+                    if (photo.BucketName != null && photo.FileName != null)
+                        newPhotos.Add(MediaFile.Create(photo.BucketName, photo.FileName, false).Value);
                 }
             }
             
-            newPhotos.Add(petPhoto);
+            newPhotos.Add(media);
             
             Photos = newPhotos;
 
-            return photoExist.FilePath;
+            return media.FileName;
         }
     }
 }

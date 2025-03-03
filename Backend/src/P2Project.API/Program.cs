@@ -43,6 +43,13 @@ if (app.Environment.IsDevelopment())
     await app.ApplyMigrations();
 }
 
+app.UseCors(config =>
+{
+    config.AllowAnyOrigin()
+          .AllowAnyMethod()
+          .AllowAnyHeader();
+});
+
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

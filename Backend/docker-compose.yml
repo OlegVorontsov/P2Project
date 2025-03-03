@@ -7,7 +7,6 @@
       - seq
     ports:
       - "8080:8080"
-    restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
 
@@ -20,12 +19,10 @@
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - web
-    restart: always
 
   postgres:
     container_name: postgresWeb
     image: postgres
-    restart: always
     environment:
       POSTGRES_DB: "P2Project"
       POSTGRES_USER: "postgres"
@@ -38,7 +35,6 @@
   seq:
     container_name: seqWeb
     image: datalust/seq:latest
-    restart: always
     environment:
       - "ACCEPT_EULA=Y"
     ports:
@@ -48,7 +44,6 @@
   minio:
     container_name: minioWeb
     image: minio/minio
-    restart: always
     ports:
       - "9000:9000"
       - "9001:9001"

@@ -5,4 +5,5 @@ namespace P2Project.Volunteers.Application.Commands.ChangePetMainPhoto;
 public record ChangePetMainPhotoCommand(
     Guid VolunteerId,
     Guid PetId,
-    string ObjectName) : ICommand;
+    string BucketName,
+    string FileName) : ICommand;

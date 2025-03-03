@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using FilesService.Core.Models;
 using P2Project.SharedKernel;
 using P2Project.SharedKernel.BaseClasses;
 using P2Project.SharedKernel.Errors;
@@ -187,7 +188,7 @@ namespace P2Project.Volunteers.Domain
 
         public Result<string, Error> ChangePetMainPhoto(
             PetId petId,
-            Photo newMainPhoto)
+            MediaFile newMainPhoto)
         {
             var petExist = _pets.FirstOrDefault(p => p.Id == petId);
             if (petExist is null)
