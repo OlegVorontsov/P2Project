@@ -1,3 +1,4 @@
+using FilesService.Core.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using P2Project.IntegrationTests.Factories;
@@ -89,7 +90,8 @@ public class SeedExtension
 
         var pet = PetFabric.CreatePet(species.Id, species.Breeds.First().Id);
         
-        var photos = new List<Photo>{Photo.Create("test_file_name.jpg", false).Value};
+        var photos = new List<MediaFile>{MediaFile
+            .Create("test_bucket_name", "test_file_name.jpg", false).Value};
         
         pet.UpdatePhotos(photos);
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FilesService.Core.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using P2Project.Core.Dtos.Common;
 using P2Project.Core.Extensions;
@@ -151,9 +152,33 @@ namespace P2Project.Volunteers.Infrastructure.Configurations.Write
             
             builder.Property(p => p.Photos)
                 .ValueObjectsCollectionJsonConversion(
-                    photo => new PhotoDto(photo.FilePath, photo.IsMain),
-                    dto => Photo.Create(dto.Path, dto.IsMain).Value)
+                    photo => new MediaFileDto(photo.BucketName, photo.FileName, photo.IsMain),
+                    dto => MediaFile.Create(dto.BucketName, dto.FileName, dto.IsMain).Value)
                 .HasColumnName(Pet.DB_COLUMN_PHOTOS);
+            
+            builder.ComplexProperty(p => p.Avatar, ab =>
+            {
+                ab.Property(a => a.Key)
+                    .IsRequired()
+                    .HasColumnName("key");
+
+                ab.Property(a => a.Type)
+                    .HasConversion<string>()
+                    .IsRequired()
+                    .HasColumnName("type");
+                
+                ab.Property(a => a.BucketName)
+                    .IsRequired()
+                    .HasColumnName("bucket_name");
+
+                ab.Property(a => a.FileName)
+                    .IsRequired()
+                    .HasColumnName("file_name");
+
+                ab.Property(p => p.IsMain)
+                    .IsRequired(false)
+                    .HasColumnName("is_main");
+            });
 
             builder.Property(p => p.CreatedAt)
                 .IsRequired()

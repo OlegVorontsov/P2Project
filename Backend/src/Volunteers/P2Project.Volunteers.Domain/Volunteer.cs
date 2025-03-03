@@ -232,7 +232,7 @@ namespace P2Project.Volunteers.Domain
                 return petResult.Error;
 
             var filesToDelete = petResult.Value.Photos
-                .Select(ph => ph.FilePath).ToArray();
+                .Select(ph => ph.FileName).ToArray();
             
             _pets.Remove(petResult.Value);
 

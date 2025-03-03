@@ -6,10 +6,10 @@ namespace FilesService.Core.Models;
 
 public record MediaFile
 {
-    public Guid? Key { get; }
-    public FileType? Type { get; }
-    public string? BucketName { get; }
-    public string? FileName { get; }
+    public Guid Key { get; }
+    public FileType Type { get; }
+    public string BucketName { get; }
+    public string FileName { get; }
     public bool IsMain { get; }
 
     private MediaFile() { }

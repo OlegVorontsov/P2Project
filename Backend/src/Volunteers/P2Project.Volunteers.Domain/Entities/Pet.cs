@@ -135,7 +135,7 @@ namespace P2Project.Volunteers.Domain.Entities
             MediaFile media)
         {
             var photoExist = Photos.FirstOrDefault(p =>
-                p.FileName == media.FileName);
+                p.FileName == media.FileName && p.BucketName == media.BucketName);
             if (photoExist is null)
                 return Errors.General.NotFound();
 
@@ -157,6 +157,11 @@ namespace P2Project.Volunteers.Domain.Entities
             Photos = newPhotos;
 
             return media.FileName;
+        }
+        
+        public void SetAvatar(MediaFile avatar)
+        {
+            Avatar = avatar;
         }
     }
 }
