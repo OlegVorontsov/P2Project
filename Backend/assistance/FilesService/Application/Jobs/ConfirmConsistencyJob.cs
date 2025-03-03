@@ -32,9 +32,6 @@ public class ConfirmConsistencyJob(
 
         try
         {
-            await repository.Remove(fileId, ct);
-            logger.LogInformation("Файл с id = {fileId} удалён из БД", fileId);
-
             var deleteObjectRequest = new DeleteObjectRequest
             {
                 BucketName = bucketName,
@@ -43,6 +40,9 @@ public class ConfirmConsistencyJob(
             await s3Client.DeleteObjectAsync(deleteObjectRequest, ct);
             logger.LogInformation("Файл с id = {fileId} удалён из S3", fileId);
 
+            await repository.Remove(fileId, ct);
+            logger.LogInformation("Файл с id = {fileId} удалён из БД", fileId);
+            
             return Results.Ok();
         }
         catch (Exception ex)

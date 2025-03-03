@@ -1,5 +1,4 @@
 using CSharpFunctionalExtensions;
-using FilesService.Core.Errors;
 using FilesService.Core.Models;
 
 namespace FilesService.Application.Interfaces;

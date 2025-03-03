@@ -55,8 +55,7 @@ public static class GetFilesDataByIds
             }
             return Results.Ok(response);
         }
-            //return Results.Ok(result.Value);
-
+        
         return Results.BadRequest();
     }
 }
