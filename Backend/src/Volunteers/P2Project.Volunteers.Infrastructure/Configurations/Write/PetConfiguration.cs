@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using P2Project.Core.Dtos.Common;
-using P2Project.Core.Dtos.Pets;
 using P2Project.Core.Extensions;
 using P2Project.SharedKernel;
 using P2Project.SharedKernel.IDs;

@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using FilesService.Core.Models;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -50,7 +51,8 @@ public class ChangePetMainPhotoHandler :
             return volunteerResult.Error.ToErrorList();
         
         var petId = PetId.Create(command.PetId);
-        var newMainPhoto = Photo.Create(command.ObjectName, true).Value;
+        var newMainPhoto = MediaFile.Create(
+            command.BucketName, command.FileName, true).Value;
         
         var changeResult = volunteerResult.Value
             .ChangePetMainPhoto(petId, newMainPhoto);
@@ -63,7 +65,7 @@ public class ChangePetMainPhotoHandler :
             "Successfully changed volunteer's (id = {vId}) pet's (id = {pId}) main photo {newMainPhoto}",
             volunteerId,
             petId,
-            command.ObjectName);
+            command.FileName);
 
         return petId.Value;
     }
