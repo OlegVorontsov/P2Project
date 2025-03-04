@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using P2Project.Volunteers.Infrastructure.DbContexts;
@@ -12,9 +13,11 @@ using P2Project.Volunteers.Infrastructure.DbContexts;
 namespace P2Project.Volunteers.Infrastructure.Migrations
 {
     [DbContext(typeof(VolunteersWriteDbContext))]
-    partial class VolunteersWriteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250304142405_RemoveMyArrayInVolunteer")]
+    partial class RemoveMyArrayInVolunteer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

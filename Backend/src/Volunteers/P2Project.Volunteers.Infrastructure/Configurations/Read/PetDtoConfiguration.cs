@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using FilesService.Core.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using P2Project.Core.Dtos.Common;
@@ -25,10 +24,12 @@ namespace P2Project.Volunteers.Infrastructure.Configurations.Read
                             json, JsonSerializerOptions.Default)!)
                 .HasColumnName(Pet.DB_COLUMN_ASSISTANCE_DETAILS);
             
-            builder.Ignore(x => x.AvatarUrl);
+            builder.Ignore(p => p.AvatarUrl);
             
-            builder.ComplexProperty(p => p.Avatar, ab =>
+            builder.OwnsOne(p => p.Avatar, ab =>
             {
+                ab.ToJson("avatar");
+                
                 ab.Property(a => a.Key)
                     .IsRequired()
                     .HasColumnName("key");

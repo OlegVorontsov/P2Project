@@ -1,4 +1,5 @@
 using System.Text.Json;
+using FilesService.Core.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -42,11 +43,41 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
                 json => JsonSerializer
                     .Deserialize<IReadOnlyList<SocialNetwork>>(json, JsonSerializerOptions.Default)!);
         
-        builder.Property(p => p.Photos)
+        builder.Property(u => u.Photos)
             .ValueObjectsCollectionJsonConversion(
-                photo => new PhotoDto(photo.FilePath, photo.IsMain),
-                dto => Photo.Create(dto.Path, dto.IsMain).Value)
+                photo => new MediaFileDto(photo.BucketName, photo.FileName, photo.IsMain),
+                dto => MediaFile.Create(dto.BucketName, dto.FileName, dto.IsMain).Value)
             .HasColumnName("photos");
+        
+        builder.Ignore(u => u.PhotosUrls);
+
+        builder.OwnsOne(u => u.Avatar, ab =>
+        {
+            ab.ToJson("avatar");
+            
+            ab.Property(a => a.Key)
+                .IsRequired()
+                .HasColumnName("key");
+
+            ab.Property(a => a.Type)
+                .HasConversion<string>()
+                .IsRequired()
+                .HasColumnName("type");
+
+            ab.Property(a => a.BucketName)
+                .IsRequired()
+                .HasColumnName("bucket_name");
+
+            ab.Property(a => a.FileName)
+                .IsRequired()
+                .HasColumnName("file_name");
+
+            ab.Property(a => a.IsMain)
+                .IsRequired(false)
+                .HasColumnName("is_main");
+        });
+        
+        builder.Ignore(u => u.AvatarUrl);
 
         builder.HasMany(u => u.Roles)
             .WithMany()

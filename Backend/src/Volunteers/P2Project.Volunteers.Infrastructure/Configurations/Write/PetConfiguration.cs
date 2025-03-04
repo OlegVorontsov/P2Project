@@ -156,8 +156,10 @@ namespace P2Project.Volunteers.Infrastructure.Configurations.Write
                     dto => MediaFile.Create(dto.BucketName, dto.FileName, dto.IsMain).Value)
                 .HasColumnName(Pet.DB_COLUMN_PHOTOS);
             
-            builder.ComplexProperty(p => p.Avatar, ab =>
+            builder.OwnsOne(p => p.Avatar, ab =>
             {
+                ab.ToJson("avatar");
+                
                 ab.Property(a => a.Key)
                     .IsRequired()
                     .HasColumnName("key");

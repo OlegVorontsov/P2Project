@@ -10,14 +10,14 @@ public record MediaFile
     public FileType Type { get; }
     public string BucketName { get; }
     public string FileName { get; }
-    public bool IsMain { get; }
+    public bool? IsMain { get; }
 
     private MediaFile() { }
     private MediaFile(
         FileType type,
         string bucketName,
         string fileName,
-        bool isMain)
+        bool? isMain)
     {
         Key = Guid.NewGuid();
         Type = type;
@@ -29,7 +29,7 @@ public record MediaFile
     public static Result<MediaFile, Error> Create(
         string bucketName,
         string fileName,
-        bool isMain,
+        bool? isMain,
         FileType type = FileType.Image)
     {
         if (string.IsNullOrWhiteSpace(bucketName)

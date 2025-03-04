@@ -7,7 +7,6 @@ using P2Project.Accounts.Application.Interfaces;
 using P2Project.Accounts.Domain;
 using P2Project.Accounts.Domain.Accounts;
 using P2Project.Accounts.Domain.RolePermission.Roles;
-using P2Project.Accounts.Domain.Users.ValueObjects;
 using P2Project.Accounts.Infrastructure.Admin;
 using P2Project.Accounts.Infrastructure.Managers;
 using P2Project.Accounts.Infrastructure.Permissions;
@@ -85,14 +84,16 @@ public class AccountsSeederService(
         var adminFullName = FullName.Create(
             _adminOptions.UserName, _adminOptions.UserName, _adminOptions.UserName).Value;
         
-        var adminUser = User.CreateAdmin(
+        var adminUserResult = User.Create(
             _adminOptions.Email, _adminOptions.UserName, adminFullName, adminRole);
-        await userManager.CreateAsync(adminUser, _adminOptions.Password);
-
-        var adminAccount = new AdminAccount(adminUser);
-        await accountsManager.CreateAdminAccount(adminAccount, cancellationToken);
-        adminUser.AdminAccount = adminAccount;
+        if (adminUserResult.IsFailure) return;
         
-        await userManager.UpdateAsync(adminUser);
+        await userManager.CreateAsync(adminUserResult.Value, _adminOptions.Password);
+
+        var adminAccount = new AdminAccount(adminUserResult.Value);
+        await accountsManager.CreateAdminAccount(adminAccount, cancellationToken);
+        adminUserResult.Value.AdminAccount = adminAccount;
+        
+        await userManager.UpdateAsync(adminUserResult.Value);
     }
 }

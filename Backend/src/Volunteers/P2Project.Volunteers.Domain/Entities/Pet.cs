@@ -139,7 +139,7 @@ namespace P2Project.Volunteers.Domain.Entities
             if (photoExist is null)
                 return Errors.General.NotFound();
 
-            if (photoExist.IsMain)
+            if (photoExist.IsMain == true)
                 return Errors.General.Failure(media.FileName);
 
             var newPhotos = new List<MediaFile>();
