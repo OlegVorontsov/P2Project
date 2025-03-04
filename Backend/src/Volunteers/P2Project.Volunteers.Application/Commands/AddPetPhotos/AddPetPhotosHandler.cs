@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using FilesService.Core.Models;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -13,6 +14,7 @@ using P2Project.SharedKernel.Errors;
 using P2Project.SharedKernel.IDs;
 using P2Project.SharedKernel.ValueObjects;
 using P2Project.Volunteers.Domain.ValueObjects.Pets;
+using FileData = P2Project.Core.Files.Models.FileData;
 
 namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
 {
@@ -98,7 +100,8 @@ namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
                 }
 
                 var petPhotos = filePathsResult.Value
-                    .Select(f => Photo.Create(f.Path, false).Value)
+                    .Select(f => MediaFile.Create(
+                        Constants.BUCKET_NAME_PHOTOS, f.Path, false).Value)
                     .ToList();
 
                 petResult.Value.UpdatePhotos(petPhotos);

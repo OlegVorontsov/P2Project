@@ -1,4 +1,5 @@
-﻿using P2Project.Core.Dtos.Common;
+﻿using FilesService.Core.Models;
+using P2Project.Core.Dtos.Common;
 
 namespace P2Project.Core.Dtos.Pets;
 
@@ -28,6 +29,11 @@ public class PetDto
     public string CreatedAt { get; init; } = string.Empty;
     public int Position { get; init; }
     public IEnumerable<AssistanceDetailDto> AssistanceDetails { get; set; } = default!;
-    public IEnumerable<PhotoDto> Photos { get; set; } = default!;
+    
+    public string AvatarUrl { get; set; }  = string.Empty;
+    public MediaFile? Avatar {  get; init; }
+    public IReadOnlyList<string> PhotosUrls { get; set; } = [];
+    public IReadOnlyList<MediaFileDto> Photos { get; set; } = [];
+    
     public bool IsDeleted { get; init; }
 }

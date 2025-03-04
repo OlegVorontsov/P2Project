@@ -107,7 +107,8 @@ namespace P2Project.Volunteers.Infrastructure.Migrations
                     breed_id = table.Column<Guid>(type: "uuid", nullable: false),
                     species_id = table.Column<Guid>(type: "uuid", nullable: false),
                     is_deleted = table.Column<bool>(type: "boolean", nullable: false),
-                    deletion_datetime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    deletion_datetime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    avatar = table.Column<string>(type: "jsonb", nullable: true)
                 },
                 constraints: table =>
                 {

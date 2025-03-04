@@ -13,8 +13,8 @@ using P2Project.Discussions.Infrastructure.DbContexts;
 namespace P2Project.Discussions.Infrastructure.Migrations
 {
     [DbContext(typeof(DiscussionsWriteDbContext))]
-    [Migration("20250214144332_Initial_discussions")]
-    partial class Initial_discussions
+    [Migration("20250304134914_Discussions_init")]
+    partial class Discussions_init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -115,12 +115,14 @@ public static class FixtureExtension
     public static ChangePetMainPhotoCommand FakeChangePetMainPhotoCommand(
         this IFixture fixture, Guid VolunteerId, Guid PetId)
     {
-        var newMainPhotoObjectName = "test_file_name.jpg";
+        var newMainPhotoFileName = "test_file_name.jpg";
+        var bucketName = "test_bucket_name";
         
         return fixture.Build<ChangePetMainPhotoCommand>()
             .With(c => c.VolunteerId, VolunteerId)
             .With(c => c.PetId, PetId)
-            .With(c => c.ObjectName, newMainPhotoObjectName)
+            .With(c => c.BucketName, bucketName)
+            .With(c => c.FileName, newMainPhotoFileName)
             .Create();
     }
     

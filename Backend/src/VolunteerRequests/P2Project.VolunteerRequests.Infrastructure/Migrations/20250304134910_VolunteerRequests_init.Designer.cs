@@ -13,8 +13,8 @@ using P2Project.VolunteerRequests.Infrastructure.DbContexts;
 namespace P2Project.VolunteerRequests.Infrastructure.Migrations
 {
     [DbContext(typeof(VolunteerRequestsWriteDbContext))]
-    [Migration("20250213134753_Initial")]
-    partial class Initial
+    [Migration("20250304134910_VolunteerRequests_init")]
+    partial class VolunteerRequests_init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -57,22 +57,24 @@ public class RegisterHandler :
                 command.FullName.SecondName,
                 command.FullName.LastName).Value;
         
-            var user = User.CreateParticipant(
+            var userResult = User.Create(
                 command.Email, command.UserName, userName, participantRole);
+            if(userResult.IsFailure)
+                return Errors.General.Failure("User").ToErrorList();
         
-            var result = await _userManager.CreateAsync(user, command.Password);
-            var participantAccount = new ParticipantAccount(user);
+            var result = await _userManager.CreateAsync(userResult.Value, command.Password);
+            var participantAccount = new ParticipantAccount(userResult.Value);
             await _accountManager
                 .CreateParticipantAccount(participantAccount, cancellationToken);
         
-            user.ParticipantAccount = participantAccount;
+            userResult.Value.ParticipantAccount = participantAccount;
         
-            await _userManager.UpdateAsync(user);
+            await _userManager.UpdateAsync(userResult.Value);
             
             await _unitOfWork.SaveChanges(cancellationToken);
             transaction.Commit();
             
-            _logger.LogInformation("User {username} was registered", user.UserName);
+            _logger.LogInformation("User {username} was registered", userResult.Value.UserName);
             return "User {username} was registered\", user.UserName";
         }
         catch (Exception e)

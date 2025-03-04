@@ -19,6 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\..\assistance\FilesService\FilesService.csproj" />
       <ProjectReference Include="..\P2Project.SharedKernel\P2Project.SharedKernel.csproj" />
     </ItemGroup>
 

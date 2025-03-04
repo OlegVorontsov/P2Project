@@ -67,7 +67,7 @@ public class AccountsAgreements : IAccountsAgreements
         
         user.VolunteerAccount = volunteerAccount;
         
-        user.AddVolunteerRole(volunteerRole);
+        user.AddRole(volunteerRole);
         
         var result = await _accountManager
             .CreateVolunteerAccount(volunteerAccount, cancellationToken);

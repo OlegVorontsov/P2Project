@@ -13,7 +13,7 @@ using P2Project.Volunteers.Infrastructure.DbContexts;
 namespace P2Project.Volunteers.Infrastructure.Migrations
 {
     [DbContext(typeof(VolunteersWriteDbContext))]
-    [Migration("20250213133015_Volunteers_init")]
+    [Migration("20250304134905_Volunteers_init")]
     partial class Volunteers_init
     {
         /// <inheritdoc />
@@ -230,6 +230,7 @@ namespace P2Project.Volunteers.Infrastructure.Migrations
                             b1.IsRequired();
 
                             b1.Property<bool?>("IsMain")
+                                .ValueGeneratedOnUpdateSometimes()
                                 .HasColumnType("boolean")
                                 .HasColumnName("is_main");
 
@@ -375,6 +376,48 @@ namespace P2Project.Volunteers.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_pets_volunteers_volunteer_id");
+
+                    b.OwnsOne("FilesService.Core.Models.MediaFile", "Avatar", b1 =>
+                        {
+                            b1.Property<Guid>("PetId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("BucketName")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("bucket_name");
+
+                            b1.Property<string>("FileName")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("file_name");
+
+                            b1.Property<bool?>("IsMain")
+                                .ValueGeneratedOnUpdateSometimes()
+                                .HasColumnType("boolean")
+                                .HasColumnName("is_main");
+
+                            b1.Property<Guid>("Key")
+                                .HasColumnType("uuid")
+                                .HasColumnName("key");
+
+                            b1.Property<string>("Type")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("type");
+
+                            b1.HasKey("PetId");
+
+                            b1.ToTable("pets", "volunteers");
+
+                            b1.ToJson("avatar");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PetId")
+                                .HasConstraintName("fk_pets_pets_id");
+                        });
+
+                    b.Navigation("Avatar");
                 });
 
             modelBuilder.Entity("P2Project.Species.Domain.Species", b =>
