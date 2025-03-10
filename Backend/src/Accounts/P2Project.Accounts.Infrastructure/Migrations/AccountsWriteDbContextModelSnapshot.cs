@@ -591,6 +591,50 @@ namespace P2Project.Accounts.Infrastructure.Migrations
                     b.Navigation("Role");
                 });
 
+            modelBuilder.Entity("P2Project.Accounts.Domain.User", b =>
+                {
+                    b.OwnsOne("FilesService.Core.Models.MediaFile", "Avatar", b1 =>
+                        {
+                            b1.Property<Guid>("UserId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("BucketName")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("bucket_name");
+
+                            b1.Property<string>("FileName")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("file_name");
+
+                            b1.Property<bool?>("IsMain")
+                                .HasColumnType("boolean")
+                                .HasColumnName("is_main");
+
+                            b1.Property<Guid>("Key")
+                                .HasColumnType("uuid")
+                                .HasColumnName("key");
+
+                            b1.Property<string>("Type")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("type");
+
+                            b1.HasKey("UserId");
+
+                            b1.ToTable("users", "accounts");
+
+                            b1.ToJson("avatar");
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserId")
+                                .HasConstraintName("fk_users_users_id");
+                        });
+
+                    b.Navigation("Avatar");
+                });
+
             modelBuilder.Entity("P2Project.Accounts.Domain.RolePermission.Roles.Role", b =>
                 {
                     b.Navigation("RolePermissions");

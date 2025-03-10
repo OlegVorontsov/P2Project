@@ -62,7 +62,7 @@ public class GetPetsHandlerDapper :
             sql.ToString(),
             (pet, jsonPhotos) =>
             {
-                var photos = JsonSerializer.Deserialize<IEnumerable<PhotoDto>>(jsonPhotos) ?? new List<PhotoDto>();
+                var photos = JsonSerializer.Deserialize<IReadOnlyList<MediaFileDto>>(jsonPhotos) ?? new List<MediaFileDto>();
                 pet.Photos = photos;
                 return pet;
             },

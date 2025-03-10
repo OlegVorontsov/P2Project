@@ -24,13 +24,43 @@ namespace P2Project.Volunteers.Infrastructure.Configurations.Read
                             json, JsonSerializerOptions.Default)!)
                 .HasColumnName(Pet.DB_COLUMN_ASSISTANCE_DETAILS);
             
+            builder.Ignore(p => p.AvatarUrl);
+            
+            builder.OwnsOne(p => p.Avatar, ab =>
+            {
+                ab.ToJson("avatar");
+                
+                ab.Property(a => a.Key)
+                    .IsRequired()
+                    .HasColumnName("key");
+
+                ab.Property(a => a.Type)
+                    .HasConversion<string>()
+                    .IsRequired()
+                    .HasColumnName("type");
+                
+                ab.Property(a => a.BucketName)
+                    .IsRequired()
+                    .HasColumnName("bucket_name");
+
+                ab.Property(a => a.FileName)
+                    .IsRequired()
+                    .HasColumnName("file_name");
+
+                ab.Property(p => p.IsMain)
+                    .IsRequired(false)
+                    .HasColumnName("is_main");
+            });
+            
+            builder.Ignore(p => p.PhotosUrls);
+            
             builder.Property(p => p.Photos)
                 .HasConversion(
                     photos => JsonSerializer
-                        .Serialize(string.Empty, JsonSerializerOptions.Default),
+                        .Serialize(photos, JsonSerializerOptions.Default),
                     
                     json => JsonSerializer
-                        .Deserialize<IEnumerable<PhotoDto>>(
+                        .Deserialize<IReadOnlyList<MediaFileDto>>(
                             json, JsonSerializerOptions.Default)!)
                 .HasColumnName(Pet.DB_COLUMN_PHOTOS);
         }

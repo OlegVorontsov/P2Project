@@ -25,7 +25,6 @@ namespace P2Project.Volunteers.Domain
         
         private Volunteer(VolunteerId id) : base(id) { }
         private readonly List<Pet> _pets = [];
-        public int[] MyArray { get; set; } = [0,1,2,3,4,5];
 
         public Volunteer(
                 VolunteerId id,
@@ -232,7 +231,7 @@ namespace P2Project.Volunteers.Domain
                 return petResult.Error;
 
             var filesToDelete = petResult.Value.Photos
-                .Select(ph => ph.FilePath).ToArray();
+                .Select(ph => ph.FileName).ToArray();
             
             _pets.Remove(petResult.Value);
 
