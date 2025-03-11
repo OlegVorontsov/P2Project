@@ -12,7 +12,7 @@ public static class HttpCommunicationsExtension
         this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<FilesServiceOptions>(configuration.GetSection(FilesServiceOptions.SECTION_NAME));
-
+        
         services.AddHttpClient<IAmazonFilesHttpClient, AmazonFilesHttpClient>((sp, config) =>
         {
             var filesServiceOptions = sp.GetRequiredService<IOptions<FilesServiceOptions>>().Value;
