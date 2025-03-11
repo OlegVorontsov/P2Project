@@ -1,5 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
-using P2Project.Core.Files.Models;
+using FilesService.Core.Dtos;
+using FilesService.Core.Models;
+using FilesService.Core.Requests.Minio;
+using FilesService.Core.ValueObjects;
 using P2Project.SharedKernel.Errors;
 using P2Project.SharedKernel.ValueObjects;
 
@@ -8,11 +11,11 @@ namespace P2Project.Core.Files
     public interface IFileProvider
     {
         Task<Result<string, Error>> UploadFile(
-            FileData fileData,
+            UploadFileRequest uploadFileRequest,
             CancellationToken cancellationToken = default);
 
         Task<Result<IReadOnlyList<FilePath>, Error>> UploadFiles(
-            IEnumerable<FileData> filesData,
+            IEnumerable<UploadFileRequest> uploadFileRequest,
             CancellationToken cancellationToken = default);
 
         Task<Result<string, Error>> DeleteFileByFileMetadata(

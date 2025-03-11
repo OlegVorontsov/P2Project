@@ -1,7 +1,9 @@
 using CSharpFunctionalExtensions;
 using FilesService.Core.Models;
 using FilesService.Core.Requests;
+using FilesService.Core.Requests.AmazonS3;
 using FilesService.Core.Responses;
+using FilesService.Core.Responses.AmazonS3;
 
 namespace FilesService.Core.Interfaces;
 

@@ -1,4 +1,4 @@
-﻿namespace P2Project.Core.Dtos.Files
+﻿namespace FilesService.Core.Dtos
 {
     public record UploadFileDto(
         Stream Stream,

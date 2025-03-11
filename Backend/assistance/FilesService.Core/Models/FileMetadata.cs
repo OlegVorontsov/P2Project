@@ -1,5 +1,5 @@
 ﻿
-namespace P2Project.Core.Files.Models
+namespace FilesService.Core.Models
 {
     public record FileMetadata(
         string BucketName,

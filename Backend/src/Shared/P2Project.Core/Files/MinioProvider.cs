@@ -1,8 +1,11 @@
 ﻿using CSharpFunctionalExtensions;
+using FilesService.Core.Dtos;
+using FilesService.Core.Models;
+using FilesService.Core.Requests.Minio;
+using FilesService.Core.ValueObjects;
 using Microsoft.Extensions.Logging;
 using Minio;
 using Minio.DataModel.Args;
-using P2Project.Core.Files.Models;
 using P2Project.SharedKernel.Errors;
 using P2Project.SharedKernel.ValueObjects;
 
@@ -25,19 +28,19 @@ namespace P2Project.Core.Files
         }
 
         public async Task<Result<string, Error>> UploadFile(
-            FileData fileData,
+            UploadFileRequest uploadFileRequest,
             CancellationToken cancellationToken = default)
         {
             try
             {
                 await CreateBucketIfNotExists(
-                    fileData.FileInfoDto.BucketName, cancellationToken);
+                    uploadFileRequest.FileInfoDto.BucketName, cancellationToken);
 
                 var putObjectArgs = new PutObjectArgs()
-                    .WithBucket(fileData.FileInfoDto.BucketName)
-                    .WithStreamData(fileData.FileStream)
-                    .WithObjectSize(fileData.FileStream.Length)
-                    .WithObject(fileData.FileInfoDto.FilePath.Path);
+                    .WithBucket(uploadFileRequest.FileInfoDto.BucketName)
+                    .WithStreamData(uploadFileRequest.FileStream)
+                    .WithObjectSize(uploadFileRequest.FileStream.Length)
+                    .WithObject(uploadFileRequest.FileInfoDto.FilePath.Path);
 
                 var result = await _minioClient.PutObjectAsync(
                     putObjectArgs, cancellationToken);
@@ -51,11 +54,11 @@ namespace P2Project.Core.Files
         }
 
         public async Task<Result<IReadOnlyList<FilePath>, Error>> UploadFiles(
-            IEnumerable<FileData> filesData,
+            IEnumerable<UploadFileRequest> uploadFileRequest,
             CancellationToken cancellationToken = default)
         {
             var semaphoreSlim = new SemaphoreSlim(MAX_PARALLEL);
-            var filesList = filesData.ToList();
+            var filesList = uploadFileRequest.ToList();
             try
             {
                 await CreateBucketsIfNotExist(
@@ -242,31 +245,31 @@ namespace P2Project.Core.Files
         }
 
         private async Task<Result<FilePath, Error>> PutObject(
-            FileData fileData,
+            UploadFileRequest uploadFileRequest,
             SemaphoreSlim semaphoreSlim,
             CancellationToken cancellationToken = default)
         {
             await semaphoreSlim.WaitAsync(cancellationToken);
 
             var putObjectArgs = new PutObjectArgs()
-                .WithBucket(fileData.FileInfoDto.BucketName)
-                .WithStreamData(fileData.FileStream)
-                .WithObjectSize(fileData.FileStream.Length)
-                .WithObject(fileData.FileInfoDto.FilePath.Path);
+                .WithBucket(uploadFileRequest.FileInfoDto.BucketName)
+                .WithStreamData(uploadFileRequest.FileStream)
+                .WithObjectSize(uploadFileRequest.FileStream.Length)
+                .WithObject(uploadFileRequest.FileInfoDto.FilePath.Path);
 
             try
             {
                 await _minioClient
                     .PutObjectAsync(putObjectArgs, cancellationToken);
 
-                return fileData.FileInfoDto.FilePath;
+                return uploadFileRequest.FileInfoDto.FilePath;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex,
                     "Fail to upload file in minio with path {path} in bucket {bucket}",
-                    fileData.FileInfoDto.FilePath.Path,
-                    fileData.FileInfoDto.BucketName);
+                    uploadFileRequest.FileInfoDto.FilePath.Path,
+                    uploadFileRequest.FileInfoDto.BucketName);
 
                 return Error.Failure("file.upload", "Fail to upload file in minio");
             }

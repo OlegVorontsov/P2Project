@@ -1,6 +1,6 @@
 using CSharpFunctionalExtensions;
 using FilesService.Core.Enums;
-using FilesService.Core.ErrorsClasses;
+using FilesService.Core.ErrorClasses;
 
 namespace FilesService.Core.Models;
 

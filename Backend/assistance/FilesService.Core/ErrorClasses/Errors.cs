@@ -1,5 +1,5 @@
 ﻿
-namespace FilesService.Core.ErrorsClasses;
+namespace FilesService.Core.ErrorClasses;
 
 public static class Errors
 {

@@ -1,4 +1,4 @@
-﻿namespace FilesService.Core.ErrorsClasses
+﻿namespace FilesService.Core.ErrorClasses
 {
     public record Error
     {

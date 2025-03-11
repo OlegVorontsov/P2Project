@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
+using FilesService.Core.Models;
 using P2Project.Core.Files;
-using P2Project.Core.Files.Models;
 using P2Project.SharedKernel;
 using P2Project.SharedKernel.Errors;
 

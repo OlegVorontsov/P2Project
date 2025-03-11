@@ -1,11 +1,12 @@
+using FilesService.Core.Dtos;
+using FilesService.Core.Requests.Minio;
+using FilesService.Core.ValueObjects;
 using FluentAssertions;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
-using P2Project.Core.Dtos.Files;
 using P2Project.Core.Files;
-using P2Project.Core.Files.Models;
 using P2Project.Core.Interfaces;
 using P2Project.SharedKernel.Errors;
 using P2Project.SharedKernel.ValueObjects;
@@ -63,7 +64,7 @@ namespace P2Project.Application.UnitTests
             ];
 
             _fileProvider.UploadFiles(
-                    Arg.Any<IEnumerable<FileData>>(), _cancellationToken)
+                    Arg.Any<IEnumerable<UploadFileRequest>>(), _cancellationToken)
                 .Returns(Result.Success<IReadOnlyList<FilePath>, Error>(filePaths));
 
             _validator.ValidateAsync(Arg.Any<AddPetPhotosCommand>(), _cancellationToken)

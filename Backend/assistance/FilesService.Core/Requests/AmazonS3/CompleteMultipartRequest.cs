@@ -1,6 +1,6 @@
 using FilesService.Core.Models;
 
-namespace FilesService.Core.Requests;
+namespace FilesService.Core.Requests.AmazonS3;
 
 public record CompleteMultipartRequest(
     string BucketName,

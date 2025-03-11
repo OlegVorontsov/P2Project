@@ -1,7 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
-using P2Project.SharedKernel.Errors;
+using FilesService.Core.ErrorClasses;
 
-namespace P2Project.SharedKernel.ValueObjects
+namespace FilesService.Core.ValueObjects
 {
     public record FilePath
     {

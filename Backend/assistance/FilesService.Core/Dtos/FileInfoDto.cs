@@ -1,6 +1,6 @@
-﻿using P2Project.SharedKernel.ValueObjects;
+﻿using FilesService.Core.ValueObjects;
 
-namespace P2Project.Core.Files.Models
+namespace FilesService.Core.Dtos
 {
     public record FileInfoDto(
         FilePath FilePath,

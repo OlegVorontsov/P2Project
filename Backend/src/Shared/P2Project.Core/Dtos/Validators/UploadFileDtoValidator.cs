@@ -1,5 +1,5 @@
-﻿using FluentValidation;
-using P2Project.Core.Dtos.Files;
+﻿using FilesService.Core.Dtos;
+using FluentValidation;
 using P2Project.Core.Validation;
 using P2Project.SharedKernel.Errors;
 

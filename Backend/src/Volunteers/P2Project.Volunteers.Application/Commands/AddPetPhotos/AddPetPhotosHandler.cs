@@ -1,20 +1,20 @@
 ﻿using CSharpFunctionalExtensions;
+using FilesService.Core.Dtos;
 using FilesService.Core.Models;
+using FilesService.Core.Requests.Minio;
+using FilesService.Core.ValueObjects;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using P2Project.Core;
 using P2Project.Core.Extensions;
 using P2Project.Core.Files;
-using P2Project.Core.Files.Models;
 using P2Project.Core.Interfaces;
 using P2Project.Core.Interfaces.Commands;
 using P2Project.SharedKernel;
 using P2Project.SharedKernel.Errors;
 using P2Project.SharedKernel.IDs;
 using P2Project.SharedKernel.ValueObjects;
-using P2Project.Volunteers.Domain.ValueObjects.Pets;
-using FileData = P2Project.Core.Files.Models.FileData;
 
 namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
 {
@@ -68,7 +68,7 @@ namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
             if (petResult.IsFailure)
                 return Errors.General.NotFound(photosCommand.PetId).ToErrorList();
 
-            List<FileData> filesData = [];
+            List<UploadFileRequest> uploadFileRequests = [];
 
             try
             {
@@ -78,23 +78,23 @@ namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
 
                     var filePath = FilePath.Create(Guid.NewGuid(), extension);
                     if (filePath.IsFailure)
-                        return filePath.Error.ToErrorList();
+                        return Errors.General.Failure(filePath.Error.Message).ToErrorList();
 
                     var fileInfo = new FileInfoDto(
                         filePath.Value, Constants.BUCKET_NAME_PHOTOS);
 
-                    var fileData = new FileData(
+                    var uploadFileRequest = new UploadFileRequest(
                         file.Stream, fileInfo);
 
-                    filesData.Add(fileData);
+                    uploadFileRequests.Add(uploadFileRequest);
                 }
 
                 var filePathsResult = await _fileProvider.UploadFiles(
-                    filesData, cancellationToken);
+                    uploadFileRequests, cancellationToken);
                 if (filePathsResult.IsFailure)
                 {
                     await _messageQueue.WriteAsync(
-                        filesData.Select(f => f.FileInfoDto), cancellationToken);
+                        uploadFileRequests.Select(f => f.FileInfoDto), cancellationToken);
 
                     return filePathsResult.Error.ToErrorList();
                 }

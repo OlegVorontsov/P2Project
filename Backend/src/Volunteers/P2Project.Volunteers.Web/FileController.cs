@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FilesService.Core.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using P2Project.Core.Dtos.Files;
 using P2Project.Framework;
 using P2Project.Framework.Authorization;
 using P2Project.Volunteers.Application.Files.DeleteFile;

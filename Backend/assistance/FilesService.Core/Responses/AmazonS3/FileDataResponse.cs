@@ -1,4 +1,4 @@
-namespace FilesService.Core.Responses;
+namespace FilesService.Core.Responses.AmazonS3;
 
 public record FileDataResponse(
     string Key,
