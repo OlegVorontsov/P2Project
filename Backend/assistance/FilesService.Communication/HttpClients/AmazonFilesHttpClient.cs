@@ -2,6 +2,9 @@ using System.Net;
 using System.Net.Http.Json;
 using CSharpFunctionalExtensions;
 using FilesService.Core.Interfaces;
+using FilesService.Core.Models;
+using FilesService.Core.Requests;
+using FilesService.Core.Responses;
 
 namespace FilesService.Communication.HttpClients;
 

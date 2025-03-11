@@ -1,6 +1,7 @@
 using Amazon.S3;
 using Amazon.S3.Model;
 using FilesService.Application.Interfaces;
+using FilesService.Core.Requests;
 using FilesService.Core.Responses;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,8 +9,6 @@ namespace FilesService.Application.Features;
 
 public static class GetFilesDataByIds
 {
-    private record GetFilesDataByIdsRequest(IEnumerable<Guid> Ids, string BucketName);
-    
     public sealed class Endpoint : IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)

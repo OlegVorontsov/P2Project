@@ -1,4 +1,7 @@
 using CSharpFunctionalExtensions;
+using FilesService.Core.Models;
+using FilesService.Core.Requests;
+using FilesService.Core.Responses;
 
 namespace FilesService.Core.Interfaces;
 

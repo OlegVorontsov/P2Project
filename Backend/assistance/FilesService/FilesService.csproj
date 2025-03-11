@@ -29,4 +29,8 @@
       <Folder Include="Extensions\App\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\FilesService.Core\FilesService.Core.csproj" />
+    </ItemGroup>
+
 </Project>
