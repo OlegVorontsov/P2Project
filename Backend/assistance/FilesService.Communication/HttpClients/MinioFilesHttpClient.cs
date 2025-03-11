@@ -17,7 +17,7 @@ public class MinioFilesHttpClient(HttpClient httpClient) : IMinioFilesHttpClient
         if (response.StatusCode != HttpStatusCode.OK)
             return "Failed to upload the file";
 
-        MediaFile? result = await response.Content.ReadFromJsonAsync<MediaFile>(ct);
+        var result = await response.Content.ReadFromJsonAsync<MediaFile>(ct);
         return result;
     }
 }
