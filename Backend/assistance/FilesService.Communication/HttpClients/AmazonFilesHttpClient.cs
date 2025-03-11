@@ -32,7 +32,7 @@ public class AmazonFilesHttpClient (HttpClient httpClient) : IAmazonFilesHttpCli
             return "Upload presigned url failed";
 
         var file = await response.Content.ReadFromJsonAsync<FileUrlResponse>(ct);
-        return file;
+        return file ?? new FileUrlResponse("", "");
     }
 
     public async Task<Result<FileLocationResponse, string>> CompleteMultipartUpload(
@@ -45,7 +45,7 @@ public class AmazonFilesHttpClient (HttpClient httpClient) : IAmazonFilesHttpCli
             return "Complete multipart upload failed";
 
         var fileLocation = await response.Content.ReadFromJsonAsync<FileLocationResponse>(ct);
-        return fileLocation;
+        return fileLocation ?? new FileLocationResponse("", "");
     }
 
     public async Task<Result<FileUrlResponse, string>> GetPresignedUrl(
@@ -58,7 +58,7 @@ public class AmazonFilesHttpClient (HttpClient httpClient) : IAmazonFilesHttpCli
             return "Get presigned url failed";
 
         var fileUrl = await response.Content.ReadFromJsonAsync<FileUrlResponse>(ct);
-        return fileUrl;
+        return fileUrl ?? new FileUrlResponse("", "");
     }
 
     public async Task<Result<UploadPartFileResponse, string>> StartMultipartUpload(
@@ -71,7 +71,7 @@ public class AmazonFilesHttpClient (HttpClient httpClient) : IAmazonFilesHttpCli
             return "Start multipart upload failed";
 
         var uploadResponse = await response.Content.ReadFromJsonAsync<UploadPartFileResponse>(ct);
-        return uploadResponse;
+        return uploadResponse ?? new UploadPartFileResponse("", "");
     }
 
     public async Task<Result<FileUrlResponse, string>> UploadPresignedPartUrl(
@@ -84,6 +84,6 @@ public class AmazonFilesHttpClient (HttpClient httpClient) : IAmazonFilesHttpCli
             return "Upload presigned part url failed";
 
         var fileUrl = await response.Content.ReadFromJsonAsync<FileUrlResponse>(ct);
-        return fileUrl;
+        return fileUrl ?? new FileUrlResponse("", "");
     }
 }
