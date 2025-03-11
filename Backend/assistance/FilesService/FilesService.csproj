@@ -26,7 +26,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Extensions\App\" />
+      <Folder Include="Application\Features\Minio\" />
     </ItemGroup>
 
     <ItemGroup>
