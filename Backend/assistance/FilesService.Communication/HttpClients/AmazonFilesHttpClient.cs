@@ -49,7 +49,7 @@ public class AmazonFilesHttpClient (HttpClient httpClient) : IAmazonFilesHttpCli
     }
 
     public async Task<Result<FileUrlResponse, string>> GetPresignedUrl(
-        string key, GetPresignedUrlRequest request, CancellationToken ct)
+        Guid key, GetPresignedUrlRequest request, CancellationToken ct)
     {
         var response = await httpClient
             .PostAsJsonAsync($"amazon/files/{key}/presigned", request, ct);

@@ -17,7 +17,7 @@ public interface IAmazonFilesHttpClient
         string key, CompleteMultipartRequest request, CancellationToken ct);
     
     public Task<Result<FileUrlResponse, string>> GetPresignedUrl(
-        string key, GetPresignedUrlRequest request, CancellationToken ct);
+        Guid key, GetPresignedUrlRequest request, CancellationToken ct);
     
     public Task<Result<UploadPartFileResponse, string>> StartMultipartUpload(
         StartMultipartUploadRequest request, CancellationToken ct);

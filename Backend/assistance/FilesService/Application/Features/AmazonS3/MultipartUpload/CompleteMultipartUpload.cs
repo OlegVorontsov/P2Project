@@ -16,7 +16,7 @@ public static class CompleteMultipartUpload
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("files/{key}/complete-multipart/presigned", Handler);
+            app.MapPost("amazon/files/{key}/complete-multipart/presigned", Handler);
         }
     }
     private static async Task<IResult> Handler(
@@ -70,10 +70,7 @@ public static class CompleteMultipartUpload
 
             var fileLocation = new FileLocationResponse(key, response.Location);
             
-            return Results.Ok(new
-            {
-                key, location = response.Location
-            });
+            return Results.Ok(fileLocation);
         }
         catch (AmazonS3Exception ex)
         {

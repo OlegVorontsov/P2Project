@@ -1,9 +1,11 @@
 using Amazon.S3;
 using Amazon.S3.Model;
 using FilesService.Application.Interfaces;
+using FilesService.Core.Requests;
 using FilesService.Core.Responses;
+using Microsoft.AspNetCore.Mvc;
 
-namespace FilesService.Application.Features.AmazonS3;
+namespace FilesService.Application.Features.AmazonS3.MultipartUpload;
 
 public static class GetPresignedUrl
 {
@@ -11,13 +13,13 @@ public static class GetPresignedUrl
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("files/{key:guid}/presigned", Handler);
+            app.MapPost("amazon/files/{key:guid}/presigned", Handler);
         }
     }
 
     private static async Task<IResult> Handler(
-        Guid key,
-        string bucket,
+        [FromRoute] Guid key,
+        [FromBody] GetPresignedUrlRequest request,
         IAmazonS3 s3Client,
         CancellationToken cancellationToken)
     {
@@ -27,7 +29,7 @@ public static class GetPresignedUrl
             
             var presignedRequest = new GetPreSignedUrlRequest
             {
-                BucketName = bucket,
+                BucketName = request.BucketName,
                 Key = keyString,
                 Verb = HttpVerb.GET,
                 Expires = DateTime.UtcNow.AddDays(14),
