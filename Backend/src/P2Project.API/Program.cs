@@ -21,6 +21,7 @@ services
     .AddAccountsModule(config)
     .AddVolunteerRequestsModule(config)
     .AddDiscussionsModule(config)
+    .AddHttpCommunications(config)
     .AddControllers();
 
 var app = builder.Build();
