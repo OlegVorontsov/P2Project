@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using FilesService.Core.Interfaces;
 using FilesService.Core.Models;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
@@ -6,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using P2Project.Core;
 using P2Project.Core.Extensions;
-using P2Project.Core.Files;
 using P2Project.Core.Interfaces;
 using P2Project.Core.Interfaces.Commands;
 using P2Project.SharedKernel;

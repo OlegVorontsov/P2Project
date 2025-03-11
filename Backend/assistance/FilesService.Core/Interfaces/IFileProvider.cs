@@ -4,9 +4,8 @@ using FilesService.Core.Models;
 using FilesService.Core.Requests.Minio;
 using FilesService.Core.ValueObjects;
 using P2Project.SharedKernel.Errors;
-using P2Project.SharedKernel.ValueObjects;
 
-namespace P2Project.Core.Files
+namespace FilesService.Core.Interfaces
 {
     public interface IFileProvider
     {

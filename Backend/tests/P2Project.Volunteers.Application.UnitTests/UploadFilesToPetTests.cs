@@ -1,4 +1,5 @@
 using FilesService.Core.Dtos;
+using FilesService.Core.Interfaces;
 using FilesService.Core.Requests.Minio;
 using FilesService.Core.ValueObjects;
 using FluentAssertions;
@@ -6,10 +7,8 @@ using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
-using P2Project.Core.Files;
 using P2Project.Core.Interfaces;
 using P2Project.SharedKernel.Errors;
-using P2Project.SharedKernel.ValueObjects;
 using P2Project.UnitTestsFabrics;
 using P2Project.Volunteers.Application;
 using P2Project.Volunteers.Application.Commands.AddPetPhotos;

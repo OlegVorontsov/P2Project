@@ -1,6 +1,8 @@
 using System.Data.Common;
 using CSharpFunctionalExtensions;
+using FilesService.Communication;
 using FilesService.Core.Dtos;
+using FilesService.Core.Interfaces;
 using FilesService.Core.Requests.Minio;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -12,7 +14,6 @@ using Minio;
 using Npgsql;
 using NSubstitute;
 using P2Project.API;
-using P2Project.Core.Files;
 using P2Project.SharedKernel.Errors;
 using P2Project.Species.Application;
 using P2Project.Species.Infrastructure.DbContexts;

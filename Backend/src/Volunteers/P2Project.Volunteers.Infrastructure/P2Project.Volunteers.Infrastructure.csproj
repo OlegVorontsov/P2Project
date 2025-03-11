@@ -11,6 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\..\assistance\FilesService.Communication\FilesService.Communication.csproj" />
       <ProjectReference Include="..\..\Species\P2Project.Species.Domain\P2Project.Species.Domain.csproj" />
       <ProjectReference Include="..\..\Species\P2Project.Species.Infrastructure\P2Project.Species.Infrastructure.csproj" />
       <ProjectReference Include="..\P2Project.Volunteers.Application\P2Project.Volunteers.Application.csproj" />

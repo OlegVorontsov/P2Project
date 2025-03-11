@@ -2,10 +2,8 @@
 using FilesService.Core.Dtos;
 using FilesService.Core.Requests.Minio;
 using FilesService.Core.ValueObjects;
-using P2Project.SharedKernel;
 using P2Project.SharedKernel.Errors;
-using P2Project.SharedKernel.ValueObjects;
-using IFileProvider = P2Project.Core.Files.IFileProvider;
+using IFileProvider = FilesService.Core.Interfaces.IFileProvider;
 
 namespace P2Project.Volunteers.Application.Files.UploadFile
 {
@@ -19,6 +17,7 @@ namespace P2Project.Volunteers.Application.Files.UploadFile
         }
         public async Task<Result<string, ErrorList>> Handle(
             UploadFileDto uploadFileDto,
+            string bucketName,
             CancellationToken cancellationToken = default)
         {
             var extension = Path.GetExtension(uploadFileDto.FileName);
@@ -29,7 +28,7 @@ namespace P2Project.Volunteers.Application.Files.UploadFile
                 return Errors.General.Failure(filePathResult.Error.Message).ToErrorList();
 
             var fileInfo = new FileInfoDto(
-                filePathResult.Value, Constants.BUCKET_NAME_FILES);
+                filePathResult.Value, bucketName);
 
             var uploadFileResult = await _fileProvider.UploadFile(
                 new UploadFileRequest(

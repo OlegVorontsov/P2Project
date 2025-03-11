@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using FilesService.Core.Dtos;
+using FilesService.Core.Interfaces;
 using FilesService.Core.Models;
 using FilesService.Core.Requests.Minio;
 using FilesService.Core.ValueObjects;
@@ -7,9 +8,8 @@ using Microsoft.Extensions.Logging;
 using Minio;
 using Minio.DataModel.Args;
 using P2Project.SharedKernel.Errors;
-using P2Project.SharedKernel.ValueObjects;
 
-namespace P2Project.Core.Files
+namespace FilesService.Communication
 {
     public class MinioProvider : IFileProvider
     {

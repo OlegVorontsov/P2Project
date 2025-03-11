@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FilesService.Core.Models;
+using Microsoft.AspNetCore.Mvc;
 using P2Project.Core.Models;
 
 namespace P2Project.Framework

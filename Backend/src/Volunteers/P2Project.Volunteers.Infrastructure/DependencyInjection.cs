@@ -1,4 +1,6 @@
+using FilesService.Communication;
 using FilesService.Core.Dtos;
+using FilesService.Core.Interfaces;
 using FilesService.Core.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -6,7 +8,6 @@ using Minio;
 using P2Project.Core;
 using P2Project.Core.BackroundServices;
 using P2Project.Core.Factories;
-using P2Project.Core.Files;
 using P2Project.Core.Interfaces;
 using P2Project.Core.Interfaces.DataBase;
 using P2Project.Core.Interfaces.Services;

@@ -1,5 +1,7 @@
-﻿using CSharpFunctionalExtensions;
+﻿using System.Runtime.InteropServices.JavaScript;
+using CSharpFunctionalExtensions;
 using FilesService.Core.Dtos;
+using FilesService.Core.Interfaces;
 using FilesService.Core.Models;
 using FilesService.Core.Requests.Minio;
 using FilesService.Core.ValueObjects;
@@ -8,7 +10,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using P2Project.Core;
 using P2Project.Core.Extensions;
-using P2Project.Core.Files;
 using P2Project.Core.Interfaces;
 using P2Project.Core.Interfaces.Commands;
 using P2Project.SharedKernel;
@@ -96,7 +97,7 @@ namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
                     await _messageQueue.WriteAsync(
                         uploadFileRequests.Select(f => f.FileInfoDto), cancellationToken);
 
-                    return filePathsResult.Error.ToErrorList();
+                    return Errors.General.Failure(filePathsResult.Error.Message).ToErrorList();
                 }
 
                 var petPhotos = filePathsResult.Value

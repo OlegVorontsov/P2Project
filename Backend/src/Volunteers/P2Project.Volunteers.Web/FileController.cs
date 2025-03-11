@@ -17,13 +17,16 @@ namespace P2Project.Volunteers.Web
         [HttpPost]
         public async Task<IActionResult> UploadFile(
             IFormFile file,
+            [FromBody] string bucketName,
             [FromServices] UploadFileHandler handler,
             CancellationToken cancellationToken = default)
         {
             await using var stream = file.OpenReadStream();
 
-            var result = await handler.Handle(new UploadFileDto(
-                stream, file.FileName), cancellationToken);
+            var result = await handler.Handle(
+                new UploadFileDto(stream, file.FileName),
+                bucketName,
+                cancellationToken);
 
             if (result.IsFailure)
                 return result.Error.ToResponse();

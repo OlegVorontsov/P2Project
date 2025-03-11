@@ -1,5 +1,5 @@
 ﻿using FilesService.Core.Dtos;
-using P2Project.Core.Files;
+using FilesService.Core.Interfaces;
 using P2Project.Core.Interfaces;
 using P2Project.Core.Interfaces.Services;
 
