@@ -18,8 +18,8 @@ namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
                 .NotEmpty()
                 .WithError(Errors.General.ValueIsRequired());
 
-            RuleForEach(u => u.Files).SetValidator(
-                new UploadFileDtoValidator());
+            RuleForEach(u => u.Requests).SetValidator(
+                new StartMultipartUploadRequestValidator());
         }
     }
 }
