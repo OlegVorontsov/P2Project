@@ -1,4 +1,4 @@
-namespace FilesService.Communication;
+namespace FilesService.Core.Options;
 
 public class FilesServiceOptions
 {

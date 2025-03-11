@@ -3,14 +3,12 @@ using System.Net.Http.Json;
 using CSharpFunctionalExtensions;
 using FilesService.Core.Interfaces;
 using FilesService.Core.Models;
-using FilesService.Core.Requests;
 using FilesService.Core.Requests.AmazonS3;
-using FilesService.Core.Responses;
 using FilesService.Core.Responses.AmazonS3;
 
 namespace FilesService.Communication.HttpClients;
 
-public class AmazonFilesHttpClient (HttpClient httpClient) : IAmazonFilesHttpClient
+public class FilesHttpClient (HttpClient httpClient) : IFilesHttpClient
 {
     public async Task<Result<IReadOnlyList<FileData>?, string>> GetFilesDataByIds(
         GetFilesDataByIdsRequest request, CancellationToken ct)

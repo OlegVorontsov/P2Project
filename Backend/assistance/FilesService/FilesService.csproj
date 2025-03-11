@@ -26,10 +26,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Application\Features\Minio\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\FilesService.Core\FilesService.Core.csproj" />
     </ItemGroup>
 

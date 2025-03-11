@@ -8,7 +8,6 @@ public static class HttpCommunicationsDependencyInjection
         this IServiceCollection services, IConfiguration config)
     {
         services.AddAmazonHttpCommunication(config);
-        services.AddMinioHttpCommunication(config);
 
         return services;
     }
