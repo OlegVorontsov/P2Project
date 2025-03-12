@@ -24,7 +24,7 @@ using P2Project.Volunteers.Web.Requests;
 
 namespace P2Project.Volunteers.Web
 {
-    [Authorize]
+    //[Authorize]
     public class VolunteerController : ApplicationController
     {
         [Permission(PermissionsConfig.Volunteers.Read)]
@@ -174,10 +174,12 @@ namespace P2Project.Volunteers.Web
             return Ok(result.Value);
         }*/
         
-        [Permission(PermissionsConfig.Volunteers.Update)]
-        [HttpPost("pet-photos")]
+        //[Permission(PermissionsConfig.Volunteers.Update)]
+        [HttpPost("{bucketName}/photos/{volunteerId:guid}/pet/{petId:guid}")]
         public async Task<ActionResult> AddPetPhotos(
-            [FromBody] AddPetPhotosRequest request,
+            [FromRoute] string bucketName,
+            [FromRoute] Guid volunteerId,
+            [FromRoute] Guid petId,
             [FromForm] IFormFileCollection files,
             [FromServices] AddPetPhotosHandler photosHandler,
             CancellationToken cancellationToken)
@@ -185,14 +187,14 @@ namespace P2Project.Volunteers.Web
             List<StartMultipartUploadRequest> uploadRequests = [];
             
             uploadRequests.AddRange(files.Select(file => new StartMultipartUploadRequest(
-                request.BucketName,
+                bucketName,
                 file.FileName,
                 file.ContentType,
                 file.Length)));
 
             var result = await photosHandler.Handle(
                 new AddPetPhotosCommand(
-                    request.VolunteerId, request.PetId, uploadRequests),
+                    volunteerId, petId, uploadRequests),
                 cancellationToken);
 
             if (result.IsFailure)

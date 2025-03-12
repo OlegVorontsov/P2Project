@@ -1,9 +1,9 @@
 ﻿using CSharpFunctionalExtensions;
 using FilesService.Core.Dtos;
+using FilesService.Core.ErrorManagment;
 using FilesService.Core.Models;
 using FilesService.Core.Requests.Minio;
 using FilesService.Core.ValueObjects;
-using P2Project.SharedKernel.Errors;
 
 namespace FilesService.Core.Interfaces
 {

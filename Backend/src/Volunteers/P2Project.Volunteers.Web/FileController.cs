@@ -1,4 +1,5 @@
 ﻿using FilesService.Core.Dtos;
+using FilesService.Core.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -29,7 +30,7 @@ namespace P2Project.Volunteers.Web
                 cancellationToken);
 
             if (result.IsFailure)
-                return result.Error.ToResponse();
+                return result.Error.MakeResponse();
 
             return Ok(result.Value);
         }
@@ -46,7 +47,7 @@ namespace P2Project.Volunteers.Web
                 bucketName, fileName, cancellationToken);
 
             if (result.IsFailure)
-                return result.Error.ToResponse();
+                return result.Error.MakeResponse();
 
             return Ok(result.Value);
         }
@@ -63,7 +64,7 @@ namespace P2Project.Volunteers.Web
                 bucketName, fileName, cancellationToken);
 
             if (result.IsFailure)
-                return result.Error.ToResponse();
+                return result.Error.MakeResponse();
 
             return Ok(result.Value);
         }

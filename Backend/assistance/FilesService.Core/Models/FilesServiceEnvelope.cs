@@ -1,5 +1,5 @@
-﻿
-using P2Project.SharedKernel.Errors;
+﻿using FilesService.Core.ErrorManagment;
+
 namespace FilesService.Core.Models
 {
     public record ResponseError(
