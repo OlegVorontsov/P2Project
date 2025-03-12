@@ -30,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\assistance\FilesService.Communication\FilesService.Communication.csproj" />
     <ProjectReference Include="..\Accounts\P2Project.Accounts.Agreements\P2Project.Accounts.Agreements.csproj" />
     <ProjectReference Include="..\Accounts\P2Project.Accounts.Application\P2Project.Accounts.Application.csproj" />
     <ProjectReference Include="..\Accounts\P2Project.Accounts.Domain\P2Project.Accounts.Domain.csproj" />

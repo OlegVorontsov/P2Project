@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FilesService.Core.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using P2Project.Core.Dtos.Files;
 using P2Project.Framework;
 using P2Project.Framework.Authorization;
 using P2Project.Volunteers.Application.Files.DeleteFile;
@@ -14,16 +14,19 @@ namespace P2Project.Volunteers.Web
     public class FileController : ApplicationController
     {
         [Permission(PermissionsConfig.Files.Upload)]
-        [HttpPost]
+        [HttpPost("{bucketName}")]
         public async Task<IActionResult> UploadFile(
             IFormFile file,
+            [FromRoute] string bucketName,
             [FromServices] UploadFileHandler handler,
             CancellationToken cancellationToken = default)
         {
             await using var stream = file.OpenReadStream();
 
-            var result = await handler.Handle(new UploadFileDto(
-                stream, file.FileName), cancellationToken);
+            var result = await handler.Handle(
+                new UploadFileDto(stream, file.FileName),
+                bucketName,
+                cancellationToken);
 
             if (result.IsFailure)
                 return result.Error.ToResponse();
@@ -32,14 +35,15 @@ namespace P2Project.Volunteers.Web
         }
 
         [Permission(PermissionsConfig.Files.Delete)]
-        [HttpDelete]
+        [HttpDelete("{bucketName}/file/{fileName}")]
         public async Task<IActionResult> DeleteFile(
-            string objectName,
+            [FromRoute] string bucketName,
+            [FromRoute] string fileName,
             [FromServices] DeleteFileHandler handler,
             CancellationToken cancellationToken = default)
         {
             var result = await handler.Handle(
-                objectName, cancellationToken);
+                bucketName, fileName, cancellationToken);
 
             if (result.IsFailure)
                 return result.Error.ToResponse();
@@ -48,14 +52,15 @@ namespace P2Project.Volunteers.Web
         }
 
         [Permission(PermissionsConfig.Files.Read)]
-        [HttpGet("{id:guid}")]
+        [HttpGet("{bucketName}/file/{fileName}")]
         public async Task<IActionResult> GetFile(
-            [FromRoute] Guid id,
+            [FromRoute] string bucketName,
+            [FromRoute] string fileName,
             [FromServices] GetFileHandler handler,
             CancellationToken cancellationToken = default)
         {
             var result = await handler.Handle(
-                id.ToString(), cancellationToken);
+                bucketName, fileName, cancellationToken);
 
             if (result.IsFailure)
                 return result.Error.ToResponse();

@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <PackageId>FilesService.Core</PackageId>
+        <Version>1.0.0</Version>
+        <Authors>OlegVorontsov</Authors>
+        <Company>OlegVorontsov</Company>
+        <PackageDescription>Files service core</PackageDescription>
+        <RepositoryUrl>https://github.com/OlegVorontsov/P2Project</RepositoryUrl>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="CSharpFunctionalExtensions" Version="3.4.3" />
+      <PackageReference Include="MongoDB.Bson" Version="3.2.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\Shared\P2Project.SharedKernel\P2Project.SharedKernel.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using P2Project.Core.Dtos.Files;
+﻿using FilesService.Core.Dtos;
+using Microsoft.AspNetCore.Http;
 
 namespace P2Project.Framework.Files
 {

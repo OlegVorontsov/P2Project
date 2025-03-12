@@ -1,14 +1,14 @@
+using FilesService.Core.Dtos;
+using FilesService.Core.Interfaces;
+using FilesService.Core.Requests.AmazonS3;
+using FilesService.Core.Responses.AmazonS3;
 using FluentAssertions;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
-using P2Project.Core.Dtos.Files;
-using P2Project.Core.Files;
-using P2Project.Core.Files.Models;
 using P2Project.Core.Interfaces;
 using P2Project.SharedKernel.Errors;
-using P2Project.SharedKernel.ValueObjects;
 using P2Project.UnitTestsFabrics;
 using P2Project.Volunteers.Application;
 using P2Project.Volunteers.Application.Commands.AddPetPhotos;
@@ -21,8 +21,8 @@ namespace P2Project.Application.UnitTests
     {
         private readonly IValidator<AddPetPhotosCommand> _validator =
             Substitute.For<IValidator<AddPetPhotosCommand>>();
-        private readonly IFileProvider _fileProvider =
-            Substitute.For<IFileProvider>();
+        private readonly IFilesHttpClient _httpClient =
+            Substitute.For<IFilesHttpClient>();
         private readonly IVolunteersRepository _volunteersRepository =
             Substitute.For<IVolunteersRepository>();
         private readonly IUnitOfWork _unitOfWork = Substitute.For<IUnitOfWork>();
@@ -45,33 +45,38 @@ namespace P2Project.Application.UnitTests
                 .Returns(Result.Success<Volunteer, Error>(volunteer));
             _unitOfWork.SaveChanges(_cancellationToken).Returns(Task.CompletedTask);
 
-            var stream = new MemoryStream();
+            //var stream = new MemoryStream();
+            var bucketName = "testBucket";
             var fileName = "test.jpg";
-            var uploadFileDto = new UploadFileDto(stream, fileName);
+            var contentType = "image/jpeg";
+            var size = 100000;
+            var uploadFileRequest = new StartMultipartUploadRequest(
+                bucketName, fileName, contentType, size);
 
             var command = new AddPetPhotosCommand(
                     volunteer.Id.Value,
                     pet.Id.Value,
-                    [uploadFileDto, uploadFileDto]);
+                    [uploadFileRequest]);
             
-            var extension = Path.GetExtension(uploadFileDto.FileName);
+            var extension = Path.GetExtension(uploadFileRequest.FileName);
 
-            List<FilePath> filePaths =
+            /*List<FilePath> filePaths =
             [
                 FilePath.Create(Guid.NewGuid(), extension).Value,
                 FilePath.Create(Guid.NewGuid(), extension).Value
-            ];
+            ];*/
+            var response = new UploadPartFileResponse("key", "response.UploadId");
 
-            _fileProvider.UploadFiles(
-                    Arg.Any<IEnumerable<FileData>>(), _cancellationToken)
-                .Returns(Result.Success<IReadOnlyList<FilePath>, Error>(filePaths));
+            _httpClient.StartMultipartUpload(
+                    Arg.Any<StartMultipartUploadRequest>(), _cancellationToken)
+                .Returns(response);
 
             _validator.ValidateAsync(Arg.Any<AddPetPhotosCommand>(), _cancellationToken)
                 .Returns(new ValidationResult());
 
             var handler = new AddPetPhotosHandler(
                 _validator,
-                _fileProvider,
+                _httpClient,
                 _volunteersRepository,
                 _unitOfWork,
                 _logger,

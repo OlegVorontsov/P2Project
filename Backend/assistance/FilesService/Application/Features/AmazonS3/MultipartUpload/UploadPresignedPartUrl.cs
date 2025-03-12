@@ -2,7 +2,9 @@ using Amazon.S3;
 using Amazon.S3.Model;
 using FilesService.Application.Interfaces;
 using FilesService.Core.Requests;
+using FilesService.Core.Requests.AmazonS3;
 using FilesService.Core.Responses;
+using FilesService.Core.Responses.AmazonS3;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FilesService.Application.Features.AmazonS3.MultipartUpload;
@@ -13,7 +15,7 @@ public static class UploadPresignedPartUrl
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("files/{key}/part-presigned", Handler);
+            app.MapPost("amazon/files/{key}/part-presigned", Handler);
         }
     }
     private static async Task<IResult> Handler(

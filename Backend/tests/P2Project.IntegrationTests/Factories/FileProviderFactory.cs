@@ -1,6 +1,6 @@
+using FilesService.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
-using P2Project.Core.Files;
 using P2Project.IntegrationTests.Handlers;
 
 namespace P2Project.IntegrationTests.Factories;

@@ -1,6 +1,6 @@
 using CSharpFunctionalExtensions;
-using FilesService.Core.ErrorsClasses;
 using FilesService.Core.Models;
+using P2Project.SharedKernel.Errors;
 
 namespace FilesService.Application.Interfaces;
 

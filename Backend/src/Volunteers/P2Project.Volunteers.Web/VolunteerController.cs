@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FilesService.Core.Requests.AmazonS3;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using P2Project.Framework;
@@ -150,7 +151,7 @@ namespace P2Project.Volunteers.Web
             return Ok(result.Value);
         }
 
-        [Permission(PermissionsConfig.Volunteers.Update)]
+        /*[Permission(PermissionsConfig.Volunteers.Update)]
         [HttpPost("{volunteerId:guid}/pet/{petId:guid}/files")]
         public async Task<ActionResult> AddPetPhotos(
             [FromRoute] Guid volunteerId,
@@ -165,6 +166,33 @@ namespace P2Project.Volunteers.Web
             var result = await photosHandler.Handle(
                 new AddPetPhotosCommand(
                     volunteerId, petId, fileDtos),
+                cancellationToken);
+
+            if (result.IsFailure)
+                return result.Error.ToResponse();
+
+            return Ok(result.Value);
+        }*/
+        
+        [Permission(PermissionsConfig.Volunteers.Update)]
+        [HttpPost("pet-photos")]
+        public async Task<ActionResult> AddPetPhotos(
+            [FromBody] AddPetPhotosRequest request,
+            [FromForm] IFormFileCollection files,
+            [FromServices] AddPetPhotosHandler photosHandler,
+            CancellationToken cancellationToken)
+        {
+            List<StartMultipartUploadRequest> uploadRequests = [];
+            
+            uploadRequests.AddRange(files.Select(file => new StartMultipartUploadRequest(
+                request.BucketName,
+                file.FileName,
+                file.ContentType,
+                file.Length)));
+
+            var result = await photosHandler.Handle(
+                new AddPetPhotosCommand(
+                    request.VolunteerId, request.PetId, uploadRequests),
                 cancellationToken);
 
             if (result.IsFailure)

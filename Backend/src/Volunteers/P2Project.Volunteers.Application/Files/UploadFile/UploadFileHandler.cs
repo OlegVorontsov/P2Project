@@ -1,10 +1,9 @@
 ﻿using CSharpFunctionalExtensions;
-using P2Project.Core.Dtos.Files;
-using P2Project.Core.Files.Models;
-using P2Project.SharedKernel;
+using FilesService.Core.Dtos;
+using FilesService.Core.Requests.Minio;
+using FilesService.Core.ValueObjects;
 using P2Project.SharedKernel.Errors;
-using P2Project.SharedKernel.ValueObjects;
-using IFileProvider = P2Project.Core.Files.IFileProvider;
+using IFileProvider = FilesService.Core.Interfaces.IFileProvider;
 
 namespace P2Project.Volunteers.Application.Files.UploadFile
 {
@@ -18,6 +17,7 @@ namespace P2Project.Volunteers.Application.Files.UploadFile
         }
         public async Task<Result<string, ErrorList>> Handle(
             UploadFileDto uploadFileDto,
+            string bucketName,
             CancellationToken cancellationToken = default)
         {
             var extension = Path.GetExtension(uploadFileDto.FileName);
@@ -25,13 +25,13 @@ namespace P2Project.Volunteers.Application.Files.UploadFile
             var filePathResult = FilePath.Create(
                 Guid.NewGuid(), extension);
             if (filePathResult.IsFailure)
-                return filePathResult.Error.ToErrorList();
+                return Errors.General.Failure(filePathResult.Error.Message).ToErrorList();
 
             var fileInfo = new FileInfoDto(
-                filePathResult.Value, Constants.BUCKET_NAME_FILES);
+                filePathResult.Value, bucketName);
 
             var uploadFileResult = await _fileProvider.UploadFile(
-                new FileData(
+                new UploadFileRequest(
                     uploadFileDto.Stream,
                     fileInfo),
                 cancellationToken);

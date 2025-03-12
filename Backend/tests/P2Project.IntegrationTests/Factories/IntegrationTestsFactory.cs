@@ -1,5 +1,9 @@
 using System.Data.Common;
 using CSharpFunctionalExtensions;
+using FilesService.Communication;
+using FilesService.Core.Dtos;
+using FilesService.Core.Interfaces;
+using FilesService.Core.Requests.Minio;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -10,8 +14,6 @@ using Minio;
 using Npgsql;
 using NSubstitute;
 using P2Project.API;
-using P2Project.Core.Files;
-using P2Project.Core.Files.Models;
 using P2Project.SharedKernel.Errors;
 using P2Project.Species.Application;
 using P2Project.Species.Infrastructure.DbContexts;
@@ -109,17 +111,17 @@ public class IntegrationTestsFactory :
         var response = "test_file_name";
         
         _fileProvider.UploadFile(
-                Arg.Any<FileData>(), Arg.Any<CancellationToken>())
+                Arg.Any<UploadFileRequest>(), Arg.Any<CancellationToken>())
             .Returns(Result.Success<string, Error>(response));
     }
     
     public void SetupFailureFileProvider()
     {
-        var fileData = new FileData(
+        var uploadFileRequest = new UploadFileRequest(
             Arg.Any<Stream>(), Arg.Any<FileInfoDto>());
         
         _fileProvider.UploadFile(
-                fileData, Arg.Any<CancellationToken>())
+                uploadFileRequest, Arg.Any<CancellationToken>())
             .Returns(Errors.General.Failure("Интеграционный тест"));
     }
 }
