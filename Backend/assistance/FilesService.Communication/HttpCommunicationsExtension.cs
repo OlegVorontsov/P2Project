@@ -19,9 +19,7 @@ public static class HttpCommunicationsExtension
             var filesServiceOptions = sp.GetRequiredService<IOptions<FilesServiceOptions>>().Value;
             config.BaseAddress = new Uri(filesServiceOptions.Url);
         });
-
-        services.AddSingleton<IFilesHttpClient, FilesHttpClient>();
-
+        
         return services;
     }
 }
