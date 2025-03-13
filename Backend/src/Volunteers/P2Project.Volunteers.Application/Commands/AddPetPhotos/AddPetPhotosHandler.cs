@@ -46,6 +46,8 @@ namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
             AddPetPhotosCommand photosCommand,
             CancellationToken cancellationToken)
         {
+            // метод связан с CompleteMultipartUpload
+            
             var validationResult = await _validator.ValidateAsync(
                 photosCommand, cancellationToken);
             if (validationResult.IsValid == false)

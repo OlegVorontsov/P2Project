@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using FilesService.Core.ErrorManagment;
 using FilesService.Core.Models;
 using FilesService.Core.Requests.AmazonS3;
 using FilesService.Core.Responses.AmazonS3;
@@ -17,11 +18,14 @@ public interface IFilesHttpClient
         string key, CompleteMultipartRequest request, CancellationToken ct);
     
     public Task<Result<FileUrlResponse, string>> GetPresignedUrl(
-        Guid key, GetPresignedUrlRequest request, CancellationToken ct);
+        string key, GetPresignedUrlRequest request, CancellationToken ct);
     
     public Task<Result<UploadPartFileResponse, string>> StartMultipartUpload(
         StartMultipartUploadRequest request, CancellationToken ct);
     
     public Task<Result<FileUrlResponse, string>> UploadPresignedPartUrl(
         string key, UploadPresignedPartUrlRequest request, CancellationToken ct);
+
+    public Task<Result<string, Error>> UploadFileAsync(
+        string url, byte[] file, string contentType, CancellationToken ct);
 }

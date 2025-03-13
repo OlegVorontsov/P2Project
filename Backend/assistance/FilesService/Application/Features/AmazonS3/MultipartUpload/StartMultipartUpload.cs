@@ -1,9 +1,7 @@
 using Amazon.S3;
 using Amazon.S3.Model;
 using FilesService.Application.Interfaces;
-using FilesService.Core.Requests;
 using FilesService.Core.Requests.AmazonS3;
-using FilesService.Core.Responses;
 using FilesService.Core.Responses.AmazonS3;
 using Microsoft.AspNetCore.Mvc;
 
@@ -41,7 +39,7 @@ public static class StartMultipartUpload
             var response = await s3Client.InitiateMultipartUploadAsync(
                 startMultipartRequest, cancellationToken);
 
-            var uploadResponse = new UploadPartFileResponse(key, response.UploadId); 
+            var uploadResponse = new UploadPartFileResponse(key, response.UploadId);
             return Results.Ok(uploadResponse);
         }
         catch (AmazonS3Exception ex)

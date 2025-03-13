@@ -1,6 +1,8 @@
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using CSharpFunctionalExtensions;
+using FilesService.Core.ErrorManagment;
 using FilesService.Core.Interfaces;
 using FilesService.Core.Models;
 using FilesService.Core.Requests.AmazonS3;
@@ -49,7 +51,7 @@ public class FilesHttpClient (HttpClient httpClient) : IFilesHttpClient
     }
 
     public async Task<Result<FileUrlResponse, string>> GetPresignedUrl(
-        Guid key, GetPresignedUrlRequest request, CancellationToken ct)
+        string key, GetPresignedUrlRequest request, CancellationToken ct)
     {
         var response = await httpClient
             .PostAsJsonAsync($"amazon/files/{key}/presigned", request, ct);
@@ -85,5 +87,26 @@ public class FilesHttpClient (HttpClient httpClient) : IFilesHttpClient
 
         var fileUrl = await response.Content.ReadFromJsonAsync<FileUrlResponse>(ct);
         return fileUrl ?? new FileUrlResponse("", "");
+    }
+    
+    public async Task<Result<string, Error>> UploadFileAsync(
+        string url, byte[] file, string contentType, CancellationToken ct)
+    {
+        using var stream = new MemoryStream(file);
+
+        using var content = new StreamContent(stream);
+        
+        var response = await httpClient.PutAsync(url, content, ct);
+        
+        if (response.StatusCode != HttpStatusCode.OK)
+            return Errors.Failure("Upload file failed");
+
+        if (!response.Headers.TryGetValues("ETag", out var etagValues))
+            return Errors.Failure("Fail to get ETag");
+        
+        var eTag = etagValues.FirstOrDefault();
+        if (eTag == null) return Errors.Failure("Fail to get ETag");
+        
+        return eTag.Trim('"');
     }
 }
