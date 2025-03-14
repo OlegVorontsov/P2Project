@@ -1,4 +1,5 @@
 using FilesService.Core.Requests.AmazonS3;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using P2Project.Accounts.Application.Commands.Login;
@@ -15,6 +16,7 @@ using P2Project.SharedKernel;
 
 namespace P2Project.Accounts.Web;
 
+[Authorize]
 public class AccountsController : ApplicationController
 {
     [HttpPost("registration")]

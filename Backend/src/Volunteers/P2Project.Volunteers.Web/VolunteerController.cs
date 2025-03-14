@@ -2,9 +2,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using P2Project.Core.Extensions;
 using P2Project.Framework;
 using P2Project.Framework.Authorization;
-using P2Project.Framework.Files;
+using P2Project.SharedKernel;
 using P2Project.Volunteers.Application.Commands.AddPet;
 using P2Project.Volunteers.Application.Commands.AddPetPhotos;
 using P2Project.Volunteers.Application.Commands.ChangePetMainPhoto;
@@ -13,6 +14,7 @@ using P2Project.Volunteers.Application.Commands.Create;
 using P2Project.Volunteers.Application.Commands.DeletePetPhotos;
 using P2Project.Volunteers.Application.Commands.HardDelete;
 using P2Project.Volunteers.Application.Commands.HardDeletePet;
+using P2Project.Volunteers.Application.Commands.SetAvatar.UploadAvatar;
 using P2Project.Volunteers.Application.Commands.SoftDelete;
 using P2Project.Volunteers.Application.Commands.SoftDeletePet;
 using P2Project.Volunteers.Application.Commands.UpdateMainInfo;
@@ -21,10 +23,12 @@ using P2Project.Volunteers.Application.Commands.UpdatePhoneNumbers;
 using P2Project.Volunteers.Application.Queries.Volunteers.GetFilteredVolunteersWithPagination;
 using P2Project.Volunteers.Application.Queries.Volunteers.GetVolunteerById;
 using P2Project.Volunteers.Web.Requests;
+using CompleteSetAvatarCommand = P2Project.Volunteers.Application.Commands.SetAvatar.CompleteSetAvatar.CompleteSetAvatarCommand;
+using CompleteSetAvatarHandler = P2Project.Volunteers.Application.Commands.SetAvatar.CompleteSetAvatar.CompleteSetAvatarHandler;
 
 namespace P2Project.Volunteers.Web
 {
-    //[Authorize]
+    [Authorize]
     public class VolunteerController : ApplicationController
     {
         [Permission(PermissionsConfig.Volunteers.Read)]
@@ -296,6 +300,62 @@ namespace P2Project.Volunteers.Web
         {
             var result = await handler.Handle(
                 new HardDeletePetCommand(volunteerId, petId), cancellationToken);
+            if (result.IsFailure)
+                return result.Error.ToResponse();
+
+            return Ok(result.Value);
+        }
+        
+        [Permission(PermissionsConfig.Volunteers.Update)]
+        [HttpPost("{volunteerId:guid}/pets/{petId:guid}/upload-avatar")]
+        public async Task<ActionResult> UploadAvatar(
+            [FromRoute] Guid volunteerId,
+            [FromRoute] Guid petId,
+            IFormFile avatarFile,
+            [FromServices] UploadAvatarHandler handler,
+            CancellationToken cancellationToken)
+        {
+            var fileBytesArrayResult = await avatarFile.ToByteArrayAsync();
+            if(fileBytesArrayResult.IsFailure)
+                return fileBytesArrayResult.Error.ToResponse();
+        
+            var result = await handler.Handle(
+                new UploadAvatarCommand(
+                    volunteerId,
+                    petId,
+                    fileBytesArrayResult.Value,
+                    new StartMultipartUploadRequest(
+                        Constants.BUCKET_NAME_AVATARS,
+                        avatarFile.FileName,
+                        avatarFile.ContentType,
+                        avatarFile.Length)),
+                cancellationToken);
+
+            if (result.IsFailure)
+                return result.Error.ToResponse();
+
+            return Ok(result.Value);
+        }
+        
+        [Permission(PermissionsConfig.Volunteers.Update)]
+        [HttpPost("{volunteerId:guid}/pets/{petId:guid}/complete-set-avatar")]
+        public async Task<ActionResult> CompleteSetAvatar(
+            [FromRoute] Guid volunteerId,
+            [FromRoute] Guid petId,
+            [FromBody] CompletePetSetAvatarRequest request,
+            [FromServices] CompleteSetAvatarHandler handler,
+            CancellationToken cancellationToken)
+        {
+            var result = await handler.Handle(
+                new CompleteSetAvatarCommand(
+                    volunteerId,
+                    petId,
+                    request.Key,
+                    Constants.BUCKET_NAME_AVATARS,
+                    request.UploadId,
+                    request.ETag),
+                cancellationToken);
+
             if (result.IsFailure)
                 return result.Error.ToResponse();
 
