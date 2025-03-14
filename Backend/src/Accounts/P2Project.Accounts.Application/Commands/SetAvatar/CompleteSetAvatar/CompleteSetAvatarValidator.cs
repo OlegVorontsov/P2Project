@@ -9,6 +9,11 @@ public class CompleteSetAvatarValidator :
 {
     public CompleteSetAvatarValidator()
     {
+        RuleFor(ap => ap.UserId)
+            .NotNull()
+            .NotEmpty()
+            .WithError(Errors.General.ValueIsRequired());
+        
         RuleFor(ap => ap.Key)
             .NotNull()
             .NotEmpty()

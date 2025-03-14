@@ -46,7 +46,8 @@
       "pets.read",
       "species.read",
       "breeds.read",
-      "files.read"
+      "files.read",
+      "files.upload"
     ]
   },
   "Permissions": {

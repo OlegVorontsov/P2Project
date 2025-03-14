@@ -78,9 +78,10 @@ public class AccountsController : ApplicationController
         return Ok(result.Value);
     }
     
-    //[Permission(PermissionsConfig.Files.Upload)]
-    [HttpPost("upload-avatar")]
+    [Permission(PermissionsConfig.Files.Upload)]
+    [HttpPost("upload-avatar/{userId:guid}")]
     public async Task<ActionResult> UploadAvatar(
+        [FromRoute] Guid userId,
         IFormFile avatarFile,
         [FromServices] UploadAvatarHandler handler,
         CancellationToken cancellationToken)
@@ -90,7 +91,9 @@ public class AccountsController : ApplicationController
             return fileBytesArrayResult.Error.ToResponse();
         
         var result = await handler.Handle(
-            new UploadAvatarCommand(fileBytesArrayResult.Value,
+            new UploadAvatarCommand(
+                userId,
+                fileBytesArrayResult.Value,
                 new StartMultipartUploadRequest(
                     Constants.BUCKET_NAME_AVATARS,
                     avatarFile.FileName,
@@ -104,14 +107,17 @@ public class AccountsController : ApplicationController
         return Ok(result.Value);
     }
     
-    [HttpPost("complete-set-avatar")]
+    [Permission(PermissionsConfig.Files.Upload)]
+    [HttpPost("complete-set-avatar/{userId:guid}")]
     public async Task<ActionResult> CompleteSetAvatar(
+        [FromRoute] Guid userId,
         [FromBody] CompleteSetAvatarRequest request,
         [FromServices] CompleteSetAvatarHandler handler,
         CancellationToken cancellationToken)
     {
         var result = await handler.Handle(
             new CompleteSetAvatarCommand(
+                    userId,
                     request.Key,
                     Constants.BUCKET_NAME_AVATARS,
                     request.UploadId,
