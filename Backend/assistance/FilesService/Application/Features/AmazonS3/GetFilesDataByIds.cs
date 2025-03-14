@@ -1,7 +1,8 @@
 using Amazon.S3;
+using Amazon.S3.Model;
 using FilesService.Application.Interfaces;
-using FilesService.Core.Requests;
 using FilesService.Core.Requests.AmazonS3;
+using FilesService.Core.Responses.AmazonS3;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FilesService.Application.Features.AmazonS3;
@@ -23,9 +24,37 @@ public static class GetFilesDataByIds
     {
         var result = await repository.GetRange(request.Ids, ct);
         
+        ICollection<FileDataResponse> response = [];
         if (result.IsSuccess)
-            return Results.Ok(result.Value);
+        {
+            foreach (var fileData in result.Value)
+            {
+                try
+                {
+                    var keyString = fileData.StoragePath;
+            
+                    var presignedRequest = new GetPreSignedUrlRequest
+                    {
+                        BucketName = fileData.BucketName,
+                        Key = keyString,
+                        Verb = HttpVerb.GET,
+                        Expires = DateTime.UtcNow.AddDays(14),
+                        Protocol = Protocol.HTTP
+                    };
 
+                    var presignedUrl = await s3Client.GetPreSignedURLAsync(presignedRequest);
+
+                    response.Add(new FileDataResponse(
+                        keyString, presignedUrl, fileData.UploadDate, fileData.FileSize, fileData.ContentType));
+                }
+                catch (AmazonS3Exception ex)
+                {
+                    return Results.BadRequest($"S3: get presigned url failed: \r\t\n{ex.Message}");
+                }
+            }
+            return Results.Ok(response);
+        }
+        
         return Results.BadRequest();
     }
 }
