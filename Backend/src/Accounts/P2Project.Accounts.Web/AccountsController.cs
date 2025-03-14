@@ -16,7 +16,6 @@ using P2Project.SharedKernel;
 
 namespace P2Project.Accounts.Web;
 
-[Authorize]
 public class AccountsController : ApplicationController
 {
     [HttpPost("registration")]

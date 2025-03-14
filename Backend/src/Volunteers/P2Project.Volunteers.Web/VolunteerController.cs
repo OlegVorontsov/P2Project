@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using P2Project.Core.Extensions;
 using P2Project.Framework;
 using P2Project.Framework.Authorization;
+using P2Project.Framework.Files;
 using P2Project.SharedKernel;
 using P2Project.Volunteers.Application.Commands.AddPet;
 using P2Project.Volunteers.Application.Commands.AddPetPhotos;
@@ -155,7 +156,7 @@ namespace P2Project.Volunteers.Web
             return Ok(result.Value);
         }
 
-        /*[Permission(PermissionsConfig.Volunteers.Update)]
+        [Permission(PermissionsConfig.Volunteers.Update)]
         [HttpPost("{volunteerId:guid}/pet/{petId:guid}/files")]
         public async Task<ActionResult> AddPetPhotos(
             [FromRoute] Guid volunteerId,
@@ -170,35 +171,6 @@ namespace P2Project.Volunteers.Web
             var result = await photosHandler.Handle(
                 new AddPetPhotosCommand(
                     volunteerId, petId, fileDtos),
-                cancellationToken);
-
-            if (result.IsFailure)
-                return result.Error.ToResponse();
-
-            return Ok(result.Value);
-        }*/
-        
-        //[Permission(PermissionsConfig.Volunteers.Update)]
-        [HttpPost("{bucketName}/photos/{volunteerId:guid}/pet/{petId:guid}")]
-        public async Task<ActionResult> AddPetPhotos(
-            [FromRoute] string bucketName,
-            [FromRoute] Guid volunteerId,
-            [FromRoute] Guid petId,
-            [FromForm] IFormFileCollection files,
-            [FromServices] AddPetPhotosHandler photosHandler,
-            CancellationToken cancellationToken)
-        {
-            List<StartMultipartUploadRequest> uploadRequests = [];
-            
-            uploadRequests.AddRange(files.Select(file => new StartMultipartUploadRequest(
-                bucketName,
-                file.FileName,
-                file.ContentType,
-                file.Length)));
-
-            var result = await photosHandler.Handle(
-                new AddPetPhotosCommand(
-                    volunteerId, petId, uploadRequests),
                 cancellationToken);
 
             if (result.IsFailure)

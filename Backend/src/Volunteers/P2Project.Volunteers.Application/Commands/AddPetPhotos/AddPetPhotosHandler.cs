@@ -2,7 +2,7 @@
 using FilesService.Core.Dtos;
 using FilesService.Core.Interfaces;
 using FilesService.Core.Models;
-using FilesService.Core.Responses.AmazonS3;
+using FilesService.Core.Requests.Minio;
 using FilesService.Core.ValueObjects;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +11,7 @@ using P2Project.Core;
 using P2Project.Core.Extensions;
 using P2Project.Core.Interfaces;
 using P2Project.Core.Interfaces.Commands;
+using P2Project.SharedKernel;
 using P2Project.SharedKernel.Errors;
 using P2Project.SharedKernel.IDs;
 
@@ -20,7 +21,7 @@ namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
         ICommandHandler<Guid, AddPetPhotosCommand>
     {
         private readonly IValidator<AddPetPhotosCommand> _validator;
-        private readonly IFilesHttpClient _httpClient;
+        private readonly IFileProvider _fileProvider;
         private readonly IVolunteersRepository _volunteersRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<AddPetPhotosHandler> _logger;
@@ -28,14 +29,14 @@ namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
 
         public AddPetPhotosHandler(
             IValidator<AddPetPhotosCommand> validator,
-            IFilesHttpClient httpClient,
+            IFileProvider fileProvider,
             IVolunteersRepository volunteersRepository,
             [FromKeyedServices(Modules.Volunteers)] IUnitOfWork unitOfWork,
             ILogger<AddPetPhotosHandler> logger,
             IMessageQueue<IEnumerable<FileInfoDto>> messageQueue)
         {
             _validator = validator;
-            _httpClient = httpClient;
+            _fileProvider = fileProvider;
             _volunteersRepository = volunteersRepository;
             _unitOfWork = unitOfWork;
             _logger = logger;
@@ -46,8 +47,6 @@ namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
             AddPetPhotosCommand photosCommand,
             CancellationToken cancellationToken)
         {
-            // метод связан с CompleteMultipartUpload
-            
             var validationResult = await _validator.ValidateAsync(
                 photosCommand, cancellationToken);
             if (validationResult.IsValid == false)
@@ -68,39 +67,40 @@ namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
             if (petResult.IsFailure)
                 return Errors.General.NotFound(photosCommand.PetId).ToErrorList();
 
-            List<UploadPartFileResponse> uploadFileResponses = [];
+            List<UploadFileRequest> uploadFileRequests = [];
 
             try
             {
-                foreach (var request in photosCommand.Requests)
+                foreach (var file in photosCommand.Files)
                 {
-                    var response = await _httpClient.StartMultipartUpload(
-                        request, cancellationToken);
-                    
-                    if (response.IsFailure)
-                    {
-                        var extension = Path.GetExtension(request.FileName);
+                    var extension = Path.GetExtension(file.FileName);
 
-                        var filePathResult = FilePath.Create(
-                            Guid.NewGuid(), extension);
-                        
-                        if (filePathResult.IsFailure)
-                            return Errors.General.Failure(filePathResult.Error.Message).ToErrorList();
+                    var filePath = FilePath.Create(Guid.NewGuid(), extension);
+                    if (filePath.IsFailure)
+                        return Errors.General.Failure(filePath.Error.Message).ToErrorList();
 
-                        var fileInfoDto = new FileInfoDto(
-                            filePathResult.Value, request.BucketName);
-                        
-                        await _messageQueue.WriteAsync([fileInfoDto], cancellationToken);
-                        
-                        return Errors.General.Failure(request.FileName).ToErrorList();
-                    }
-                    
-                    uploadFileResponses.Add(response.Value);
+                    var fileInfo = new FileInfoDto(
+                        filePath.Value, Constants.BUCKET_NAME_PHOTOS);
+
+                    var uploadFileRequest = new UploadFileRequest(
+                        file.Stream, fileInfo);
+
+                    uploadFileRequests.Add(uploadFileRequest);
                 }
                 
-                var petPhotos = photosCommand.Requests
+                var filePathsResult = await _fileProvider.UploadFiles(
+                    uploadFileRequests, cancellationToken);
+                if (filePathsResult.IsFailure)
+                {
+                    await _messageQueue.WriteAsync(
+                        uploadFileRequests.Select(f => f.FileInfoDto), cancellationToken);
+
+                    return Errors.General.Failure(filePathsResult.Error.Message).ToErrorList();
+                }
+
+                var petPhotos = photosCommand.Files
                     .Select(r => MediaFile.Create(
-                        r.BucketName, r.FileName, false).Value)
+                        Constants.BUCKET_NAME_PHOTOS, r.FileName, false).Value)
                     .ToList();
 
                 petResult.Value.UpdatePhotos(petPhotos);

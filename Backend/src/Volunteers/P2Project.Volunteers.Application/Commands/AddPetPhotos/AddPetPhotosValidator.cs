@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using P2Project.Core.Dtos.Validators;
 using P2Project.Core.Validation;
 using P2Project.SharedKernel.Errors;
 
@@ -18,8 +17,8 @@ namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
                 .NotEmpty()
                 .WithError(Errors.General.ValueIsRequired());
 
-            RuleForEach(u => u.Requests).SetValidator(
-                new StartMultipartUploadRequestValidator());
+            RuleForEach(u => u.Files).SetValidator(
+                new UploadFileDtoValidator());
         }
     }
 }

@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using Minio;
 using Minio.DataModel.Args;
 
-
 namespace FilesService.Communication
 {
     public class MinioProvider : IFileProvider
