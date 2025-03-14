@@ -53,8 +53,8 @@ namespace FilesService.Communication
             }
         }
 
-        public async Task<Result<IReadOnlyList<FilePath>, Error>> UploadFiles(
-            IEnumerable<UploadFileRequest> uploadFileRequest,
+        public async Task<Result<IReadOnlyList<Guid>, Error>> UploadFiles(
+            IEnumerable<UploadFileKeyRequest> uploadFileRequest,
             CancellationToken cancellationToken = default)
         {
             var semaphoreSlim = new SemaphoreSlim(MAX_PARALLEL);
@@ -76,7 +76,7 @@ namespace FilesService.Communication
                 var results = pathResult.Select(p => p.Value).ToList();
 
                 _logger.LogInformation("Uploaded files {files}",
-                    results.Select(f => f.Path));
+                    results.Select(f => f.ToString()));
 
                 return results;
             }
@@ -244,31 +244,32 @@ namespace FilesService.Communication
             return bucketExist;
         }
 
-        private async Task<Result<FilePath, Error>> PutObject(
-            UploadFileRequest uploadFileRequest,
+        private async Task<Result<Guid, Error>> PutObject(
+            UploadFileKeyRequest uploadFileRequest,
             SemaphoreSlim semaphoreSlim,
             CancellationToken cancellationToken = default)
         {
             await semaphoreSlim.WaitAsync(cancellationToken);
 
             var putObjectArgs = new PutObjectArgs()
+                .WithContentType(uploadFileRequest.FileInfoDto.ContentType)
                 .WithBucket(uploadFileRequest.FileInfoDto.BucketName)
                 .WithStreamData(uploadFileRequest.FileStream)
                 .WithObjectSize(uploadFileRequest.FileStream.Length)
-                .WithObject(uploadFileRequest.FileInfoDto.FilePath.Path);
+                .WithObject(uploadFileRequest.FileInfoDto.FileKey.ToString());
 
             try
             {
                 await _minioClient
                     .PutObjectAsync(putObjectArgs, cancellationToken);
 
-                return uploadFileRequest.FileInfoDto.FilePath;
+                return uploadFileRequest.FileInfoDto.FileKey;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex,
                     "Fail to upload file in minio with path {path} in bucket {bucket}",
-                    uploadFileRequest.FileInfoDto.FilePath.Path,
+                    uploadFileRequest.FileInfoDto.FileKey,
                     uploadFileRequest.FileInfoDto.BucketName);
 
                 return Error.Failure("file.upload", "Fail to upload file in minio");

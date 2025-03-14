@@ -109,4 +109,16 @@ public class FilesHttpClient (HttpClient httpClient) : IFilesHttpClient
         
         return eTag.Trim('"');
     }
+    
+    public async Task<UnitResult<Error>> SaveFilesDataByKeys(
+        SaveFilesDataByKeysRequest request, CancellationToken ct)
+    {
+        var response = await httpClient
+            .PostAsJsonAsync("amazon/files/save-data", request, ct);
+        
+        if (response.StatusCode != HttpStatusCode.OK)
+            return Errors.Failure("Fail to save file data");
+        
+        return Result.Success<Error>();
+    }
 }

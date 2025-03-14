@@ -13,8 +13,8 @@ namespace FilesService.Core.Interfaces
             UploadFileRequest uploadFileRequest,
             CancellationToken cancellationToken = default);
 
-        Task<Result<IReadOnlyList<FilePath>, Error>> UploadFiles(
-            IEnumerable<UploadFileRequest> uploadFileRequest,
+        Task<Result<IReadOnlyList<Guid>, Error>> UploadFiles(
+            IEnumerable<UploadFileKeyRequest> uploadFileRequest,
             CancellationToken cancellationToken = default);
 
         Task<Result<string, Error>> DeleteFileByFileMetadata(
