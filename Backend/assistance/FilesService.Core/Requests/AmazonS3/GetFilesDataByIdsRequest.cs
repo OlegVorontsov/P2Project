@@ -1,3 +1,5 @@
 namespace FilesService.Core.Requests.AmazonS3;
 
-public record GetFilesDataByIdsRequest(IEnumerable<Guid> Ids, string BucketName);
+public record GetFilesDataByIdsRequest(
+    IEnumerable<Guid> Ids,
+    string BucketName);

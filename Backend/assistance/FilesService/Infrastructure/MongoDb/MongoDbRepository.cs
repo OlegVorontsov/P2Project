@@ -1,9 +1,9 @@
 using CSharpFunctionalExtensions;
 using FilesService.Application.Interfaces;
+using FilesService.Core.ErrorManagment;
 using FilesService.Core.Models;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
-using P2Project.SharedKernel.Errors;
 
 namespace FilesService.Infrastructure.MongoDb;
 
@@ -34,7 +34,7 @@ public class MongoDbRepository(MongoDbContext dbContext) : IFilesRepository
             .DeleteOneAsync(f => f.Id == id, cancellationToken: ct);
         
         return deleteResult.DeletedCount == 0
-            ? Errors.General.NotFound(id)
+            ? Errors.NotFound(id)
             : Result.Success<Error>();
     }
     
@@ -44,7 +44,7 @@ public class MongoDbRepository(MongoDbContext dbContext) : IFilesRepository
         var deleteResult = await dbContext.Files
             .DeleteManyAsync(f => ids.Contains(f.Id), cancellationToken: ct);
         if (deleteResult.DeletedCount == 0)
-            return Errors.General.Failure("There're no items to delete");
+            return Errors.Failure("There're no items to delete");
 
         return deleteResult.DeletedCount;
     }

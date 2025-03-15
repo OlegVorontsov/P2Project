@@ -7,5 +7,5 @@ namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
     public record AddPetPhotosCommand(
         Guid VolunteerId,
         Guid PetId,
-        IEnumerable<StartMultipartUploadRequest> Requests) : ICommand;
+        IEnumerable<UploadFileDto> Files) : ICommand;
 }

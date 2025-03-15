@@ -2,5 +2,7 @@
 {
     public record UploadFileDto(
         Stream Stream,
-        string FileName);
+        string FileName,
+        long Lenght,
+        string ContentType);
 }

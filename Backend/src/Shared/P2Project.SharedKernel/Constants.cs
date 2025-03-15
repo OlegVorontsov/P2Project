@@ -24,6 +24,9 @@ namespace P2Project.SharedKernel
 
         public const string BUCKET_NAME_PHOTOS = "photos";
         public const string BUCKET_NAME_FILES = "files";
+        public const string BUCKET_NAME_AVATARS = "avatars";
+        
+        public const string IMAGE_CONTENT_TYPE = "image/jpeg";
         
         public static string ACCOUNTS_CONFIGURATIONS_FOLDER_PATH = "..\\Accounts\\P2Project.Accounts.Infrastructure\\JsonConfigurations\\";
         public static string ACCOUNTS_JSON_FILE_NAME = "Accounts.json";

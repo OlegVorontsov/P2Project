@@ -15,8 +15,10 @@ namespace P2Project.Framework.Files
             foreach (var file in files)
             {
                 var stream = file.OpenReadStream();
+
                 var fileDto = new UploadFileDto(
-                    stream, file.FileName);
+                    stream, file.FileName, file.Length, file.ContentType);
+                
                 fileDtos.Add(fileDto);
                 _fileStreams.Add(fileDto.Stream);
             }

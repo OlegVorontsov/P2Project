@@ -15,24 +15,22 @@ public static class GetPresignedUrl
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("amazon/files/{key:guid}/presigned", Handler);
+            app.MapPost("amazon/files/{key}/presigned", Handler);
         }
     }
 
     private static async Task<IResult> Handler(
-        [FromRoute] Guid key,
+        [FromRoute] string key,
         [FromBody] GetPresignedUrlRequest request,
         IAmazonS3 s3Client,
         CancellationToken cancellationToken)
     {
         try
         {
-            var keyString = key.ToString();
-            
             var presignedRequest = new GetPreSignedUrlRequest
             {
                 BucketName = request.BucketName,
-                Key = keyString,
+                Key = key,
                 Verb = HttpVerb.GET,
                 Expires = DateTime.UtcNow.AddDays(14),
                 Protocol = Protocol.HTTP
@@ -40,7 +38,7 @@ public static class GetPresignedUrl
 
             var presignedUrl = await s3Client.GetPreSignedURLAsync(presignedRequest);
 
-            var response = new FileUrlResponse(keyString, presignedUrl); 
+            var response = new FileUrlResponse(key, presignedUrl); 
             return Results.Ok(response);
         }
         catch (AmazonS3Exception ex)

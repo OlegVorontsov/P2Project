@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using FilesService.Core.Dtos;
+using FilesService.Core.ErrorManagment;
 using FilesService.Core.Interfaces;
 using FilesService.Core.Models;
 using FilesService.Core.Requests.Minio;
@@ -7,7 +8,6 @@ using FilesService.Core.ValueObjects;
 using Microsoft.Extensions.Logging;
 using Minio;
 using Minio.DataModel.Args;
-using P2Project.SharedKernel.Errors;
 
 namespace FilesService.Communication
 {
@@ -53,8 +53,8 @@ namespace FilesService.Communication
             }
         }
 
-        public async Task<Result<IReadOnlyList<FilePath>, Error>> UploadFiles(
-            IEnumerable<UploadFileRequest> uploadFileRequest,
+        public async Task<Result<IReadOnlyList<Guid>, Error>> UploadFiles(
+            IEnumerable<UploadFileKeyRequest> uploadFileRequest,
             CancellationToken cancellationToken = default)
         {
             var semaphoreSlim = new SemaphoreSlim(MAX_PARALLEL);
@@ -62,7 +62,7 @@ namespace FilesService.Communication
             try
             {
                 await CreateBucketsIfNotExist(
-                    filesList.Select(file => file.FileInfoDto.BucketName),
+                    filesList.Select(file => file.FileRequestDto.BucketName),
                     cancellationToken);
 
                 var tasks = filesList.Select(
@@ -76,7 +76,7 @@ namespace FilesService.Communication
                 var results = pathResult.Select(p => p.Value).ToList();
 
                 _logger.LogInformation("Uploaded files {files}",
-                    results.Select(f => f.Path));
+                    results.Select(f => f.ToString()));
 
                 return results;
             }
@@ -244,32 +244,33 @@ namespace FilesService.Communication
             return bucketExist;
         }
 
-        private async Task<Result<FilePath, Error>> PutObject(
-            UploadFileRequest uploadFileRequest,
+        private async Task<Result<Guid, Error>> PutObject(
+            UploadFileKeyRequest uploadFileRequest,
             SemaphoreSlim semaphoreSlim,
             CancellationToken cancellationToken = default)
         {
             await semaphoreSlim.WaitAsync(cancellationToken);
 
             var putObjectArgs = new PutObjectArgs()
-                .WithBucket(uploadFileRequest.FileInfoDto.BucketName)
+                .WithContentType(uploadFileRequest.FileRequestDto.ContentType)
+                .WithBucket(uploadFileRequest.FileRequestDto.BucketName)
                 .WithStreamData(uploadFileRequest.FileStream)
                 .WithObjectSize(uploadFileRequest.FileStream.Length)
-                .WithObject(uploadFileRequest.FileInfoDto.FilePath.Path);
+                .WithObject(uploadFileRequest.FileRequestDto.FileKey.ToString());
 
             try
             {
                 await _minioClient
                     .PutObjectAsync(putObjectArgs, cancellationToken);
 
-                return uploadFileRequest.FileInfoDto.FilePath;
+                return uploadFileRequest.FileRequestDto.FileKey;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex,
                     "Fail to upload file in minio with path {path} in bucket {bucket}",
-                    uploadFileRequest.FileInfoDto.FilePath.Path,
-                    uploadFileRequest.FileInfoDto.BucketName);
+                    uploadFileRequest.FileRequestDto.FileKey,
+                    uploadFileRequest.FileRequestDto.BucketName);
 
                 return Error.Failure("file.upload", "Fail to upload file in minio");
             }

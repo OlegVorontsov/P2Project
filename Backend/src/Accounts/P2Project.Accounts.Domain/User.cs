@@ -52,8 +52,7 @@ public class User : IdentityUser<Guid>
         return Errors.General.ValueIsInvalid("User");
     }
     
-    public void AddRole(Role role)
-    {
-        _roles.Add(role);
-    }
+    public void AddRole(Role role) => _roles.Add(role);
+    
+    public void SetAvatar(MediaFile avatar) => Avatar = avatar;
 }

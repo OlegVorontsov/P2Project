@@ -1,8 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
 using FilesService.Core.Dtos;
+using FilesService.Core.ErrorManagment;
 using FilesService.Core.Requests.Minio;
 using FilesService.Core.ValueObjects;
-using P2Project.SharedKernel.Errors;
 using IFileProvider = FilesService.Core.Interfaces.IFileProvider;
 
 namespace P2Project.Volunteers.Application.Files.UploadFile
@@ -25,7 +25,7 @@ namespace P2Project.Volunteers.Application.Files.UploadFile
             var filePathResult = FilePath.Create(
                 Guid.NewGuid(), extension);
             if (filePathResult.IsFailure)
-                return Errors.General.Failure(filePathResult.Error.Message).ToErrorList();
+                return Errors.Failure(filePathResult.Error.Message).ToErrorList();
 
             var fileInfo = new FileInfoDto(
                 filePathResult.Value, bucketName);

@@ -1,6 +1,6 @@
 using CSharpFunctionalExtensions;
 using FilesService.Core.Enums;
-using P2Project.SharedKernel.Errors;
+using FilesService.Core.ErrorManagment;
 
 namespace FilesService.Core.Models;
 
@@ -34,7 +34,7 @@ public record MediaFile
     {
         if (string.IsNullOrWhiteSpace(bucketName)
             || string.IsNullOrWhiteSpace(fileName))
-            return Errors.General.ValueIsInvalid("Название bucket и файла не должны быть пустыми");
+            return Errors.ValueIsInvalid("Название bucket и файла не должны быть пустыми");
 
         return new MediaFile(type, bucketName, fileName, isMain);
     }

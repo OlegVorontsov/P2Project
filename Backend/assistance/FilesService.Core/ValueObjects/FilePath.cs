@@ -1,5 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
-using P2Project.SharedKernel.Errors;
+using FilesService.Core.ErrorManagment;
 
 namespace FilesService.Core.ValueObjects
 {
