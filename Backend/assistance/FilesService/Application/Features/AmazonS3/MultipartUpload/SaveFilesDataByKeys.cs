@@ -1,8 +1,8 @@
 using Amazon.S3;
-using Amazon.S3.Model;
 using FilesService.Application.Interfaces;
 using FilesService.Core.Models;
 using FilesService.Core.Requests.AmazonS3;
+using FilesService.Core.Responses.AmazonS3;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FilesService.Application.Features.AmazonS3.MultipartUpload;
@@ -24,31 +24,25 @@ public static class SaveFilesDataByKeys
     {
         try
         {
-            var metaDataRequests = request.FilePaths
-                .Select(f => new GetObjectMetadataRequest
-                {
-                    BucketName = request.BucketName,
-                    Key = f.ToString()
-                });
-
-            foreach (var dataRequest in metaDataRequests)
+            List<Guid> fileIds = [];
+            foreach (var fileRequest in request.FileRequestDtos)
             {
-                //var metaData = await s3Client.GetObjectMetadataAsync(dataRequest, cancellationToken);
-
                 var fileData = new FileData
                 {
                     Id = Guid.NewGuid(),
-                    StoragePath = dataRequest.Key,
-                    BucketName = dataRequest.BucketName,
+                    StoragePath = fileRequest.FileKey.ToString(),
+                    BucketName = fileRequest.BucketName,
                     UploadDate = DateTime.UtcNow,
-                    FileSize = 10000,
-                    ContentType = request.ContentType
+                    FileSize = fileRequest.Lenght,
+                    ContentType = fileRequest.ContentType
                 };
 
                 await repository.Add(fileData, cancellationToken);
+                fileIds.Add(fileData.Id);
             }
             
-            return Results.Ok();
+            var response = new FilesSaveResponse(fileIds);
+            return Results.Ok(response);
         }
         catch (AmazonS3Exception ex)
         {

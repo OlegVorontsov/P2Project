@@ -5,5 +5,6 @@ namespace FilesService.Core.Dtos
     public record FileRequestDto(
         Guid FileKey,
         string BucketName,
-        string ContentType);
+        string ContentType,
+        long Lenght);
 }

@@ -25,7 +25,7 @@ namespace P2Project.Volunteers.Web
             await using var stream = file.OpenReadStream();
 
             var result = await handler.Handle(
-                new UploadFileDto(stream, file.FileName),
+                new UploadFileDto(stream, file.FileName, file.Length, file.ContentType),
                 bucketName,
                 cancellationToken);
 

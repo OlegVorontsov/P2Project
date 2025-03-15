@@ -16,6 +16,10 @@ namespace P2Project.Core.Validation
 
             RuleFor(fd => fd.Stream)
                 .Must(s => s.Length < 10000000);
+            
+            RuleFor(fd => fd.Lenght)
+                .NotEmpty()
+                .LessThanOrEqualTo(10000000);
         }
     }
 }

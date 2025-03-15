@@ -4,4 +4,4 @@ namespace FilesService.Core.Requests.Minio;
 
 public record UploadFileKeyRequest(
     Stream FileStream,
-    FileRequestDto FileInfoDto);
+    FileRequestDto FileRequestDto);

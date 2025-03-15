@@ -62,7 +62,7 @@ namespace FilesService.Communication
             try
             {
                 await CreateBucketsIfNotExist(
-                    filesList.Select(file => file.FileInfoDto.BucketName),
+                    filesList.Select(file => file.FileRequestDto.BucketName),
                     cancellationToken);
 
                 var tasks = filesList.Select(
@@ -252,25 +252,25 @@ namespace FilesService.Communication
             await semaphoreSlim.WaitAsync(cancellationToken);
 
             var putObjectArgs = new PutObjectArgs()
-                .WithContentType(uploadFileRequest.FileInfoDto.ContentType)
-                .WithBucket(uploadFileRequest.FileInfoDto.BucketName)
+                .WithContentType(uploadFileRequest.FileRequestDto.ContentType)
+                .WithBucket(uploadFileRequest.FileRequestDto.BucketName)
                 .WithStreamData(uploadFileRequest.FileStream)
                 .WithObjectSize(uploadFileRequest.FileStream.Length)
-                .WithObject(uploadFileRequest.FileInfoDto.FileKey.ToString());
+                .WithObject(uploadFileRequest.FileRequestDto.FileKey.ToString());
 
             try
             {
                 await _minioClient
                     .PutObjectAsync(putObjectArgs, cancellationToken);
 
-                return uploadFileRequest.FileInfoDto.FileKey;
+                return uploadFileRequest.FileRequestDto.FileKey;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex,
                     "Fail to upload file in minio with path {path} in bucket {bucket}",
-                    uploadFileRequest.FileInfoDto.FileKey,
-                    uploadFileRequest.FileInfoDto.BucketName);
+                    uploadFileRequest.FileRequestDto.FileKey,
+                    uploadFileRequest.FileRequestDto.BucketName);
 
                 return Error.Failure("file.upload", "Fail to upload file in minio");
             }

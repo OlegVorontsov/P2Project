@@ -75,8 +75,7 @@ namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
                 return Errors.General.NotFound(photosCommand.PetId).ToErrorList();
 
             List<UploadFileKeyRequest> uploadFileRequests = [];
-            List<Guid> fileKeys = [];
-            List<FilePath> filePaths = [];
+            List<FileInfoDto> fileInfoDtos = [];
             try
             {
                 foreach (var file in photosCommand.Files)
@@ -87,35 +86,34 @@ namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
                     var filePath = FilePath.Create(newfileKey, extension);
                     if (filePath.IsFailure)
                         return Errors.General.Failure(filePath.Error.Message).ToErrorList();
-                    filePaths.Add(filePath.Value);
+                    fileInfoDtos.Add(new FileInfoDto(filePath.Value, Constants.BUCKET_NAME_PHOTOS));
 
                     var fileInfo = new FileRequestDto(
                         newfileKey,
                         Constants.BUCKET_NAME_PHOTOS,
-                        Constants.IMAGE_CONTENT_TYPE
+                        file.ContentType,
+                        file.Lenght
                         );
 
                     var uploadFileRequest = new UploadFileKeyRequest(
                         file.Stream, fileInfo);
 
                     uploadFileRequests.Add(uploadFileRequest);
-                    fileKeys.Add(newfileKey);
                 }
                 
                 var filePathsResult = await _fileProvider.UploadFiles(
                     uploadFileRequests, cancellationToken);
                 if (filePathsResult.IsFailure)
                 {
-                    var fileInfoDtos = filePaths.Select(f => new FileInfoDto(f, Constants.BUCKET_NAME_PHOTOS));
                     await _messageQueue.WriteAsync(
                         fileInfoDtos, cancellationToken);
 
                     return Errors.General.Failure(filePathsResult.Error.Message).ToErrorList();
                 }
 
-                var petPhotos = fileKeys
+                var petPhotos = uploadFileRequests
                     .Select(f => MediaFile.Create(
-                        Constants.BUCKET_NAME_PHOTOS, f.ToString(), false).Value)
+                        f.FileRequestDto.BucketName, f.FileRequestDto.FileKey.ToString(), false).Value)
                     .ToList();
 
                 petResult.Value.UpdatePhotos(petPhotos);
@@ -126,9 +124,7 @@ namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
                 var saveFilesDataByKeysResponse = await _httpClient
                     .SaveFilesDataByKeys(
                         new SaveFilesDataByKeysRequest(
-                            fileKeys,
-                            Constants.BUCKET_NAME_PHOTOS,
-                            Constants.IMAGE_CONTENT_TYPE),
+                            uploadFileRequests.Select(u => u.FileRequestDto).ToList()),
                         cancellationToken);
                 if (saveFilesDataByKeysResponse.IsFailure)
                     return Errors.General.Failure().ToErrorList();
@@ -139,7 +135,7 @@ namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
                     "Photos for pet with ID: {petId} updated successfully",
                     petResult.Value.Id.Value);
 
-                return fileKeys;
+                return saveFilesDataByKeysResponse.Value;
             }
             catch (Exception ex)
             {
