@@ -29,7 +29,7 @@ using CompleteSetAvatarHandler = P2Project.Volunteers.Application.Commands.SetAv
 
 namespace P2Project.Volunteers.Web
 {
-    [Authorize]
+    //[Authorize]
     public class VolunteerController : ApplicationController
     {
         [Permission(PermissionsConfig.Volunteers.Read)]
@@ -179,7 +179,7 @@ namespace P2Project.Volunteers.Web
             return Ok(result.Value);
         }
         
-        [Permission(PermissionsConfig.Volunteers.Delete)]
+        //[Permission(PermissionsConfig.Volunteers.Delete)]
         [HttpDelete("{volunteerId:guid}/pets/{petId:guid}/photos")]
         public async Task<IActionResult> DeletePetPhotos(
             [FromRoute] Guid volunteerId,
@@ -278,7 +278,7 @@ namespace P2Project.Volunteers.Web
             return Ok(result.Value);
         }
         
-        [Permission(PermissionsConfig.Volunteers.Update)]
+        //[Permission(PermissionsConfig.Volunteers.Update)]
         [HttpPost("{volunteerId:guid}/pets/{petId:guid}/upload-avatar")]
         public async Task<ActionResult> UploadAvatar(
             [FromRoute] Guid volunteerId,
@@ -309,7 +309,7 @@ namespace P2Project.Volunteers.Web
             return Ok(result.Value);
         }
         
-        [Permission(PermissionsConfig.Volunteers.Update)]
+        //[Permission(PermissionsConfig.Volunteers.Update)]
         [HttpPost("{volunteerId:guid}/pets/{petId:guid}/complete-set-avatar")]
         public async Task<ActionResult> CompleteSetAvatar(
             [FromRoute] Guid volunteerId,
@@ -322,7 +322,7 @@ namespace P2Project.Volunteers.Web
                 new CompleteSetAvatarCommand(
                     volunteerId,
                     petId,
-                    request.Key,
+                    request.FileName,
                     Constants.BUCKET_NAME_AVATARS,
                     request.UploadId,
                     request.ETag),

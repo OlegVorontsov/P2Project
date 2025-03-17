@@ -119,7 +119,7 @@ public class AccountsController : ApplicationController
         var result = await handler.Handle(
             new CompleteSetAvatarCommand(
                     userId,
-                    request.Key,
+                    request.FileName,
                     Constants.BUCKET_NAME_AVATARS,
                     request.UploadId,
                     request.ETag),

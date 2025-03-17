@@ -92,6 +92,7 @@ namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
                     var fileRequestDto = new FileRequestDto(
                         newfileKey,
                         Constants.BUCKET_NAME_PHOTOS,
+                        filePath.Value.ToString(),
                         file.ContentType,
                         file.Lenght
                         );
@@ -116,6 +117,7 @@ namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
                     .Select(f => MediaFile.Create(
                         f.FileRequestDto.BucketName,
                         f.FileRequestDto.FileKey.ToString(),
+                        f.FileRequestDto.FileName,
                         false).Value)
                     .ToList();
 

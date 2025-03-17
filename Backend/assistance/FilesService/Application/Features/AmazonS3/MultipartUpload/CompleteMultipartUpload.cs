@@ -68,7 +68,8 @@ public static class CompleteMultipartUpload
 
             BackgroundJob.Delete(jobId);
 
-            var fileLocation = new FileLocationResponse(key, response.Location);
+            var fileLocation = new FileLocationResponse(
+                fileData.Id.ToString(), fileData.StoragePath);
             
             return Results.Ok(fileLocation);
         }

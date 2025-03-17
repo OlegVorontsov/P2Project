@@ -91,7 +91,7 @@ public class SeedExtension
         var pet = PetFabric.CreatePet(species.Id, species.Breeds.First().Id);
         
         var photos = new List<MediaFile>{MediaFile
-            .Create("test_bucket_name", "test_file_name.jpg", false).Value};
+            .Create("test_bucket_name", "7956be18-6e95-454b-9805-67214f9710a0", "test_file_name.jpg", false).Value};
         
         pet.UpdatePhotos(photos);
 

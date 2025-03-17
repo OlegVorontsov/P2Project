@@ -19,7 +19,7 @@ public class CompleteSetAvatarValidator :
             .NotEmpty()
             .WithError(Errors.General.ValueIsRequired());
         
-        RuleFor(ap => ap.Key)
+        RuleFor(ap => ap.FileName)
             .NotNull()
             .NotEmpty()
             .WithError(Errors.General.ValueIsRequired());

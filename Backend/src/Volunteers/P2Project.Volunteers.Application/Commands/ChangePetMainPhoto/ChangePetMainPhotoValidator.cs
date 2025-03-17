@@ -28,5 +28,10 @@ public class ChangePetMainPhotoValidator :
             .NotNull()
             .NotEmpty()
             .WithError(Errors.General.ValueIsRequired());
+        
+        RuleFor(p => p.FileKey)
+            .NotNull()
+            .NotEmpty()
+            .WithError(Errors.General.ValueIsRequired());
     }
 }

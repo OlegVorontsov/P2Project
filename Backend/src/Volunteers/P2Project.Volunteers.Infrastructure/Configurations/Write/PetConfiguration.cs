@@ -152,8 +152,8 @@ namespace P2Project.Volunteers.Infrastructure.Configurations.Write
             
             builder.Property(p => p.Photos)
                 .ValueObjectsCollectionJsonConversion(
-                    photo => new MediaFileDto(photo.BucketName, photo.FileName, photo.IsMain),
-                    dto => MediaFile.Create(dto.BucketName, dto.FileName, dto.IsMain).Value)
+                    photo => new MediaFileDto(photo.BucketName, photo.Key.ToString(), photo.FileName, photo.IsMain),
+                    dto => MediaFile.Create(dto.BucketName, dto.FileKey, dto.FileName, dto.IsMain).Value)
                 .HasColumnName(Pet.DB_COLUMN_PHOTOS);
             
             builder.OwnsOne(p => p.Avatar, ab =>
