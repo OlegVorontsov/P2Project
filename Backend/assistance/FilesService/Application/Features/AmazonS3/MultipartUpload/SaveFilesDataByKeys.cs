@@ -24,7 +24,7 @@ public static class SaveFilesDataByKeys
     {
         try
         {
-            List<Guid> fileIds = [];
+            List<FileLocationResponse> fileLocations = [];
             foreach (var fileRequest in request.FileRequestDtos)
             {
                 var fileData = new FileData
@@ -38,10 +38,14 @@ public static class SaveFilesDataByKeys
                 };
 
                 await repository.Add(fileData, cancellationToken);
-                fileIds.Add(fileData.Id);
+                
+                var fileLocation = new FileLocationResponse(
+                    fileData.Id.ToString(), fileData.StoragePath);
+                
+                fileLocations.Add(fileLocation);
             }
             
-            var response = new FilesSaveResponse(fileIds);
+            var response = new FilesSaveResponse(fileLocations);
             return Results.Ok(response);
         }
         catch (AmazonS3Exception ex)

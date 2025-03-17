@@ -110,7 +110,7 @@ public class FilesHttpClient (HttpClient httpClient) : IFilesHttpClient
         return eTag.Trim('"');
     }
     
-    public async Task<Result<List<Guid>, Error>> SaveFilesDataByKeys(
+    public async Task<Result<List<FileLocationResponse>, Error>> SaveFilesDataByKeys(
         SaveFilesDataByKeysRequest request, CancellationToken ct)
     {
         var response = await httpClient
@@ -120,9 +120,9 @@ public class FilesHttpClient (HttpClient httpClient) : IFilesHttpClient
             return Errors.Failure("Fail to save file data");
         
         var result = await response.Content.ReadFromJsonAsync<FilesSaveResponse>(ct);
-        if(result?.Ids == null)
+        if(result == null)
             return Errors.Failure("Fail to save file data");
         
-        return result.Ids;
+        return result.FileLocationResponses;
     }
 }

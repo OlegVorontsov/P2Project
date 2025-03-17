@@ -29,6 +29,6 @@ public interface IFilesHttpClient
     public Task<Result<string, Error>> UploadFileAsync(
         string url, byte[] file, string contentType, CancellationToken ct);
 
-    public Task<Result<List<Guid>, Error>> SaveFilesDataByKeys(
+    public Task<Result<List<FileLocationResponse>, Error>> SaveFilesDataByKeys(
         SaveFilesDataByKeysRequest request, CancellationToken ct);
 }

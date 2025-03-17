@@ -162,9 +162,6 @@ namespace P2Project.Volunteers.Domain.Entities
             return media.FileName;
         }
         
-        public void SetAvatar(MediaFile avatar)
-        {
-            Avatar = avatar;
-        }
+        public void SetAvatar(MediaFile avatar) => Avatar = avatar;
     }
 }

@@ -22,7 +22,7 @@ using P2Project.SharedKernel.IDs;
 namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
 {
     public class AddPetPhotosHandler :
-        ICommandHandler<List<Guid>, AddPetPhotosCommand>
+        ICommandHandler<List<string>, AddPetPhotosCommand>
     {
         private readonly IValidator<AddPetPhotosCommand> _validator;
         private readonly IFileProvider _fileProvider;
@@ -50,7 +50,7 @@ namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
             _messageQueue = messageQueue;
         }
 
-        public async Task<Result<List<Guid>, ErrorList>> Handle(
+        public async Task<Result<List<string>, ErrorList>> Handle(
             AddPetPhotosCommand photosCommand,
             CancellationToken cancellationToken)
         {
@@ -87,7 +87,8 @@ namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
                     if (filePath.IsFailure)
                         return Errors.General.Failure(filePath.Error.Message).ToErrorList();
                     
-                    fileInfoDtos.Add(new FileInfoDto(filePath.Value, Constants.BUCKET_NAME_PHOTOS));
+                    fileInfoDtos.Add(
+                        new FileInfoDto(filePath.Value, Constants.BUCKET_NAME_PHOTOS));
 
                     var fileRequestDto = new FileRequestDto(
                         newfileKey,
@@ -112,20 +113,7 @@ namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
 
                     return Errors.General.Failure(filePathsResult.Error.Message).ToErrorList();
                 }
-
-                var petPhotos = uploadFileRequests
-                    .Select(f => MediaFile.Create(
-                        f.FileRequestDto.BucketName,
-                        f.FileRequestDto.FileKey.ToString(),
-                        f.FileRequestDto.FileName,
-                        false).Value)
-                    .ToList();
-
-                petResult.Value.UpdatePhotos(petPhotos);
-
-                var id = _volunteersRepository.Save(volunteerResult.Value);
-                await _unitOfWork.SaveChanges(cancellationToken);
-
+                
                 var saveFilesDataByKeysResponse = await _httpClient
                     .SaveFilesDataByKeys(
                         new SaveFilesDataByKeysRequest(
@@ -134,13 +122,29 @@ namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
                 if (saveFilesDataByKeysResponse.IsFailure)
                     return Errors.General.Failure().ToErrorList();
                 
+                var petPhotos = saveFilesDataByKeysResponse.Value
+                    .Select(r => MediaFile.Create(
+                        Constants.BUCKET_NAME_PHOTOS,
+                        r.FileId,
+                        r.FilePath,
+                        false).Value)
+                    .ToList();
+
+                petResult.Value.UpdatePhotos(petPhotos);
+
+                var id = _volunteersRepository.Save(volunteerResult.Value);
+                await _unitOfWork.SaveChanges(cancellationToken);
+                
                 transaction.Commit();
 
                 _logger.LogInformation(
                     "Photos for pet with ID: {petId} updated successfully",
                     petResult.Value.Id.Value);
 
-                return saveFilesDataByKeysResponse.Value;
+                var response = saveFilesDataByKeysResponse.Value
+                    .Select(r => r.FileId).ToList();
+
+                return response;
             }
             catch (Exception ex)
             {
