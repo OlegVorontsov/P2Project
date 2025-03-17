@@ -1,10 +1,13 @@
 ﻿using System.Linq.Expressions;
 using CSharpFunctionalExtensions;
+using FilesService.Core.Interfaces;
+using FilesService.Core.Requests.AmazonS3;
 using FluentValidation;
 using P2Project.Core.Dtos.Pets;
 using P2Project.Core.Extensions;
 using P2Project.Core.Interfaces.Queries;
 using P2Project.Core.Models;
+using P2Project.SharedKernel;
 using P2Project.SharedKernel.Errors;
 
 namespace P2Project.Volunteers.Application.Queries.Pets.GetAllPets
@@ -14,12 +17,16 @@ namespace P2Project.Volunteers.Application.Queries.Pets.GetAllPets
     {
         private readonly IValidator<GetPetsQuery> _validator;
         private readonly IVolunteersReadDbContext _readDbContext;
+        private readonly IFilesHttpClient _httpClient;
 
         public GetPetsHandler(
-            IVolunteersReadDbContext readDbContext, IValidator<GetPetsQuery> validator)
+            IVolunteersReadDbContext readDbContext,
+            IValidator<GetPetsQuery> validator,
+            IFilesHttpClient httpClient)
         {
             _readDbContext = readDbContext;
             _validator = validator;
+            _httpClient = httpClient;
         }
 
         public async Task<Result<PagedList<PetDto>, ErrorList>> Handle(
@@ -48,6 +55,29 @@ namespace P2Project.Volunteers.Application.Queries.Pets.GetAllPets
             {
                 var error = result.Error;
                 return error.ToErrorList();
+            }
+
+            foreach (var petDto in result.Value.Items)
+            {
+                var getAvatarUrlResult = await _httpClient.GetPresignedUrl(
+                    petDto.Avatar.FileName,
+                    new GetPresignedUrlRequest(petDto.Avatar.BucketName),
+                    cancellationToken);
+                if (getAvatarUrlResult.IsSuccess)
+                    petDto.AvatarUrl = getAvatarUrlResult.Value.Url;
+        
+                List<string> photosUrls = [];
+                foreach (var photo in petDto.Photos)
+                {
+                    var getPresignedPhotoUrlRequest = new GetPresignedUrlRequest(Constants.BUCKET_NAME_PHOTOS);
+                    var getPhotoUrlResult = await _httpClient.GetPresignedUrl(
+                        photo.FileName,
+                        getPresignedPhotoUrlRequest,
+                        cancellationToken);
+                    if(getPhotoUrlResult.IsSuccess)
+                        photosUrls.Add(getPhotoUrlResult.Value.Url);
+                }
+                petDto.PhotosUrls = photosUrls;
             }
 
             return result.Value;
