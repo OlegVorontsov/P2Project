@@ -86,9 +86,10 @@ namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
                     var filePath = FilePath.Create(newfileKey, extension);
                     if (filePath.IsFailure)
                         return Errors.General.Failure(filePath.Error.Message).ToErrorList();
+                    
                     fileInfoDtos.Add(new FileInfoDto(filePath.Value, Constants.BUCKET_NAME_PHOTOS));
 
-                    var fileInfo = new FileRequestDto(
+                    var fileRequestDto = new FileRequestDto(
                         newfileKey,
                         Constants.BUCKET_NAME_PHOTOS,
                         file.ContentType,
@@ -96,7 +97,7 @@ namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
                         );
 
                     var uploadFileRequest = new UploadFileKeyRequest(
-                        file.Stream, fileInfo);
+                        file.Stream, fileRequestDto);
 
                     uploadFileRequests.Add(uploadFileRequest);
                 }
@@ -113,7 +114,9 @@ namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
 
                 var petPhotos = uploadFileRequests
                     .Select(f => MediaFile.Create(
-                        f.FileRequestDto.BucketName, f.FileRequestDto.FileKey.ToString(), false).Value)
+                        f.FileRequestDto.BucketName,
+                        f.FileRequestDto.FileKey.ToString(),
+                        false).Value)
                     .ToList();
 
                 petResult.Value.UpdatePhotos(petPhotos);
