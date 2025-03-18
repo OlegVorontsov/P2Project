@@ -56,7 +56,7 @@ public class CompleteSetAvatarHandler :
         
         var completeMultipartUploadResponse = await _httpClient
             .CompleteMultipartUpload(
-                command.Key,
+                command.FileName,
                 new CompleteMultipartRequest(
                     command.BucketName,
                     command.UploadId,
@@ -71,7 +71,8 @@ public class CompleteSetAvatarHandler :
         
         var mediaFile = MediaFile.Create(
             command.BucketName,
-            completeMultipartUploadResponse.Value.Location,
+            completeMultipartUploadResponse.Value.FileId,
+            completeMultipartUploadResponse.Value.FilePath,
             false).Value;
         
         var transaction = await _unitOfWork.BeginTransaction(cancellationToken);

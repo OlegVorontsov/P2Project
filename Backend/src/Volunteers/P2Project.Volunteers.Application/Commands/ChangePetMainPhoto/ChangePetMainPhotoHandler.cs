@@ -52,7 +52,9 @@ public class ChangePetMainPhotoHandler :
         
         var petId = PetId.Create(command.PetId);
         var newMainPhoto = MediaFile.Create(
-            command.BucketName, command.FileName, true).Value;
+            command.BucketName,
+            command.FileKey,
+            command.FileName, true).Value;
         
         var changeResult = volunteerResult.Value
             .ChangePetMainPhoto(petId, newMainPhoto);

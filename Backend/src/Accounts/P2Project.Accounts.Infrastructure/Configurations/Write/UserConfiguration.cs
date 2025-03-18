@@ -45,8 +45,8 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         
         builder.Property(u => u.Photos)
             .ValueObjectsCollectionJsonConversion(
-                photo => new MediaFileDto(photo.BucketName, photo.FileName, photo.IsMain),
-                dto => MediaFile.Create(dto.BucketName, dto.FileName, dto.IsMain).Value)
+                photo => new MediaFileDto(photo.BucketName, photo.Key.ToString(), photo.FileName, photo.IsMain),
+                dto => MediaFile.Create(dto.BucketName, dto.FileKey, dto.FileName, dto.IsMain).Value)
             .HasColumnName("photos");
         
         builder.Ignore(u => u.PhotosUrls);

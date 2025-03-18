@@ -322,7 +322,7 @@ namespace P2Project.Volunteers.Web
                 new CompleteSetAvatarCommand(
                     volunteerId,
                     petId,
-                    request.Key,
+                    request.FileName,
                     Constants.BUCKET_NAME_AVATARS,
                     request.UploadId,
                     request.ETag),

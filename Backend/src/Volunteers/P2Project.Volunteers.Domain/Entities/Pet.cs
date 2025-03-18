@@ -147,8 +147,11 @@ namespace P2Project.Volunteers.Domain.Entities
             {
                 if (photo.FileName != media.FileName)
                 {
-                    if (photo.BucketName != null && photo.FileName != null)
-                        newPhotos.Add(MediaFile.Create(photo.BucketName, photo.FileName, false).Value);
+                    if (photo.BucketName != null && photo.Key != null && photo.FileName != null)
+                        newPhotos.Add(MediaFile.Create(
+                            photo.BucketName,
+                            photo.Key.ToString(),
+                            photo.FileName, false).Value);
                 }
             }
             
@@ -159,9 +162,6 @@ namespace P2Project.Volunteers.Domain.Entities
             return media.FileName;
         }
         
-        public void SetAvatar(MediaFile avatar)
-        {
-            Avatar = avatar;
-        }
+        public void SetAvatar(MediaFile avatar) => Avatar = avatar;
     }
 }

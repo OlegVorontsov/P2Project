@@ -6,4 +6,5 @@ public record ChangePetMainPhotoCommand(
     Guid VolunteerId,
     Guid PetId,
     string BucketName,
+    string FileKey,
     string FileName) : ICommand;
