@@ -28,6 +28,7 @@ public static class DependencyInjection
     {
         return services.AddTransient<ITokenProvider, TokenProvider>()
             .AddScoped<IAccountsAgreements, AccountsAgreements>()
+            .AddHttpContextAccessor().AddScoped<UserScopedData>()
             .AddAccountsInfrastructure(configuration)
             .AddUsersIdentity()
             .AddUsersAuthentication(configuration)
@@ -73,7 +74,8 @@ public static class DependencyInjection
     {
         services.AddAuthorization();
 
-        services.AddSingleton<IAuthorizationHandler, PermissionAttributeHandler>();
+        //services.AddSingleton<IAuthorizationHandler, PermissionAttributeHandler>();
+        services.AddSingleton<IAuthorizationHandler, PermissionRequirementHandler>();
         services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 
         return services;

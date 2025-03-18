@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using P2Project.Accounts.Domain.RolePermission.Permissions;
+using P2Project.Accounts.Domain.RolePermission.Roles;
 using P2Project.Accounts.Infrastructure.DbContexts;
 
 namespace P2Project.Accounts.Infrastructure.Managers;
@@ -32,6 +33,19 @@ public class PermissionManager(AccountsWriteDbContext writeDbContext)
             .SelectMany(u => u.Roles)
             .SelectMany(r => r.RolePermissions)
             .Select(rp => rp.Permission.Code)
+            .ToListAsync(cancellationToken);
+        
+        return permissions.ToHashSet();
+    }
+    
+    public async Task<HashSet<Role>> GetUserRoles(
+        Guid userId,
+        CancellationToken cancellationToken = default)
+    {
+        var permissions = await writeDbContext.Users
+            .Include(u => u.Roles)
+            .Where(u => u.Id == userId)
+            .SelectMany(u => u.Roles)
             .ToListAsync(cancellationToken);
         
         return permissions.ToHashSet();

@@ -53,6 +53,7 @@ app.UseCors(config =>
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
+app.UseScopeDataMiddleware();
 app.UseAuthorization();
 app.MapControllers();
 

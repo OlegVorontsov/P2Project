@@ -9,6 +9,7 @@ using P2Project.Accounts.Domain;
 using P2Project.Accounts.Domain.Accounts;
 using P2Project.Accounts.Domain.RolePermission.Roles;
 using P2Project.Accounts.Infrastructure.DbContexts;
+using P2Project.Accounts.Infrastructure.Managers;
 using P2Project.Core;
 using P2Project.Core.Interfaces;
 using P2Project.SharedKernel.Errors;
@@ -18,6 +19,7 @@ namespace P2Project.Accounts.Web;
 
 public class AccountsAgreements : IAccountsAgreements
 {
+    private readonly PermissionManager _permissionManager;
     private readonly UserManager<User> _userManager;
     private readonly RoleManager<Role> _roleManager;
     private readonly IAccountsManager _accountManager;
@@ -27,6 +29,7 @@ public class AccountsAgreements : IAccountsAgreements
     private readonly ILogger<AccountsAgreements> _logger;
 
     public AccountsAgreements(
+        PermissionManager permissionManager,
         UserManager<User> userManager,
         RoleManager<Role> roleManager,
         IAccountsManager accountManager,
@@ -35,6 +38,7 @@ public class AccountsAgreements : IAccountsAgreements
         [FromKeyedServices(Modules.Accounts)] IUnitOfWork unitOfWork,
         ILogger<AccountsAgreements> logger)
     {
+        _permissionManager = permissionManager;
         _userManager = userManager;
         _roleManager = roleManager;
         _accountsWriteDbContext = accountsWriteDbContext;
@@ -42,6 +46,16 @@ public class AccountsAgreements : IAccountsAgreements
         _unitOfWork = unitOfWork;
         _logger = logger;
         _accountManager = accountManager;
+    }
+    
+    public async Task<HashSet<string>> GetUserPermissionCodes(Guid userId)
+    {
+        return await _permissionManager.GetUserPermissions(userId);
+    }
+
+    public async Task<HashSet<Role>> GetUserRoles(Guid userId)
+    {
+        return await _permissionManager.GetUserRoles(userId);
     }
     
     public async Task<bool> IsUserBannedForVolunteerRequests(
