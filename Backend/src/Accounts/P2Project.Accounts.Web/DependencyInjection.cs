@@ -1,10 +1,8 @@
-using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 using P2Project.Accounts.Agreements;
 using P2Project.Accounts.Application;
 using P2Project.Accounts.Application.Interfaces;
@@ -14,7 +12,6 @@ using P2Project.Accounts.Infrastructure;
 using P2Project.Accounts.Infrastructure.DbContexts;
 using P2Project.Accounts.Infrastructure.Jwt;
 using P2Project.Accounts.Infrastructure.Managers;
-using P2Project.Accounts.Infrastructure.Permissions;
 using P2Project.Accounts.Infrastructure.Seedings;
 using P2Project.Core.Options;
 using P2Project.Framework.Authorization;
@@ -32,6 +29,7 @@ public static class DependencyInjection
             .AddUsersIdentity()
             .AddUsersAuthentication(configuration)
             .AddUsersAuthorization()
+            .AddHttpContextAccessor().AddScoped<UserScopedData>()
             .AddAccountsApplication()
             .AddSeedings();
     }
@@ -72,8 +70,8 @@ public static class DependencyInjection
         this IServiceCollection services)
     {
         services.AddAuthorization();
-
-        services.AddSingleton<IAuthorizationHandler, PermissionAttributeHandler>();
+        
+        services.AddSingleton<IAuthorizationHandler, PermissionRequirementHandler>();
         services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 
         return services;
@@ -83,11 +81,11 @@ public static class DependencyInjection
         this IServiceCollection services)
     {
         services.AddScoped<PermissionManager>()
-            .AddScoped<RolePermissionManager>()
-            .AddScoped<IAccountsManager, AccountsManager>()
-            .AddScoped<IRefreshSessionManager, RefreshSessionManager>()
-            .AddSingleton<AccountSeeder>()
-            .AddScoped<AccountsSeederService>();
+                .AddScoped<RolePermissionManager>()
+                .AddScoped<IAccountsManager, AccountsManager>()
+                .AddScoped<IRefreshSessionManager, RefreshSessionManager>()
+                .AddSingleton<AccountSeeder>()
+                .AddScoped<AccountsSeederService>();
 
         return services;
     }
