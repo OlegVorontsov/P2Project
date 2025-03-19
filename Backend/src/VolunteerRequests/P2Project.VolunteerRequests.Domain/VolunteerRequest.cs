@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using P2Project.Core.Events;
 using P2Project.SharedKernel.BaseClasses;
 using P2Project.SharedKernel.Errors;
 using P2Project.SharedKernel.ValueObjects;
@@ -34,7 +35,7 @@ public class VolunteerRequest : DomainEntity<VolunteerRequestId>
     }
     
     public static Result<VolunteerRequest, Error> Create(
-        Guid requestId,
+        VolunteerRequestId requestId,
         Guid userId,
         FullName fullName,
         VolunteerInfo volunteerInfo)
@@ -43,11 +44,11 @@ public class VolunteerRequest : DomainEntity<VolunteerRequestId>
         return request;
     }
     
-    public void TakeInReview(Guid adminId, Guid discussionId)
+    public void TakeInReview(Guid adminId)
     {
         AdminId = adminId;
-        DiscussionId = discussionId;
         Status = RequestStatus.OnReview;
+        AddDomainEvent(new CreateDiscussionEvent(adminId, Id.Value));
     }
     
     public void SetRevisionRequiredStatus(

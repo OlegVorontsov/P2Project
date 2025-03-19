@@ -71,7 +71,7 @@ public class VolunteersRequestsTests
         var request = VolunteerRequestsFabric.CreateTestRequest();
         
         // Act
-        request.TakeInReview(Guid.NewGuid(), Guid.NewGuid());
+        request.TakeInReview(Guid.NewGuid());
         
         //Assert
         Assert.Equal(RequestStatus.OnReview, request.Status);

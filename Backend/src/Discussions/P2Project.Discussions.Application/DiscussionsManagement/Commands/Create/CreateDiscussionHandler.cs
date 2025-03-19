@@ -1,66 +1,46 @@
-using CSharpFunctionalExtensions;
-using FluentValidation;
-using Microsoft.Extensions.DependencyInjection;
+using MediatR;
 using Microsoft.Extensions.Logging;
-using P2Project.Core;
-using P2Project.Core.Extensions;
-using P2Project.Core.Interfaces;
-using P2Project.Core.Interfaces.Commands;
+using P2Project.Core.Events;
 using P2Project.Discussions.Application.Interfaces;
 using P2Project.Discussions.Domain;
 using P2Project.Discussions.Domain.ValueObjects;
-using P2Project.SharedKernel.Errors;
 
 namespace P2Project.Discussions.Application.DiscussionsManagement.Commands.Create;
 
 public class CreateDiscussionHandler :
-    ICommandHandler<Discussion, CreateDiscussionCommand>
+    INotificationHandler<CreateDiscussionEvent>
 {
-    private readonly IValidator<CreateDiscussionCommand> _validator;
     private readonly IDiscussionsRepository _discussionsRepository;
     private readonly ILogger<CreateDiscussionHandler> _logger;
-    private readonly IUnitOfWork _unitOfWork;
 
     public CreateDiscussionHandler(
-        IValidator<CreateDiscussionCommand> validator,
         IDiscussionsRepository discussionsRepository,
-        ILogger<CreateDiscussionHandler> logger,
-        [FromKeyedServices(Modules.Discussions)] IUnitOfWork unitOfWork)
+        ILogger<CreateDiscussionHandler> logger)
     {
-        _validator = validator;
         _discussionsRepository = discussionsRepository;
         _logger = logger;
-        _unitOfWork = unitOfWork;
     }
 
-    public async Task<Result<Discussion, ErrorList>> Handle(
-        CreateDiscussionCommand command,
+    public async Task Handle(
+        CreateDiscussionEvent domainEvent,
         CancellationToken cancellationToken)
     {
-        var validationResult = await _validator.ValidateAsync(
-            command, cancellationToken);
-        if (validationResult.IsValid == false)
-            return validationResult.ToErrorList();
-        
         var discussionExist = await _discussionsRepository.GetByParticipantsId(
-            command.ReviewingUserId, command.ApplicantUserId, cancellationToken);
+            domainEvent.ReviewingUserId, domainEvent.ApplicantUserId, cancellationToken);
         if (discussionExist.IsSuccess)
-            return Errors.General.AlreadyExists("discussion").ToErrorList();
+            throw new Exception(discussionExist.Error.Message);
         
         var discussionUsers = DiscussionUsers.Create(
-            command.ReviewingUserId, command.ApplicantUserId);
-        
+            domainEvent.ReviewingUserId, domainEvent.ApplicantUserId);
+
         var discussion = Discussion.Open(discussionUsers);
+
         if (discussion.IsFailure)
-            return discussion.Error.ToErrorList();
+            throw new Exception(discussion.Error.Message);
 
-        var result = await _discussionsRepository.Add(discussion.Value, cancellationToken);
-
-        await _unitOfWork.SaveChanges(cancellationToken);
+        await _discussionsRepository.Add(discussion.Value, cancellationToken);
         
         _logger.LogInformation(
             "Discussion was open with id {discussionId}", discussion.Value.DiscussionId);
-        
-        return result;
     }
 }

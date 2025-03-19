@@ -5,10 +5,6 @@ namespace P2Project.Discussions.Agreements;
 
 public interface IDiscussionsAgreement
 {
-    public Task<Result<Guid, ErrorList>> CreateDiscussion(Guid reviewingUserId,
-        Guid applicantUserId,
-        CancellationToken cancellationToken = default);
-    
     public Task<Result<Guid, ErrorList>> CreateMessage(
         Guid senderId, Guid participantId,
         string message,

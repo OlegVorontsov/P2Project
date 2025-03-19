@@ -12,7 +12,7 @@ public static class DependencyInjection
         this IServiceCollection services, IConfiguration configuration)
     {
         return services
-                .AddScoped<IDiscussionsAgreement, DiscussionsAgreement>()
+            .AddScoped<IDiscussionsAgreement, DiscussionsAgreement>()
             .AddDiscussionsInfrastructure(configuration)
             .AddDiscussionsApplication();
     }
