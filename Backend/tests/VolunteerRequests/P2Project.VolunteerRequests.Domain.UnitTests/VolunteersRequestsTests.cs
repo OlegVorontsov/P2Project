@@ -16,7 +16,8 @@ public class VolunteersRequestsTests
         var userId = Guid.NewGuid();
         
         // Act
-        var request = VolunteerRequest.Create(userId, fullName, volunteerInfo);
+        var request = VolunteerRequest.Create(
+            Guid.NewGuid(), userId, fullName, volunteerInfo);
         
         //Assert
         Assert.NotNull(request);

@@ -62,6 +62,7 @@ public class CreateVolunteerRequestHandler :
             command.VolunteerInfo.Grade).Value;
         
         var newVolunteerRequest = VolunteerRequest.Create(
+            Guid.NewGuid(),
             requestId, fullName, volunteerInfo).Value;
 
         await _volunteerRequestsRepository.Add(newVolunteerRequest, cancellationToken);
@@ -70,6 +71,6 @@ public class CreateVolunteerRequestHandler :
         _logger.LogInformation(
             "Volunteer request was created with id {requestId}", requestId);
 
-        return newVolunteerRequest.RequestId;
+        return newVolunteerRequest.Id.Value;
     }
 }

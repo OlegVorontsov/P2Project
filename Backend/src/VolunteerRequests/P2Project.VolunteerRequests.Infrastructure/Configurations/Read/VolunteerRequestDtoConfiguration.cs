@@ -11,11 +11,11 @@ public class VolunteerRequestDtoConfiguration :
     {
         builder.ToTable("volunteer_requests");
         
-        builder.HasKey(b => b.RequestId);
+        builder.HasKey(b => b.Id);
         
-        builder.Property(s => s.RequestId)
+        builder.Property(s => s.Id)
             .IsRequired()
-            .HasColumnName("request_Id");
+            .HasColumnName("id");
         
         builder.Property(s => s.AdminId)
             .IsRequired(false)

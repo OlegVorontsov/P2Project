@@ -18,7 +18,8 @@ public static class VolunteerRequestsFabric
         
         var userId = Guid.NewGuid();
         
-        var request = VolunteerRequest.Create(userId, fullName, volunteerInfo);
+        var request = VolunteerRequest.Create(
+            Guid.NewGuid(), userId, fullName, volunteerInfo);
         
         return request.Value;
     }

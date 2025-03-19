@@ -2,7 +2,7 @@ namespace P2Project.Core.Dtos.VolunteerRequests;
 
 public class VolunteerRequestDto
 {
-    public Guid RequestId { get; init; }
+    public Guid Id { get; init; }
     public Guid? AdminId { get; init; }
     public Guid UserId { get; init; }
     public string FirstName { get; init; } = string.Empty;

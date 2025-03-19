@@ -63,6 +63,6 @@ public class TakeInReviewHandler :
         
         _logger.LogInformation("Volunteer request {requestId} was taken in review", command.RequestId);
 
-        return existedRequest.Value.RequestId;
+        return existedRequest.Value.Id.Value;
     }
 }
