@@ -11,11 +11,15 @@ public class DiscussionConfiguration :
     {
         builder.ToTable("discussions");
         
-        builder.HasKey(b => b.DiscussionId);
+        builder.HasKey(b => b.Id);
         
-        builder.Property(s => s.DiscussionId)
+        builder.Property(s => s.Id)
             .IsRequired()
-            .HasColumnName("discussion_id");
+            .HasColumnName("id");
+        
+        builder.Property(s => s.RequestId)
+            .IsRequired()
+            .HasColumnName("request_id");
         
         builder.HasMany(d => d.Messages)
             .WithOne()

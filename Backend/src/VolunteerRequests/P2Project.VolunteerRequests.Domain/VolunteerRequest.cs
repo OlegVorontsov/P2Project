@@ -15,7 +15,6 @@ public class VolunteerRequest : DomainEntity<VolunteerRequestId>
     public Guid UserId { get; private set; }
     public FullName FullName { get; private set; }
     public VolunteerInfo VolunteerInfo { get; private set; }
-    public Guid? DiscussionId { get; private set; }
     public RequestStatus Status { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public RejectionComment? RejectionComment { get; private set; }
@@ -48,7 +47,7 @@ public class VolunteerRequest : DomainEntity<VolunteerRequestId>
     {
         AdminId = adminId;
         Status = RequestStatus.OnReview;
-        AddDomainEvent(new CreateDiscussionEvent(adminId, Id.Value));
+        AddDomainEvent(new CreateDiscussionEvent(Id, adminId, UserId));
     }
     
     public void SetRevisionRequiredStatus(

@@ -65,10 +65,10 @@ public class ReopenHandler :
         await _unitOfWork.SaveChanges(cancellationToken);
         
         _logger.LogInformation(
-            "Discussion with {discussionId} reopened by {userId}",
-            discussionExist.Value.DiscussionId,
+            "Discussion with {Id} reopened by {userId}",
+            discussionExist.Value.Id,
             command.UserId);
 
-        return discussionExist.Value.DiscussionId;
+        return discussionExist.Value.Id;
     }
 }

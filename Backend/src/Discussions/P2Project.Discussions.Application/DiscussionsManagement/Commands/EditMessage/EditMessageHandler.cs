@@ -53,9 +53,9 @@ public class EditMessageHandler :
         await _unitOfWork.SaveChanges(cancellationToken);
         
         _logger.LogInformation(
-            "Message {messageId} was edited in discussion with {discussionId}",
+            "Message {messageId} was edited in discussion with {Id}",
             command.MessageId,
-            discussionExist.Value.DiscussionId);
+            discussionExist.Value.Id);
         
         return command.MessageId;
     }

@@ -46,7 +46,7 @@ public class DiscussionsRepository : IDiscussionsRepository
     {
         var discussion = await _dbContext.Discussions
             .Include(d => d.Messages)
-            .FirstOrDefaultAsync(d => d.DiscussionId == discussionId, cancellationToken);
+            .FirstOrDefaultAsync(d => d.Id == discussionId, cancellationToken);
 
         if (discussion == null)
             return Errors.General.NotFound(discussionId);

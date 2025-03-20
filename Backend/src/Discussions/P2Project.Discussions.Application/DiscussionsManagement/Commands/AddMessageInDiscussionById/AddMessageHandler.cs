@@ -63,10 +63,10 @@ public class AddMessageHandler :
         await _unitOfWork.SaveChanges(cancellationToken);
         
         _logger.LogInformation(
-            "In discussion with {discussionId} added message by user {senderId}",
-            discussionExist.Value.DiscussionId,
+            "In discussion with {Id} added message by user {senderId}",
+            discussionExist.Value.Id,
             command.SenderId);
 
-        return discussionExist.Value.DiscussionId;
+        return discussionExist.Value.Id;
     }
 }

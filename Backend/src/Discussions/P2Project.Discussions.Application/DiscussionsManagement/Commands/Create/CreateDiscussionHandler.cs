@@ -33,7 +33,7 @@ public class CreateDiscussionHandler :
         var discussionUsers = DiscussionUsers.Create(
             domainEvent.ReviewingUserId, domainEvent.ApplicantUserId);
 
-        var discussion = Discussion.Open(discussionUsers);
+        var discussion = Discussion.Open(domainEvent.RequestId, discussionUsers);
 
         if (discussion.IsFailure)
             throw new Exception(discussion.Error.Message);
@@ -41,6 +41,6 @@ public class CreateDiscussionHandler :
         await _discussionsRepository.Add(discussion.Value, cancellationToken);
         
         _logger.LogInformation(
-            "Discussion was open with id {discussionId}", discussion.Value.DiscussionId);
+            "Discussion was open with id {Id}", discussion.Value.Id);
     }
 }

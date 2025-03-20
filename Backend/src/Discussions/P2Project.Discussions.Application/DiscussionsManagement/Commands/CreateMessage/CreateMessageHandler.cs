@@ -48,7 +48,7 @@ public class CreateMessageHandler :
             return discussionExist.Error.ToErrorList();
         
         var newMessage = Message.Create(
-            discussionExist.Value.DiscussionId,
+            discussionExist.Value.Id,
             command.SenderId,
             Content.Create(command.Message).Value);
 
@@ -58,7 +58,7 @@ public class CreateMessageHandler :
         
         _logger.LogInformation(
             "Message was created in discussion with id {discussionId}",
-            discussionExist.Value.DiscussionId);
+            discussionExist.Value.Id);
         
         return newMessage;
     }

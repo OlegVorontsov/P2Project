@@ -49,13 +49,16 @@ public class TakeInReviewHandler :
         if (existedRequest.IsFailure)
             return Errors.General.NotFound(command.RequestId).ToErrorList();
         
+        if (existedRequest.Value.AdminId != null)
+            return Errors.General.Failure("already on review").ToErrorList();
+        
         existedRequest.Value.TakeInReview(command.AdminId);
         
         await _publisher.PublishDomainEvents(existedRequest.Value, cancellationToken);
         
         await _unitOfWork.SaveChanges(cancellationToken);
         
-        _logger.LogInformation("Volunteer request {requestId} was taken in review", command.RequestId);
+        _logger.LogInformation("Volunteer request {requestId} was taken on review", command.RequestId);
 
         return existedRequest.Value.Id.Value;
     }

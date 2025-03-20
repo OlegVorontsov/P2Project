@@ -54,7 +54,7 @@ public class DeleteMessageHandler :
         _logger.LogInformation(
             "Message {messageId} deleted in discussion with {discussionId}",
             command.MessageId,
-            discussionExist.Value.DiscussionId);
+            discussionExist.Value.Id);
         
         return command.MessageId;
     }

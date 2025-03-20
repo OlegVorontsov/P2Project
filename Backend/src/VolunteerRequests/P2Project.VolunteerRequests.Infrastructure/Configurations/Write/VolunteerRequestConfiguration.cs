@@ -52,10 +52,6 @@ public class VolunteerRequestConfiguration :
                 .HasColumnName("grade");
         });
         
-        builder.Property(s => s.DiscussionId)
-            .IsRequired(false)
-            .HasColumnName("discussion_id");
-        
         builder.Property(v => v.Status)
             .HasConversion<string>()
             .HasColumnName("status")

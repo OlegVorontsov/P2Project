@@ -38,10 +38,6 @@ public class VolunteerRequestDtoConfiguration :
             .HasConversion<string>()
             .HasColumnName("last_name");
         
-        builder.Property(s => s.DiscussionId)
-            .IsRequired(false)
-            .HasColumnName("discussion_id");
-        
         builder.Property(v=> v.Status)
             .HasConversion<string>()
             .HasColumnName("status")

@@ -65,10 +65,10 @@ public class CloseHandler :
         await _unitOfWork.SaveChanges(cancellationToken);
         
         _logger.LogInformation(
-            "Discussion with {discussionId} closed by {userId}",
-            discussionExist.Value.DiscussionId,
+            "Discussion with {Id} closed by {userId}",
+            discussionExist.Value.Id,
             command.UserId);
 
-        return discussionExist.Value.DiscussionId;
+        return discussionExist.Value.Id;
     }
 }

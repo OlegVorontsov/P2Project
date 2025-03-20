@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using P2Project.Discussions.Infrastructure.DbContexts;
@@ -12,9 +13,11 @@ using P2Project.Discussions.Infrastructure.DbContexts;
 namespace P2Project.Discussions.Infrastructure.Migrations
 {
     [DbContext(typeof(DiscussionsWriteDbContext))]
-    partial class DiscussionsWriteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250320124418_AddRequestId")]
+    partial class AddRequestId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -15,7 +15,11 @@ public class DiscussionDtoConfiguration :
         builder.HasKey(d => d.Id);
         
         builder.Property(d => d.Id)
-            .HasColumnName("discussion_id");
+            .HasColumnName("id");
+        
+        builder.Property(s => s.RequestId)
+            .IsRequired()
+            .HasColumnName("request_id");
         
         builder.HasMany(d => d.Messages)
             .WithOne()
