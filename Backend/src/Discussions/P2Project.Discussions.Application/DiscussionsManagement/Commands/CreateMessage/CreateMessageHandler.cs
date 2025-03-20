@@ -1,30 +1,29 @@
-using CSharpFunctionalExtensions;
 using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using P2Project.Core;
+using P2Project.Core.Events;
 using P2Project.Core.Extensions;
 using P2Project.Core.Interfaces;
-using P2Project.Core.Interfaces.Commands;
 using P2Project.Discussions.Application.Interfaces;
 using P2Project.Discussions.Domain.Entities;
-using P2Project.SharedKernel.Errors;
 using P2Project.SharedKernel.ValueObjects;
 
 namespace P2Project.Discussions.Application.DiscussionsManagement.Commands.CreateMessage;
 
 public class CreateMessageHandler :
-    ICommandHandler<Message, CreateMessageCommand>
+    INotificationHandler<CreateMessageEvent>
 {
-    private readonly IValidator<CreateMessageCommand> _validator;
+    private readonly IValidator<CreateMessageEvent> _validator;
     private readonly IDiscussionsRepository _discussionsRepository;
-    private readonly ILogger<CreateMessageCommand> _logger;
+    private readonly ILogger<CreateMessageHandler> _logger;
     private readonly IUnitOfWork _unitOfWork;
 
     public CreateMessageHandler(
-        IValidator<CreateMessageCommand> validator,
+        IValidator<CreateMessageEvent> validator,
         IDiscussionsRepository discussionsRepository,
-        ILogger<CreateMessageCommand> logger,
+        ILogger<CreateMessageHandler> logger,
         [FromKeyedServices(Modules.Discussions)] IUnitOfWork unitOfWork)
     {
         _validator = validator;
@@ -33,20 +32,20 @@ public class CreateMessageHandler :
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Result<Message, ErrorList>> Handle(
-        CreateMessageCommand command,
-        CancellationToken cancellationToken = default)
+    public async Task Handle(
+        CreateMessageEvent domainEvent,
+        CancellationToken cancellationToken)
     {
         var validationResult = await _validator.ValidateAsync(
-            command, cancellationToken);
+            domainEvent, cancellationToken);
         if (validationResult.IsValid == false)
-            return validationResult.ToErrorList();
+            throw new Exception("Create message validation failed");
         
-        var discussionExist = await _discussionsRepository.GetByParticipantsId(
-            command.SenderId, command.ParticipantId, cancellationToken);
+        var discussionExist = await _discussionsRepository.GetByRequestId(
+            domainEvent.RequestId, cancellationToken);
         if (discussionExist.IsFailure)
-            return discussionExist.Error.ToErrorList();
-        
+            throw new Exception(discussionExist.Error.Message);
+        //from here
         var newMessage = Message.Create(
             discussionExist.Value.Id,
             command.SenderId,

@@ -57,9 +57,10 @@ public class VolunteerRequest : DomainEntity<VolunteerRequestId>
         RejectionComment = rejectedComment;
     }
 
-    public void SetApprovedStatus()
+    public void SetApprovedStatus(Guid adminId, string comment)
     {
         Status = RequestStatus.Approved;
+        AddDomainEvent(new CreateMessageEvent(Id, adminId, comment));
     }
     
     public void SetRejectStatus(RejectionComment rejectedComment)

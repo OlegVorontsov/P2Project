@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using P2Project.Accounts.Agreements;
@@ -7,7 +8,6 @@ using P2Project.Core;
 using P2Project.Core.Extensions;
 using P2Project.Core.Interfaces;
 using P2Project.Core.Interfaces.Commands;
-using P2Project.Discussions.Agreements;
 using P2Project.SharedKernel.Errors;
 using P2Project.VolunteerRequests.Application.Interfaces;
 
@@ -18,7 +18,7 @@ public class SetApprovedStatusHandler :
 {
     private readonly IValidator<SetApprovedStatusCommand> _validator;
     private readonly IAccountsAgreements _accountsAgreements;
-    private readonly IDiscussionsAgreement _discussionsAgreement;
+    private readonly IPublisher _publisher;
     private readonly IVolunteerRequestsRepository _volunteerRequestsRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<SetApprovedStatusHandler> _logger;
@@ -26,13 +26,13 @@ public class SetApprovedStatusHandler :
     public SetApprovedStatusHandler(
         IValidator<SetApprovedStatusCommand> validator,
         IAccountsAgreements accountsAgreements,
-        IDiscussionsAgreement discussionsAgreement,
+        IPublisher publisher,
         IVolunteerRequestsRepository volunteerRequestsRepository,
         [FromKeyedServices(Modules.VolunteerRequests)] IUnitOfWork unitOfWork,
         ILogger<SetApprovedStatusHandler> logger)
     {
         _validator = validator;
-        _discussionsAgreement = discussionsAgreement;
+        _publisher = publisher;
         _volunteerRequestsRepository = volunteerRequestsRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
@@ -53,18 +53,15 @@ public class SetApprovedStatusHandler :
         if (existedRequest.IsFailure)
             return Errors.General.NotFound(command.RequestId).ToErrorList();
         
+        //event
         var volunteerAccountResult = await _accountsAgreements
             .CreateVolunteerAccountForUser(existedRequest.Value.UserId, cancellationToken);
         if (volunteerAccountResult.IsFailure)
             return volunteerAccountResult.Error;
         
-        existedRequest.Value.SetApprovedStatus();
+        existedRequest.Value.SetApprovedStatus(command.AdminId, command.Comment);
         
-        var messageId = await _discussionsAgreement.CreateMessage(
-            command.AdminId, existedRequest.Value.UserId,
-            command.Comment, cancellationToken);
-        if(messageId.IsFailure)
-            return Errors.General.Failure("message").ToErrorList();
+        await _publisher.PublishDomainEvents(existedRequest.Value, cancellationToken);
         
         await _unitOfWork.SaveChanges(cancellationToken);
         
