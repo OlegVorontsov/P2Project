@@ -8,21 +8,21 @@ using P2Project.Accounts.Domain.RolePermission.Roles;
 using P2Project.Core.Events;
 using P2Project.SharedKernel.ValueObjects;
 
-namespace P2Project.Accounts.Application.EventHandlers;
+namespace P2Project.Accounts.Application.EventHandlers.CreateVolunteerAccount;
 
-public class CreateVolunteerAccountForUser :
+public class CreateVolunteerAccountHandler :
     INotificationHandler<CreateVolunteerAccountEvent>
 {
     private readonly UserManager<User> _userManager;
     private readonly RoleManager<Role> _roleManager;
     private readonly IAccountsManager _accountManager;
-    private readonly ILogger<CreateVolunteerAccountForUser> _logger;
+    private readonly ILogger<CreateVolunteerAccountHandler> _logger;
 
-    public CreateVolunteerAccountForUser(
+    public CreateVolunteerAccountHandler(
         UserManager<User> userManager,
         RoleManager<Role> roleManager,
         IAccountsManager accountManager,
-        ILogger<CreateVolunteerAccountForUser> logger)
+        ILogger<CreateVolunteerAccountHandler> logger)
     {
         _userManager = userManager;
         _roleManager = roleManager;

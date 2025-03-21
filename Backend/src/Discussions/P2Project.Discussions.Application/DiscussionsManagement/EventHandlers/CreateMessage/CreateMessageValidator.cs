@@ -3,24 +3,24 @@ using P2Project.Core.Events;
 using P2Project.Core.Validation;
 using P2Project.SharedKernel.Errors;
 
-namespace P2Project.Discussions.Application.DiscussionsManagement.Commands.Create;
+namespace P2Project.Discussions.Application.DiscussionsManagement.EventHandlers.CreateMessage;
 
-public class CreateDiscussionValidator :
-    AbstractValidator<CreateDiscussionEvent>
+public class CreateMessageValidator :
+    AbstractValidator<CreateMessageEvent>
 {
-    public CreateDiscussionValidator()
+    public CreateMessageValidator()
     {
         RuleFor(r => r.RequestId)
             .NotNull()
             .NotEmpty()
             .WithError(Errors.General.ValueIsRequired());
         
-        RuleFor(r => r.ReviewingUserId)
+        RuleFor(r => r.SenderId)
             .NotNull()
             .NotEmpty()
             .WithError(Errors.General.ValueIsRequired());
         
-        RuleFor(r => r.ApplicantUserId)
+        RuleFor(r => r.Message)
             .NotNull()
             .NotEmpty()
             .WithError(Errors.General.ValueIsRequired());

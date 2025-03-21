@@ -5,7 +5,7 @@ using P2Project.Discussions.Application.Interfaces;
 using P2Project.Discussions.Domain;
 using P2Project.Discussions.Domain.ValueObjects;
 
-namespace P2Project.Discussions.Application.DiscussionsManagement.Commands.Create;
+namespace P2Project.Discussions.Application.DiscussionsManagement.EventHandlers.Create;
 
 public class CreateDiscussionHandler :
     INotificationHandler<CreateDiscussionEvent>

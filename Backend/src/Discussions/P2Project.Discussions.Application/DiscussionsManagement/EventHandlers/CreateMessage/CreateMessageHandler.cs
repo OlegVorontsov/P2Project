@@ -9,7 +9,7 @@ using P2Project.Discussions.Application.Interfaces;
 using P2Project.Discussions.Domain.Entities;
 using P2Project.SharedKernel.ValueObjects;
 
-namespace P2Project.Discussions.Application.DiscussionsManagement.Commands.CreateMessage;
+namespace P2Project.Discussions.Application.DiscussionsManagement.EventHandlers.CreateMessage;
 
 public class CreateMessageHandler :
     INotificationHandler<CreateMessageEvent>
