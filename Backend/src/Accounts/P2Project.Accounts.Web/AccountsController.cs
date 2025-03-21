@@ -7,6 +7,7 @@ using P2Project.Accounts.Application.Commands.RefreshTokens;
 using P2Project.Accounts.Application.Commands.Register;
 using P2Project.Accounts.Application.Commands.SetAvatar.CompleteSetAvatar;
 using P2Project.Accounts.Application.Commands.SetAvatar.UploadAvatar;
+using P2Project.Accounts.Application.Commands.Unban;
 using P2Project.Accounts.Application.Queries.GetUserInfoWithAccounts;
 using P2Project.Accounts.Web.Requests;
 using P2Project.Core.Extensions;
@@ -60,6 +61,22 @@ public class AccountsController : ApplicationController
         if(result.IsFailure)
             return result.Error.ToResponse();
 
+        return Ok(result.Value);
+    }
+    
+    [Permission(PermissionsConfig.Accounts.Update)]
+    [HttpPut("unban/{userId:guid}")]
+    public async Task<ActionResult> Unban(
+        [FromRoute] Guid userId,
+        [FromServices] UnbanHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var result = await handler.Handle(
+            new UnbanCommand(userId), cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+        
         return Ok(result.Value);
     }
     

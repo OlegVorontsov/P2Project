@@ -2,9 +2,9 @@ namespace P2Project.VolunteerRequests.Domain.Enums;
 
 public enum RequestStatus
 {
-    Submitted,
-    Rejected,
-    RevisionRequired,
+    Submitted,          //создание протестировано
+    Rejected,           //отклонение протестировано
+    RevisionRequired,   //на доработку протестировано
     Approved,
-    OnReview
+    OnReview            //создание заявки протестировано
 }

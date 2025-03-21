@@ -5,6 +5,7 @@ public static class PermissionsConfig
     public static class Accounts
     {
         public const string Read = "accounts.read";
+        public const string Update = "accounts.update";
     }
     
     public static class VolunteerRequests

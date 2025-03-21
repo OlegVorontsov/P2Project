@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using P2Project.Accounts.Agreements;
@@ -18,6 +19,7 @@ public class SetRejectStatusHandler :
 {
     private readonly IValidator<SetRejectStatusCommand> _validator;
     private readonly IVolunteerRequestsRepository _volunteerRequestsRepository;
+    private readonly IPublisher _publisher;
     private readonly IAccountsAgreements _accountsAgreements;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<SetRejectStatusHandler> _logger;
@@ -25,15 +27,17 @@ public class SetRejectStatusHandler :
     public SetRejectStatusHandler(
         IValidator<SetRejectStatusCommand> validator,
         IVolunteerRequestsRepository volunteerRequestsRepository,
+        IPublisher publisher,
+        IAccountsAgreements accountsAgreements,
         [FromKeyedServices(Modules.VolunteerRequests)] IUnitOfWork unitOfWork,
-        ILogger<SetRejectStatusHandler> logger,
-        IAccountsAgreements accountsAgreements)
+        ILogger<SetRejectStatusHandler> logger)
     {
         _validator = validator;
         _volunteerRequestsRepository = volunteerRequestsRepository;
+        _publisher = publisher;
+        _accountsAgreements = accountsAgreements;
         _unitOfWork = unitOfWork;
         _logger = logger;
-        _accountsAgreements = accountsAgreements;
     }
     public async Task<Result<Guid, ErrorList>> Handle(
         SetRejectStatusCommand command,
@@ -49,17 +53,20 @@ public class SetRejectStatusHandler :
         if (existedRequest.IsFailure)
             return Errors.General.NotFound(command.RequestId).ToErrorList();
         
+        if (existedRequest.Value.AdminId == null)
+            return Errors.General.Failure("Not on review").ToErrorList();
+        
+        if (existedRequest.Value.RejectionComment != null)
+            return Errors.General.Failure("Rejected").ToErrorList();
+        
         var rejectionComment = RejectionComment.Create(command.Comment).Value;
-        existedRequest.Value.SetRejectStatus(rejectionComment);
+        existedRequest.Value.SetRejectStatus(
+            command.AdminId, rejectionComment);
         
-        //todo event
-        /*var messageId = await _discussionsAgreement.CreateMessage(
-            command.AdminId, existedRequest.Value.UserId,
-            command.Comment, cancellationToken);
-        if(messageId.IsFailure)
-            return Errors.General.Failure("message").ToErrorList();*/
+        if(command.IsBanNeed)
+            await _accountsAgreements.BanUser(existedRequest.Value.UserId, cancellationToken);
         
-        await _accountsAgreements.BanUser(existedRequest.Value.UserId, cancellationToken);
+        await _publisher.PublishDomainEvents(existedRequest.Value, cancellationToken);
         
         await _unitOfWork.SaveChanges(cancellationToken);
         

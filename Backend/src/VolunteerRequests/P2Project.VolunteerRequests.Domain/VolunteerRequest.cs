@@ -62,17 +62,23 @@ public class VolunteerRequest : DomainEntity<VolunteerRequestId>
     public void SetApprovedStatus(Guid adminId, string comment)
     {
         Status = RequestStatus.Approved;
+        AddDomainEvent(new CreateVolunteerAccountEvent(UserId));
         AddDomainEvent(new CreateMessageEvent(Id, adminId, comment));
     }
     
-    public void SetRejectStatus(RejectionComment rejectedComment)
+    public void SetRejectStatus(
+        Guid adminId,
+        RejectionComment rejectedComment)
     {
-        RejectionComment = rejectedComment;
         Status = RequestStatus.Rejected;
+        RejectionComment = rejectedComment;
+        AddDomainEvent(new CreateMessageEvent(Id, adminId, rejectedComment.Value));
     }
     
-    public void Refresh()
+    public void Refresh(
+        Guid adminId, string message)
     {
         Status = RequestStatus.Submitted;
+        AddDomainEvent(new CreateMessageEvent(Id, adminId, message));
     }
 }

@@ -51,10 +51,10 @@ public class SetRevisionRequiredStatusHandler :
             return Errors.General.NotFound(command.RequestId).ToErrorList();
         
         if (existedRequest.Value.AdminId == null)
-            return Errors.General.Failure("not on review").ToErrorList();
+            return Errors.General.Failure("Not on review").ToErrorList();
         
         if (existedRequest.Value.RejectionComment != null)
-            return Errors.General.Failure("already rejected").ToErrorList();
+            return Errors.General.Failure("Rejected").ToErrorList();
         
         var rejectionComment = RejectionComment.Create(command.Comment).Value;
         existedRequest.Value.SetRevisionRequiredStatus(command.AdminId, rejectionComment);

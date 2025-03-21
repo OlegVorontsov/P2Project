@@ -17,8 +17,8 @@ public class ParticipantAccount
     
     public DateTime? BannedForRequestsUntil { get; set; }
 
-    public void BanForRequestsForWeek(DateTime date)
-    {
+    public void BanForRequestsForWeek(DateTime date) =>
         BannedForRequestsUntil = date;
-    }
+    
+    public void UnbanForRequests() => BannedForRequestsUntil = null;
 }

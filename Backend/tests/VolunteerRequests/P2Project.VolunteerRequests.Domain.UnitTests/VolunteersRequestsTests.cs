@@ -32,7 +32,9 @@ public class VolunteersRequestsTests
         var request = VolunteerRequestsFabric.CreateTestRequest();
         
         // Act
-        request.SetRejectStatus(RejectionComment.Create("Rejection Comment").Value);
+        request.SetRejectStatus(
+            Guid.NewGuid(),
+            RejectionComment.Create("Rejection Comment").Value);
         
         //Assert
         Assert.Equal(RequestStatus.Rejected, request.Status);
