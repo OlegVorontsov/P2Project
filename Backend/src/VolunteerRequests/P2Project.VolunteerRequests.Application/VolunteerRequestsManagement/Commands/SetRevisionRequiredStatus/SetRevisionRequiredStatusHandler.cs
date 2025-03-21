@@ -1,13 +1,12 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using P2Project.Accounts.Agreements;
 using P2Project.Core;
 using P2Project.Core.Extensions;
 using P2Project.Core.Interfaces;
 using P2Project.Core.Interfaces.Commands;
-using P2Project.Discussions.Agreements;
 using P2Project.SharedKernel.Errors;
 using P2Project.VolunteerRequests.Application.Interfaces;
 using P2Project.VolunteerRequests.Domain.ValueObjects;
@@ -18,21 +17,21 @@ public class SetRevisionRequiredStatusHandler :
     ICommandHandler<Guid, SetRevisionRequiredStatusCommand>
 {
     private readonly IValidator<SetRevisionRequiredStatusCommand> _validator;
-    private readonly IDiscussionsAgreement _discussionsAgreement;
     private readonly IVolunteerRequestsRepository _volunteerRequestsRepository;
+    private readonly IPublisher _publisher;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<SetRevisionRequiredStatusHandler> _logger;
 
     public SetRevisionRequiredStatusHandler(
         IValidator<SetRevisionRequiredStatusCommand> validator,
-        IDiscussionsAgreement discussionsAgreement,
         IVolunteerRequestsRepository volunteerRequestsRepository,
+        IPublisher publisher,
         [FromKeyedServices(Modules.VolunteerRequests)] IUnitOfWork unitOfWork,
         ILogger<SetRevisionRequiredStatusHandler> logger)
     {
         _validator = validator;
-        _discussionsAgreement = discussionsAgreement;
         _volunteerRequestsRepository = volunteerRequestsRepository;
+        _publisher = publisher;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -51,15 +50,16 @@ public class SetRevisionRequiredStatusHandler :
         if (existedRequest.IsFailure)
             return Errors.General.NotFound(command.RequestId).ToErrorList();
         
-        var rejectionComment = RejectionComment.Create(command.Comment).Value;
-        existedRequest.Value.SetRevisionRequiredStatus(rejectionComment);
+        if (existedRequest.Value.AdminId == null)
+            return Errors.General.Failure("not on review").ToErrorList();
         
-        var messageId = await _discussionsAgreement.CreateMessage(
-            command.AdminId, existedRequest.Value.UserId,
-            command.Comment,
-            cancellationToken);
-        if(messageId.IsFailure)
-            return Errors.General.Failure("message").ToErrorList();
+        if (existedRequest.Value.RejectionComment != null)
+            return Errors.General.Failure("already rejected").ToErrorList();
+        
+        var rejectionComment = RejectionComment.Create(command.Comment).Value;
+        existedRequest.Value.SetRevisionRequiredStatus(command.AdminId, rejectionComment);
+        
+        await _publisher.PublishDomainEvents(existedRequest.Value, cancellationToken);
         
         await _unitOfWork.SaveChanges(cancellationToken);
         

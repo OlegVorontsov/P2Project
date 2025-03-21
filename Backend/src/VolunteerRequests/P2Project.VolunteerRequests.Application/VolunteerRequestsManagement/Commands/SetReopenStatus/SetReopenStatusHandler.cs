@@ -7,7 +7,6 @@ using P2Project.Core;
 using P2Project.Core.Extensions;
 using P2Project.Core.Interfaces;
 using P2Project.Core.Interfaces.Commands;
-using P2Project.Discussions.Agreements;
 using P2Project.SharedKernel.Errors;
 using P2Project.VolunteerRequests.Application.Interfaces;
 
@@ -18,7 +17,6 @@ public class SetReopenStatusHandler :
 {
     private readonly IValidator<SetReopenStatusCommand> _validator;
     private readonly IAccountsAgreements _accountsAgreements;
-    private readonly IDiscussionsAgreement _discussionsAgreement;
     private readonly IVolunteerRequestsRepository _volunteerRequestsRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<SetReopenStatusHandler> _logger;
@@ -26,14 +24,12 @@ public class SetReopenStatusHandler :
     public SetReopenStatusHandler(
         IValidator<SetReopenStatusCommand> validator,
         IAccountsAgreements accountsAgreements,
-        IDiscussionsAgreement discussionsAgreement,
         IVolunteerRequestsRepository volunteerRequestsRepository,
         [FromKeyedServices(Modules.VolunteerRequests)] IUnitOfWork unitOfWork,
         ILogger<SetReopenStatusHandler> logger)
     {
         _validator = validator;
         _accountsAgreements = accountsAgreements;
-        _discussionsAgreement = discussionsAgreement;
         _volunteerRequestsRepository = volunteerRequestsRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
@@ -59,12 +55,13 @@ public class SetReopenStatusHandler :
         
         existedRequest.Value.Refresh();
         
-        var messageId = await _discussionsAgreement.CreateMessage(
+        //todo event
+        /*var messageId = await _discussionsAgreement.CreateMessage(
             command.UserId, existedRequest.Value.UserId,
             command.Comment,
             cancellationToken);
         if(messageId.IsFailure)
-            return Errors.General.Failure("message").ToErrorList();
+            return Errors.General.Failure("message").ToErrorList();*/
         
         await _unitOfWork.SaveChanges(cancellationToken);
         

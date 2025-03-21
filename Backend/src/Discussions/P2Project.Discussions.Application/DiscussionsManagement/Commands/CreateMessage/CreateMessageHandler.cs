@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using P2Project.Core;
 using P2Project.Core.Events;
-using P2Project.Core.Extensions;
 using P2Project.Core.Interfaces;
 using P2Project.Discussions.Application.Interfaces;
 using P2Project.Discussions.Domain.Entities;
@@ -17,19 +16,19 @@ public class CreateMessageHandler :
 {
     private readonly IValidator<CreateMessageEvent> _validator;
     private readonly IDiscussionsRepository _discussionsRepository;
-    private readonly ILogger<CreateMessageHandler> _logger;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger<CreateMessageHandler> _logger;
 
     public CreateMessageHandler(
         IValidator<CreateMessageEvent> validator,
         IDiscussionsRepository discussionsRepository,
-        ILogger<CreateMessageHandler> logger,
-        [FromKeyedServices(Modules.Discussions)] IUnitOfWork unitOfWork)
+        [FromKeyedServices(Modules.Discussions)] IUnitOfWork unitOfWork,
+        ILogger<CreateMessageHandler> logger)
     {
         _validator = validator;
         _discussionsRepository = discussionsRepository;
-        _logger = logger;
         _unitOfWork = unitOfWork;
+        _logger = logger;
     }
 
     public async Task Handle(
@@ -45,20 +44,20 @@ public class CreateMessageHandler :
             domainEvent.RequestId, cancellationToken);
         if (discussionExist.IsFailure)
             throw new Exception(discussionExist.Error.Message);
-        //from here
+
         var newMessage = Message.Create(
             discussionExist.Value.Id,
-            command.SenderId,
-            Content.Create(command.Message).Value);
+            domainEvent.SenderId,
+            Content.Create(domainEvent.Message).Value);
 
-        discussionExist.Value.AddMessage(newMessage);
-
+        var addMessageResult = discussionExist.Value.AddMessage(newMessage);
+        if (addMessageResult.IsFailure)
+            throw new Exception(addMessageResult.Error.Message);
+        
         await _unitOfWork.SaveChanges(cancellationToken);
         
         _logger.LogInformation(
-            "Message was created in discussion with id {discussionId}",
+            "Message was created in discussion with id {Id}",
             discussionExist.Value.Id);
-        
-        return newMessage;
     }
 }

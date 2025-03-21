@@ -45,7 +45,9 @@ public class VolunteersRequestsTests
         var request = VolunteerRequestsFabric.CreateTestRequest();
         
         // Act
-        request.SetRevisionRequiredStatus(RejectionComment.Create("Rejection Comment").Value);
+        request.SetRevisionRequiredStatus(
+            Guid.NewGuid(),
+            RejectionComment.Create("Rejection Comment").Value);
         
         //Assert
         Assert.Equal(RequestStatus.RevisionRequired, request.Status);
@@ -58,7 +60,7 @@ public class VolunteersRequestsTests
         var request = VolunteerRequestsFabric.CreateTestRequest();
         
         // Act
-        request.SetApprovedStatus();
+        request.SetApprovedStatus(Guid.NewGuid(), "message");
         
         //Assert
         Assert.Equal(RequestStatus.Approved, request.Status);

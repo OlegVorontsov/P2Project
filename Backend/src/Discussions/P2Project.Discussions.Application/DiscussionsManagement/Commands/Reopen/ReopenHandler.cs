@@ -6,7 +6,6 @@ using P2Project.Core;
 using P2Project.Core.Extensions;
 using P2Project.Core.Interfaces;
 using P2Project.Core.Interfaces.Commands;
-using P2Project.Discussions.Agreements;
 using P2Project.Discussions.Application.Interfaces;
 using P2Project.Discussions.Domain;
 using P2Project.SharedKernel.Errors;
@@ -18,20 +17,17 @@ public class ReopenHandler :
 {
     private readonly IValidator<ReopenCommand> _validator;
     private readonly IDiscussionsRepository _discussionRepository;
-    private readonly IDiscussionsAgreement _discussionsAgreement;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<ReopenHandler> _logger;
 
     public ReopenHandler(
         IValidator<ReopenCommand> validator,
         IDiscussionsRepository discussionRepository,
-        IDiscussionsAgreement discussionsAgreement,
         [FromKeyedServices(Modules.Discussions)] IUnitOfWork unitOfWork,
         ILogger<ReopenHandler> logger)
     {
         _validator = validator;
         _discussionRepository = discussionRepository;
-        _discussionsAgreement = discussionsAgreement;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -55,12 +51,13 @@ public class ReopenHandler :
         
         discussionExist.Value.Reopen();
         
-        var messageId = await _discussionsAgreement.CreateMessage(
+        //todo event
+        /*var messageId = await _discussionsAgreement.CreateMessage(
             command.UserId, discussionExist.Value.DiscussionUsers.ReviewingUserId,
             command.Comment,
             cancellationToken);
         if(messageId.IsFailure)
-            return Errors.General.Failure("message").ToErrorList();
+            return Errors.General.Failure("message").ToErrorList();*/
         
         await _unitOfWork.SaveChanges(cancellationToken);
         

@@ -51,10 +51,12 @@ public class VolunteerRequest : DomainEntity<VolunteerRequestId>
     }
     
     public void SetRevisionRequiredStatus(
+        Guid adminId,
         RejectionComment rejectedComment)
     {
         Status = RequestStatus.RevisionRequired;
         RejectionComment = rejectedComment;
+        AddDomainEvent(new CreateMessageEvent(Id, adminId, rejectedComment.Value));
     }
 
     public void SetApprovedStatus(Guid adminId, string comment)

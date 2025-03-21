@@ -53,7 +53,7 @@ public class SetApprovedStatusHandler :
         if (existedRequest.IsFailure)
             return Errors.General.NotFound(command.RequestId).ToErrorList();
         
-        //event
+        //todo event
         var volunteerAccountResult = await _accountsAgreements
             .CreateVolunteerAccountForUser(existedRequest.Value.UserId, cancellationToken);
         if (volunteerAccountResult.IsFailure)

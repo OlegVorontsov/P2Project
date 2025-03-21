@@ -7,7 +7,6 @@ using P2Project.Core;
 using P2Project.Core.Extensions;
 using P2Project.Core.Interfaces;
 using P2Project.Core.Interfaces.Commands;
-using P2Project.Discussions.Agreements;
 using P2Project.SharedKernel.Errors;
 using P2Project.VolunteerRequests.Application.Interfaces;
 using P2Project.VolunteerRequests.Domain.ValueObjects;
@@ -18,7 +17,6 @@ public class SetRejectStatusHandler :
     ICommandHandler<Guid, SetRejectStatusCommand>
 {
     private readonly IValidator<SetRejectStatusCommand> _validator;
-    private readonly IDiscussionsAgreement _discussionsAgreement;
     private readonly IVolunteerRequestsRepository _volunteerRequestsRepository;
     private readonly IAccountsAgreements _accountsAgreements;
     private readonly IUnitOfWork _unitOfWork;
@@ -26,14 +24,12 @@ public class SetRejectStatusHandler :
     
     public SetRejectStatusHandler(
         IValidator<SetRejectStatusCommand> validator,
-        IDiscussionsAgreement discussionsAgreement,
         IVolunteerRequestsRepository volunteerRequestsRepository,
         [FromKeyedServices(Modules.VolunteerRequests)] IUnitOfWork unitOfWork,
         ILogger<SetRejectStatusHandler> logger,
         IAccountsAgreements accountsAgreements)
     {
         _validator = validator;
-        _discussionsAgreement = discussionsAgreement;
         _volunteerRequestsRepository = volunteerRequestsRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
@@ -56,11 +52,12 @@ public class SetRejectStatusHandler :
         var rejectionComment = RejectionComment.Create(command.Comment).Value;
         existedRequest.Value.SetRejectStatus(rejectionComment);
         
-        var messageId = await _discussionsAgreement.CreateMessage(
+        //todo event
+        /*var messageId = await _discussionsAgreement.CreateMessage(
             command.AdminId, existedRequest.Value.UserId,
             command.Comment, cancellationToken);
         if(messageId.IsFailure)
-            return Errors.General.Failure("message").ToErrorList();
+            return Errors.General.Failure("message").ToErrorList();*/
         
         await _accountsAgreements.BanUser(existedRequest.Value.UserId, cancellationToken);
         
