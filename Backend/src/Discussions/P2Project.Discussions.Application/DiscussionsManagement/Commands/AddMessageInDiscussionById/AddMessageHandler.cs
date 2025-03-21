@@ -8,7 +8,9 @@ using P2Project.Core.Interfaces;
 using P2Project.Core.Interfaces.Commands;
 using P2Project.Discussions.Application.Interfaces;
 using P2Project.Discussions.Domain;
+using P2Project.Discussions.Domain.Entities;
 using P2Project.SharedKernel.Errors;
+using P2Project.SharedKernel.ValueObjects;
 
 namespace P2Project.Discussions.Application.DiscussionsManagement.Commands.AddMessageInDiscussionById;
 
@@ -49,13 +51,14 @@ public class AddMessageHandler :
         if(discussionExist.Value.Status == DiscussionStatus.Closed)
             return Errors.General.Failure("discussion.closed").ToErrorList();
         
-        //todo: event
-        /*var messageId = await _discussionsAgreement.CreateMessage(
-            command.SenderId, discussionExist.Value.DiscussionUsers.ReviewingUserId,
-            command.Message,
-            cancellationToken);
-        if(messageId.IsFailure)
-            return Errors.General.Failure("message").ToErrorList();*/
+        var newMessage = Message.Create(
+            discussionExist.Value.Id,
+            command.SenderId,
+            Content.Create(command.Message).Value);
+        
+        var addMessageResult = discussionExist.Value.AddMessage(newMessage);
+        if(addMessageResult.IsFailure)
+            return Errors.General.Failure("message").ToErrorList();
         
         await _unitOfWork.SaveChanges(cancellationToken);
         
