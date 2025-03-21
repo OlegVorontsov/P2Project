@@ -8,7 +8,9 @@ using P2Project.Core.Interfaces;
 using P2Project.Core.Interfaces.Commands;
 using P2Project.Discussions.Application.Interfaces;
 using P2Project.Discussions.Domain;
+using P2Project.Discussions.Domain.Entities;
 using P2Project.SharedKernel.Errors;
+using P2Project.SharedKernel.ValueObjects;
 
 namespace P2Project.Discussions.Application.DiscussionsManagement.Commands.Reopen;
 
@@ -51,13 +53,14 @@ public class ReopenHandler :
         
         discussionExist.Value.Reopen();
         
-        //todo event
-        /*var messageId = await _discussionsAgreement.CreateMessage(
-            command.UserId, discussionExist.Value.DiscussionUsers.ReviewingUserId,
-            command.Comment,
-            cancellationToken);
-        if(messageId.IsFailure)
-            return Errors.General.Failure("message").ToErrorList();*/
+        var newMessage = Message.Create(
+            discussionExist.Value.Id,
+            command.UserId,
+            Content.Create(command.Comment).Value);
+        
+        var addMessageResult = discussionExist.Value.AddMessage(newMessage);
+        if(addMessageResult.IsFailure)
+            return Errors.General.Failure("message").ToErrorList();
         
         await _unitOfWork.SaveChanges(cancellationToken);
         
