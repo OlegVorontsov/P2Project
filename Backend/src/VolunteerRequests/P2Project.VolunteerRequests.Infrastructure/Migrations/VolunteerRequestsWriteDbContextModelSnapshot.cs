@@ -26,10 +26,9 @@ namespace P2Project.VolunteerRequests.Infrastructure.Migrations
 
             modelBuilder.Entity("P2Project.VolunteerRequests.Domain.VolunteerRequest", b =>
                 {
-                    b.Property<Guid>("RequestId")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid>("Id")
                         .HasColumnType("uuid")
-                        .HasColumnName("request_Id");
+                        .HasColumnName("id");
 
                     b.Property<Guid?>("AdminId")
                         .HasColumnType("uuid")
@@ -38,10 +37,6 @@ namespace P2Project.VolunteerRequests.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
-
-                    b.Property<Guid?>("DiscussionId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("discussion_id");
 
                     b.Property<string>("RejectionComment")
                         .HasColumnType("text")
@@ -89,7 +84,7 @@ namespace P2Project.VolunteerRequests.Infrastructure.Migrations
                                 .HasColumnName("grade");
                         });
 
-                    b.HasKey("RequestId")
+                    b.HasKey("Id")
                         .HasName("pk_volunteer_requests");
 
                     b.ToTable("volunteer_requests", "volunteer_requests");

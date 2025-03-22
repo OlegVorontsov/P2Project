@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using P2Project.Discussions.Agreements;
 using P2Project.Discussions.Application;
 using P2Project.Discussions.Infrastructure;
 
@@ -12,7 +11,6 @@ public static class DependencyInjection
         this IServiceCollection services, IConfiguration configuration)
     {
         return services
-                .AddScoped<IDiscussionsAgreement, DiscussionsAgreement>()
             .AddDiscussionsInfrastructure(configuration)
             .AddDiscussionsApplication();
     }

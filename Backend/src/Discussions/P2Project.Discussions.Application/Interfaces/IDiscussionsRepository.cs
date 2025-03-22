@@ -15,4 +15,8 @@ public interface IDiscussionsRepository
     public Task<Result<Discussion, Error>> GetById(
         Guid discussionId,
         CancellationToken cancellationToken);
+
+    public Task<Result<Discussion, Error>> GetByRequestId(
+        Guid requestId,
+        CancellationToken cancellationToken);
 }

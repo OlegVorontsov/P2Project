@@ -12,9 +12,8 @@ public interface IAccountsAgreements
     
     public Task BanUser(Guid userId, CancellationToken cancellationToken);
 
+    public Task UnbanUser(Guid userId, CancellationToken cancellationToken);
+
     public Task<bool> IsUserBannedForVolunteerRequests(
         Guid userId, CancellationToken cancellationToken);
-    
-    public Task<Result<Guid, ErrorList>> CreateVolunteerAccountForUser(
-        Guid userid, CancellationToken cancellationToken);
 }

@@ -1,20 +1,26 @@
 using FluentValidation;
+using P2Project.Core.Events;
 using P2Project.Core.Validation;
 using P2Project.SharedKernel.Errors;
 
-namespace P2Project.Discussions.Application.DiscussionsManagement.Commands.Create;
+namespace P2Project.Discussions.Application.DiscussionsManagement.EventHandlers.Create;
 
 public class CreateDiscussionValidator :
-    AbstractValidator<CreateDiscussionCommand>
+    AbstractValidator<CreateDiscussionEvent>
 {
     public CreateDiscussionValidator()
     {
-        RuleFor(cd => cd.ReviewingUserId)
+        RuleFor(r => r.RequestId)
             .NotNull()
             .NotEmpty()
             .WithError(Errors.General.ValueIsRequired());
         
-        RuleFor(cd => cd.ApplicantUserId)
+        RuleFor(r => r.ReviewingUserId)
+            .NotNull()
+            .NotEmpty()
+            .WithError(Errors.General.ValueIsRequired());
+        
+        RuleFor(r => r.ApplicantUserId)
             .NotNull()
             .NotEmpty()
             .WithError(Errors.General.ValueIsRequired());

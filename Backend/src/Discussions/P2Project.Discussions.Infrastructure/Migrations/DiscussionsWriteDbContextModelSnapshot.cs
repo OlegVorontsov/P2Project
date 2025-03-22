@@ -26,10 +26,14 @@ namespace P2Project.Discussions.Infrastructure.Migrations
 
             modelBuilder.Entity("P2Project.Discussions.Domain.Discussion", b =>
                 {
-                    b.Property<Guid>("DiscussionId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
-                        .HasColumnName("discussion_id");
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("RequestId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("request_id");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -49,7 +53,7 @@ namespace P2Project.Discussions.Infrastructure.Migrations
                                 .HasColumnName("reviewing_user_id");
                         });
 
-                    b.HasKey("DiscussionId")
+                    b.HasKey("Id")
                         .HasName("pk_discussions");
 
                     b.ToTable("discussions", "discussions");

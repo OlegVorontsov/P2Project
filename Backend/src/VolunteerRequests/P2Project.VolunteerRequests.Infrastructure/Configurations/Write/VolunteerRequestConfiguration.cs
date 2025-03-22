@@ -12,11 +12,12 @@ public class VolunteerRequestConfiguration :
     {
         builder.ToTable("volunteer_requests");
         
-        builder.HasKey(b => b.RequestId);
+        builder.HasKey(b => b.Id);
         
-        builder.Property(s => s.RequestId)
-            .IsRequired()
-            .HasColumnName("request_Id");
+        builder.Property(v => v.Id)
+            .HasConversion(
+                id => id.Value,
+                value => VolunteerRequestId.Create(value));
         
         builder.Property(s => s.AdminId)
             .IsRequired(false)
@@ -50,10 +51,6 @@ public class VolunteerRequestConfiguration :
                 .IsRequired()
                 .HasColumnName("grade");
         });
-        
-        builder.Property(s => s.DiscussionId)
-            .IsRequired(false)
-            .HasColumnName("discussion_id");
         
         builder.Property(v => v.Status)
             .HasConversion<string>()

@@ -6,10 +6,11 @@ using P2Project.Core;
 using P2Project.Core.Extensions;
 using P2Project.Core.Interfaces;
 using P2Project.Core.Interfaces.Commands;
-using P2Project.Discussions.Agreements;
 using P2Project.Discussions.Application.Interfaces;
 using P2Project.Discussions.Domain;
+using P2Project.Discussions.Domain.Entities;
 using P2Project.SharedKernel.Errors;
+using P2Project.SharedKernel.ValueObjects;
 
 namespace P2Project.Discussions.Application.DiscussionsManagement.Commands.Reopen;
 
@@ -18,20 +19,17 @@ public class ReopenHandler :
 {
     private readonly IValidator<ReopenCommand> _validator;
     private readonly IDiscussionsRepository _discussionRepository;
-    private readonly IDiscussionsAgreement _discussionsAgreement;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<ReopenHandler> _logger;
 
     public ReopenHandler(
         IValidator<ReopenCommand> validator,
         IDiscussionsRepository discussionRepository,
-        IDiscussionsAgreement discussionsAgreement,
         [FromKeyedServices(Modules.Discussions)] IUnitOfWork unitOfWork,
         ILogger<ReopenHandler> logger)
     {
         _validator = validator;
         _discussionRepository = discussionRepository;
-        _discussionsAgreement = discussionsAgreement;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -55,20 +53,22 @@ public class ReopenHandler :
         
         discussionExist.Value.Reopen();
         
-        var messageId = await _discussionsAgreement.CreateMessage(
-            command.UserId, discussionExist.Value.DiscussionUsers.ReviewingUserId,
-            command.Comment,
-            cancellationToken);
-        if(messageId.IsFailure)
+        var newMessage = Message.Create(
+            discussionExist.Value.Id,
+            command.UserId,
+            Content.Create(command.Comment).Value);
+        
+        var addMessageResult = discussionExist.Value.AddMessage(newMessage);
+        if(addMessageResult.IsFailure)
             return Errors.General.Failure("message").ToErrorList();
         
         await _unitOfWork.SaveChanges(cancellationToken);
         
         _logger.LogInformation(
-            "Discussion with {discussionId} reopened by {userId}",
-            discussionExist.Value.DiscussionId,
+            "Discussion with {Id} reopened by {userId}",
+            discussionExist.Value.Id,
             command.UserId);
 
-        return discussionExist.Value.DiscussionId;
+        return discussionExist.Value.Id;
     }
 }

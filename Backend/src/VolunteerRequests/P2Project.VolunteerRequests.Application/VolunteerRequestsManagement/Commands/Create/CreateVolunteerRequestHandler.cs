@@ -11,6 +11,7 @@ using P2Project.SharedKernel.Errors;
 using P2Project.SharedKernel.ValueObjects;
 using P2Project.VolunteerRequests.Application.Interfaces;
 using P2Project.VolunteerRequests.Domain;
+using P2Project.VolunteerRequests.Domain.ValueObjects;
 
 namespace P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Commands.Create;
 
@@ -50,7 +51,7 @@ public class CreateVolunteerRequestHandler :
         if (isUserBanned)
             return Errors.General.Failure("user is banned").ToErrorList();
         
-        var requestId = command.UserId;
+        var requestId = VolunteerRequestId.Create(Guid.NewGuid());
         
         var fullName = FullName.Create(
             command.FullName.FirstName,
@@ -62,7 +63,8 @@ public class CreateVolunteerRequestHandler :
             command.VolunteerInfo.Grade).Value;
         
         var newVolunteerRequest = VolunteerRequest.Create(
-            requestId, fullName, volunteerInfo).Value;
+            requestId,
+            command.UserId, fullName, volunteerInfo).Value;
 
         await _volunteerRequestsRepository.Add(newVolunteerRequest, cancellationToken);
         await _unitOfWork.SaveChanges(cancellationToken);
@@ -70,6 +72,6 @@ public class CreateVolunteerRequestHandler :
         _logger.LogInformation(
             "Volunteer request was created with id {requestId}", requestId);
 
-        return newVolunteerRequest.RequestId;
+        return newVolunteerRequest.Id.Value;
     }
 }

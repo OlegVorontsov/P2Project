@@ -16,7 +16,8 @@ public class VolunteersRequestsTests
         var userId = Guid.NewGuid();
         
         // Act
-        var request = VolunteerRequest.Create(userId, fullName, volunteerInfo);
+        var request = VolunteerRequest.Create(
+            Guid.NewGuid(), userId, fullName, volunteerInfo);
         
         //Assert
         Assert.NotNull(request);
@@ -31,7 +32,9 @@ public class VolunteersRequestsTests
         var request = VolunteerRequestsFabric.CreateTestRequest();
         
         // Act
-        request.SetRejectStatus(RejectionComment.Create("Rejection Comment").Value);
+        request.SetRejectStatus(
+            Guid.NewGuid(),
+            RejectionComment.Create("Rejection Comment").Value);
         
         //Assert
         Assert.Equal(RequestStatus.Rejected, request.Status);
@@ -44,7 +47,9 @@ public class VolunteersRequestsTests
         var request = VolunteerRequestsFabric.CreateTestRequest();
         
         // Act
-        request.SetRevisionRequiredStatus(RejectionComment.Create("Rejection Comment").Value);
+        request.SetRevisionRequiredStatus(
+            Guid.NewGuid(),
+            RejectionComment.Create("Rejection Comment").Value);
         
         //Assert
         Assert.Equal(RequestStatus.RevisionRequired, request.Status);
@@ -57,7 +62,7 @@ public class VolunteersRequestsTests
         var request = VolunteerRequestsFabric.CreateTestRequest();
         
         // Act
-        request.SetApprovedStatus();
+        request.SetApprovedStatus(Guid.NewGuid(), "message");
         
         //Assert
         Assert.Equal(RequestStatus.Approved, request.Status);
@@ -70,7 +75,7 @@ public class VolunteersRequestsTests
         var request = VolunteerRequestsFabric.CreateTestRequest();
         
         // Act
-        request.TakeInReview(Guid.NewGuid(), Guid.NewGuid());
+        request.TakeInReview(Guid.NewGuid());
         
         //Assert
         Assert.Equal(RequestStatus.OnReview, request.Status);

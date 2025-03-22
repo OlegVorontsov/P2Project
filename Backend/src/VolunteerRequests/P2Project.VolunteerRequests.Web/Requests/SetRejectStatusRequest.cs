@@ -2,8 +2,8 @@ using P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Comman
 
 namespace P2Project.VolunteerRequests.Web.Requests;
 
-public record SetRejectStatusRequest(string Comment)
+public record SetRejectStatusRequest(string Comment, bool IsBanNeed = false)
 {
     public SetRejectStatusCommand ToCommand(Guid adminId, Guid requestId) =>
-        new(adminId, requestId, Comment);
+        new(adminId, requestId, Comment, IsBanNeed);
 }

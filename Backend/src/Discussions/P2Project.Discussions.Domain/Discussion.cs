@@ -11,15 +11,18 @@ public class Discussion
 {
     private Discussion() { }
     private readonly List<Message> _messages = [];
-    
-    public Guid DiscussionId { get; private set; }
+
+    public Guid Id { get; private set; }
+    public Guid RequestId { get; private set; }
     public IReadOnlyList<Message> Messages => _messages;
     public DiscussionUsers DiscussionUsers { get; } = default!;
     public DiscussionStatus Status { get; private set; }
     
-    private Discussion(DiscussionUsers discussionUsers)
+    private Discussion(
+        Guid requestId,
+        DiscussionUsers discussionUsers)
     {
-        DiscussionId = Guid.NewGuid();
+        RequestId = requestId;
         DiscussionUsers = discussionUsers;
         Status = DiscussionStatus.Open;
     }
@@ -27,9 +30,11 @@ public class Discussion
     public void Close() => Status = DiscussionStatus.Closed;
     public void Reopen() => Status = DiscussionStatus.Open;
     
-    public static Result<Discussion, Error> Open(DiscussionUsers discussionUsers)
+    public static Result<Discussion, Error> Open(
+        Guid requestId,
+        DiscussionUsers discussionUsers)
     {
-        var discussion = new Discussion(discussionUsers)
+        var discussion = new Discussion(requestId, discussionUsers)
         {
             Status = DiscussionStatus.Open
         };

@@ -29,7 +29,7 @@ public class VolunteerRequestsRepository : IVolunteerRequestsRepository
         CancellationToken cancellationToken = default)
     {
         var request = await _dbContext.VolunteerRequests.
-            SingleOrDefaultAsync(r => r.RequestId == requestId, cancellationToken);
+            SingleOrDefaultAsync(r => r.Id == requestId, cancellationToken);
         if (request is null)
             return Errors.General.NotFound(requestId);
 

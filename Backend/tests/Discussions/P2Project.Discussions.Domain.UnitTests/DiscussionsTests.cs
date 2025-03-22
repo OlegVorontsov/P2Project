@@ -16,7 +16,7 @@ public class DiscussionsTests
         var discussionUsers = DiscussionUsers.Create(Guid.NewGuid(), Guid.NewGuid());
         
         // Act
-        var discussion = Discussion.Open(discussionUsers).Value;
+        var discussion = Discussion.Open(Guid.NewGuid(), discussionUsers).Value;
         
         //Assert
         Assert.NotNull(discussion);
@@ -56,7 +56,7 @@ public class DiscussionsTests
         var discussion = DiscussionsFabric.OpenDiscussion();
         var userId = discussion.DiscussionUsers.ApplicantUserId;
         var messageText = Content.Create("Test content").Value;
-        var message = Message.Create(discussion.DiscussionId, userId, messageText);
+        var message = Message.Create(discussion.Id, userId, messageText);
         
         // Act
         var result = discussion.AddMessage(message);
@@ -74,7 +74,7 @@ public class DiscussionsTests
         // Arrange
         var discussion = DiscussionsFabric.OpenDiscussion();
         var messageText = Content.Create("Test content").Value;
-        var message = Message.Create(discussion.DiscussionId, Guid.NewGuid(), messageText);
+        var message = Message.Create(discussion.Id, Guid.NewGuid(), messageText);
         
         // Act
         var result = discussion.AddMessage(message);
@@ -90,7 +90,7 @@ public class DiscussionsTests
         var discussion = DiscussionsFabric.OpenDiscussion();
         var userId = discussion.DiscussionUsers.ApplicantUserId;
         var messageText = Content.Create("Test content").Value;
-        var message = Message.Create(discussion.DiscussionId, userId, messageText);
+        var message = Message.Create(discussion.Id, userId, messageText);
         discussion.AddMessage(message);
         var newMessageText = Content.Create("New Message").Value;
         
@@ -109,7 +109,7 @@ public class DiscussionsTests
         var discussion = DiscussionsFabric.OpenDiscussion();
         var userId = discussion.DiscussionUsers.ApplicantUserId;
         var messageText = Content.Create("Test content").Value;
-        var message = Message.Create(discussion.DiscussionId, userId, messageText);
+        var message = Message.Create(discussion.Id, userId, messageText);
         discussion.AddMessage(message);
         
         // Act

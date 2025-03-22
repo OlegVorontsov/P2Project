@@ -11,11 +11,11 @@ public class VolunteerRequestDtoConfiguration :
     {
         builder.ToTable("volunteer_requests");
         
-        builder.HasKey(b => b.RequestId);
+        builder.HasKey(b => b.Id);
         
-        builder.Property(s => s.RequestId)
+        builder.Property(s => s.Id)
             .IsRequired()
-            .HasColumnName("request_Id");
+            .HasColumnName("id");
         
         builder.Property(s => s.AdminId)
             .IsRequired(false)
@@ -37,10 +37,6 @@ public class VolunteerRequestDtoConfiguration :
         builder.Property(v=> v.LastName)
             .HasConversion<string>()
             .HasColumnName("last_name");
-        
-        builder.Property(s => s.DiscussionId)
-            .IsRequired(false)
-            .HasColumnName("discussion_id");
         
         builder.Property(v=> v.Status)
             .HasConversion<string>()

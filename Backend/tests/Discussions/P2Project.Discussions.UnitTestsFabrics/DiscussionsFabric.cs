@@ -8,7 +8,7 @@ public static class DiscussionsFabric
     public static Discussion OpenDiscussion()
     {
         var discussionUsers = DiscussionUsers.Create(Guid.NewGuid(), Guid.NewGuid());
-        var discussion = Discussion.Open(discussionUsers).Value;
+        var discussion = Discussion.Open(Guid.NewGuid(), discussionUsers).Value;
         
         return discussion;
     }

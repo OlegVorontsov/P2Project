@@ -5,7 +5,6 @@ using P2Project.Discussions.Application.DiscussionsManagement.Commands.Close;
 using P2Project.Discussions.Application.DiscussionsManagement.Commands.DeleteMessage;
 using P2Project.Discussions.Application.DiscussionsManagement.Commands.EditMessage;
 using P2Project.Discussions.Application.DiscussionsManagement.Commands.Reopen;
-using P2Project.Discussions.Application.DiscussionsManagement.Queries;
 using P2Project.Discussions.Application.DiscussionsManagement.Queries.GetById;
 using P2Project.Discussions.Application.DiscussionsManagement.Queries.GetMessageById;
 using P2Project.Discussions.Web.Requests;

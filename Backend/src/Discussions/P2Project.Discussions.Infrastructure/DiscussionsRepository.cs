@@ -46,10 +46,24 @@ public class DiscussionsRepository : IDiscussionsRepository
     {
         var discussion = await _dbContext.Discussions
             .Include(d => d.Messages)
-            .FirstOrDefaultAsync(d => d.DiscussionId == discussionId, cancellationToken);
+            .FirstOrDefaultAsync(d => d.Id == discussionId, cancellationToken);
 
         if (discussion == null)
             return Errors.General.NotFound(discussionId);
+        
+        return discussion;
+    }
+    
+    public async Task<Result<Discussion, Error>> GetByRequestId(
+        Guid requestId,
+        CancellationToken cancellationToken)
+    {
+        var discussion = await _dbContext.Discussions
+            .Include(d => d.Messages)
+            .FirstOrDefaultAsync(d => d.RequestId == requestId, cancellationToken);
+
+        if (discussion == null)
+            return Errors.General.NotFound(requestId);
         
         return discussion;
     }

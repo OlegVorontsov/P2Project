@@ -6,10 +6,11 @@ using P2Project.Core;
 using P2Project.Core.Extensions;
 using P2Project.Core.Interfaces;
 using P2Project.Core.Interfaces.Commands;
-using P2Project.Discussions.Agreements;
 using P2Project.Discussions.Application.Interfaces;
 using P2Project.Discussions.Domain;
+using P2Project.Discussions.Domain.Entities;
 using P2Project.SharedKernel.Errors;
+using P2Project.SharedKernel.ValueObjects;
 
 namespace P2Project.Discussions.Application.DiscussionsManagement.Commands.Close;
 
@@ -18,20 +19,17 @@ public class CloseHandler :
 {
     private readonly IValidator<CloseCommand> _validator;
     private readonly IDiscussionsRepository _discussionRepository;
-    private readonly IDiscussionsAgreement _discussionsAgreement;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<CloseHandler> _logger;
 
     public CloseHandler(
         IValidator<CloseCommand> validator,
         IDiscussionsRepository discussionRepository,
-        IDiscussionsAgreement discussionsAgreement,
         [FromKeyedServices(Modules.Discussions)] IUnitOfWork unitOfWork,
         ILogger<CloseHandler> logger)
     {
         _validator = validator;
         _discussionRepository = discussionRepository;
-        _discussionsAgreement = discussionsAgreement;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -53,11 +51,13 @@ public class CloseHandler :
         if(discussionExist.Value.Status == DiscussionStatus.Closed)
             return Errors.General.Failure("already.closed").ToErrorList();
         
-        var messageId = await _discussionsAgreement.CreateMessage(
-            command.UserId, discussionExist.Value.DiscussionUsers.ReviewingUserId,
-            command.Comment,
-            cancellationToken);
-        if(messageId.IsFailure)
+        var newMessage = Message.Create(
+            discussionExist.Value.Id,
+            command.UserId,
+            Content.Create(command.Comment).Value);
+        
+        var addMessageResult = discussionExist.Value.AddMessage(newMessage);
+        if(addMessageResult.IsFailure)
             return Errors.General.Failure("message").ToErrorList();
         
         discussionExist.Value.Close();
@@ -65,10 +65,10 @@ public class CloseHandler :
         await _unitOfWork.SaveChanges(cancellationToken);
         
         _logger.LogInformation(
-            "Discussion with {discussionId} closed by {userId}",
-            discussionExist.Value.DiscussionId,
+            "Discussion with {Id} closed by {userId}",
+            discussionExist.Value.Id,
             command.UserId);
 
-        return discussionExist.Value.DiscussionId;
+        return discussionExist.Value.Id;
     }
 }
