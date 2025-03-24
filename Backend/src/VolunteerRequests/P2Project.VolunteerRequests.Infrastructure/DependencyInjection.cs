@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using P2Project.Core;
 using P2Project.Core.Interfaces;
+using P2Project.Core.Options;
 using P2Project.SharedKernel;
 using P2Project.VolunteerRequests.Application;
 using P2Project.VolunteerRequests.Application.Interfaces;
@@ -55,14 +56,18 @@ public static class DependencyInjection
     {
         services.AddMassTransit<IVolunteerRequestMessageBus>(configure =>
         {
+            var options = configuration
+                .GetSection(RabbitMqOptions.SECTION_NAME)
+                .Get<RabbitMqOptions>()!;
+            
             configure.SetKebabCaseEndpointNameFormatter();
 
             configure.UsingRabbitMq((context, cfg) =>
             {
-                cfg.Host(new Uri(configuration["RabbitMQ:Host"]!), h =>
+                cfg.Host(new Uri(options.Host), h =>
                 {
-                    h.Username(configuration["RabbitMQ:UserName"]!);
-                    h.Password(configuration["RabbitMQ:Password"]!);
+                    h.Username(options.Username);
+                    h.Password(options.Password);
                 });
 
                 cfg.ConfigureEndpoints(context);
