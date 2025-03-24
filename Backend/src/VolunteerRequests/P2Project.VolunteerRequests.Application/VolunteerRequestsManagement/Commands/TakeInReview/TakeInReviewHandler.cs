@@ -20,20 +20,20 @@ public class TakeInReviewHandler :
     ICommandHandler<Guid, TakeInReviewCommand>
 {
     private readonly IValidator<TakeInReviewCommand> _validator;
-    private readonly Bind<IDiscussionMessageBus, IPublishEndpoint> _publishEndpoint;
+    private readonly IPublisher _publisher;
     private readonly IVolunteerRequestsRepository _volunteerRequestsRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<TakeInReviewHandler> _logger;
 
     public TakeInReviewHandler(
         IValidator<TakeInReviewCommand> validator,
-        Bind<IDiscussionMessageBus,IPublishEndpoint> publishEndpoint,
+        IPublisher publisher,
         IVolunteerRequestsRepository volunteerRequestsRepository,
         [FromKeyedServices(Modules.VolunteerRequests)] IUnitOfWork unitOfWork,
         ILogger<TakeInReviewHandler> logger)
     {
         _validator = validator;
-        _publishEndpoint = publishEndpoint;
+        _publisher = publisher;
         _volunteerRequestsRepository = volunteerRequestsRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
@@ -58,11 +58,7 @@ public class TakeInReviewHandler :
         
         existedRequest.Value.TakeInReview(command.AdminId);
         
-        await _publishEndpoint.Value.Publish(
-            new VolunteerRequestReviewStartedEvent(
-                existedRequest.Value.Id,
-                command.AdminId,
-                existedRequest.Value.UserId), cancellationToken);
+        await _publisher.PublishDomainEvents(existedRequest.Value, cancellationToken);
         
         await _unitOfWork.SaveChanges(cancellationToken);
         
