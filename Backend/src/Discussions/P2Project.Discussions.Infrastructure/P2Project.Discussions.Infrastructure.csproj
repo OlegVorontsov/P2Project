@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Shared\P2Project.Core\P2Project.Core.csproj" />
+      <ProjectReference Include="..\..\VolunteerRequests\P2Project.VolunteerRequests.Agreements\P2Project.VolunteerRequests.Agreements.csproj" />
       <ProjectReference Include="..\P2Project.Discussions.Application\P2Project.Discussions.Application.csproj" />
     </ItemGroup>
 
@@ -22,6 +23,7 @@
 
     <ItemGroup>
       <PackageReference Include="EFCore.NamingConventions" Version="8.0.3" />
+      <PackageReference Include="MassTransit.RabbitMQ" Version="8.4.0" />
       <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.1" />
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.10" />
       <PackageReference Include="Scrutor" Version="5.0.2" />

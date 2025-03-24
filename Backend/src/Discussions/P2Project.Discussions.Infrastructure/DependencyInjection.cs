@@ -1,9 +1,11 @@
+using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using P2Project.Core;
 using P2Project.Core.Interfaces;
 using P2Project.Discussions.Application;
 using P2Project.Discussions.Application.Interfaces;
+using P2Project.Discussions.Infrastructure.Consumers;
 using P2Project.Discussions.Infrastructure.DbContexts;
 using P2Project.SharedKernel;
 
@@ -16,8 +18,9 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         services.AddRepositories()
-            .AddDataBase(configuration)
-            .AddUnitOfWork();
+                .AddDataBase(configuration)
+                .AddUnitOfWork()
+                .AddMessageBus(configuration);;
         
         return services;
     }
@@ -46,6 +49,31 @@ public static class DependencyInjection
         this IServiceCollection services)
     {
         services.AddKeyedScoped<IUnitOfWork, UnitOfWork>(Modules.Discussions);
+        return services;
+    }
+    
+    private static IServiceCollection AddMessageBus(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.AddMassTransit<IDiscussionMessageBus>(configure =>
+        {
+            configure.SetKebabCaseEndpointNameFormatter();
+
+            configure.AddConsumer<CreateDiscussionConsumer>();
+
+            configure.UsingRabbitMq((context, cfg) =>
+            {
+                cfg.Host(new Uri(configuration["RabbitMQ:Host"]!), h =>
+                {
+                    h.Username(configuration["RabbitMQ:UserName"]!);
+                    h.Password(configuration["RabbitMQ:Password"]!);
+                });
+
+                cfg.ConfigureEndpoints(context);
+            });
+        });
+
         return services;
     }
 }

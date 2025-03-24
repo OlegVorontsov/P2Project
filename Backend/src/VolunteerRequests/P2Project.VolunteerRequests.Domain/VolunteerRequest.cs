@@ -47,7 +47,6 @@ public class VolunteerRequest : DomainEntity<VolunteerRequestId>
     {
         AdminId = adminId;
         Status = RequestStatus.OnReview;
-        AddDomainEvent(new CreateDiscussionEvent(Id, adminId, UserId));
     }
     
     public void SetRevisionRequiredStatus(

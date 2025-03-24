@@ -1,5 +1,7 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
+using MassTransit;
+using MassTransit.DependencyInjection;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -7,7 +9,9 @@ using P2Project.Core;
 using P2Project.Core.Extensions;
 using P2Project.Core.Interfaces;
 using P2Project.Core.Interfaces.Commands;
+using P2Project.Discussions.Application.Interfaces;
 using P2Project.SharedKernel.Errors;
+using P2Project.VolunteerRequests.Agreements.Messages;
 using P2Project.VolunteerRequests.Application.Interfaces;
 
 namespace P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Commands.TakeInReview;
@@ -16,20 +20,20 @@ public class TakeInReviewHandler :
     ICommandHandler<Guid, TakeInReviewCommand>
 {
     private readonly IValidator<TakeInReviewCommand> _validator;
-    private readonly IPublisher _publisher;
+    private readonly Bind<IDiscussionMessageBus, IPublishEndpoint> _publishEndpoint;
     private readonly IVolunteerRequestsRepository _volunteerRequestsRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<TakeInReviewHandler> _logger;
 
     public TakeInReviewHandler(
         IValidator<TakeInReviewCommand> validator,
-        IPublisher publisher,
+        Bind<IDiscussionMessageBus,IPublishEndpoint> publishEndpoint,
         IVolunteerRequestsRepository volunteerRequestsRepository,
         [FromKeyedServices(Modules.VolunteerRequests)] IUnitOfWork unitOfWork,
         ILogger<TakeInReviewHandler> logger)
     {
         _validator = validator;
-        _publisher = publisher;
+        _publishEndpoint = publishEndpoint;
         _volunteerRequestsRepository = volunteerRequestsRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
@@ -54,7 +58,11 @@ public class TakeInReviewHandler :
         
         existedRequest.Value.TakeInReview(command.AdminId);
         
-        await _publisher.PublishDomainEvents(existedRequest.Value, cancellationToken);
+        await _publishEndpoint.Value.Publish(
+            new VolunteerRequestReviewStartedEvent(
+                existedRequest.Value.Id,
+                command.AdminId,
+                existedRequest.Value.UserId), cancellationToken);
         
         await _unitOfWork.SaveChanges(cancellationToken);
         

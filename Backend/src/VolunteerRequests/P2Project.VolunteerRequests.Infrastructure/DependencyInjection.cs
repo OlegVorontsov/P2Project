@@ -1,3 +1,4 @@
+using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using P2Project.Core;
@@ -16,8 +17,9 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         services.AddRepositories()
-            .AddDataBase(configuration)
-            .AddUnitOfWork();
+                .AddDataBase(configuration)
+                .AddUnitOfWork()
+                .AddMessageBus(configuration);
         
         return services;
     }
@@ -46,6 +48,27 @@ public static class DependencyInjection
         this IServiceCollection services)
     {
         services.AddKeyedScoped<IUnitOfWork, UnitOfWork>(Modules.VolunteerRequests);
+        return services;
+    }
+    
+    private static IServiceCollection AddMessageBus(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddMassTransit<IVolunteerRequestMessageBus>(configure =>
+        {
+            configure.SetKebabCaseEndpointNameFormatter();
+
+            configure.UsingRabbitMq((context, cfg) =>
+            {
+                cfg.Host(new Uri(configuration["RabbitMQ:Host"]!), h =>
+                {
+                    h.Username(configuration["RabbitMQ:UserName"]!);
+                    h.Password(configuration["RabbitMQ:Password"]!);
+                });
+
+                cfg.ConfigureEndpoints(context);
+            });
+        });
+
         return services;
     }
 }
