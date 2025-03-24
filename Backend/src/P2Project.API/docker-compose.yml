@@ -45,7 +45,19 @@ services:
     volumes:
       - mongo_data:/data/db
 
+  rabbitmq:
+    image: rabbitmq:management-alpine
+    container_name: rabbitmqP2P
+    hostname: rabbitmq
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    restart: always
+
 volumes:
   postgres-data:
   minio-data:
   mongo_data:
+  rabbitmq_data:
