@@ -53,8 +53,8 @@ public class TakeInReviewHandler :
         if (existedRequest.IsFailure)
             return Errors.General.NotFound(command.RequestId).ToErrorList();
         
-        if (existedRequest.Value.AdminId != null)
-            return Errors.General.Failure("already on review").ToErrorList();
+        //if (existedRequest.Value.AdminId != null)
+            //return Errors.General.Failure("already on review").ToErrorList();
         
         existedRequest.Value.TakeInReview(command.AdminId);
         

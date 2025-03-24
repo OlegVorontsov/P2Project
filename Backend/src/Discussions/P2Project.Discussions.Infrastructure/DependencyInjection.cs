@@ -21,7 +21,7 @@ public static class DependencyInjection
         services.AddRepositories()
                 .AddDataBase(configuration)
                 .AddUnitOfWork()
-                .AddMessageBus(configuration);;
+                .AddMessageBus(configuration);
         
         return services;
     }

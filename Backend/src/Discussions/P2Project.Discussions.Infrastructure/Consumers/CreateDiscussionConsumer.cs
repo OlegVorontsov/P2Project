@@ -7,7 +7,8 @@ using P2Project.VolunteerRequests.Agreements.Messages;
 
 namespace P2Project.Discussions.Infrastructure.Consumers;
 
-public class CreateDiscussionConsumer : IConsumer<VolunteerRequestReviewStartedEvent>
+public class CreateDiscussionConsumer :
+    IConsumer<VolunteerRequestReviewStartedEvent>
 {
     private readonly IDiscussionsRepository _discussionRepository;
     private readonly ILogger<CreateDiscussionConsumer> _logger;
