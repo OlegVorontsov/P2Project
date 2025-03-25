@@ -65,7 +65,7 @@ public static class DependencyInjection
             
             configure.SetKebabCaseEndpointNameFormatter();
 
-            configure.AddConsumer<CreateDiscussionConsumer>();
+            configure.AddConsumer<OpenDiscussionConsumer>();
 
             configure.UsingRabbitMq((context, cfg) =>
             {

@@ -7,22 +7,13 @@ using P2Project.VolunteerRequests.Agreements.Messages;
 
 namespace P2Project.Discussions.Infrastructure.Consumers;
 
-public class CreateDiscussionConsumer :
-    IConsumer<VolunteerRequestReviewStartedEvent>
+public class OpenDiscussionConsumer(
+    IDiscussionsRepository discussionRepository,
+    ILogger<OpenDiscussionConsumer> logger) : IConsumer<OpenDiscussionEvent>
 {
-    private readonly IDiscussionsRepository _discussionRepository;
-    private readonly ILogger<CreateDiscussionConsumer> _logger;
-
-    public CreateDiscussionConsumer(
-        IDiscussionsRepository discussionRepository,
-        ILogger<CreateDiscussionConsumer> logger)
+    public async Task Consume(ConsumeContext<OpenDiscussionEvent> context)
     {
-        _discussionRepository = discussionRepository;
-        _logger = logger;
-    }
-    public async Task Consume(ConsumeContext<VolunteerRequestReviewStartedEvent> context)
-    {
-        var discussionExist = await _discussionRepository.GetByParticipantsId(
+        var discussionExist = await discussionRepository.GetByParticipantsId(
             context.Message.ReviewingUserId,
             context.Message.ApplicantUserId,
             context.CancellationToken);
@@ -40,9 +31,9 @@ public class CreateDiscussionConsumer :
         if (discussion.IsFailure)
             throw new Exception(discussion.Error.Message);
 
-        await _discussionRepository.Add(discussion.Value, context.CancellationToken);
+        await discussionRepository.Add(discussion.Value, context.CancellationToken);
         
-        _logger.LogInformation(
+        logger.LogInformation(
             "Discussion was open with id {Id}", discussion.Value.Id);
     }
 }

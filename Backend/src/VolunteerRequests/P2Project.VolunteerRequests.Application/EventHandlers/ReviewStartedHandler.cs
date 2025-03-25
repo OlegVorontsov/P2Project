@@ -7,22 +7,16 @@ using P2Project.VolunteerRequests.Agreements.Messages;
 
 namespace P2Project.VolunteerRequests.Application.EventHandlers;
 
-public class ReviewStartedHandler :
+public class ReviewStartedHandler(
+    Bind<IDiscussionMessageBus, IPublishEndpoint> publishEndpoint) :
     INotificationHandler<ReviewStartedEvent>
 {
-    private readonly Bind<IDiscussionMessageBus, IPublishEndpoint> _publishEndpoint;
-
-    public ReviewStartedHandler(Bind<IDiscussionMessageBus, IPublishEndpoint> publishEndpoint)
-    {
-        _publishEndpoint = publishEndpoint;
-    }
-
     public async Task Handle(
         ReviewStartedEvent domainEvent,
         CancellationToken cancellationToken)
     {
-        await _publishEndpoint.Value.Publish(
-            new VolunteerRequestReviewStartedEvent(
+        await publishEndpoint.Value.Publish(
+            new OpenDiscussionEvent(
                 domainEvent.RequestId,
                 domainEvent.AdminId,
                 domainEvent.UserId), cancellationToken);
