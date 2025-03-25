@@ -1,7 +1,9 @@
+using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using P2Project.Accounts.Application.Interfaces;
 using P2Project.Accounts.Infrastructure.Admin;
+using P2Project.Accounts.Infrastructure.Consumers;
 using P2Project.Accounts.Infrastructure.DbContexts;
 using P2Project.Core;
 using P2Project.Core.Interfaces;
@@ -21,7 +23,8 @@ public static class DependencyInjection
             configuration.GetSection(AdminOptions.NAME));
         
         services.AddDataBase(configuration)
-                .AddUnitOfWork();
+                .AddUnitOfWork()
+                .AddMessageBus(configuration);
         
         return services;
     }
@@ -41,6 +44,35 @@ public static class DependencyInjection
         this IServiceCollection services)
     {
         services.AddKeyedScoped<IUnitOfWork, UnitOfWork>(Modules.Accounts);
+
+        return services;
+    }
+    
+    private static IServiceCollection AddMessageBus(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.AddMassTransit<IAccountsMessageBus>(configure =>
+        {
+            var options = configuration
+                .GetSection(RabbitMqOptions.SECTION_NAME)
+                .Get<RabbitMqOptions>()!;
+            
+            configure.SetKebabCaseEndpointNameFormatter();
+
+            configure.AddConsumer<CreateVolunteerAccountConsumer>();
+
+            configure.UsingRabbitMq((context, cfg) =>
+            {
+                cfg.Host(new Uri(options.Host), h =>
+                {
+                    h.Username(options.Username);
+                    h.Password(options.Password);
+                });
+
+                cfg.ConfigureEndpoints(context);
+            });
+        });
 
         return services;
     }

@@ -13,50 +13,35 @@ using P2Project.VolunteerRequests.Application.Interfaces;
 
 namespace P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Commands.SetApprovedStatus;
 
-public class SetApprovedStatusHandler :
-    ICommandHandler<Guid, SetApprovedStatusCommand>
+public class SetApprovedStatusHandler(
+    IValidator<SetApprovedStatusCommand> validator,
+    IPublisher publisher,
+    IVolunteerRequestsRepository volunteerRequestsRepository,
+    [FromKeyedServices(Modules.VolunteerRequests)]
+    IUnitOfWork unitOfWork,
+    ILogger<SetApprovedStatusHandler> logger) : ICommandHandler<Guid, SetApprovedStatusCommand>
 {
-    private readonly IValidator<SetApprovedStatusCommand> _validator;
-    private readonly IPublisher _publisher;
-    private readonly IVolunteerRequestsRepository _volunteerRequestsRepository;
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly ILogger<SetApprovedStatusHandler> _logger;
-
-    public SetApprovedStatusHandler(
-        IValidator<SetApprovedStatusCommand> validator,
-        IPublisher publisher,
-        IVolunteerRequestsRepository volunteerRequestsRepository,
-        [FromKeyedServices(Modules.VolunteerRequests)] IUnitOfWork unitOfWork,
-        ILogger<SetApprovedStatusHandler> logger)
-    {
-        _validator = validator;
-        _publisher = publisher;
-        _volunteerRequestsRepository = volunteerRequestsRepository;
-        _unitOfWork = unitOfWork;
-        _logger = logger;
-    }
-
     public async Task<Result<Guid, ErrorList>> Handle(
         SetApprovedStatusCommand command,
         CancellationToken cancellationToken)
     {
-        var validationResult = await _validator.ValidateAsync(
+        var validationResult = await validator.ValidateAsync(
             command, cancellationToken);
         if (validationResult.IsValid == false)
             return validationResult.ToErrorList();
         
-        var existedRequest = await _volunteerRequestsRepository.GetById(
+        var existedRequest = await volunteerRequestsRepository.GetById(
             command.RequestId, cancellationToken);
         if (existedRequest.IsFailure)
             return Errors.General.NotFound(command.RequestId).ToErrorList();
         
         existedRequest.Value.SetApprovedStatus(command.AdminId, command.Comment);
         
-        await _publisher.PublishDomainEvents(existedRequest.Value, cancellationToken);
+        await publisher.PublishDomainEvents(existedRequest.Value, cancellationToken);
         
-        await _unitOfWork.SaveChanges(cancellationToken);
+        await unitOfWork.SaveChanges(cancellationToken);
         
-        _logger.LogInformation(
+        logger.LogInformation(
             "Volunteer request with id {requestId} was approved", command.RequestId);
 
         return existedRequest.Value.Id.Value;
