@@ -1,9 +1,8 @@
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using P2Project.Core;
-using P2Project.Core.Events;
 using P2Project.Core.Interfaces;
+using P2Project.Core.Interfaces.Commands;
 using P2Project.Discussions.Application.Interfaces;
 using P2Project.Discussions.Domain.Entities;
 using P2Project.SharedKernel.ValueObjects;
@@ -12,23 +11,22 @@ namespace P2Project.Discussions.Application.DiscussionsManagement.EventHandlers.
 
 public class CreateMessageHandler(
     IDiscussionsRepository discussionsRepository,
-    [FromKeyedServices(Modules.Discussions)]
-    IUnitOfWork unitOfWork,
-    ILogger<CreateMessageHandler> logger) : INotificationHandler<CreateMessageEvent>
+    [FromKeyedServices(Modules.Discussions)] IUnitOfWork unitOfWork,
+    ILogger<CreateMessageHandler> logger) : ICommandVoidHandler<CreateMessageCommand>
 {
     public async Task Handle(
-        CreateMessageEvent domainEvent,
+        CreateMessageCommand command,
         CancellationToken cancellationToken)
     {
         var discussionExist = await discussionsRepository.GetByRequestId(
-            domainEvent.RequestId, cancellationToken);
+            command.RequestId, cancellationToken);
         if (discussionExist.IsFailure)
             throw new Exception(discussionExist.Error.Message);
 
         var newMessage = Message.Create(
             discussionExist.Value.Id,
-            domainEvent.SenderId,
-            Content.Create(domainEvent.Message).Value);
+            command.SenderId,
+            Content.Create(command.Message).Value);
 
         var addMessageResult = discussionExist.Value.AddMessage(newMessage);
         if (addMessageResult.IsFailure)

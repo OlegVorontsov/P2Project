@@ -16,3 +16,10 @@ public interface ICommandHandler<in TCommand> where TCommand : ICommand
         TCommand command,
         CancellationToken cancellationToken = default);
 }
+
+public interface ICommandVoidHandler<in TCommand> where TCommand : ICommand
+{
+    public Task Handle(
+        TCommand command,
+        CancellationToken cancellationToken = default);
+}

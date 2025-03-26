@@ -3,6 +3,7 @@ using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using P2Project.Core.Interfaces.Commands;
 using P2Project.Core.Interfaces.Queries;
+using P2Project.Discussions.Application.DiscussionsManagement.EventHandlers.CreateMessage;
 
 namespace P2Project.Discussions.Application;
 
@@ -26,7 +27,9 @@ public static class DependencyInjection
     {
         return services.Scan(scan => scan.FromAssemblies(_assembly)
             .AddClasses(c => c
-                .AssignableToAny(typeof(ICommandHandler<,>), typeof(ICommandHandler<>)))
+                .AssignableToAny(typeof(ICommandHandler<,>),
+                                 typeof(ICommandHandler<>),
+                                 typeof(ICommandVoidHandler<>)))
             .AsSelfWithInterfaces()
             .WithScopedLifetime());
     }
