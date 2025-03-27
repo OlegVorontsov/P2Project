@@ -47,7 +47,7 @@ public class VolunteerRequest : DomainEntity<VolunteerRequestId>
     {
         AdminId = adminId;
         Status = RequestStatus.OnReview;
-        AddDomainEvent(new CreateDiscussionEvent(Id, adminId, UserId));
+        AddDomainEvent(new ReviewStartedEvent(Id, adminId, UserId));
     }
     
     public void SetRevisionRequiredStatus(
@@ -63,7 +63,7 @@ public class VolunteerRequest : DomainEntity<VolunteerRequestId>
     {
         Status = RequestStatus.Approved;
         RejectionComment = null;
-        AddDomainEvent(new CreateVolunteerAccountEvent(UserId));
+        AddDomainEvent(new ApprovedEvent(UserId));
         AddDomainEvent(new CreateMessageEvent(Id, adminId, comment));
     }
     

@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <PackageReference Include="EFCore.NamingConventions" Version="8.0.3" />
+      <PackageReference Include="MassTransit.RabbitMQ" Version="8.4.0" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.10" />
     </ItemGroup>
@@ -15,6 +16,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\Shared\P2Project.Framework\P2Project.Framework.csproj" />
       <ProjectReference Include="..\..\Shared\P2Project.SharedKernel\P2Project.SharedKernel.csproj" />
+      <ProjectReference Include="..\..\VolunteerRequests\P2Project.VolunteerRequests.Agreements\P2Project.VolunteerRequests.Agreements.csproj" />
       <ProjectReference Include="..\P2Project.Accounts.Application\P2Project.Accounts.Application.csproj" />
       <ProjectReference Include="..\P2Project.Accounts.Domain\P2Project.Accounts.Domain.csproj" />
     </ItemGroup>
