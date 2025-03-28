@@ -1,22 +1,22 @@
-using MassTransit;
-using MassTransit.DependencyInjection;
 using MediatR;
-using P2Project.Accounts.Application.Interfaces;
 using P2Project.Core.Events;
 using P2Project.VolunteerRequests.Agreements.Messages;
+using P2Project.VolunteerRequests.Application.Interfaces;
 
 namespace P2Project.VolunteerRequests.Application.EventHandlers;
 
 public class ApprovedHandler(
-    Bind<IAccountsMessageBus, IPublishEndpoint> publishEndpoint) :
+    IOutboxRepository outboxRepository) :
     INotificationHandler<ApprovedEvent>
 {
     public async Task Handle(
         ApprovedEvent domainEvent,
         CancellationToken cancellationToken)
     {
-        await publishEndpoint.Value.Publish(
-            new CreateVolunteerAccountEvent(
-                domainEvent.UserId), cancellationToken);
+        var integrationEvent = new CreateVolunteerAccountEvent(
+            domainEvent.UserId);
+        
+        await outboxRepository.Add(
+            integrationEvent, cancellationToken);
     }
 }

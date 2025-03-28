@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using P2Project.VolunteerRequests.Domain;
+using P2Project.VolunteerRequests.Infrastructure.Outbox;
 
 namespace P2Project.VolunteerRequests.Infrastructure.DbContexts
 {
@@ -9,6 +10,7 @@ namespace P2Project.VolunteerRequests.Infrastructure.DbContexts
         private readonly string _connectionString;
         
         public DbSet<VolunteerRequest> VolunteerRequests => Set<VolunteerRequest>();
+        public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
 
         public VolunteerRequestsWriteDbContext(string connectionString)
         {

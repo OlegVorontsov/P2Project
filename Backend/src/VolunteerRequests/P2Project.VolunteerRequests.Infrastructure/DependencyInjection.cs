@@ -8,6 +8,8 @@ using P2Project.SharedKernel;
 using P2Project.VolunteerRequests.Application;
 using P2Project.VolunteerRequests.Application.Interfaces;
 using P2Project.VolunteerRequests.Infrastructure.DbContexts;
+using P2Project.VolunteerRequests.Infrastructure.Outbox;
+using Quartz;
 
 namespace P2Project.VolunteerRequests.Infrastructure;
 
@@ -20,6 +22,8 @@ public static class DependencyInjection
         services.AddRepositories()
                 .AddDataBase(configuration)
                 .AddUnitOfWork()
+                .AddOutbox()
+                .AddQuartzService()
                 .AddMessageBus(configuration);
         
         return services;
@@ -29,6 +33,7 @@ public static class DependencyInjection
         this IServiceCollection services)
     {
         services.AddScoped<IVolunteerRequestsRepository, VolunteerRequestsRepository>();
+        services.AddScoped<IOutboxRepository, OutboxRepository>();
         return services;
     }
     
@@ -73,6 +78,32 @@ public static class DependencyInjection
                 cfg.ConfigureEndpoints(context);
             });
         });
+
+        return services;
+    }
+    
+    private static IServiceCollection AddOutbox(
+        this IServiceCollection services)
+    {
+        services.AddScoped<ProcessOutboxMessagesService>();
+        return services;
+    }
+    
+    private static IServiceCollection AddQuartzService(this IServiceCollection services)
+    {
+        services.AddScoped<ProcessOutboxMessagesService>();
+
+        services.AddQuartz(configure =>
+        {
+            var jobKey = new JobKey(nameof(ProcessOutboxMessagesJob));
+
+            configure
+                .AddJob<ProcessOutboxMessagesJob>(jobKey)
+                .AddTrigger(trigger => trigger.ForJob(jobKey).WithSimpleSchedule(
+                    schedule => schedule.WithIntervalInSeconds(1).RepeatForever()));
+        });
+
+        services.AddQuartzHostedService(options => { options.WaitForJobsToComplete = true; });
 
         return services;
     }
