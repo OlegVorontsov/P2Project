@@ -1,6 +1,4 @@
 using MassTransit;
-using Microsoft.AspNetCore.Mvc;
-using P2Project.Discussions.Application.DiscussionsManagement.Commands.AddMessageInDiscussionById;
 using P2Project.Discussions.Application.DiscussionsManagement.EventHandlers.CreateMessage;
 using P2Project.VolunteerRequests.Agreements.Messages;
 
