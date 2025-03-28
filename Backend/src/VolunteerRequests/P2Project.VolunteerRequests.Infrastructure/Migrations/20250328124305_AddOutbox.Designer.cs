@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using P2Project.VolunteerRequests.Infrastructure.DbContexts;
@@ -12,9 +13,11 @@ using P2Project.VolunteerRequests.Infrastructure.DbContexts;
 namespace P2Project.VolunteerRequests.Infrastructure.Migrations
 {
     [DbContext(typeof(VolunteerRequestsWriteDbContext))]
-    partial class VolunteerRequestsWriteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250328124305_AddOutbox")]
+    partial class AddOutbox
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
