@@ -35,8 +35,7 @@ public class ProcessOutboxMessagesService
             .Take(50)
             .ToListAsync(cancellationToken);
 
-        if (messages.Count == 0)
-            return;
+        if (messages.Count == 0) return;
 
         var pipeline = new ResiliencePipelineBuilder()
             .AddRetry(new RetryStrategyOptions
