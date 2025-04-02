@@ -9,4 +9,11 @@ public class UserNotificationSettings
     public bool? IsEmailSend { get; private set; } = false;
     public bool? IsTelegramSend { get; private set; } = false;
     public bool? IsWebSend { get; private set; } = false;
+    
+    public void Edit(bool? isEmailSend, bool? isTelegramSend, bool? isWebSend)
+    {
+        IsEmailSend = isEmailSend;
+        IsTelegramSend = isTelegramSend;
+        IsWebSend = isWebSend;
+    }
 }
