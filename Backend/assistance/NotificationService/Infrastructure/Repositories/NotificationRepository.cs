@@ -16,7 +16,7 @@ public class NotificationRepository(NotificationWriteDbContext dbContext)
     }
 
     public async Task<IReadOnlyList<UserNotificationSettings>> GetAnySending(
-        Guid userId, CancellationToken ct)
+        CancellationToken ct)
     {
         var getResult = await dbContext.Notifications
             .Where(n => n.IsEmailSend == true || n.IsWebSend == true || n.IsTelegramSend == true)
@@ -24,8 +24,8 @@ public class NotificationRepository(NotificationWriteDbContext dbContext)
         return getResult;
     }
 
-    public async Task<IReadOnlyList<UserNotificationSettings>> GetEmailSending(
-        Guid userId, CancellationToken ct)
+    public async Task<IReadOnlyList<UserNotificationSettings>> GetEmailSendings(
+        CancellationToken ct)
     {
         var getResult = await dbContext.Notifications
             .Where(n => n.IsEmailSend == true)
@@ -33,8 +33,8 @@ public class NotificationRepository(NotificationWriteDbContext dbContext)
         return getResult;
     }
 
-    public async Task<IReadOnlyList<UserNotificationSettings>> GetTelegramSending(
-        Guid userId, CancellationToken ct)
+    public async Task<IReadOnlyList<UserNotificationSettings>> GetTelegramSendings(
+        CancellationToken ct)
     {
         var getResult = await dbContext.Notifications
             .Where(n => n.IsTelegramSend == true)
@@ -42,8 +42,8 @@ public class NotificationRepository(NotificationWriteDbContext dbContext)
         return getResult;
     }
 
-    public async Task<IReadOnlyList<UserNotificationSettings>> GetWebSending(
-        Guid userId, CancellationToken ct)
+    public async Task<IReadOnlyList<UserNotificationSettings>> GetWebSendings(
+        CancellationToken ct)
     {
         var getResult = await dbContext.Notifications
             .Where(n => n.IsWebSend == true)
