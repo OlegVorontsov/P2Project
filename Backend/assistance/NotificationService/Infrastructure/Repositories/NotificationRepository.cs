@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using NotificationService.Core.Dtos;
 using NotificationService.Domain;
-using NotificationService.Dtos;
 using NotificationService.Infrastructure.DbContexts;
 
 namespace NotificationService.Infrastructure.Repositories;

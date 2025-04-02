@@ -6,7 +6,7 @@ using NotificationService.Application.UserNotificationSettingsManagement.GetTele
 using NotificationService.Application.UserNotificationSettingsManagement.GetWebSendings;
 using NotificationService.Application.UserNotificationSettingsManagement.ResetByUserId;
 using NotificationService.Application.UserNotificationSettingsManagement.UpdateByUserId;
-using NotificationService.Dtos;
+using NotificationService.Core.Dtos;
 
 namespace NotificationService.Web.Controllers;
 

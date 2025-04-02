@@ -10,7 +10,8 @@ public static class InfrastructureDependencyInjection
         IConfiguration configuration)
     {
         services.AddDataBase(configuration)
-                .AddRepositories();
+                .AddRepositories()
+                .AddScoped<UnitOfWork>();
         
         return services;
     }
