@@ -1,7 +1,13 @@
-var builder = WebApplication.CreateBuilder(args);
+using NotificationService;
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
+var config = builder.Configuration;
+
+services
+    .AddEndpointsApiExplorer()
+    .AddSwaggerGen()
+    .AddServices(config);
 
 var app = builder.Build();
 
