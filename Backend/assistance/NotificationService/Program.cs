@@ -1,4 +1,4 @@
-using NotificationService;
+using NotificationService.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -7,7 +7,8 @@ var config = builder.Configuration;
 services
     .AddEndpointsApiExplorer()
     .AddSwaggerGen()
-    .AddServices(config);
+    .AddInfrastructure(config)
+    .AddControllers();
 
 var app = builder.Build();
 

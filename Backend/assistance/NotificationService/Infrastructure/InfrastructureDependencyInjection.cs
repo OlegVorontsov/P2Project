@@ -1,14 +1,16 @@
 using NotificationService.Infrastructure.DbContexts;
+using NotificationService.Infrastructure.Repositories;
 
-namespace NotificationService;
+namespace NotificationService.Infrastructure;
 
-public static class DependencyInjection
+public static class InfrastructureDependencyInjection
 {
-    public static IServiceCollection AddServices(
+    public static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddDataBase(configuration);
+        services.AddDataBase(configuration)
+                .AddRepositories();
         
         return services;
     }
@@ -19,6 +21,14 @@ public static class DependencyInjection
     {
         services.AddScoped<NotificationWriteDbContext>(_ =>
             new NotificationWriteDbContext(configuration.GetConnectionString("Database")!));
+
+        return services;
+    }
+    
+    private static IServiceCollection AddRepositories(
+        this IServiceCollection services)
+    {
+        services.AddScoped<NotificationRepository>();
 
         return services;
     }
