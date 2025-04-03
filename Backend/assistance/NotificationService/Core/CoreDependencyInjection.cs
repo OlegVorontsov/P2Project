@@ -17,7 +17,6 @@ public static class CoreDependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.Configure<EmailOptions>(configuration.GetSection(EmailOptions.GOOGLE));
         services.Configure<EmailOptions>(configuration.GetSection(EmailOptions.YANDEX));
 
         return services;

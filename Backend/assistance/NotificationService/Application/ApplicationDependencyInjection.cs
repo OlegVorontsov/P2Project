@@ -1,3 +1,4 @@
+using NotificationService.Application.EmailManagement.Send;
 using NotificationService.Application.UserNotificationSettingsManagement.GetAny;
 using NotificationService.Application.UserNotificationSettingsManagement.GetByUserId;
 using NotificationService.Application.UserNotificationSettingsManagement.GetEmailSendings;
@@ -14,12 +15,13 @@ public static class ApplicationDependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddHandlers();
+        services.AddUserNotificationSettingsHandlers()
+                .AddEmailHandlers();
         
         return services;
     }
     
-    private static IServiceCollection AddHandlers(
+    private static IServiceCollection AddUserNotificationSettingsHandlers(
         this IServiceCollection services)
     {
         services.AddScoped<GetAnyHandler>();
@@ -29,6 +31,14 @@ public static class ApplicationDependencyInjection
         services.AddScoped<GetWebSendingsHandler>();
         services.AddScoped<ResetByUserIdHandler>();
         services.AddScoped<UpdateByUserIdHandler>();
+
+        return services;
+    }
+    
+    private static IServiceCollection AddEmailHandlers(
+        this IServiceCollection services)
+    {
+        services.AddScoped<SendHandler>();
 
         return services;
     }
