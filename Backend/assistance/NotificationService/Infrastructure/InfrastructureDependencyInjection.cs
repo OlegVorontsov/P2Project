@@ -1,3 +1,4 @@
+using NotificationService.Core;
 using NotificationService.Infrastructure.DbContexts;
 using NotificationService.Infrastructure.Repositories;
 
@@ -21,7 +22,7 @@ public static class InfrastructureDependencyInjection
         IConfiguration configuration)
     {
         services.AddScoped<NotificationWriteDbContext>(_ =>
-            new NotificationWriteDbContext(configuration.GetConnectionString("Database")!));
+            new NotificationWriteDbContext(configuration.GetConnectionString(Constants.DATABASE)!));
 
         return services;
     }
