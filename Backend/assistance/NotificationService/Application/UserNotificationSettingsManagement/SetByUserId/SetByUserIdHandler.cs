@@ -11,11 +11,19 @@ public class SetByUserIdHandler(
 {
     public async Task<UserNotificationSettings> Handle(
         Guid userId,
-        SentNotificationSettings newNotificationSettings,
+        SentNotificationSettings notificationSettings,
         CancellationToken ct)
     {
-        var result = await repository.Set(userId, newNotificationSettings, ct);
+        var notificationSettingsExist = await repository.Get(userId, ct);
+        if (notificationSettingsExist is null)
+            return UserNotificationSettings.Create(userId);
+        
+        notificationSettingsExist.Edit(
+            notificationSettings.IsEmailSend,
+            notificationSettings.IsTelegramSend,
+            notificationSettings.IsWebSend);
         await unitOfWork.SaveChanges(ct);
-        return result;
+        
+        return notificationSettingsExist;
     }
 }

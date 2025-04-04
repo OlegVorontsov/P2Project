@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using NotificationService.Core.Dtos;
 using NotificationService.Domain;
 using NotificationService.Infrastructure.DbContexts;
 
@@ -49,32 +48,5 @@ public class NotificationRepository(NotificationWriteDbContext dbContext)
             .Where(n => n.IsWebSend == true)
             .ToListAsync(ct);
         return getResult;
-    }
-    
-    public async Task<UserNotificationSettings> Set(
-        Guid userId,
-        SentNotificationSettings notificationSettings,
-        CancellationToken ct)
-    {
-        var userNotification = await dbContext.Notifications
-            .FirstOrDefaultAsync(n => n.UserId == userId, ct);
-        
-        if (userNotification is null)
-            return UserNotificationSettings.Create(userId);
-        
-        userNotification.Edit(
-            notificationSettings.IsEmailSend,
-            notificationSettings.IsTelegramSend,
-            notificationSettings.IsWebSend);
-
-        return userNotification;
-    }
-
-    public async Task Reset(Guid userId, CancellationToken ct)
-    {
-        var newNotificationSettings =
-            new SentNotificationSettings(false, false, false);
-
-        await Set(userId, newNotificationSettings, ct);
     }
 }
