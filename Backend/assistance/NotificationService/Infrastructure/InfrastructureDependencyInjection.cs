@@ -1,0 +1,37 @@
+using NotificationService.Core;
+using NotificationService.Infrastructure.DbContexts;
+using NotificationService.Infrastructure.Repositories;
+
+namespace NotificationService.Infrastructure;
+
+public static class InfrastructureDependencyInjection
+{
+    public static IServiceCollection AddInfrastructure(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.AddDataBase(configuration)
+                .AddRepositories()
+                .AddScoped<UnitOfWork>();
+        
+        return services;
+    }
+    
+    private static IServiceCollection AddDataBase(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.AddScoped<NotificationWriteDbContext>(_ =>
+            new NotificationWriteDbContext(configuration.GetConnectionString(Constants.DATABASE)!));
+
+        return services;
+    }
+    
+    private static IServiceCollection AddRepositories(
+        this IServiceCollection services)
+    {
+        services.AddScoped<NotificationRepository>();
+
+        return services;
+    }
+}
