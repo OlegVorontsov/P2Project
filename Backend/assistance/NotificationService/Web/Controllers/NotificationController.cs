@@ -5,7 +5,7 @@ using NotificationService.Application.UserNotificationSettingsManagement.GetEmai
 using NotificationService.Application.UserNotificationSettingsManagement.GetTelegramSendings;
 using NotificationService.Application.UserNotificationSettingsManagement.GetWebSendings;
 using NotificationService.Application.UserNotificationSettingsManagement.ResetByUserId;
-using NotificationService.Application.UserNotificationSettingsManagement.UpdateByUserId;
+using NotificationService.Application.UserNotificationSettingsManagement.SetByUserId;
 using NotificationService.Core.Dtos;
 
 namespace NotificationService.Web.Controllers;
@@ -69,13 +69,13 @@ public class NotificationController : BaseController
     }
 
     [HttpPost("notification-settings/new/{userId:guid}")]
-    public async Task<IActionResult> UpdateByUserId(
+    public async Task<IActionResult> SetByUserId(
         [FromRoute] Guid userId,
         [FromBody] SentNotificationSettings newNotificationSettings,
-        [FromServices] UpdateByUserIdHandler handler,
+        [FromServices] SetByUserIdHandler handler,
         CancellationToken ct = default)
     {
-        await handler.Handle(userId, newNotificationSettings, ct);
-        return Ok();
+        var result = await handler.Handle(userId, newNotificationSettings, ct);
+        return Ok(result);
     }
 }

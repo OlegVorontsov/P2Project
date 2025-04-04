@@ -30,7 +30,7 @@ public static class ApplicationDependencyInjection
         services.AddScoped<GetTelegramSendingsHandler>();
         services.AddScoped<GetWebSendingsHandler>();
         services.AddScoped<ResetByUserIdHandler>();
-        services.AddScoped<UpdateByUserIdHandler>();
+        services.AddScoped<SetByUserIdHandler>();
 
         return services;
     }

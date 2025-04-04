@@ -10,6 +10,13 @@ public class UserNotificationSettings
     public bool? IsTelegramSend { get; private set; } = false;
     public bool? IsWebSend { get; private set; } = false;
     
+    private UserNotificationSettings(Guid userId)
+    {
+        UserId = userId;
+    }
+
+    public static UserNotificationSettings Create(Guid userId) => new (userId);
+    
     public void Edit(bool? isEmailSend, bool? isTelegramSend, bool? isWebSend)
     {
         IsEmailSend = isEmailSend;

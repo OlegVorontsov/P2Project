@@ -51,19 +51,23 @@ public class NotificationRepository(NotificationWriteDbContext dbContext)
         return getResult;
     }
     
-    public async Task Update(
+    public async Task<UserNotificationSettings> Set(
         Guid userId,
-        SentNotificationSettings newNotificationSettings,
+        SentNotificationSettings notificationSettings,
         CancellationToken ct)
     {
         var userNotification = await dbContext.Notifications
             .FirstOrDefaultAsync(n => n.UserId == userId, ct);
-        if (userNotification is null) return;
-
+        
+        if (userNotification is null)
+            return UserNotificationSettings.Create(userId);
+        
         userNotification.Edit(
-            newNotificationSettings.IsEmailSend,
-            newNotificationSettings.IsTelegramSend,
-            newNotificationSettings.IsWebSend);
+            notificationSettings.IsEmailSend,
+            notificationSettings.IsTelegramSend,
+            notificationSettings.IsWebSend);
+
+        return userNotification;
     }
 
     public async Task Reset(Guid userId, CancellationToken ct)
@@ -71,6 +75,6 @@ public class NotificationRepository(NotificationWriteDbContext dbContext)
         var newNotificationSettings =
             new SentNotificationSettings(false, false, false);
 
-        await Update(userId, newNotificationSettings, ct);
+        await Set(userId, newNotificationSettings, ct);
     }
 }

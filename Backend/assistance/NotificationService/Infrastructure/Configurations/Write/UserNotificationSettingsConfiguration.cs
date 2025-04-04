@@ -14,19 +14,15 @@ public class UserNotificationSettingsConfiguration :
         builder.HasKey(n => n.Id);
         
         builder.Property(n => n.UserId)
-            .IsRequired()
-            .HasColumnName("user_id");
+            .IsRequired();
 
         builder.Property(n => n.IsEmailSend)
-            .IsRequired(false)
-            .HasColumnName("is_email_send");
+            .IsRequired(false);
 
         builder.Property(n => n.IsTelegramSend)
-            .IsRequired(false)
-            .HasColumnName("is_telegram_send");
+            .IsRequired(false);
 
         builder.Property(n => n.IsWebSend)
-            .IsRequired(false)
-            .HasColumnName("is_web_send");
+            .IsRequired(false);
     }
 }
