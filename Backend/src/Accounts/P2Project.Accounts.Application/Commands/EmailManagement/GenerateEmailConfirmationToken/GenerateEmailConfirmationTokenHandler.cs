@@ -1,6 +1,6 @@
 using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Identity;
-using MongoDB.Driver.Linq;
+using Microsoft.EntityFrameworkCore;
 using P2Project.Accounts.Application.Interfaces;
 using P2Project.Accounts.Domain;
 using P2Project.Core.Interfaces.Commands;
