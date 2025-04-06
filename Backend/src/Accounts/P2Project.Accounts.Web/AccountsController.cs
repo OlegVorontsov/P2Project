@@ -1,6 +1,8 @@
 using FilesService.Core.Requests.AmazonS3;
+using MassTransit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using P2Project.Accounts.Agreements.Messages;
 using P2Project.Accounts.Application.Commands.EmailManagement.ConfirmEmail;
 using P2Project.Accounts.Application.Commands.EmailManagement.GenerateEmailConfirmationToken;
 using P2Project.Accounts.Application.Commands.Login;
@@ -38,31 +40,49 @@ public class AccountsController : ApplicationController
     
     [HttpGet("confirmation-email/token/{userId:guid}")]
     public async Task<IActionResult> GenerateEmailConfirmation(
-        [FromServices] GenerateEmailConfirmationTokenHandler handler,
+        [FromServices] GenerateEmailConfirmationTokenHandler generateEmailTokenHandler,
+        [FromServices] GetUserInfoWithAccountsHandler getUserInfoHandler,
         [FromRoute] Guid userId,
+        IPublishEndpoint publisher,
         CancellationToken ct)
     {
-        var generateRequest = new GenerateEmailConfirmationTokenRequest(userId);
-        var result = await handler.Handle(generateRequest, ct);
-        if (result.IsFailure)
-            return BadRequest(result.Error);
+        var generateEmailTokenRequest = new GenerateEmailConfirmationTokenRequest(userId);
+        var generateEmailTokenResult =
+            await generateEmailTokenHandler.Handle(generateEmailTokenRequest, ct);
 
-        var confirmRequest = new ConfirmEmailRequest(userId, result.Value);
+        var getUserInfoRequest = new GetUserInfoWithAccountsQuery(userId);
+        var getUserInfoResult = 
+            await getUserInfoHandler.Handle(getUserInfoRequest, ct);
+        
+        if (generateEmailTokenResult.IsFailure || getUserInfoResult.IsFailure)
+            return BadRequest(generateEmailTokenResult.Error);
+
+        var confirmRequest = new ConfirmEmailRequest(userId, generateEmailTokenResult.Value);
+        
         var callbackUrl = Url.Action(
             nameof(ConfirmEmail),
-            nameof(AccountsController),
+            nameof(AccountsController).Replace("Controller", string.Empty),
             confirmRequest,
             protocol: HttpContext.Request.Scheme);
-        return Ok(result.Value);
+        
+        var userDto = getUserInfoResult.Value;
+        var createdUserEvent = new CreatedUserEvent(
+            userDto.Id,
+            userDto.Email,
+            userDto.UserName,
+            callbackUrl);
+        await publisher.Publish(createdUserEvent, ct);
+
+        return Ok(callbackUrl);
     }
 
-    [HttpPost("confirmation-email")]
+    [HttpGet("confirmation-email")]
     public async Task<IActionResult> ConfirmEmail(
         [FromServices] ConfirmEmailHandler handler,
-        [FromBody] ConfirmEmailRequest request,
+        [FromQuery] ConfirmEmailRequest confirmRequest,
         CancellationToken ct)
     {
-        var result = await handler.Handle(request, ct);
+        var result = await handler.Handle(confirmRequest, ct);
         if (result.IsFailure)
             return BadRequest(result.Error);
 

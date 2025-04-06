@@ -1,4 +1,5 @@
 using MassTransit;
+using NotificationService.Core.EmailMessages.Templates;
 using NotificationService.Infrastructure.EmailNotification.EmailManagerImplementations;
 using P2Project.Accounts.Agreements.Messages;
 
@@ -14,8 +15,9 @@ public class CreatedUserConsumer(IConfiguration configuration)
         var emailManager = YandexEmailManager.Build(configuration);
         emailManager.SendMessage(
             command.Email,
-            "Регистрация",
-            $"Добро пожаловать, {command.UserName}! Для подтверждения почты перейдите по ссылке {command.UserId}.com"); 
+            ConfirmationEmailMessage.Subject(),
+            ConfirmationEmailMessage.Body(command.UserName, command.EmailConfirmationLink),
+            ConfirmationEmailMessage.Styles());
         return;
     }
 }

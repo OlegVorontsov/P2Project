@@ -2,6 +2,7 @@ using MailKit.Net.Smtp;
 using MimeKit;
 using MimeKit.Text;
 using NotificationService.Core;
+using NotificationService.Core.EmailMessages;
 
 namespace NotificationService.Infrastructure.EmailNotification;
 
@@ -24,15 +25,18 @@ public class EmailManager
         string recipientEmail,
         string subject,
         string body,
-        string _senderEmailName = Constants.SENDER_EMAIL_NAME)
+        string styles = "",
+        string senderEmailName = Constants.SENDER_EMAIL_NAME)
     {
+        var emailMessage = EmailMessageConstructor.Build(styles, body);
+        
         var message = new MimeMessage();
-        message.From.Add(new MailboxAddress(_senderEmailName, _senderEmail));
+        message.From.Add(new MailboxAddress(senderEmailName, _senderEmail));
         message.To.Add(new MailboxAddress(string.Empty, recipientEmail));
         message.Subject = subject;
-        message.Body = new TextPart(TextFormat.Plain)
+        message.Body = new TextPart(TextFormat.Html)
         {
-            Text = body
+            Text = emailMessage
         };
         using var client = new SmtpClient();
         client.Connect(_host, _port);

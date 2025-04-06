@@ -22,7 +22,6 @@ public class RegisterHandler :
     private readonly UserManager<User> _userManager;
     private readonly RoleManager<Role> _roleManager;
     private readonly IAccountsManager _accountManager;
-    private readonly IPublishEndpoint _publusher;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<RegisterHandler> _logger;
     
@@ -30,14 +29,12 @@ public class RegisterHandler :
         UserManager<User> userManager,
         RoleManager<Role> roleManager,
         IAccountsManager accountManager,
-        IPublishEndpoint publusher,
         [FromKeyedServices(Modules.Accounts)] IUnitOfWork unitOfWork,
         ILogger<RegisterHandler> logger)
     {
         _userManager = userManager;
         _roleManager = roleManager;
         _accountManager = accountManager;
-        _publusher = publusher;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -76,13 +73,6 @@ public class RegisterHandler :
             await _userManager.UpdateAsync(userResult.Value);
             
             await _unitOfWork.SaveChanges(cancellationToken);
-            
-            var createdUserEvent = new CreatedUserEvent(
-                userResult.Value.Id,
-                userResult!.Value.Email,
-                userResult!.Value.UserName,
-                participantRole.Id.ToString());
-            await _publusher.Publish(createdUserEvent, cancellationToken);
             
             transaction.Commit();
             
