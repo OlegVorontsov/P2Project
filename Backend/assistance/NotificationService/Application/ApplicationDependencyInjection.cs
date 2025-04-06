@@ -5,7 +5,7 @@ using NotificationService.Application.UserNotificationSettingsManagement.GetEmai
 using NotificationService.Application.UserNotificationSettingsManagement.GetTelegramSendings;
 using NotificationService.Application.UserNotificationSettingsManagement.GetWebSendings;
 using NotificationService.Application.UserNotificationSettingsManagement.ResetByUserId;
-using NotificationService.Application.UserNotificationSettingsManagement.UpdateByUserId;
+using NotificationService.Application.UserNotificationSettingsManagement.SetByUserId;
 
 namespace NotificationService.Application;
 

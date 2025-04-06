@@ -1,12 +1,13 @@
 using CSharpFunctionalExtensions;
+using MassTransit;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using P2Project.Accounts.Agreements.Messages;
 using P2Project.Accounts.Application.Interfaces;
 using P2Project.Accounts.Domain;
 using P2Project.Accounts.Domain.Accounts;
 using P2Project.Accounts.Domain.RolePermission.Roles;
-using P2Project.Accounts.Domain.Users.ValueObjects;
 using P2Project.Core;
 using P2Project.Core.Interfaces;
 using P2Project.Core.Interfaces.Commands;
@@ -21,6 +22,7 @@ public class RegisterHandler :
     private readonly UserManager<User> _userManager;
     private readonly RoleManager<Role> _roleManager;
     private readonly IAccountsManager _accountManager;
+    private readonly IPublishEndpoint _publusher;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<RegisterHandler> _logger;
     
@@ -28,12 +30,14 @@ public class RegisterHandler :
         UserManager<User> userManager,
         RoleManager<Role> roleManager,
         IAccountsManager accountManager,
+        IPublishEndpoint publusher,
         [FromKeyedServices(Modules.Accounts)] IUnitOfWork unitOfWork,
         ILogger<RegisterHandler> logger)
     {
         _userManager = userManager;
         _roleManager = roleManager;
         _accountManager = accountManager;
+        _publusher = publusher;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -72,6 +76,14 @@ public class RegisterHandler :
             await _userManager.UpdateAsync(userResult.Value);
             
             await _unitOfWork.SaveChanges(cancellationToken);
+            
+            var createdUserEvent = new CreatedUserEvent(
+                userResult.Value.Id,
+                userResult!.Value.Email,
+                userResult!.Value.UserName,
+                participantRole.Id.ToString());
+            await _publusher.Publish(createdUserEvent, cancellationToken);
+            
             transaction.Commit();
             
             _logger.LogInformation("User {username} was registered", userResult.Value.UserName);

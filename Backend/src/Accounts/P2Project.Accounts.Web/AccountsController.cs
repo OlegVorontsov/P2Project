@@ -1,5 +1,4 @@
 using FilesService.Core.Requests.AmazonS3;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using P2Project.Accounts.Application.Commands.Login;
