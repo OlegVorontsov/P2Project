@@ -1,6 +1,8 @@
 using FilesService.Core.Requests.AmazonS3;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using P2Project.Accounts.Application.Commands.EmailManagement.ConfirmEmail;
+using P2Project.Accounts.Application.Commands.EmailManagement.GenerateEmailConfirmationToken;
 using P2Project.Accounts.Application.Commands.Login;
 using P2Project.Accounts.Application.Commands.RefreshTokens;
 using P2Project.Accounts.Application.Commands.Register;
@@ -9,6 +11,7 @@ using P2Project.Accounts.Application.Commands.SetAvatar.UploadAvatar;
 using P2Project.Accounts.Application.Commands.Unban;
 using P2Project.Accounts.Application.Queries.GetUserInfoWithAccounts;
 using P2Project.Accounts.Web.Requests;
+using P2Project.Accounts.Web.Requests.EmailManagement;
 using P2Project.Core.Extensions;
 using P2Project.Framework;
 using P2Project.Framework.Authorization;
@@ -31,6 +34,39 @@ public class AccountsController : ApplicationController
             return result.Error.ToResponse();
 
         return Ok(result.Value);
+    }
+    
+    [HttpGet("confirmation-email/token/{userId:guid}")]
+    public async Task<IActionResult> GenerateEmailConfirmation(
+        [FromServices] GenerateEmailConfirmationTokenHandler handler,
+        [FromRoute] Guid userId,
+        CancellationToken ct)
+    {
+        var generateRequest = new GenerateEmailConfirmationTokenRequest(userId);
+        var result = await handler.Handle(generateRequest, ct);
+        if (result.IsFailure)
+            return BadRequest(result.Error);
+
+        var confirmRequest = new ConfirmEmailRequest(userId, result.Value);
+        var callbackUrl = Url.Action(
+            nameof(ConfirmEmail),
+            nameof(AccountsController),
+            confirmRequest,
+            protocol: HttpContext.Request.Scheme);
+        return Ok(result.Value);
+    }
+
+    [HttpPost("confirmation-email")]
+    public async Task<IActionResult> ConfirmEmail(
+        [FromServices] ConfirmEmailHandler handler,
+        [FromBody] ConfirmEmailRequest request,
+        CancellationToken ct)
+    {
+        var result = await handler.Handle(request, ct);
+        if (result.IsFailure)
+            return BadRequest(result.Error);
+
+        return Ok("Почта успешно подтверждена");
     }
     
     [HttpPost("login")]
