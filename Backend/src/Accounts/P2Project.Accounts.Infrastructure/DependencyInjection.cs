@@ -64,6 +64,15 @@ public static class DependencyInjection
 
             configure.AddConsumer<CreateVolunteerAccountConsumer>();
             configure.AddConsumer<CreatedUserConsumer>();
+            
+            configure.AddConfigureEndpointsCallback((context, name, cfg) =>
+            {
+                cfg.UseDelayedRedelivery(r => r.Intervals(
+                    TimeSpan.FromSeconds(5),
+                    TimeSpan.FromSeconds(10),
+                    TimeSpan.FromSeconds(15)));
+                cfg.UseMessageRetry(r => r.Immediate(5));
+            });
 
             configure.UsingRabbitMq((context, cfg) =>
             {

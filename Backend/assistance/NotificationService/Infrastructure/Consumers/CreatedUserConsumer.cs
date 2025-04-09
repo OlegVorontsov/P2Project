@@ -17,16 +17,18 @@ public class CreatedUserConsumer(
     {
         var command = context.Message;
         var emailManager = YandexEmailManager.Build(configuration);
-        for (var i = 0; i < 3; i++)
+        var sentResult = emailManager.SendMessage(
+            command.Email,
+            RegisterUserEmailMessage.Subject(),
+            RegisterUserEmailMessage.Body(command.UserName),
+            RegisterUserEmailMessage.Styles());
+        
+        if (sentResult.IsFailure)
+            logger.LogError(sentResult.Error.Message);
+        else
         {
-            var sentResult = emailManager.SendMessage(
-                command.Email,
-                RegisterUserEmailMessage.Subject(),
-                RegisterUserEmailMessage.Body(command.UserName),
-                RegisterUserEmailMessage.Styles());
-            if (sentResult.IsSuccess) break;
-            logger.LogInformation(sentResult.Error.Message);
+            logger.LogInformation($"RegisterUserEmailMessage sent successfully to: {command.Email}");
+            await handler.Handle(command.UserId, CancellationToken.None);
         }
-        await handler.Handle(command.UserId, CancellationToken.None);
     }
 }

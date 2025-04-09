@@ -14,16 +14,15 @@ public class ConfirmUserEmailConsumer(
     {
         var command = context.Message;
         var emailManager = YandexEmailManager.Build(configuration);
+        var sentResult = emailManager.SendMessage(
+            command.Email,
+            ConfirmationEmailMessage.Subject(),
+            ConfirmationEmailMessage.Body(command.UserName, command.EmailConfirmationLink),
+            ConfirmationEmailMessage.Styles());
         
-        for (var i = 0; i < 3; i++)
-        {
-            var sentResult = emailManager.SendMessage(
-                command.Email,
-                ConfirmationEmailMessage.Subject(),
-                ConfirmationEmailMessage.Body(command.UserName, command.EmailConfirmationLink),
-                ConfirmationEmailMessage.Styles());
-            if (sentResult.IsSuccess) break;
-            logger.LogInformation(sentResult.Error.Message);
-        }
+        if (sentResult.IsFailure)
+            logger.LogError(sentResult.Error.Message);
+        else
+            logger.LogInformation($"ConfirmationEmailMessage sent successfully to: {command.Email}");
     }
 }
