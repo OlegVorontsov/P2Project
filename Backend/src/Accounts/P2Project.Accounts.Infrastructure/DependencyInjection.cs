@@ -1,6 +1,8 @@
 using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NotificationService.Application.Interfaces;
+using NotificationService.Infrastructure.Consumers;
 using P2Project.Accounts.Application.Interfaces;
 using P2Project.Accounts.Infrastructure.Admin;
 using P2Project.Accounts.Infrastructure.Consumers;
@@ -61,7 +63,28 @@ public static class DependencyInjection
             configure.SetKebabCaseEndpointNameFormatter();
 
             configure.AddConsumer<CreateVolunteerAccountConsumer>();
+            configure.AddConsumer<CreatedUserConsumer>();
 
+            configure.UsingRabbitMq((context, cfg) =>
+            {
+                cfg.Host(new Uri(options.Host), h =>
+                {
+                    h.Username(options.Username);
+                    h.Password(options.Password);
+                });
+
+                cfg.ConfigureEndpoints(context);
+            });
+        });
+        
+        services.AddMassTransit<INotificationMessageBus>(configure =>
+        {
+            var options = configuration
+                .GetSection(RabbitMqOptions.SECTION_NAME)
+                .Get<RabbitMqOptions>()!;
+            
+            configure.SetKebabCaseEndpointNameFormatter();
+            
             configure.UsingRabbitMq((context, cfg) =>
             {
                 cfg.Host(new Uri(options.Host), h =>

@@ -1,7 +1,9 @@
 using FilesService.Core.Requests.AmazonS3;
 using MassTransit;
+using MassTransit.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NotificationService.Application.Interfaces;
 using P2Project.Accounts.Agreements.Messages;
 using P2Project.Accounts.Application.Commands.EmailManagement.ConfirmEmail;
 using P2Project.Accounts.Application.Commands.EmailManagement.GenerateEmailConfirmationToken;
@@ -43,7 +45,7 @@ public class AccountsController : ApplicationController
         [FromServices] GenerateEmailConfirmationTokenHandler generateEmailTokenHandler,
         [FromServices] GetUserInfoWithAccountsHandler getUserInfoHandler,
         [FromRoute] Guid userId,
-        IPublishEndpoint publisher,
+        Bind<INotificationMessageBus, IPublishEndpoint> publisher,
         CancellationToken ct)
     {
         var generateEmailTokenRequest = new GenerateEmailConfirmationTokenRequest(userId);
@@ -51,11 +53,14 @@ public class AccountsController : ApplicationController
             await generateEmailTokenHandler.Handle(generateEmailTokenRequest, ct);
 
         var getUserInfoRequest = new GetUserInfoWithAccountsQuery(userId);
-        var getUserInfoResult = 
+        var getUserInfoResult =
             await getUserInfoHandler.Handle(getUserInfoRequest, ct);
         
-        if (generateEmailTokenResult.IsFailure || getUserInfoResult.IsFailure)
+        if (generateEmailTokenResult.IsFailure)
             return BadRequest(generateEmailTokenResult.Error);
+        
+        if (getUserInfoResult.IsFailure)
+            return BadRequest(getUserInfoResult.Error);
 
         var confirmRequest = new ConfirmEmailRequest(userId, generateEmailTokenResult.Value);
         
@@ -66,12 +71,12 @@ public class AccountsController : ApplicationController
             protocol: HttpContext.Request.Scheme);
         
         var userDto = getUserInfoResult.Value;
-        var createdUserEvent = new CreatedUserEvent(
+        var createdUserEvent = new ConfirmedUserEmailEvent(
             userDto.Id,
             userDto.Email,
             userDto.UserName,
             callbackUrl);
-        await publisher.Publish(createdUserEvent, ct);
+        await publisher.Value.Publish(createdUserEvent, ct);
 
         return Ok(callbackUrl);
     }

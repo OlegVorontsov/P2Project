@@ -51,7 +51,8 @@ public static class InfrastructureDependencyInjection
                 .Get<RabbitMqOptions>()!;
             
             configure.SetKebabCaseEndpointNameFormatter();
-
+            
+            configure.AddConsumer<ConfirmUserEmailConsumer>();
             configure.AddConsumer<CreatedUserConsumer>();
 
             configure.UsingRabbitMq((context, cfg) =>

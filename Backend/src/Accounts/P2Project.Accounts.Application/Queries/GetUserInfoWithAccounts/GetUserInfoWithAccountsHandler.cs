@@ -45,13 +45,18 @@ public class GetUserInfoWithAccountsHandler :
         
         if (userDto is null)
             return Errors.General.NotFound(query.Id).ToErrorList();
-        
-        var getAvatarUrlResult = await _httpClient.GetPresignedUrl(
-            userDto.Avatar.FileName,
-            new GetPresignedUrlRequest(userDto.Avatar.BucketName),
-            cancellationToken);
-        if (getAvatarUrlResult.IsSuccess)
-            userDto.AvatarUrl = getAvatarUrlResult.Value.Url;
+
+        if (userDto.Avatar != null)
+        {
+            var getAvatarUrlResult = await _httpClient.GetPresignedUrl(
+                userDto.Avatar.FileName,
+                new GetPresignedUrlRequest(userDto.Avatar.BucketName),
+                cancellationToken);
+            if (getAvatarUrlResult.IsSuccess)
+                userDto.AvatarUrl = getAvatarUrlResult.Value.Url;
+        }
+
+        if (!userDto.Photos.Any()) return userDto;
         
         List<string> photosUrls = [];
         foreach (var photo in userDto.Photos)

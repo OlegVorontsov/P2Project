@@ -1,4 +1,5 @@
 using NotificationService.Application.EmailManagement.Send;
+using NotificationService.Application.EventHandlers;
 using NotificationService.Application.UserNotificationSettingsManagement.GetAny;
 using NotificationService.Application.UserNotificationSettingsManagement.GetByUserId;
 using NotificationService.Application.UserNotificationSettingsManagement.GetEmailSendings;
@@ -31,6 +32,7 @@ public static class ApplicationDependencyInjection
         services.AddScoped<GetWebSendingsHandler>();
         services.AddScoped<ResetByUserIdHandler>();
         services.AddScoped<SetByUserIdHandler>();
+        services.AddScoped<ConfirmationEmailHandler>();
 
         return services;
     }

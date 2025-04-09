@@ -1,12 +1,11 @@
 namespace NotificationService.Core.EmailMessages.Templates;
 
-public class ConfirmationEmailMessage
+public class RegisterUserEmailMessage
 {
-    public static string Body(string userName, string confirmationUrl) => 
+    public static string Body(string userName) => 
             @$"<div class='container'>
                 <h2>Здравствуйте, {userName}!</h2>
-                <p>Благодарим Вас за регистрацию на нашем сайте. Для того чтобы завершить процесс регистрации и подтвердить Ваш email, пожалуйста, перейдите по следующей ссылке:</p>
-                <a href='{confirmationUrl}' class='button'>Подтвердить почту</a>
+                <p>Рады приветствовать Вас на нашем сайте. В ближайшее время Вам придет письмо для подтверждения email.</p>
                 <p>Если Вы не регистрировались на нашем сайте, просто проигнорируйте это письмо.</p>
             </div>
             <div class='footer'>
@@ -68,5 +67,5 @@ public class ConfirmationEmailMessage
         }
     </style>";
 
-    public static string Subject() => "Подтверждение почты";
+    public static string Subject() => "Рады видеть Вас на нашем сайте";
 }
