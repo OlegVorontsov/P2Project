@@ -6,7 +6,7 @@ namespace NotificationService.Application.UserNotificationSettingsManagement.Get
 public class GetAnyHandler(NotificationRepository repository)
 {
     public async Task<IReadOnlyList<UserNotificationSettings>> Handle(CancellationToken ct)
-    { 
+    {
         return await repository.GetAnySending(ct);
     }
 }

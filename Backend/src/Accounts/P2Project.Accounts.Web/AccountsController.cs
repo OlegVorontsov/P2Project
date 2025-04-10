@@ -13,6 +13,7 @@ using P2Project.Accounts.Application.Commands.Register;
 using P2Project.Accounts.Application.Commands.SetAvatar.CompleteSetAvatar;
 using P2Project.Accounts.Application.Commands.SetAvatar.UploadAvatar;
 using P2Project.Accounts.Application.Commands.Unban;
+using P2Project.Accounts.Application.Interfaces;
 using P2Project.Accounts.Application.Queries.GetUserInfoWithAccounts;
 using P2Project.Accounts.Web.Requests;
 using P2Project.Accounts.Web.Requests.EmailManagement;
@@ -45,7 +46,7 @@ public class AccountsController : ApplicationController
         [FromServices] GenerateEmailConfirmationTokenHandler generateEmailTokenHandler,
         [FromServices] GetUserInfoWithAccountsHandler getUserInfoHandler,
         [FromRoute] Guid userId,
-        Bind<INotificationMessageBus, IPublishEndpoint> publisher,
+        Bind<IAccountsMessageBus, IPublishEndpoint> publisher,
         CancellationToken ct)
     {
         var generateEmailTokenRequest = new GenerateEmailConfirmationTokenRequest(userId);
