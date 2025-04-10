@@ -1,11 +1,12 @@
 using NotificationService.Application.EmailManagement.Send;
+using NotificationService.Application.EventHandlers;
 using NotificationService.Application.UserNotificationSettingsManagement.GetAny;
 using NotificationService.Application.UserNotificationSettingsManagement.GetByUserId;
 using NotificationService.Application.UserNotificationSettingsManagement.GetEmailSendings;
 using NotificationService.Application.UserNotificationSettingsManagement.GetTelegramSendings;
 using NotificationService.Application.UserNotificationSettingsManagement.GetWebSendings;
 using NotificationService.Application.UserNotificationSettingsManagement.ResetByUserId;
-using NotificationService.Application.UserNotificationSettingsManagement.UpdateByUserId;
+using NotificationService.Application.UserNotificationSettingsManagement.SetByUserId;
 
 namespace NotificationService.Application;
 
@@ -31,6 +32,7 @@ public static class ApplicationDependencyInjection
         services.AddScoped<GetWebSendingsHandler>();
         services.AddScoped<ResetByUserIdHandler>();
         services.AddScoped<SetByUserIdHandler>();
+        services.AddScoped<ConfirmationEmailHandler>();
 
         return services;
     }

@@ -7,8 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\..\assistance\NotificationService\NotificationService.csproj" />
+      <ProjectReference Include="..\..\Discussions\P2Project.Discussions.Application\P2Project.Discussions.Application.csproj" />
       <ProjectReference Include="..\..\Shared\P2Project.Core\P2Project.Core.csproj" />
       <ProjectReference Include="..\..\Shared\P2Project.Framework\P2Project.Framework.csproj" />
+      <ProjectReference Include="..\..\VolunteerRequests\P2Project.VolunteerRequests.Agreements\P2Project.VolunteerRequests.Agreements.csproj" />
       <ProjectReference Include="..\P2Project.Accounts.Agreements\P2Project.Accounts.Agreements.csproj" />
       <ProjectReference Include="..\P2Project.Accounts.Domain\P2Project.Accounts.Domain.csproj" />
     </ItemGroup>

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using NotificationService.Application.EmailManagement.Send;
+using P2Project.Framework;
 
 namespace NotificationService.Web.Controllers;
 
@@ -11,7 +12,11 @@ public class EmailController : BaseController
         [FromServices] SendHandler handler,
         CancellationToken ct)
     {
-        await handler.Handle(command, ct);
-        return Ok();
+        var result = await handler.Handle(command, ct);
+        
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+        
+        return Ok(result.Value);
     }
 }
