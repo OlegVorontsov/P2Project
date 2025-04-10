@@ -61,7 +61,6 @@ public static class InfrastructureDependencyInjection
                     TimeSpan.FromSeconds(5),
                     TimeSpan.FromSeconds(10),
                     TimeSpan.FromSeconds(15)));
-                cfg.UseMessageRetry(r => r.Immediate(5));
             });
 
             configure.UsingRabbitMq((context, cfg) =>

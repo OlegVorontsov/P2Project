@@ -63,7 +63,6 @@ public static class DependencyInjection
             configure.SetKebabCaseEndpointNameFormatter();
 
             configure.AddConsumer<CreateVolunteerAccountConsumer>();
-            configure.AddConsumer<CreatedUserConsumer>();
             
             configure.AddConfigureEndpointsCallback((context, name, cfg) =>
             {
@@ -71,29 +70,8 @@ public static class DependencyInjection
                     TimeSpan.FromSeconds(5),
                     TimeSpan.FromSeconds(10),
                     TimeSpan.FromSeconds(15)));
-                cfg.UseMessageRetry(r => r.Immediate(5));
             });
 
-            configure.UsingRabbitMq((context, cfg) =>
-            {
-                cfg.Host(new Uri(options.Host), h =>
-                {
-                    h.Username(options.Username);
-                    h.Password(options.Password);
-                });
-
-                cfg.ConfigureEndpoints(context);
-            });
-        });
-        
-        services.AddMassTransit<INotificationMessageBus>(configure =>
-        {
-            var options = configuration
-                .GetSection(RabbitMqOptions.SECTION_NAME)
-                .Get<RabbitMqOptions>()!;
-            
-            configure.SetKebabCaseEndpointNameFormatter();
-            
             configure.UsingRabbitMq((context, cfg) =>
             {
                 cfg.Host(new Uri(options.Host), h =>
