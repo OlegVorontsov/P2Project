@@ -13,7 +13,7 @@ public class ResetByUserIdHandler(
 
         if (notificationSettingsExist is null) return;
 
-        notificationSettingsExist.Edit(false, false, false);
+        notificationSettingsExist.Edit(false, false, null, false);
         
         await unitOfWork.SaveChanges(ct);
     }

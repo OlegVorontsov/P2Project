@@ -1,6 +1,7 @@
 using NotificationService.Application;
 using NotificationService.Core;
 using NotificationService.Infrastructure;
+using NotificationService.Infrastructure.TelegramNotification;
 
 DotNetEnv.Env.Load();
 
@@ -23,6 +24,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.MapPost("test", async (
+    TelegramManager telegramManager) =>
+{
+    var userId = Guid.Parse("b38662d1-831f-4d0e-a2a7-2c52d2267d30");
+    await telegramManager.StartRegisterChatId(userId);
+    await telegramManager.SendMessage(userId, "test");
+});
 
 app.UseHttpsRedirection();
 app.MapControllers();

@@ -22,6 +22,7 @@ public static class CoreDependencyInjection
         IConfiguration configuration)
     {
         services.Configure<EmailOptions>(configuration.GetSection(EmailOptions.YANDEX));
+        services.Configure<TelegramOptions>(configuration.GetSection(TelegramOptions.SECTION_NAME));
 
         return services;
     }

@@ -16,12 +16,16 @@ public class SetByUserIdHandler(
     {
         var notificationSettingsExist = await repository.Get(userId, ct);
         if (notificationSettingsExist is null)
-            return UserNotificationSettings.Create(userId);
-        
+            return notificationSettings.TelegramChatId.HasValue ?
+                UserNotificationSettings.Create(userId, true, notificationSettings.TelegramChatId) :
+                UserNotificationSettings.Create(userId, false, null);
+
         notificationSettingsExist.Edit(
             notificationSettings.IsEmailSend,
-            notificationSettings.IsTelegramSend,
+            notificationSettings.TelegramChatId.HasValue,
+            notificationSettings.TelegramChatId,
             notificationSettings.IsWebSend);
+
         await unitOfWork.SaveChanges(ct);
         
         return notificationSettingsExist;

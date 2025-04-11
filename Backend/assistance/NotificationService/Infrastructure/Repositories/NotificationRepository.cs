@@ -18,7 +18,10 @@ public class NotificationRepository(NotificationWriteDbContext dbContext)
         CancellationToken ct)
     {
         var getResult = await dbContext.Notifications
-            .Where(n => n.IsEmailSend == true || n.IsWebSend == true || n.IsTelegramSend == true)
+            .Where(n =>
+                n.IsEmailSend == true ||
+                n.IsWebSend == true ||
+                n.IsTelegramSend == true)
             .ToListAsync(ct);
         return getResult;
     }
@@ -48,5 +51,11 @@ public class NotificationRepository(NotificationWriteDbContext dbContext)
             .Where(n => n.IsWebSend == true)
             .ToListAsync(ct);
         return getResult;
+    }
+    
+    public async Task<long?> GetTelegramChatId(Guid userId, CancellationToken ct)
+    {
+        var chatId = await dbContext.Notifications.FirstOrDefaultAsync(n => n.UserId == userId, ct);
+        return chatId?.TelegramChatId;
     }
 }

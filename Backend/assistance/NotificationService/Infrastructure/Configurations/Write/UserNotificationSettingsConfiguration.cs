@@ -22,6 +22,9 @@ public class UserNotificationSettingsConfiguration :
         builder.Property(n => n.IsTelegramSend)
             .IsRequired(false);
 
+        builder.Property(n => n.TelegramChatId)
+            .IsRequired(false);
+
         builder.Property(n => n.IsWebSend)
             .IsRequired(false);
     }
