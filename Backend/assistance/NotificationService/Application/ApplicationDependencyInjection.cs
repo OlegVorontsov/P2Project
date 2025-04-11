@@ -1,5 +1,6 @@
 using NotificationService.Application.EmailManagement.Send;
 using NotificationService.Application.EventHandlers;
+using NotificationService.Application.EveryDestinationManagement.Send;
 using NotificationService.Application.Telegram.Send;
 using NotificationService.Application.UserNotificationSettingsManagement.GetAny;
 using NotificationService.Application.UserNotificationSettingsManagement.GetByUserId;
@@ -18,6 +19,7 @@ public static class ApplicationDependencyInjection
         IConfiguration configuration)
     {
         services.AddUserNotificationSettingsHandlers()
+                .AddEveryDestinationHandlers()
                 .AddEmailHandlers()
                 .AddTelegramHandlers();
         
@@ -35,6 +37,14 @@ public static class ApplicationDependencyInjection
         services.AddScoped<ResetByUserIdHandler>();
         services.AddScoped<SetByUserIdHandler>();
         services.AddScoped<ConfirmationEmailHandler>();
+
+        return services;
+    }
+    
+    private static IServiceCollection AddEveryDestinationHandlers(
+        this IServiceCollection services)
+    {
+        services.AddScoped<SendEveryDestinationHandler>();
 
         return services;
     }

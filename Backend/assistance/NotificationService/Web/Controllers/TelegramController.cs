@@ -7,7 +7,7 @@ namespace NotificationService.Web.Controllers;
 public class TelegramController : BaseController
 {
     [HttpPost("telegram")]
-    public async Task<IActionResult> SendMessage(
+    public async Task<IActionResult> Send(
         [FromServices] SendTelegramMessageHandler handler,
         [FromBody] SendTelegramMessageCommand command,
         CancellationToken ct)

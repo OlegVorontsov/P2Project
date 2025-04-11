@@ -11,15 +11,25 @@ public class UserNotificationSettings
     public long? TelegramChatId { get; set; }
     public bool? IsWebSend { get; private set; } = false;
     
-    private UserNotificationSettings(Guid userId, bool? isTelegramSend, long? telegramChatId)
+    private UserNotificationSettings(
+        Guid userId,
+        bool? isEmailSend,
+        bool? isTelegramSend,
+        long? telegramChatId,
+        bool? isWebSend)
     {
         UserId = userId;
+        IsEmailSend = isEmailSend;
         IsTelegramSend = isTelegramSend;
         TelegramChatId = telegramChatId;
+        IsWebSend = isWebSend;
     }
+    
+    public static UserNotificationSettings New(Guid userId) =>
+        new (userId, true, true, null, true);
 
     public static UserNotificationSettings Create(Guid userId, bool? isTelegramSend, long? telegramChatId) =>
-        new (userId, isTelegramSend, telegramChatId);
+        new (userId, false, isTelegramSend, telegramChatId, false);
 
     public void Edit(bool? isEmailSend, bool? isTelegramSend, long? telegramChatId, bool? isWebSend)
     {

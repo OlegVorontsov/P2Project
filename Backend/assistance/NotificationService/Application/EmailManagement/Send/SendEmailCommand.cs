@@ -3,4 +3,5 @@ namespace NotificationService.Application.EmailManagement.Send;
 public record SendEmailCommand(
     string RecipientEmail,
     string Subject,
-    string Body);
+    string Body,
+    string Styles);
