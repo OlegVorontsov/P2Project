@@ -1,6 +1,6 @@
 namespace NotificationService.Application.EmailManagement.Send;
 
-public record SendCommand(
+public record SendEmailCommand(
     string RecipientEmail,
     string Subject,
     string Body);

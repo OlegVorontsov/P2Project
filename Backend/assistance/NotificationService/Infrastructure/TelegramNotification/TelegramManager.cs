@@ -1,5 +1,7 @@
+using CSharpFunctionalExtensions;
 using NotificationService.Core.Options;
 using NotificationService.Infrastructure.Repositories;
+using P2Project.SharedKernel.Errors;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -25,32 +27,51 @@ public class TelegramManager
         _botClient = new TelegramBotClient(telegramOptions!.API);
     }
     
-    public async Task SendMessage(Guid userId, string message)
+    public async Task<UnitResult<Error>> SendMessage(Guid userId, string message)
     {
         var dbChatId = await _repository.GetTelegramChatId(userId, CancellationToken.None);
-        if (dbChatId is null) return;
+        if (dbChatId is null)
+            return Errors.General.Failure($"Telegram chatId of user: {userId} is null");
 
-        await _botClient.SendMessage(dbChatId, message);
+        try
+        {
+            await _botClient.SendMessage(dbChatId, message);
+            return Result.Success<Error>();
+        }
+        catch (Exception ex)
+        {
+            return Errors.General.Failure(ex.Message);
+        }
     }
     
-    public async Task StartRegisterChatId(Guid userId)
+    public async Task<UnitResult<Error>> StartRegisterChatId(Guid userId)
     {
         var notificationSettingsExist = await _repository.Get(userId, CancellationToken.None);
-        if (notificationSettingsExist is null ||
-            notificationSettingsExist.TelegramChatId is not null)
-            return;
-
-        _botClient.OnMessage += AddUserChatIdToDb;
-
-        //Ожидание получения номера чата с пользователем
-        while (_chatId is null)
-            await Task.Delay(100);
+        if (notificationSettingsExist is null)
+            return Errors.General.Failure("UserNotificationSettings is null");
         
-        notificationSettingsExist.SetTelegramChatId((long)_chatId);
+        if (notificationSettingsExist.TelegramChatId is not null)
+            return Result.Success<Error>();
+
+        try
+        {
+            _botClient.OnMessage += AddUserChatIdToDb;
+
+            //Ожидание получения номера чата с пользователем
+            while (_chatId is null)
+                await Task.Delay(100);
+            
+            notificationSettingsExist.SetTelegramChatId((long)_chatId);
         
-        var transaction = await _unitOfWork.BeginTransaction(CancellationToken.None);
-        await _unitOfWork.SaveChanges(CancellationToken.None);
-        transaction.Commit();
+            var transaction = await _unitOfWork.BeginTransaction(CancellationToken.None);
+            await _unitOfWork.SaveChanges(CancellationToken.None);
+            transaction.Commit();
+            return Result.Success<Error>();
+        }
+        catch (Exception ex)
+        {
+            return Errors.General.Failure(ex.Message);
+        }
     }
 
     private void StopRegisterChatId() => _botClient.OnMessage -= AddUserChatIdToDb;

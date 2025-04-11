@@ -1,5 +1,6 @@
 using NotificationService.Application.EmailManagement.Send;
 using NotificationService.Application.EventHandlers;
+using NotificationService.Application.Telegram.Send;
 using NotificationService.Application.UserNotificationSettingsManagement.GetAny;
 using NotificationService.Application.UserNotificationSettingsManagement.GetByUserId;
 using NotificationService.Application.UserNotificationSettingsManagement.GetEmailSendings;
@@ -17,7 +18,8 @@ public static class ApplicationDependencyInjection
         IConfiguration configuration)
     {
         services.AddUserNotificationSettingsHandlers()
-                .AddEmailHandlers();
+                .AddEmailHandlers()
+                .AddTelegramHandlers();
         
         return services;
     }
@@ -40,7 +42,15 @@ public static class ApplicationDependencyInjection
     private static IServiceCollection AddEmailHandlers(
         this IServiceCollection services)
     {
-        services.AddScoped<SendHandler>();
+        services.AddScoped<SendEmailHandler>();
+
+        return services;
+    }
+    
+    private static IServiceCollection AddTelegramHandlers(
+        this IServiceCollection services)
+    {
+        services.AddScoped<SendTelegramMessageHandler>();
 
         return services;
     }

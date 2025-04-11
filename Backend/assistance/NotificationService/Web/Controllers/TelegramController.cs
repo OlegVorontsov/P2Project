@@ -1,15 +1,15 @@
 using Microsoft.AspNetCore.Mvc;
-using NotificationService.Application.EmailManagement.Send;
+using NotificationService.Application.Telegram.Send;
 using P2Project.Framework;
 
 namespace NotificationService.Web.Controllers;
 
-public class EmailController : BaseController
+public class TelegramController : BaseController
 {
-    [HttpPost("email")]
-    public async Task<IActionResult> Send(
-        [FromBody] SendEmailCommand command,
-        [FromServices] SendEmailHandler handler,
+    [HttpPost("telegram")]
+    public async Task<IActionResult> SendMessage(
+        [FromServices] SendTelegramMessageHandler handler,
+        [FromBody] SendTelegramMessageCommand command,
         CancellationToken ct)
     {
         var result = await handler.Handle(command, ct);

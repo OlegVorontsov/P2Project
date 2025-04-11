@@ -4,9 +4,9 @@ using P2Project.SharedKernel.Errors;
 
 namespace NotificationService.Application.EmailManagement.Send;
 
-public class SendHandler(IConfiguration configuration)
+public class SendEmailHandler(IConfiguration configuration)
 {
-    public async Task<Result<string, ErrorList>> Handle(SendCommand command, CancellationToken ct)
+    public async Task<Result<string, ErrorList>> Handle(SendEmailCommand command, CancellationToken ct)
     {
         var emailManager = YandexEmailManager.Build(configuration);
 
