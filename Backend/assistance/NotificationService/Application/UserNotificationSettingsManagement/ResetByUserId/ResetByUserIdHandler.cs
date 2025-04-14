@@ -1,3 +1,4 @@
+using NotificationService.Domain.ValueObjects;
 using NotificationService.Infrastructure;
 using NotificationService.Infrastructure.Repositories;
 
@@ -13,7 +14,7 @@ public class ResetByUserIdHandler(
 
         if (notificationSettingsExist is null) return;
 
-        notificationSettingsExist.Edit(false, false, null, false);
+        notificationSettingsExist.Edit(false, null, false);
         
         await unitOfWork.SaveChanges(ct);
     }

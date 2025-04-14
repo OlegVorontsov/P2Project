@@ -9,13 +9,13 @@ public class SendTelegramMessageHandler(
 {
     public async Task<Result<string, ErrorList>> Handle(SendTelegramMessageCommand command, CancellationToken ct)
     {
-        var registerResult = await telegramManager.StartRegisterChatId(command.UserId);
+        var registerResult = await telegramManager.StartRegisterChatId(command.UserId, command.UserTelegramId);
         if (registerResult.IsFailure)
-            return Errors.General.Failure(registerResult.Error.Message).ToErrorList();
+            return Errors.General.Failure("Fail to register telegramChatId").ToErrorList();
         
         var sentResult = await telegramManager.SendMessage(command.UserId, command.Message);
         if (sentResult.IsFailure)
-            return Errors.General.Failure(sentResult.Error.Message).ToErrorList();
+            return Errors.General.Failure("Fail to send TelegramMessage").ToErrorList();
         
         return "TelegramMessage sent successfully";
     }

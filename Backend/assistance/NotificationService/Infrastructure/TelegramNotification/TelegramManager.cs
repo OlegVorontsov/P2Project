@@ -1,5 +1,7 @@
 using CSharpFunctionalExtensions;
 using NotificationService.Core.Options;
+using NotificationService.Domain;
+using NotificationService.Domain.ValueObjects;
 using NotificationService.Infrastructure.Repositories;
 using P2Project.SharedKernel.Errors;
 using Telegram.Bot;
@@ -13,7 +15,10 @@ public class TelegramManager
     private readonly TelegramBotClient _botClient;
     private readonly NotificationRepository _repository;
     private readonly UnitOfWork _unitOfWork;
-    private long? _chatId;
+    private string? _telegramUserId;
+    private long? _telegramChatId;
+    private int? MAX_SECONDS_TO_INITIALIZE = 500;
+    private int? MAX_TRIES_TO_INITIALIZE = 3;
 
     public TelegramManager(
         IConfiguration configuration,
@@ -29,13 +34,13 @@ public class TelegramManager
     
     public async Task<UnitResult<Error>> SendMessage(Guid userId, string message)
     {
-        var dbChatId = await _repository.GetTelegramChatId(userId, CancellationToken.None);
-        if (dbChatId is null)
-            return Errors.General.Failure($"Telegram chatId of user: {userId} is null");
+        var telegramSettings = await _repository.GetTelegramSettings(userId, CancellationToken.None);
+        if (telegramSettings is null)
+            return Errors.General.Failure($"TelegramSettings user's: {userId} is null");
 
         try
         {
-            await _botClient.SendMessage(dbChatId, message);
+            await _botClient.SendMessage(telegramSettings.ChatId, message);
             return Result.Success<Error>();
         }
         catch (Exception ex)
@@ -44,29 +49,41 @@ public class TelegramManager
         }
     }
     
-    public async Task<UnitResult<Error>> StartRegisterChatId(Guid userId)
+    public async Task<Result<UserNotificationSettings, Error>> StartRegisterChatId(Guid userId, string telegramUserId)
     {
         var notificationSettingsExist = await _repository.Get(userId, CancellationToken.None);
         if (notificationSettingsExist is null)
             return Errors.General.Failure("UserNotificationSettings is null");
         
-        if (notificationSettingsExist.TelegramChatId is not null)
-            return Result.Success<Error>();
+        if (notificationSettingsExist.TelegramSettings is not null &&
+            notificationSettingsExist.TelegramSettings!.UserId == telegramUserId)
+            return notificationSettingsExist;
 
         try
         {
+            _telegramUserId = telegramUserId;
             _botClient.OnMessage += AddUserChatIdToDb;
 
             //Ожидание получения номера чата с пользователем
-            while (_chatId is null)
-                await Task.Delay(100);
+            var secondsCount = 0;
+            var tries = 0;
+            while (_telegramChatId is null)
+            {
+                await Task.Delay(1000);
+                secondsCount++;
+                tries++;
+
+                if(secondsCount > MAX_SECONDS_TO_INITIALIZE || tries > MAX_TRIES_TO_INITIALIZE)
+                    return Errors.General.Failure("Fail to register telegramChatId");
+            }
+
             
-            notificationSettingsExist.SetTelegramChatId((long)_chatId);
+            notificationSettingsExist.SetTelegramSettings(new TelegramSettings(_telegramUserId, _telegramChatId.Value));
         
             var transaction = await _unitOfWork.BeginTransaction(CancellationToken.None);
             await _unitOfWork.SaveChanges(CancellationToken.None);
             transaction.Commit();
-            return Result.Success<Error>();
+            return notificationSettingsExist;
         }
         catch (Exception ex)
         {
@@ -79,7 +96,10 @@ public class TelegramManager
     private async Task AddUserChatIdToDb(
         Message message, UpdateType type)
     {
+        if (message.Chat.Username != _telegramUserId)
+            return;
+        
         StopRegisterChatId();
-        _chatId = message.Chat.Id;
+        _telegramChatId = message.Chat.Id;
     }
 }

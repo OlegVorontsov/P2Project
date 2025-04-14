@@ -7,6 +7,7 @@ using NotificationService.Application.UserNotificationSettingsManagement.GetWebS
 using NotificationService.Application.UserNotificationSettingsManagement.ResetByUserId;
 using NotificationService.Application.UserNotificationSettingsManagement.SetByUserId;
 using NotificationService.Core.Dtos;
+using P2Project.Framework;
 
 namespace NotificationService.Web.Controllers;
 
@@ -76,6 +77,10 @@ public class NotificationController : BaseController
         CancellationToken ct = default)
     {
         var result = await handler.Handle(userId, newNotificationSettings, ct);
-        return Ok(result);
+        
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+        
+        return Ok(result.Value);
     }
 }
