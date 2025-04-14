@@ -1,14 +1,11 @@
 using NotificationService.Application.EmailManagement.Send;
 using NotificationService.Application.Telegram.Send;
-using NotificationService.Domain;
-using NotificationService.Infrastructure;
 using NotificationService.Infrastructure.Repositories;
 
 namespace NotificationService.Application.EveryDestinationManagement.Send;
 
 public class SendEveryDestinationHandler(
     NotificationRepository repository,
-    UnitOfWork unitOfWork,
     SendEmailHandler sendEmailHandler,
     SendTelegramMessageHandler sendTelegramMessageHandler,
     ILogger<SendEveryDestinationHandler> logger)
@@ -17,15 +14,14 @@ public class SendEveryDestinationHandler(
     {
         var notificationSettingsExist = await repository.Get(command.UserId, ct);
         
+        var sentEveryDestinationResult = string.Empty;
+        
         if (notificationSettingsExist is null)
         {
-            notificationSettingsExist = UserNotificationSettings.New(command.UserId);
-            var transaction = await unitOfWork.BeginTransaction(CancellationToken.None);
-            await unitOfWork.SaveChanges(CancellationToken.None);
-            transaction.Commit();
+            sentEveryDestinationResult += "NotificationSettings is null; ";
+            logger.LogError($"NotificationSettings is null user's: {command.UserId}");
+            return sentEveryDestinationResult;
         }
-
-        var sentEveryDestinationResult = string.Empty;
         
         if (notificationSettingsExist.IsEmailSend.HasValue &&
             notificationSettingsExist.IsEmailSend.Value)
@@ -45,12 +41,12 @@ public class SendEveryDestinationHandler(
                 logger.LogInformation($"Email sent successfully to: {command.Email}");
         }
         
-        if (notificationSettingsExist.IsTelegramSend.HasValue &&
-            notificationSettingsExist.IsTelegramSend.Value)
+        if (notificationSettingsExist.TelegramSettings != null)
         {
             var sentTelegramMessageResult = await sendTelegramMessageHandler.Handle(
                 new SendTelegramMessageCommand(
                     command.UserId,
+                    notificationSettingsExist.TelegramSettings.UserId,
                     command.Body), ct);
             if (sentTelegramMessageResult.IsFailure)
             {
