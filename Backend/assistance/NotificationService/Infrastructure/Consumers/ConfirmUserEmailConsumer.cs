@@ -1,28 +1,27 @@
 using MassTransit;
+using NotificationService.Application.EveryDestinationManagement.Send;
 using NotificationService.Core.EmailMessages.Templates;
-using NotificationService.Infrastructure.EmailNotification.EmailManagerImplementations;
 using P2Project.Accounts.Agreements.Messages;
 
 namespace NotificationService.Infrastructure.Consumers;
 
 public class ConfirmUserEmailConsumer(
-    IConfiguration configuration,
+    SendEveryDestinationHandler sendEveryDestinationHandler,
     ILogger<ConfirmUserEmailConsumer> logger)
     : IConsumer<ConfirmedUserEmailEvent>
 {
     public async Task Consume(ConsumeContext<ConfirmedUserEmailEvent> context)
     {
         var command = context.Message;
-        var emailManager = YandexEmailManager.Build(configuration);
-        var sentResult = emailManager.SendMessage(
+        
+        var sentResult = await sendEveryDestinationHandler.Handle(new SendEveryDestinationCommand(
+            command.UserId,
             command.Email,
             ConfirmationEmailMessage.Subject(),
             ConfirmationEmailMessage.Body(command.UserName, command.EmailConfirmationLink),
-            ConfirmationEmailMessage.Styles());
-        
-        if (sentResult.IsFailure)
-            logger.LogError(sentResult.Error.Message);
-        else
-            logger.LogInformation($"ConfirmationEmailMessage sent successfully to: {command.Email}");
+            ConfirmationEmailMessage.Styles(),
+            $"Здравствуйте, {command.UserName}! Благодарим Вас за регистрацию на сайте P2Project. Для того чтобы завершить процесс регистрации, подтвердите Ваш email, перейдя по ссылке, отправленной на почту: {command.Email}"),
+            CancellationToken.None);
+        logger.LogInformation(sentResult);
     }
 }

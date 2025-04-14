@@ -5,4 +5,5 @@ public record SendEveryDestinationCommand(
     string Email,
     string Subject,
     string Body,
-    string Styles);
+    string Styles,
+    string TelegramMessage);

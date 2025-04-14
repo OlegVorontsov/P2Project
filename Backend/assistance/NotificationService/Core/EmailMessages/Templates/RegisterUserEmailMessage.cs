@@ -5,7 +5,7 @@ public class RegisterUserEmailMessage
     public static string Body(string userName) => 
             @$"<div class='container'>
                 <h2>Здравствуйте, {userName}!</h2>
-                <p>Рады приветствовать Вас на нашем сайте. В ближайшее время Вам придет письмо для подтверждения email.</p>
+                <p>Рады приветствовать Вас на сайте P2Project. В ближайшее время Вам придет письмо для подтверждения email.</p>
                 <p>Если Вы не регистрировались на нашем сайте, просто проигнорируйте это письмо.</p>
             </div>
             <div class='footer'>

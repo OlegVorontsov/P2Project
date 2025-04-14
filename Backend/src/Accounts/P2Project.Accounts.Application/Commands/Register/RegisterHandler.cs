@@ -62,6 +62,7 @@ public class RegisterHandler(
 
             var createdUserEvent = new CreatedUserEvent(
                 userResult.Value.Id,
+                command.TelegramUserId,
                 userResult.Value.Email,
                 userResult.Value.UserName,
                 participantRole.Name);

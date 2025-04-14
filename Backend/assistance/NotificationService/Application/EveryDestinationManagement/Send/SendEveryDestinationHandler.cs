@@ -47,7 +47,7 @@ public class SendEveryDestinationHandler(
                 new SendTelegramMessageCommand(
                     command.UserId,
                     notificationSettingsExist.TelegramSettings.UserId,
-                    command.Body), ct);
+                    command.TelegramMessage), ct);
             if (sentTelegramMessageResult.IsFailure)
             {
                 sentEveryDestinationResult += "TelegramMessage send failed; ";
