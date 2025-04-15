@@ -1,67 +1,43 @@
-using NotificationService.Application.EmailManagement.Send;
-using NotificationService.Application.EventHandlers;
-using NotificationService.Application.EveryDestinationManagement.Send;
-using NotificationService.Application.Telegram.Send;
-using NotificationService.Application.UserNotificationSettingsManagement.GetAny;
-using NotificationService.Application.UserNotificationSettingsManagement.GetByUserId;
-using NotificationService.Application.UserNotificationSettingsManagement.GetEmailSendings;
-using NotificationService.Application.UserNotificationSettingsManagement.GetTelegramSendings;
-using NotificationService.Application.UserNotificationSettingsManagement.GetWebSendings;
-using NotificationService.Application.UserNotificationSettingsManagement.ResetByUserId;
-using NotificationService.Application.UserNotificationSettingsManagement.SetByUserId;
+using System.Reflection;
+using P2Project.Core.Interfaces.Commands;
+using P2Project.Core.Interfaces.Queries;
 
 namespace NotificationService.Application;
 
 public static class ApplicationDependencyInjection
 {
+    private static readonly Assembly _assembly = Assembly.GetExecutingAssembly();
     public static IServiceCollection AddApplication(
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddUserNotificationSettingsHandlers()
-                .AddEveryDestinationHandlers()
-                .AddEmailHandlers()
-                .AddTelegramHandlers();
+        services.AddCommands()
+                .AddQueries();
         
         return services;
     }
     
-    private static IServiceCollection AddUserNotificationSettingsHandlers(
-        this IServiceCollection services)
+    private static IServiceCollection AddCommands(this IServiceCollection services)
     {
-        services.AddScoped<GetAnyHandler>();
-        services.AddScoped<GetByUserIdHandler>();
-        services.AddScoped<GetEmailSendingsHandler>();
-        services.AddScoped<GetTelegramSendingsHandler>();
-        services.AddScoped<GetWebSendingsHandler>();
-        services.AddScoped<ResetByUserIdHandler>();
-        services.AddScoped<SetByUserIdHandler>();
-        services.AddScoped<ConfirmationEmailHandler>();
-
-        return services;
+        return services.Scan(scan => scan.FromAssemblies(_assembly)
+            .AddClasses(c => c
+                .AssignableToAny(
+                    typeof(ICommandHandler<,>),
+                    typeof(ICommandHandler<>),
+                    typeof(ICommandVoidHandler<>),
+                    typeof(ICommandResponseHandler<,>)))
+            .AsSelfWithInterfaces()
+            .WithScopedLifetime());
     }
-    
-    private static IServiceCollection AddEveryDestinationHandlers(
-        this IServiceCollection services)
-    {
-        services.AddScoped<SendEveryDestinationHandler>();
 
-        return services;
-    }
-    
-    private static IServiceCollection AddEmailHandlers(
-        this IServiceCollection services)
+    private static IServiceCollection AddQueries(this IServiceCollection services)
     {
-        services.AddScoped<SendEmailHandler>();
-
-        return services;
-    }
-    
-    private static IServiceCollection AddTelegramHandlers(
-        this IServiceCollection services)
-    {
-        services.AddScoped<SendTelegramMessageHandler>();
-
-        return services;
+        return services.Scan(scan => scan.FromAssemblies(_assembly)
+            .AddClasses(c => c
+                .AssignableToAny(
+                    typeof(IQueryHandler<,>),
+                    typeof(IQueryHandler<>)))
+            .AsSelfWithInterfaces()
+            .WithScopedLifetime());
     }
 }

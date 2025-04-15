@@ -1,11 +1,13 @@
 using CSharpFunctionalExtensions;
 using NotificationService.Infrastructure.TelegramNotification;
+using P2Project.Core.Interfaces.Commands;
 using P2Project.SharedKernel.Errors;
 
 namespace NotificationService.Application.Telegram.Send;
 
 public class SendTelegramMessageHandler(
-    TelegramManager telegramManager)
+    TelegramManager telegramManager) :
+    ICommandHandler<string, SendTelegramMessageCommand>
 {
     public async Task<Result<string, ErrorList>> Handle(SendTelegramMessageCommand command, CancellationToken ct)
     {

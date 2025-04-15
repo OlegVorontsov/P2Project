@@ -1,3 +1,5 @@
+using P2Project.Core.Interfaces.Commands;
+
 namespace NotificationService.Application.EveryDestinationManagement.Send;
 
 public record SendEveryDestinationCommand(
@@ -6,4 +8,4 @@ public record SendEveryDestinationCommand(
     string Subject,
     string Body,
     string Styles,
-    string TelegramMessage);
+    string TelegramMessage) : ICommand;

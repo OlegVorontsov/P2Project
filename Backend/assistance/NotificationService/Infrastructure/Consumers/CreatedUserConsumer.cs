@@ -22,7 +22,9 @@ public class CreatedUserConsumer(
         
         var newUserNotificationSettings = new SentNotificationSettings(
             true, command.TelegramUserId, true);
-        await setByUserIdHandler.Handle(command.UserId, newUserNotificationSettings, CancellationToken.None);
+        await setByUserIdHandler.Handle(
+            new SetByUserIdCommand(command.UserId, newUserNotificationSettings),
+            CancellationToken.None);
         
         var sentResult = await sendEveryDestinationHandler.Handle(new SendEveryDestinationCommand(
             command.UserId,
@@ -34,6 +36,8 @@ public class CreatedUserConsumer(
             ), CancellationToken.None);
         logger.LogInformation(sentResult);
         
-        await confirmationEmailHandler.Handle(command.UserId, CancellationToken.None);
+        await confirmationEmailHandler.Handle(
+            new ConfirmationEmailCommand(command.UserId),
+            CancellationToken.None);
     }
 }

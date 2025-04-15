@@ -1,10 +1,12 @@
 using CSharpFunctionalExtensions;
 using NotificationService.Infrastructure.EmailNotification.EmailManagerImplementations;
+using P2Project.Core.Interfaces.Commands;
 using P2Project.SharedKernel.Errors;
 
 namespace NotificationService.Application.EmailManagement.Send;
 
-public class SendEmailHandler(IConfiguration configuration)
+public class SendEmailHandler(IConfiguration configuration) :
+    ICommandHandler<string, SendEmailCommand>
 {
     public async Task<Result<string, ErrorList>> Handle(SendEmailCommand command, CancellationToken ct)
     {

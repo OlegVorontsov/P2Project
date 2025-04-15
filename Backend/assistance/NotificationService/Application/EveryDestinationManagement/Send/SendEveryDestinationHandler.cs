@@ -1,6 +1,7 @@
 using NotificationService.Application.EmailManagement.Send;
 using NotificationService.Application.Telegram.Send;
 using NotificationService.Infrastructure.Repositories;
+using P2Project.Core.Interfaces.Commands;
 
 namespace NotificationService.Application.EveryDestinationManagement.Send;
 
@@ -8,7 +9,8 @@ public class SendEveryDestinationHandler(
     NotificationRepository repository,
     SendEmailHandler sendEmailHandler,
     SendTelegramMessageHandler sendTelegramMessageHandler,
-    ILogger<SendEveryDestinationHandler> logger)
+    ILogger<SendEveryDestinationHandler> logger) :
+    ICommandResponseHandler<string, SendEveryDestinationCommand>
 {
     public async Task<string> Handle(SendEveryDestinationCommand command, CancellationToken ct)
     {

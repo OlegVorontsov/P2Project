@@ -23,3 +23,10 @@ public interface ICommandVoidHandler<in TCommand> where TCommand : ICommand
         TCommand command,
         CancellationToken cancellationToken = default);
 }
+
+public interface ICommandResponseHandler<TResponse, in TCommand> where TCommand : ICommand
+{
+    public Task<TResponse> Handle(
+        TCommand command,
+        CancellationToken cancellationToken = default);
+}
