@@ -1,10 +1,7 @@
 using CSharpFunctionalExtensions;
-using MassTransit;
-using MassTransit.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using P2Project.Accounts.Agreements.Messages;
 using P2Project.Accounts.Application.Interfaces;
 using P2Project.Accounts.Domain;
 using P2Project.Accounts.Domain.Accounts;
@@ -12,6 +9,8 @@ using P2Project.Accounts.Domain.RolePermission.Roles;
 using P2Project.Core;
 using P2Project.Core.Interfaces;
 using P2Project.Core.Interfaces.Commands;
+using P2Project.Core.Interfaces.Outbox;
+using P2Project.Core.Outbox.Messages.Accounts;
 using P2Project.SharedKernel.Errors;
 using P2Project.SharedKernel.ValueObjects;
 
@@ -21,7 +20,7 @@ public class RegisterHandler(
     UserManager<User> userManager,
     RoleManager<Role> roleManager,
     IAccountsManager accountManager,
-    Bind<IAccountsMessageBus, IPublishEndpoint> publisher,
+    IOutboxRepository outboxRepository,
     [FromKeyedServices(Modules.Accounts)] IUnitOfWork unitOfWork,
     ILogger<RegisterHandler> logger) : ICommandHandler<string, RegisterCommand>
 {
@@ -66,7 +65,8 @@ public class RegisterHandler(
                 userResult.Value.Email,
                 userResult.Value.UserName,
                 participantRole.Name);
-            await publisher.Value.Publish(createdUserEvent, cancellationToken);
+            
+            await outboxRepository.Add(createdUserEvent, cancellationToken);
             
             transaction.Commit();
             

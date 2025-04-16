@@ -24,7 +24,7 @@ public class NotificationRepository(NotificationWriteDbContext dbContext)
     {
         var getResult = await dbContext.Notifications
             .Where(n =>
-                n.IsEmailSend == true ||
+                n.Email != null ||
                 n.IsWebSend == true ||
                 n.TelegramSettings != null)
             .ToListAsync(ct);
@@ -35,7 +35,7 @@ public class NotificationRepository(NotificationWriteDbContext dbContext)
         CancellationToken ct)
     {
         var getResult = await dbContext.Notifications
-            .Where(n => n.IsEmailSend == true)
+            .Where(n => n.Email != null)
             .ToListAsync(ct);
         return getResult;
     }

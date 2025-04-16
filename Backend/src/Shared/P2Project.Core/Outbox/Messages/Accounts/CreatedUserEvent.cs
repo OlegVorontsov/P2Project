@@ -1,4 +1,4 @@
-namespace P2Project.Accounts.Agreements.Messages;
+namespace P2Project.Core.Outbox.Messages.Accounts;
 
 public record CreatedUserEvent(
     Guid UserId,

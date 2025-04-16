@@ -16,7 +16,7 @@ public class UserNotificationSettingsConfiguration :
         builder.Property(n => n.UserId)
             .IsRequired();
 
-        builder.Property(n => n.IsEmailSend)
+        builder.Property(n => n.Email)
             .IsRequired(false);
 
         builder.OwnsOne(n => n.TelegramSettings, ts =>

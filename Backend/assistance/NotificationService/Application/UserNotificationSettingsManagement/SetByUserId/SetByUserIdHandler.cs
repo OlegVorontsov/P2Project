@@ -22,7 +22,9 @@ public class SetByUserIdHandler(
         
         if (notificationSettingsExist is null)
         {
-            var newUserNotificationSettings = UserNotificationSettings.Create(command.UserId, null);
+            var newUserNotificationSettings = UserNotificationSettings.Create(
+                command.UserId, command.NotificationSettings.Email, null);
+            
             await repository.Add(newUserNotificationSettings, ct);
             await unitOfWork.SaveChanges(ct);
             
@@ -41,7 +43,7 @@ public class SetByUserIdHandler(
         {
             if (notificationSettingsExist.TelegramSettings.UserId == command.NotificationSettings.TelegramUserId)
             {
-                notificationSettingsExist.SetEmailSend(command.NotificationSettings.IsEmailSend);
+                notificationSettingsExist.SetEmail(command.NotificationSettings.Email);
                 notificationSettingsExist.SetWebSend(command.NotificationSettings.IsWebSend);
                 await unitOfWork.SaveChanges(ct);
                 return notificationSettingsExist;
@@ -52,7 +54,7 @@ public class SetByUserIdHandler(
         
         if (command.NotificationSettings.TelegramUserId != null)
         {
-            notificationSettingsExist.SetEmailSend(command.NotificationSettings.IsEmailSend);
+            notificationSettingsExist.SetEmail(command.NotificationSettings.Email);
             notificationSettingsExist.SetWebSend(command.NotificationSettings.IsWebSend);
             var registerResult = await telegramManager.StartRegisterChatId(
                 command.UserId,
@@ -64,7 +66,7 @@ public class SetByUserIdHandler(
         }
 
         notificationSettingsExist.Edit(
-            command.NotificationSettings.IsEmailSend,
+            command.NotificationSettings.Email,
             null,
             command.NotificationSettings.IsWebSend);
 

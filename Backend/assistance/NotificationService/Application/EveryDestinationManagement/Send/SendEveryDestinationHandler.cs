@@ -25,8 +25,7 @@ public class SendEveryDestinationHandler(
             return sentEveryDestinationResult;
         }
         
-        if (notificationSettingsExist.IsEmailSend.HasValue &&
-            notificationSettingsExist.IsEmailSend.Value)
+        if (notificationSettingsExist.Email != null)
         {
             var sentEmailResult = await sendEmailHandler.Handle(
                 new SendEmailCommand(
