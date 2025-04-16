@@ -1,4 +1,4 @@
-namespace P2Project.VolunteerRequests.Infrastructure.Outbox;
+namespace P2Project.Core.Outbox.Models;
 
 public class OutboxMessage
 {

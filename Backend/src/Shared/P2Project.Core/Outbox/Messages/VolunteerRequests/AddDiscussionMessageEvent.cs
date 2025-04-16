@@ -1,4 +1,4 @@
-namespace P2Project.VolunteerRequests.Agreements.Messages;
+namespace P2Project.Core.Outbox.Messages.VolunteerRequests;
 
 public record AddDiscussionMessageEvent(
     Guid RequesterId,

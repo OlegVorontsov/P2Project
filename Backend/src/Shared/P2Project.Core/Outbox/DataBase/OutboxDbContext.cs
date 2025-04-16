@@ -1,16 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using P2Project.VolunteerRequests.Domain;
+using P2Project.Core.Outbox.Models;
 
-namespace P2Project.VolunteerRequests.Infrastructure.DbContexts
+namespace P2Project.Core.Outbox.DataBase
 {
-    public class VolunteerRequestsWriteDbContext : DbContext
+    public class OutboxDbContext : DbContext
     {
         private readonly string _connectionString;
         
-        public DbSet<VolunteerRequest> VolunteerRequests => Set<VolunteerRequest>();
+        public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
 
-        public VolunteerRequestsWriteDbContext(string connectionString)
+        public OutboxDbContext(string connectionString)
         {
             _connectionString = connectionString;
         }
@@ -25,11 +25,11 @@ namespace P2Project.VolunteerRequests.Infrastructure.DbContexts
         
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.HasDefaultSchema("volunteer_requests");
+            builder.HasDefaultSchema("outbox");
 
             builder.ApplyConfigurationsFromAssembly(
-                typeof(VolunteerRequestsWriteDbContext).Assembly,
-                type => type.FullName?.Contains("Configurations.Write") ?? false);
+                typeof(OutboxDbContext).Assembly,
+                type => type.FullName?.Contains("Outbox.Configurations") ?? false);
         }
         private ILoggerFactory CreateLoggerFactory() =>
             LoggerFactory.Create(builder => { builder.AddConsole(); });

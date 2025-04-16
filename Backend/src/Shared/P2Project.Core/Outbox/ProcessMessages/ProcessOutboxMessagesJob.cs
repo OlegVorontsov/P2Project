@@ -1,6 +1,6 @@
 using Quartz;
 
-namespace P2Project.VolunteerRequests.Infrastructure.Outbox;
+namespace P2Project.Core.Outbox.ProcessMessages;
 
 [DisallowConcurrentExecution]
 public class ProcessOutboxMessagesJob : IJob

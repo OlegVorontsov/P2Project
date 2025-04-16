@@ -3,29 +3,30 @@ using MassTransit;
 using MassTransit.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using P2Project.Discussions.Application.Interfaces;
-using P2Project.VolunteerRequests.Agreements;
-using P2Project.VolunteerRequests.Infrastructure.DbContexts;
+using P2Project.Core.Interfaces.Outbox;
+using P2Project.Core.Outbox.DataBase;
+using P2Project.Core.Outbox.Models;
 using Polly;
 using Polly.Retry;
 
-namespace P2Project.VolunteerRequests.Infrastructure.Outbox;
+namespace P2Project.Core.Outbox.ProcessMessages;
 
 public class ProcessOutboxMessagesService
 {
-    private readonly VolunteerRequestsWriteDbContext _dbContext;
+    private readonly OutboxDbContext _dbContext;
     private readonly IPublishEndpoint _publisher;
     private readonly ILogger<ProcessOutboxMessagesService> _logger;
 
     public ProcessOutboxMessagesService(
-        Bind<IDiscussionMessageBus, IPublishEndpoint> publisher,
-        VolunteerRequestsWriteDbContext dbContext,
+        Bind<IOutboxMessageBus, IPublishEndpoint> publisher,
+        OutboxDbContext dbContext,
         ILogger<ProcessOutboxMessagesService> logger)
     {
         _dbContext = dbContext;
         _publisher = publisher.Value;
         _logger = logger;
     }
+    
     public async Task Execute(CancellationToken cancellationToken)
     {
         var messages = await _dbContext

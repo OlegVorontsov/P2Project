@@ -1,11 +1,11 @@
 using System.Text.Json;
-using P2Project.VolunteerRequests.Application.Interfaces;
-using P2Project.VolunteerRequests.Infrastructure.DbContexts;
+using P2Project.Core.Interfaces.Outbox;
+using P2Project.Core.Outbox.Models;
 
-namespace P2Project.VolunteerRequests.Infrastructure.Outbox;
+namespace P2Project.Core.Outbox.DataBase;
 
 public class OutboxRepository(
-    VolunteerRequestsWriteDbContext dbContext) : IOutboxRepository
+    OutboxDbContext dbContext) : IOutboxRepository
 {
     public async Task Add<T>(T message, CancellationToken cancellationToken)
     {
@@ -18,5 +18,6 @@ public class OutboxRepository(
         };
 
         await dbContext.OutboxMessages.AddAsync(outboxMessage, cancellationToken);
+        await dbContext.SaveChangesAsync(cancellationToken);
     }
 }

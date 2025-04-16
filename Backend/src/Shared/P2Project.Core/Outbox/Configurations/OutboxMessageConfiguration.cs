@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using P2Project.VolunteerRequests.Infrastructure.Outbox;
+using P2Project.Core.Outbox.Models;
 
-namespace P2Project.VolunteerRequests.Infrastructure.Configurations.Write;
+namespace P2Project.Core.Outbox.Configurations;
 
 public class OutboxMessageConfiguration : IEntityTypeConfiguration<OutboxMessage>
 {

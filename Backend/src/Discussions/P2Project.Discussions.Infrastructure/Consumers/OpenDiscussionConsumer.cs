@@ -1,9 +1,9 @@
 using MassTransit;
 using Microsoft.Extensions.Logging;
+using P2Project.Core.Outbox.Messages.VolunteerRequests;
 using P2Project.Discussions.Application.Interfaces;
 using P2Project.Discussions.Domain;
 using P2Project.Discussions.Domain.ValueObjects;
-using P2Project.VolunteerRequests.Agreements.Messages;
 
 namespace P2Project.Discussions.Infrastructure.Consumers;
 

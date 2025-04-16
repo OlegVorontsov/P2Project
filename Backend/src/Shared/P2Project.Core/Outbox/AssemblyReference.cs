@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace P2Project.VolunteerRequests.Agreements;
+namespace P2Project.Core.Outbox;
 
 public static class AssemblyReference
 {

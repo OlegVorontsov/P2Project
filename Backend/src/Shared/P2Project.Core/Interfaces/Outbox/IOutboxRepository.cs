@@ -1,4 +1,4 @@
-namespace P2Project.VolunteerRequests.Application.Interfaces;
+namespace P2Project.Core.Interfaces.Outbox;
 
 public interface IOutboxRepository
 {
