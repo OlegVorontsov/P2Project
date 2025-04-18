@@ -36,7 +36,6 @@ public class CreateVolunteerAccountHandler(
         
         var result = await accountManager
             .CreateVolunteerAccount(volunteerAccount, cancellationToken);
-        
         if (result.IsFailure)
             throw new Exception("Fail to create volunteer account");
         

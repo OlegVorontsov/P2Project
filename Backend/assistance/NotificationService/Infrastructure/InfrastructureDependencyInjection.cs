@@ -57,6 +57,10 @@ public static class InfrastructureDependencyInjection
             configure.AddConsumer<ConfirmUserEmailConsumer>();
             configure.AddConsumer<CreatedUserConsumer>();
             
+            configure.AddConsumer<CreateVolunteerAccountNotificationConsumer>();
+            configure.AddConsumer<OpenDiscussionNotificationConsumer>();
+            configure.AddConsumer<AddDiscussionMessageNotificationConsumer>();
+            
             configure.AddConfigureEndpointsCallback((context, name, cfg) =>
             {
                 cfg.UseDelayedRedelivery(r => r.Intervals(

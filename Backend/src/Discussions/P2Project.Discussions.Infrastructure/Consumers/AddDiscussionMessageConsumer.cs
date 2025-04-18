@@ -1,5 +1,4 @@
 using MassTransit;
-using P2Project.Core.Outbox.Messages;
 using P2Project.Core.Outbox.Messages.VolunteerRequests;
 using P2Project.Discussions.Application.DiscussionsManagement.EventHandlers.CreateMessage;
 

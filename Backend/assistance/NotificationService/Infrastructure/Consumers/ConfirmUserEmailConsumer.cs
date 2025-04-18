@@ -17,9 +17,9 @@ public class ConfirmUserEmailConsumer(
         var sentResult = await sendEveryDestinationHandler.Handle(new SendEveryDestinationCommand(
             command.UserId,
             command.Email,
-            ConfirmationEmailMessage.Subject(),
-            ConfirmationEmailMessage.Body(command.UserName, command.EmailConfirmationLink),
-            ConfirmationEmailMessage.Styles(),
+            EmailConfirmationEmailTemplate.Subject(),
+            EmailConfirmationEmailTemplate.Body(command.UserName, command.EmailConfirmationLink),
+            EmailConfirmationEmailTemplate.Styles(),
             $"Здравствуйте, {command.UserName}! Благодарим Вас за регистрацию на сайте P2Project. Для того чтобы завершить процесс регистрации, подтвердите Ваш email, перейдя по ссылке, отправленной на почту: {command.Email}"),
             CancellationToken.None);
         logger.LogInformation(sentResult);

@@ -18,7 +18,8 @@ public class ReviewStartedHandler(
         var integrationEvent = new OpenDiscussionEvent(
             domainEvent.RequestId,
             domainEvent.AdminId,
-            domainEvent.UserId);
+            domainEvent.UserId,
+            domainEvent.UserName);
         
         await outboxRepository.Add(
             integrationEvent,

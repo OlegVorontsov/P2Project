@@ -1,6 +1,6 @@
 namespace NotificationService.Core.EmailMessages.Templates;
 
-public class RegisterUserEmailMessage
+public class RegisterUserEmailTemplate
 {
     public static string Body(string userName) => 
             @$"<div class='container'>
@@ -67,5 +67,5 @@ public class RegisterUserEmailMessage
         }
     </style>";
 
-    public static string Subject() => "Рады видеть Вас на нашем сайте";
+    public static string Subject() => "Рады видеть Вас на сайте P2Project";
 }

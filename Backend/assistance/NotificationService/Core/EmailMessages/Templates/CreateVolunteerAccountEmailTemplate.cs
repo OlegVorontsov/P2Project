@@ -1,12 +1,11 @@
 namespace NotificationService.Core.EmailMessages.Templates;
 
-public class ConfirmationEmailMessage
+public class CreateVolunteerAccountEmailTemplate
 {
-    public static string Body(string userName, string confirmationUrl) => 
+    public static string Body(string userName) => 
             @$"<div class='container'>
                 <h2>Здравствуйте, {userName}!</h2>
-                <p>Благодарим Вас за регистрацию сайте P2Project. Для того чтобы завершить процесс регистрации и подтвердить Ваш email, пожалуйста, перейдите по следующей ссылке:</p>
-                <a href='{confirmationUrl}' class='button'>Подтвердить почту</a>
+                <p>Рады сообщить, что Ваша заявка на волонтерство на сайте P2Project одобрена.</p>
                 <p>Если Вы не регистрировались на нашем сайте, просто проигнорируйте это письмо.</p>
             </div>
             <div class='footer'>
@@ -68,5 +67,5 @@ public class ConfirmationEmailMessage
         }
     </style>";
 
-    public static string Subject() => "Подтверждение почты";
+    public static string Subject() => "Одобрение заявки на волонтерство на сайте P2Project";
 }

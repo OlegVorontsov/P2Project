@@ -16,7 +16,7 @@ public class ApprovedHandler(
         CancellationToken cancellationToken)
     {
         var integrationEvent = new CreateVolunteerAccountEvent(
-            domainEvent.UserId);
+            domainEvent.UserId, domainEvent.UserName);
         
         await outboxRepository.Add(
             integrationEvent, cancellationToken);

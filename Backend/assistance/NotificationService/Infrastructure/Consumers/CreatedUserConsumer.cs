@@ -4,7 +4,6 @@ using NotificationService.Application.EveryDestinationManagement.Send;
 using NotificationService.Application.UserNotificationSettingsManagement.SetByUserId;
 using NotificationService.Core.Dtos;
 using NotificationService.Core.EmailMessages.Templates;
-using P2Project.Accounts.Agreements.Messages;
 using P2Project.Core.Outbox.Messages.Accounts;
 
 namespace NotificationService.Infrastructure.Consumers;
@@ -31,9 +30,9 @@ public class CreatedUserConsumer(
         var sentResult = await sendEveryDestinationHandler.Handle(new SendEveryDestinationCommand(
             command.UserId,
             command.Email,
-            RegisterUserEmailMessage.Subject(),
-            RegisterUserEmailMessage.Body(command.UserName),
-            RegisterUserEmailMessage.Styles(),
+            RegisterUserEmailTemplate.Subject(),
+            RegisterUserEmailTemplate.Body(command.UserName),
+            RegisterUserEmailTemplate.Styles(),
             $"Здравствуйте, {command.UserName}! Рады приветствовать Вас на сайте P2Project. В ближайшее время Вам на почту {command.Email} придет письмо для подтверждения email."),
             CancellationToken.None);
         logger.LogInformation(sentResult);
