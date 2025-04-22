@@ -28,7 +28,6 @@ public class OpenDiscussionNotificationConsumer(
         
         var sentResult = await sendEveryDestinationHandler.Handle(new SendEveryDestinationCommand(
                 userNotificationSettings.UserId,
-                userNotificationSettings.Email,
                 OpenDiscussionEmailTemplate.Subject(),
                 OpenDiscussionEmailTemplate.Body(command.UserName),
                 OpenDiscussionEmailTemplate.Styles(),

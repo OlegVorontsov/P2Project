@@ -29,7 +29,6 @@ public class CreatedUserConsumer(
         
         var sentResult = await sendEveryDestinationHandler.Handle(new SendEveryDestinationCommand(
             command.UserId,
-            command.Email,
             RegisterUserEmailTemplate.Subject(),
             RegisterUserEmailTemplate.Body(command.UserName),
             RegisterUserEmailTemplate.Styles(),

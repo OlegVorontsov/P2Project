@@ -27,49 +27,10 @@ public class SendEveryDestinationHandler(
 
         foreach (var sender in senders)
         {
-            var sentResult = await sender.SendAsync(command, ct);
+            var sentResult = await sender.SendAsync(notificationSettingsExist, command, ct);
             if (sentResult.IsSuccess)
                 sentEveryDestinationResult += sentResult.Value;
         }
-        
-        /*if (notificationSettingsExist.Email != null)
-        {
-            var sentEmailResult = await sendEmailHandler.Handle(
-                new SendEmailCommand(
-                    command.Email,
-                    command.Subject,
-                    command.Body,
-                    command.Styles), ct);
-            if (sentEmailResult.IsFailure)
-            {
-                sentEveryDestinationResult += "Email send failed; ";
-                logger.LogError($"Failed to send email to: {command.Email}");
-            }
-            else
-                logger.LogInformation($"Email sent successfully to: {command.Email}");
-        }
-        
-        if (notificationSettingsExist.TelegramSettings != null)
-        {
-            var sentTelegramMessageResult = await sendTelegramMessageHandler.Handle(
-                new SendTelegramMessageCommand(
-                    command.UserId,
-                    notificationSettingsExist.TelegramSettings.UserId,
-                    command.TelegramMessage), ct);
-            if (sentTelegramMessageResult.IsFailure)
-            {
-                sentEveryDestinationResult += "TelegramMessage send failed; ";
-                logger.LogError($"Failed to send TelegramMessage for user: {command.UserId}");
-            }
-            else
-                logger.LogInformation($"TelegramMessage sent successfully for user: {command.UserId}");
-        }
-        
-        if (notificationSettingsExist.IsWebSend.HasValue &&
-            notificationSettingsExist.IsWebSend.Value)
-        {
-            logger.LogInformation($"Web sent successfully for user: {command.UserId}");
-        }*/
         
         return sentEveryDestinationResult;
     }

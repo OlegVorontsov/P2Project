@@ -7,21 +7,23 @@ using P2Project.SharedKernel.Errors;
 
 namespace NotificationService.Application.SendersManagement.Senders;
 
-public class EmailNotificationSender(IConfiguration configuration) : INotificationSender
+public class EmailSender(IConfiguration configuration) : INotificationSender
 {
     public async Task<Result<string, ErrorList>> SendAsync(
-        SendEveryDestinationCommand command, CancellationToken ct)
+        UserNotificationSettings userNotificationSetting,
+        SendEveryDestinationCommand command,
+        CancellationToken ct)
     {
         var emailManager = YandexEmailManager.Build(configuration);
 
         var sentResult = emailManager.SendMessage(
-            command.Email,
+            userNotificationSetting.Email!,
             command.Subject,
             command.Body);
         if (sentResult.IsFailure)
             return Errors.General.Failure(sentResult.Error.Message).ToErrorList();
 
-        return $"Email sent successfully to: {command.Email}";
+        return $"Email sent successfully to: {userNotificationSetting.Email}\n";
     }
     
     public bool CanSend(

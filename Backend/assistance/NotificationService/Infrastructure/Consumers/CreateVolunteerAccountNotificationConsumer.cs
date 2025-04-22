@@ -27,7 +27,6 @@ public class CreateVolunteerAccountNotificationConsumer(
         
         var sentResult = await sendEveryDestinationHandler.Handle(new SendEveryDestinationCommand(
                 userNotificationSettings.UserId,
-                userNotificationSettings.Email,
                 CreateVolunteerAccountEmailTemplate.Subject(),
                 CreateVolunteerAccountEmailTemplate.Body(command.UserName),
                 CreateVolunteerAccountEmailTemplate.Styles(),

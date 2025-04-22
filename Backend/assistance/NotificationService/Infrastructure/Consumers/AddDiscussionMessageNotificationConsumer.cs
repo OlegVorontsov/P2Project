@@ -28,7 +28,6 @@ public class AddDiscussionMessageNotificationConsumer(
         
         var sentResult = await sendEveryDestinationHandler.Handle(new SendEveryDestinationCommand(
                 userNotificationSettings.UserId,
-                userNotificationSettings.Email,
                 AddDiscussionMessageEmailTemplate.Subject(),
                 AddDiscussionMessageEmailTemplate.Body(command.UserName, command.Message),
                 AddDiscussionMessageEmailTemplate.Styles(),

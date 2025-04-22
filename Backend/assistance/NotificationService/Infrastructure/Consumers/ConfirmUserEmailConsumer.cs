@@ -16,7 +16,6 @@ public class ConfirmUserEmailConsumer(
         
         var sentResult = await sendEveryDestinationHandler.Handle(new SendEveryDestinationCommand(
             command.UserId,
-            command.Email,
             EmailConfirmationEmailTemplate.Subject(),
             EmailConfirmationEmailTemplate.Body(command.UserName, command.EmailConfirmationLink),
             EmailConfirmationEmailTemplate.Styles(),
