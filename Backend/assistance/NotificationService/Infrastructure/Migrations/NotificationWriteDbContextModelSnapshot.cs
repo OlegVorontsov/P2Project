@@ -30,13 +30,9 @@ namespace NotificationService.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<bool?>("IsEmailSend")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_email_send");
-
-                    b.Property<bool?>("IsTelegramSend")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_telegram_send");
+                    b.Property<string>("Email")
+                        .HasColumnType("text")
+                        .HasColumnName("email");
 
                     b.Property<bool?>("IsWebSend")
                         .HasColumnType("boolean")
@@ -50,6 +46,34 @@ namespace NotificationService.Infrastructure.Migrations
                         .HasName("pk_user_notification_settings");
 
                     b.ToTable("UserNotificationSettings", "notifications");
+                });
+
+            modelBuilder.Entity("NotificationService.Domain.UserNotificationSettings", b =>
+                {
+                    b.OwnsOne("NotificationService.Domain.ValueObjects.TelegramSettings", "TelegramSettings", b1 =>
+                        {
+                            b1.Property<Guid>("UserNotificationSettingsId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<long>("ChatId")
+                                .HasColumnType("bigint");
+
+                            b1.Property<string>("UserId")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.HasKey("UserNotificationSettingsId");
+
+                            b1.ToTable("UserNotificationSettings", "notifications");
+
+                            b1.ToJson("telegram_settings");
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserNotificationSettingsId")
+                                .HasConstraintName("fk_user_notification_settings_user_notification_settings_id");
+                        });
+
+                    b.Navigation("TelegramSettings");
                 });
 #pragma warning restore 612, 618
         }

@@ -25,8 +25,6 @@ public static class DependencyInjection
     
     private static IServiceCollection AddCommands(this IServiceCollection services)
     {
-        services.AddScoped<ConfirmationEmailHandler>();
-        
         return services.Scan(scan => scan.FromAssemblies(_assembly)
             .AddClasses(c => c
                 .AssignableToAny(typeof(ICommandHandler<,>),

@@ -6,10 +6,10 @@ namespace NotificationService.Web.Controllers;
 
 public class EmailController : BaseController
 {
-    [HttpPost("message")]
+    [HttpPost("email")]
     public async Task<IActionResult> Send(
-        [FromBody] SendCommand command,
-        [FromServices] SendHandler handler,
+        [FromBody] SendEmailCommand command,
+        [FromServices] SendEmailHandler handler,
         CancellationToken ct)
     {
         var result = await handler.Handle(command, ct);

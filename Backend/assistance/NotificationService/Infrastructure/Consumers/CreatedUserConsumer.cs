@@ -1,14 +1,17 @@
 using MassTransit;
 using NotificationService.Application.EventHandlers;
+using NotificationService.Application.EveryDestinationManagement.Send;
+using NotificationService.Application.UserNotificationSettingsManagement.SetByUserId;
+using NotificationService.Core.Dtos;
 using NotificationService.Core.EmailMessages.Templates;
-using NotificationService.Infrastructure.EmailNotification.EmailManagerImplementations;
-using P2Project.Accounts.Agreements.Messages;
+using P2Project.Core.Outbox.Messages.Accounts;
 
 namespace NotificationService.Infrastructure.Consumers;
 
 public class CreatedUserConsumer(
-    IConfiguration configuration,
-    ConfirmationEmailHandler handler,
+    SetByUserIdHandler setByUserIdHandler,
+    SendEveryDestinationHandler sendEveryDestinationHandler,
+    ConfirmationEmailHandler confirmationEmailHandler,
     ILogger<CreatedUserConsumer> logger)
     : IConsumer<CreatedUserEvent>
 {
@@ -16,19 +19,25 @@ public class CreatedUserConsumer(
         ConsumeContext<CreatedUserEvent> context)
     {
         var command = context.Message;
-        var emailManager = YandexEmailManager.Build(configuration);
-        var sentResult = emailManager.SendMessage(
-            command.Email,
-            RegisterUserEmailMessage.Subject(),
-            RegisterUserEmailMessage.Body(command.UserName),
-            RegisterUserEmailMessage.Styles());
         
-        if (sentResult.IsFailure)
-            logger.LogError(sentResult.Error.Message);
-        else
-        {
-            logger.LogInformation($"RegisterUserEmailMessage sent successfully to: {command.Email}");
-            await handler.Handle(command.UserId, CancellationToken.None);
-        }
+        var newUserNotificationSettings = new SentNotificationSettings(
+            command.Email, command.TelegramUserId, true);
+        
+        await setByUserIdHandler.Handle(
+            new SetByUserIdCommand(command.UserId, newUserNotificationSettings),
+            CancellationToken.None);
+        
+        var sentResult = await sendEveryDestinationHandler.Handle(new SendEveryDestinationCommand(
+            command.UserId,
+            RegisterUserEmailTemplate.Subject(),
+            RegisterUserEmailTemplate.Body(command.UserName),
+            RegisterUserEmailTemplate.Styles(),
+            $"Здравствуйте, {command.UserName}! Рады приветствовать Вас на сайте P2Project. В ближайшее время Вам на почту {command.Email} придет письмо для подтверждения email."),
+            CancellationToken.None);
+        logger.LogInformation(sentResult);
+        
+        await confirmationEmailHandler.Handle(
+            new ConfirmationEmailCommand(command.UserId),
+            CancellationToken.None);
     }
 }

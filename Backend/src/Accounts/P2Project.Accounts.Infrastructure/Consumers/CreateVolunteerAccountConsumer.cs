@@ -1,6 +1,6 @@
 using MassTransit;
 using P2Project.Accounts.Application.EventHandlers.CreateVolunteerAccount;
-using P2Project.VolunteerRequests.Agreements.Messages;
+using P2Project.Core.Outbox.Messages.VolunteerRequests;
 
 namespace P2Project.Accounts.Infrastructure.Consumers;
 

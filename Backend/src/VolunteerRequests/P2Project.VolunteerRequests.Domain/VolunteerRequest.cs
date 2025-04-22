@@ -47,7 +47,7 @@ public class VolunteerRequest : DomainEntity<VolunteerRequestId>
     {
         AdminId = adminId;
         Status = RequestStatus.OnReview;
-        AddDomainEvent(new ReviewStartedEvent(Id, adminId, UserId));
+        AddDomainEvent(new ReviewStartedEvent(Id, adminId, UserId, FullName.FirstName));
     }
     
     public void SetRevisionRequiredStatus(
@@ -56,15 +56,15 @@ public class VolunteerRequest : DomainEntity<VolunteerRequestId>
     {
         Status = RequestStatus.RevisionRequired;
         RejectionComment = rejectedComment;
-        AddDomainEvent(new CreateMessageEvent(Id, adminId, rejectedComment.Value));
+        AddDomainEvent(new CreateMessageEvent(Id, adminId, UserId, FullName.FirstName, rejectedComment.Value));
     }
 
     public void SetApprovedStatus(Guid adminId, string comment)
     {
         Status = RequestStatus.Approved;
         RejectionComment = null;
-        AddDomainEvent(new ApprovedEvent(UserId));
-        AddDomainEvent(new CreateMessageEvent(Id, adminId, comment));
+        AddDomainEvent(new ApprovedEvent(UserId, FullName.FirstName));
+        AddDomainEvent(new CreateMessageEvent(Id, adminId, UserId, FullName.FirstName, comment));
     }
     
     public void SetRejectStatus(
@@ -73,13 +73,13 @@ public class VolunteerRequest : DomainEntity<VolunteerRequestId>
     {
         Status = RequestStatus.Rejected;
         RejectionComment = rejectedComment;
-        AddDomainEvent(new CreateMessageEvent(Id, adminId, rejectedComment.Value));
+        AddDomainEvent(new CreateMessageEvent(Id, adminId, UserId, FullName.FirstName, rejectedComment.Value));
     }
     
     public void Refresh(
         Guid adminId, string message)
     {
         Status = RequestStatus.Submitted;
-        AddDomainEvent(new CreateMessageEvent(Id, adminId, message));
+        AddDomainEvent(new CreateMessageEvent(Id, adminId, UserId, FullName.FirstName, message));
     }
 }

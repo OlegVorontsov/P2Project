@@ -1,6 +1,7 @@
 using NotificationService.Application;
 using NotificationService.Core;
 using NotificationService.Infrastructure;
+using NotificationService.Infrastructure.TelegramNotification;
 
 DotNetEnv.Env.Load();
 

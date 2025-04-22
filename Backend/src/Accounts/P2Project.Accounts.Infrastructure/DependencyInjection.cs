@@ -1,8 +1,6 @@
 using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using NotificationService.Application.Interfaces;
-using NotificationService.Infrastructure.Consumers;
 using P2Project.Accounts.Application.Interfaces;
 using P2Project.Accounts.Infrastructure.Admin;
 using P2Project.Accounts.Infrastructure.Consumers;

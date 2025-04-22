@@ -4,6 +4,7 @@ using NotificationService.Core;
 using NotificationService.Infrastructure.Consumers;
 using NotificationService.Infrastructure.DbContexts;
 using NotificationService.Infrastructure.Repositories;
+using NotificationService.Infrastructure.TelegramNotification;
 using P2Project.Core.Options;
 
 namespace NotificationService.Infrastructure;
@@ -17,7 +18,8 @@ public static class InfrastructureDependencyInjection
         services.AddDataBase(configuration)
                 .AddRepositories()
                 .AddScoped<UnitOfWork>()
-                .AddMessageBus(configuration);
+                .AddMessageBus(configuration)
+                .AddTelegramManager();
         
         return services;
     }
@@ -55,6 +57,10 @@ public static class InfrastructureDependencyInjection
             configure.AddConsumer<ConfirmUserEmailConsumer>();
             configure.AddConsumer<CreatedUserConsumer>();
             
+            configure.AddConsumer<CreateVolunteerAccountNotificationConsumer>();
+            configure.AddConsumer<OpenDiscussionNotificationConsumer>();
+            configure.AddConsumer<AddDiscussionMessageNotificationConsumer>();
+            
             configure.AddConfigureEndpointsCallback((context, name, cfg) =>
             {
                 cfg.UseDelayedRedelivery(r => r.Intervals(
@@ -76,5 +82,11 @@ public static class InfrastructureDependencyInjection
         });
 
         return services;
+    }
+
+    private static IServiceCollection AddTelegramManager(
+        this IServiceCollection services)
+    {
+        return services.AddScoped<TelegramManager>();
     }
 }

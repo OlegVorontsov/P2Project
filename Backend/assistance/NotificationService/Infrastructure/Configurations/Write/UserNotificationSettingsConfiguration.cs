@@ -16,11 +16,19 @@ public class UserNotificationSettingsConfiguration :
         builder.Property(n => n.UserId)
             .IsRequired();
 
-        builder.Property(n => n.IsEmailSend)
+        builder.Property(n => n.Email)
             .IsRequired(false);
 
-        builder.Property(n => n.IsTelegramSend)
-            .IsRequired(false);
+        builder.OwnsOne(n => n.TelegramSettings, ts =>
+        {
+            ts.ToJson("telegram_settings");
+            
+            ts.Property(s => s.UserId)
+                .IsRequired();
+
+            ts.Property(s => s.ChatId)
+                .IsRequired();
+        });
 
         builder.Property(n => n.IsWebSend)
             .IsRequired(false);

@@ -1,3 +1,6 @@
 namespace NotificationService.Core.Dtos;
 
-public record SentNotificationSettings(bool? IsEmailSend, bool? IsTelegramSend, bool? IsWebSend);
+public record SentNotificationSettings(
+    string? Email,
+    string? TelegramUserId,
+    bool? IsWebSend);
