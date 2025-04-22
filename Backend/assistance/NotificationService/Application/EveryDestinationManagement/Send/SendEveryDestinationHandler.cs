@@ -1,5 +1,4 @@
-using NotificationService.Application.EmailManagement.Send;
-using NotificationService.Application.Telegram.Send;
+using NotificationService.Application.SendersManagement;
 using NotificationService.Infrastructure.Repositories;
 using P2Project.Core.Interfaces.Commands;
 
@@ -7,8 +6,7 @@ namespace NotificationService.Application.EveryDestinationManagement.Send;
 
 public class SendEveryDestinationHandler(
     NotificationRepository repository,
-    SendEmailHandler sendEmailHandler,
-    SendTelegramMessageHandler sendTelegramMessageHandler,
+    SendersFactory sendersFactory,
     ILogger<SendEveryDestinationHandler> logger) :
     ICommandResponseHandler<string, SendEveryDestinationCommand>
 {
@@ -20,12 +18,21 @@ public class SendEveryDestinationHandler(
         
         if (notificationSettingsExist is null)
         {
-            sentEveryDestinationResult += "NotificationSettings is null; ";
+            sentEveryDestinationResult += "NotificationSettings is null";
             logger.LogError($"NotificationSettings is null user's: {command.UserId}");
             return sentEveryDestinationResult;
         }
         
-        if (notificationSettingsExist.Email != null)
+        var senders = sendersFactory.GetSenders(notificationSettingsExist, ct);
+
+        foreach (var sender in senders)
+        {
+            var sentResult = await sender.SendAsync(command, ct);
+            if (sentResult.IsSuccess)
+                sentEveryDestinationResult += sentResult.Value;
+        }
+        
+        /*if (notificationSettingsExist.Email != null)
         {
             var sentEmailResult = await sendEmailHandler.Handle(
                 new SendEmailCommand(
@@ -62,7 +69,7 @@ public class SendEveryDestinationHandler(
             notificationSettingsExist.IsWebSend.Value)
         {
             logger.LogInformation($"Web sent successfully for user: {command.UserId}");
-        }
+        }*/
         
         return sentEveryDestinationResult;
     }

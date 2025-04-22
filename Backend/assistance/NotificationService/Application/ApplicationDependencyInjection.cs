@@ -1,4 +1,6 @@
 using System.Reflection;
+using NotificationService.Application.Interfaces;
+using NotificationService.Application.SendersManagement;
 using P2Project.Core.Interfaces.Commands;
 using P2Project.Core.Interfaces.Queries;
 
@@ -12,7 +14,8 @@ public static class ApplicationDependencyInjection
         IConfiguration configuration)
     {
         services.AddCommands()
-                .AddQueries();
+                .AddQueries()
+                .AddSenders();
         
         return services;
     }
@@ -39,5 +42,18 @@ public static class ApplicationDependencyInjection
                     typeof(IQueryHandler<>)))
             .AsSelfWithInterfaces()
             .WithScopedLifetime());
+    }
+    
+    private static IServiceCollection AddSenders(this IServiceCollection services)
+    {
+        services.Scan(scan => scan.FromAssemblies(_assembly)
+            .AddClasses(c => c
+                .AssignableToAny(
+                    typeof(INotificationSender)))
+            .AsSelfWithInterfaces()
+            .WithScopedLifetime());
+        
+        services.AddScoped<SendersFactory>();
+        return services;
     }
 }
