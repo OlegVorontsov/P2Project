@@ -89,8 +89,7 @@ public static class DependencyInjection
     private static IServiceCollection AddMetrics(this IServiceCollection services)
     {
         services.AddOpenTelemetry()
-            .WithMetrics(
-                b => b
+            .WithMetrics(b => b
                     .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("P2Project.API"))
                     .AddMeter("P2Project")
                     .AddAspNetCoreInstrumentation()

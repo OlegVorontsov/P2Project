@@ -44,6 +44,8 @@ if (app.Environment.IsDevelopment())
         c.InjectStylesheet("/swagger-ui/SwaggerDark.css");
     });
     await app.ApplyMigrations();
+    
+    app.UseOpenTelemetryPrometheusScrapingEndpoint();
 }
 
 app.UseCors(config =>
