@@ -4,6 +4,8 @@ using Elastic.Ingest.Elasticsearch;
 using Elastic.Ingest.Elasticsearch.DataStreams;
 using Elastic.Serilog.Sinks;
 using Microsoft.OpenApi.Models;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
 using Serilog;
 using Serilog.Events;
 
@@ -15,7 +17,8 @@ public static class DependencyInjection
     {
         AddSerilogLogger(services, config);
 
-        services.AddCustomSwaggerGen();
+        services.AddCustomSwaggerGen()
+                .AddMetrics();
 
         return services;
     }
@@ -79,6 +82,22 @@ public static class DependencyInjection
                 }
             });
         });
+
+        return services;
+    }
+
+    private static IServiceCollection AddMetrics(this IServiceCollection services)
+    {
+        services.AddOpenTelemetry()
+            .WithMetrics(
+                b => b
+                    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("P2Project.API"))
+                    .AddMeter("P2Project")
+                    .AddAspNetCoreInstrumentation()
+                    .AddHttpClientInstrumentation()
+                    .AddRuntimeInstrumentation()
+                    .AddProcessInstrumentation()
+                    .AddPrometheusExporter());
 
         return services;
     }
