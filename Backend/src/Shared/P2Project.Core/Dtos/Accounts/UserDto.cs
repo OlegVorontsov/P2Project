@@ -14,8 +14,8 @@ public class UserDto
     public string Email { get; init; } = string.Empty;
     public IEnumerable<SocialNetworkDto> SocialNetworks { get; set; } = default!;
     
-    public string AvatarUrl { get; set; }  = string.Empty;
-    public MediaFile? Avatar {  get; init; }
+    public string AvatarUrl { get; set; } = string.Empty;
+    public MediaFileDto? Avatar { get; init; }
     public IReadOnlyList<string> PhotosUrls { get; set; } = [];
     public IReadOnlyList<MediaFileDto> Photos { get; set; } = default!;
     public AdminAccountDto? AdminAccount { get; init; }

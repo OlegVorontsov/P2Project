@@ -34,13 +34,13 @@ public class AccountsController : ApplicationController
     {
         var result = await handler.Handle(
             request.ToCommand(), cancellationToken);
-        
+
         if(result.IsFailure)
             return result.Error.ToResponse();
 
         return Ok(result.Value);
     }
-    
+
     [HttpGet("confirmation-email/token/{userId:guid}")]
     public async Task<IActionResult> GenerateEmailConfirmation(
         [FromServices] GenerateEmailConfirmationTokenHandler generateEmailTokenHandler,
@@ -56,21 +56,21 @@ public class AccountsController : ApplicationController
         var getUserInfoRequest = new GetUserInfoWithAccountsQuery(userId);
         var getUserInfoResult =
             await getUserInfoHandler.Handle(getUserInfoRequest, ct);
-        
+
         if (generateEmailTokenResult.IsFailure)
             return BadRequest(generateEmailTokenResult.Error);
-        
+
         if (getUserInfoResult.IsFailure)
             return BadRequest(getUserInfoResult.Error);
 
         var confirmRequest = new ConfirmEmailRequest(userId, generateEmailTokenResult.Value);
-        
+
         var callbackUrl = Url.Action(
             nameof(ConfirmEmail),
             nameof(AccountsController).Replace("Controller", string.Empty),
             confirmRequest,
             protocol: HttpContext.Request.Scheme);
-        
+
         var userDto = getUserInfoResult.Value;
         var createdUserEvent = new ConfirmedUserEmailEvent(
             userDto.Id,
@@ -94,7 +94,7 @@ public class AccountsController : ApplicationController
 
         return Ok("Почта успешно подтверждена");
     }
-    
+
     [HttpPost("login")]
     public async Task<ActionResult> Login(
         [FromBody] LoginRequest request,
@@ -103,13 +103,13 @@ public class AccountsController : ApplicationController
     {
         var result = await handler.Handle(
             request.ToCommand(), cancellationToken);
-        
+
         if(result.IsFailure)
             return result.Error.ToResponse();
 
         return Ok(result.Value);
     }
-    
+
     [HttpPost("refresh")]
     public async Task<ActionResult> RefreshTokens(
         [FromBody] RefreshTokensRequest request,
@@ -118,13 +118,13 @@ public class AccountsController : ApplicationController
     {
         var result = await handler.Handle(
             request.ToCommand(), cancellationToken);
-        
+
         if(result.IsFailure)
             return result.Error.ToResponse();
 
         return Ok(result.Value);
     }
-    
+
     [Permission(PermissionsConfig.Accounts.Update)]
     [HttpPut("unban/{userId:guid}")]
     public async Task<ActionResult> Unban(
@@ -137,10 +137,10 @@ public class AccountsController : ApplicationController
 
         if (result.IsFailure)
             return result.Error.ToResponse();
-        
+
         return Ok(result.Value);
     }
-    
+
     [Permission(PermissionsConfig.Accounts.Read)]
     [HttpGet("user-info/{id:guid}")]
     public async Task<IActionResult> GetUserInfoWithAccounts(
@@ -149,14 +149,14 @@ public class AccountsController : ApplicationController
         CancellationToken cancellationToken)
     {
         var query = new GetUserInfoWithAccountsQuery(id);
-        
+
         var result = await handler.Handle(query, cancellationToken);
         if (result.IsFailure)
             return result.Error.ToResponse();
 
         return Ok(result.Value);
     }
-    
+
     [Permission(PermissionsConfig.Files.Upload)]
     [HttpPost("upload-avatar/{userId:guid}")]
     public async Task<ActionResult> UploadAvatar(
@@ -168,7 +168,7 @@ public class AccountsController : ApplicationController
         var fileBytesArrayResult = await avatarFile.ToByteArrayAsync();
         if(fileBytesArrayResult.IsFailure)
             return fileBytesArrayResult.Error.ToResponse();
-        
+
         var result = await handler.Handle(
             new UploadAvatarCommand(
                 userId,
@@ -185,7 +185,7 @@ public class AccountsController : ApplicationController
 
         return Ok(result.Value);
     }
-    
+
     [Permission(PermissionsConfig.Files.Upload)]
     [HttpPost("complete-set-avatar/{userId:guid}")]
     public async Task<ActionResult> CompleteSetAvatar(
