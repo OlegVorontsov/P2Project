@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using P2Project.Core.Interfaces.Outbox;
 using P2Project.Core.Options;
-using P2Project.Core.Outbox;
 using P2Project.Core.Outbox.DataBase;
 using P2Project.Core.Outbox.ProcessMessages;
 using P2Project.SharedKernel;
@@ -21,18 +20,19 @@ public static class CoreDependencyInjection
                 .AddDataBase(configuration)
                 .AddOutbox()
                 .AddQuartzService()
-                .AddMessageBus(configuration);
-        
+                .AddMessageBus(configuration)
+                .AddDistributedCache(configuration);
+
         return services;
     }
-    
+
     private static IServiceCollection AddRepositories(
         this IServiceCollection services)
     {
         services.AddScoped<IOutboxRepository, OutboxRepository>();
         return services;
     }
-    
+
     private static IServiceCollection AddDataBase(
         this IServiceCollection services,
         IConfiguration configuration)
@@ -42,7 +42,7 @@ public static class CoreDependencyInjection
 
         return services;
     }
-    
+
     private static IServiceCollection AddMessageBus(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddMassTransit<IOutboxMessageBus>(configure =>
@@ -50,7 +50,7 @@ public static class CoreDependencyInjection
             var options = configuration
                 .GetSection(RabbitMqOptions.SECTION_NAME)
                 .Get<RabbitMqOptions>()!;
-            
+
             configure.SetKebabCaseEndpointNameFormatter();
 
             configure.UsingRabbitMq((context, cfg) =>
@@ -67,14 +67,14 @@ public static class CoreDependencyInjection
 
         return services;
     }
-    
+
     private static IServiceCollection AddOutbox(
         this IServiceCollection services)
     {
         services.AddScoped<ProcessOutboxMessagesService>();
         return services;
     }
-    
+
     private static IServiceCollection AddQuartzService(this IServiceCollection services)
     {
         services.AddScoped<ProcessOutboxMessagesService>();
@@ -90,6 +90,20 @@ public static class CoreDependencyInjection
         });
 
         services.AddQuartzHostedService(options => { options.WaitForJobsToComplete = true; });
+
+        return services;
+    }
+
+    private static IServiceCollection AddDistributedCache(
+        this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddStackExchangeRedisCache(options =>
+            {
+                string connection = configuration.GetConnectionString("Redis") ??
+                                    throw new ArgumentNullException(nameof(connection));
+
+                options.Configuration = connection;
+            });
 
         return services;
     }
