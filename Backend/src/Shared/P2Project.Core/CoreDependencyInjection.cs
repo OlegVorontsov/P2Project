@@ -1,6 +1,8 @@
 using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using P2Project.Core.Caching;
+using P2Project.Core.Interfaces.Caching;
 using P2Project.Core.Interfaces.Outbox;
 using P2Project.Core.Options;
 using P2Project.Core.Outbox.DataBase;
@@ -104,6 +106,8 @@ public static class CoreDependencyInjection
 
                 options.Configuration = connection;
             });
+
+        services.AddSingleton<ICacheService, CacheService>();
 
         return services;
     }
