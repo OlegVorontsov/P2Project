@@ -14,15 +14,14 @@ public class RefreshSessionManager(
         Guid refreshToken, CancellationToken cancellationToken)
     {
         var refreshSession = await writeDbContext.RefreshSessions
-            .Include(r => r.User)
             .FirstOrDefaultAsync(t => t.RefreshToken == refreshToken, cancellationToken);
-        
+
         if(refreshSession is null)
             return Errors.General.NotFound(refreshToken);
-        
+
         return refreshSession;
     }
-    
+
     public void Delete(RefreshSession refreshSession)
     {
         writeDbContext.RefreshSessions.Remove(refreshSession);

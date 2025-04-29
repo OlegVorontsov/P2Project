@@ -33,14 +33,14 @@ public class TokenProvider : ITokenProvider
         User user, CancellationToken cancellationToken)
     {
         Guid jti = Guid.NewGuid();
-        
+
         var key = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(_jwtOptions.Key));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var roleClaims = user.Roles
             .Select(r => new Claim(CustomClaims.ROLE, r.Name ?? string.Empty));
-        
+
         var permissions = await _permissionManager
             .GetUserPermissions(user.Id, cancellationToken);
         var permissionClaims = permissions.Select(p => new Claim(CustomClaims.PERMISSION, p));
@@ -52,7 +52,7 @@ public class TokenProvider : ITokenProvider
             new (CustomClaims.Jti, jti.ToString()),
             new (CustomClaims.Email, user.Email ?? string.Empty)
         ];
-        
+
         claims = claims.Concat(roleClaims).Concat(permissionClaims).ToArray();
 
         var token = new JwtSecurityToken(
@@ -62,7 +62,7 @@ public class TokenProvider : ITokenProvider
             signingCredentials: creds,
             claims: claims);
         var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-        
+
         return new JwtTokenResult(tokenString, jti);
     }
 
@@ -73,7 +73,7 @@ public class TokenProvider : ITokenProvider
     {
         var refreshSession = new RefreshSession
         {
-            User = user,
+            UserId = user.Id,
             Jti = accessTokenJti,
             CreatedAt = DateTime.UtcNow,
             ExpiresIn = DateTime.UtcNow.AddDays(60),
@@ -84,7 +84,7 @@ public class TokenProvider : ITokenProvider
 
         return refreshSession.RefreshToken;
     }
-    
+
     public async Task<Result<IReadOnlyList<Claim>, Error>> GetUserClaims(
         string jwtToken, CancellationToken cancellationToken)
     {
@@ -94,7 +94,7 @@ public class TokenProvider : ITokenProvider
         var validationResult = await jwtHandler.ValidateTokenAsync(jwtToken, validationParameters);
         if (validationResult.IsValid == false)
             return Errors.AccountError.InvalidToken();
-        
+
         return validationResult.ClaimsIdentity.Claims.ToList();
     }
 }
