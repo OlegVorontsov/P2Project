@@ -38,9 +38,6 @@ public class RefreshTokensHandler :
         if(oldRefreshSession.IsFailure)
             return Errors.General.NotFound(command.RefreshToken).ToErrorList();
 
-        if(oldRefreshSession.Value.ExpiresIn < DateTime.UtcNow)
-            return Errors.AccountError.TokenExpired().ToErrorList();
-
         var userClaims = await _tokenProvider.GetUserClaims(command.AccessToken, cancellationToken);
         if (userClaims.IsFailure)
             return Errors.AccountError.InvalidToken().ToErrorList();

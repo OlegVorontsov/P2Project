@@ -22,22 +22,21 @@ public class TokenProvider : ITokenProvider
 {
     private readonly RefreshSessionOptions _refreshSessionOptions;
     private readonly ICacheService _cacheService;
-    private readonly AccountsWriteDbContext _writeDbContext;
     private readonly PermissionManager _permissionManager;
     private readonly JwtOptions _jwtOptions;
+
     public TokenProvider(
         IOptions<RefreshSessionOptions> refreshSessionOptions,
         ICacheService cacheService,
-        AccountsWriteDbContext writeDbContext,
         IOptions<JwtOptions> jwtOptions,
         PermissionManager permissionManager)
     {
         _refreshSessionOptions = refreshSessionOptions.Value;
         _cacheService = cacheService;
-        _writeDbContext = writeDbContext;
         _permissionManager = permissionManager;
         _jwtOptions = jwtOptions.Value;
     }
+
     public async Task<JwtTokenResult> GenerateAccessToken(
         User user, CancellationToken cancellationToken)
     {
@@ -85,7 +84,7 @@ public class TokenProvider : ITokenProvider
             UserId = user.Id,
             Jti = accessTokenJti,
             CreatedAt = DateTime.UtcNow,
-            ExpiresIn = DateTime.UtcNow.AddDays(60),
+            ExpiresIn = DateTime.UtcNow.AddDays(int.Parse(_refreshSessionOptions.ExpiredDaysTime)),
             RefreshToken = Guid.NewGuid()
         };
 
