@@ -70,19 +70,19 @@ public class UploadAvatarHandler :
         if (getPreSignedUrlResponse.IsFailure)
             return Errors.General.Failure(getPreSignedUrlResponse.Error).ToErrorList();
         
-        var uploadFilResponse = await _httpClient
+        var uploadFileResponse = await _httpClient
             .UploadFileAsync(
                 getPreSignedUrlResponse.Value.Url,
                 command.File,
                 command.StartMultipartUploadRequest.ContentType,
                 cancellationToken);
-        if (uploadFilResponse.IsFailure)
+        if (uploadFileResponse.IsFailure)
             return Errors.General.Failure("Fail to upload file").ToErrorList();
 
         var result = new UploadFileResponse(
             startMultipartUploadResponse.Value.Key,
             startMultipartUploadResponse.Value.UploadId,
-            uploadFilResponse.Value);
+            uploadFileResponse.Value);
         
         _logger.LogInformation(
             "Uploaded avatar file for volunteer's {volunteerId} pet {petId}",

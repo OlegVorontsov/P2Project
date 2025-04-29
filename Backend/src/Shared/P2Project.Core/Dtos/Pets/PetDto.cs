@@ -30,8 +30,8 @@ public class PetDto
     public int Position { get; init; }
     public IEnumerable<AssistanceDetailDto> AssistanceDetails { get; set; } = default!;
     
-    public string AvatarUrl { get; set; }  = string.Empty;
-    public MediaFile? Avatar {  get; init; }
+    public string AvatarUrl { get; set; } = string.Empty;
+    public MediaFileDto? Avatar { get; init; }
     public IReadOnlyList<string> PhotosUrls { get; set; } = [];
     public IReadOnlyList<MediaFileDto> Photos { get; set; } = [];
     
