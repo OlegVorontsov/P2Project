@@ -21,6 +21,8 @@ public static class DependencyInjection
             configuration.GetSection(JwtOptions.NAME));
         services.Configure<AdminOptions>(
             configuration.GetSection(AdminOptions.NAME));
+        services.Configure<RefreshSessionOptions>(
+            configuration.GetSection(RefreshSessionOptions.REFRESH_SESSION));
         
         services.AddDataBase(configuration)
                 .AddUnitOfWork()

@@ -17,18 +17,15 @@ public class RefreshTokensHandler :
 {
     private readonly IRefreshSessionManager _refreshSessionManager;
     private readonly ITokenProvider _tokenProvider;
-    private readonly IUnitOfWork _unitOfWork;
     private readonly UserManager<User> _userManager;
 
     public RefreshTokensHandler(
         IRefreshSessionManager refreshSessionManager,
         ITokenProvider tokenProvider,
-        [FromKeyedServices(Modules.Accounts)] IUnitOfWork unitOfWork,
         UserManager<User> userManager)
     {
         _refreshSessionManager = refreshSessionManager;
         _tokenProvider = tokenProvider;
-        _unitOfWork = unitOfWork;
         _userManager = userManager;
     }
 
@@ -60,8 +57,7 @@ public class RefreshTokensHandler :
         if(oldRefreshSession.Value.Jti != userJtiGuid)
             return Errors.AccountError.InvalidToken().ToErrorList();
 
-        _refreshSessionManager.Delete(oldRefreshSession.Value);
-        await _unitOfWork.SaveChanges(cancellationToken);
+        await _refreshSessionManager.DeleteAsync(oldRefreshSession.Value, cancellationToken);
 
         var user = await _userManager.FindByIdAsync(userIdString);
 

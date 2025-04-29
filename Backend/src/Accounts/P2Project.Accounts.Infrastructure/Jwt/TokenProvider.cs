@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using CSharpFunctionalExtensions;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using P2Project.Accounts.Application.Interfaces;
@@ -9,22 +10,30 @@ using P2Project.Accounts.Application.Models;
 using P2Project.Accounts.Domain;
 using P2Project.Accounts.Infrastructure.DbContexts;
 using P2Project.Accounts.Infrastructure.Managers;
+using P2Project.Core.Interfaces.Caching;
 using P2Project.Core.Options;
 using P2Project.Framework.Authorization;
+using P2Project.SharedKernel;
 using P2Project.SharedKernel.Errors;
 
 namespace P2Project.Accounts.Infrastructure.Jwt;
 
 public class TokenProvider : ITokenProvider
 {
+    private readonly RefreshSessionOptions _refreshSessionOptions;
+    private readonly ICacheService _cacheService;
     private readonly AccountsWriteDbContext _writeDbContext;
     private readonly PermissionManager _permissionManager;
     private readonly JwtOptions _jwtOptions;
     public TokenProvider(
+        IOptions<RefreshSessionOptions> refreshSessionOptions,
+        ICacheService cacheService,
         AccountsWriteDbContext writeDbContext,
         IOptions<JwtOptions> jwtOptions,
         PermissionManager permissionManager)
     {
+        _refreshSessionOptions = refreshSessionOptions.Value;
+        _cacheService = cacheService;
         _writeDbContext = writeDbContext;
         _permissionManager = permissionManager;
         _jwtOptions = jwtOptions.Value;
@@ -79,8 +88,14 @@ public class TokenProvider : ITokenProvider
             ExpiresIn = DateTime.UtcNow.AddDays(60),
             RefreshToken = Guid.NewGuid()
         };
-        _writeDbContext.RefreshSessions.Add(refreshSession);
-        await _writeDbContext.SaveChangesAsync(cancellationToken);
+
+        var key = Constants.CacheConstants.REFRESH_SESSIONS_PREFIX + refreshSession.RefreshToken;
+        var options = new DistributedCacheEntryOptions
+        {
+            AbsoluteExpiration = refreshSession.ExpiresIn
+        };
+
+        await _cacheService.SetAsync(key, refreshSession, options, cancellationToken);
 
         return refreshSession.RefreshToken;
     }
