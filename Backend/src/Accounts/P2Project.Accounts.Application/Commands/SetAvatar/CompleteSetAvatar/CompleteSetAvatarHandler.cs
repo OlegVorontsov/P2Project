@@ -4,11 +4,13 @@ using FilesService.Core.Models;
 using FilesService.Core.Requests.AmazonS3;
 using FilesService.Core.Responses.AmazonS3;
 using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using P2Project.Accounts.Domain;
+using P2Project.Accounts.Domain.Events;
 using P2Project.Core;
 using P2Project.Core.Extensions;
 using P2Project.Core.Interfaces;
@@ -25,19 +27,22 @@ public class CompleteSetAvatarHandler :
     private readonly IFilesHttpClient _httpClient;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<CompleteSetAvatarHandler> _logger;
+    private readonly IPublisher _publisher;
 
     public CompleteSetAvatarHandler(
         IValidator<CompleteSetAvatarCommand> validator,
         UserManager<User> userManager,
         IFilesHttpClient httpClient,
         [FromKeyedServices(Modules.Accounts)] IUnitOfWork unitOfWork,
-        ILogger<CompleteSetAvatarHandler> logger)
+        ILogger<CompleteSetAvatarHandler> logger,
+        IPublisher publisher)
     {
         _validator = validator;
         _userManager = userManager;
         _httpClient = httpClient;
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _publisher = publisher;
     }
 
     public async Task<Result<FileLocationResponse, ErrorList>> Handle(
@@ -79,7 +84,9 @@ public class CompleteSetAvatarHandler :
         user.SetAvatar(mediaFile);
         await _unitOfWork.SaveChanges(cancellationToken);
         transaction.Commit();
-        
+
+        await _publisher.Publish(new UserWasChangedEvent(), cancellationToken);
+
         _logger.LogInformation("Set avatar for user with id {userId}",
             command.UserId);
         

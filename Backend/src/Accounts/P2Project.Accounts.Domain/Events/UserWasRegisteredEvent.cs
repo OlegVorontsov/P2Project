@@ -1,0 +1,5 @@
+using P2Project.SharedKernel;
+
+namespace P2Project.Accounts.Domain.Events;
+
+public record UserWasRegisteredEvent(Guid UserId) : IDomainEvent;

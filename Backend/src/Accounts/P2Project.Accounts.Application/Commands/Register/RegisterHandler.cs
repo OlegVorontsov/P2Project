@@ -1,10 +1,12 @@
 using CSharpFunctionalExtensions;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using P2Project.Accounts.Application.Interfaces;
 using P2Project.Accounts.Domain;
 using P2Project.Accounts.Domain.Accounts;
+using P2Project.Accounts.Domain.Events;
 using P2Project.Accounts.Domain.RolePermission.Roles;
 using P2Project.Core;
 using P2Project.Core.Interfaces;
@@ -22,7 +24,8 @@ public class RegisterHandler(
     IAccountsManager accountManager,
     IOutboxRepository outboxRepository,
     [FromKeyedServices(Modules.Accounts)] IUnitOfWork unitOfWork,
-    ILogger<RegisterHandler> logger) : ICommandHandler<string, RegisterCommand>
+    ILogger<RegisterHandler> logger,
+    IPublisher publisher) : ICommandHandler<string, RegisterCommand>
 {
     public async Task<Result<string, ErrorList>> Handle(
         RegisterCommand command,
@@ -69,7 +72,9 @@ public class RegisterHandler(
             await outboxRepository.Add(createdUserEvent, cancellationToken);
             
             transaction.Commit();
-            
+
+            await publisher.Publish(new UserWasRegisteredEvent(userResult.Value.Id), cancellationToken);
+
             logger.LogInformation("User {username} was registered", userResult.Value.UserName);
             return $"{userResult.Value.UserName} was registered";
         }
