@@ -2,12 +2,12 @@ using FluentValidation;
 using P2Project.Core.Validation;
 using P2Project.SharedKernel.Errors;
 
-namespace P2Project.Volunteers.Application.Commands.SetAvatar.CompleteSetAvatar;
+namespace P2Project.Volunteers.Application.Commands.SetPetAvatar.CompleteSetPetAvatar;
 
-public class CompleteSetAvatarValidator :
-    AbstractValidator<CompleteSetAvatarCommand>
+public class CompleteSetPetAvatarValidator :
+    AbstractValidator<CompleteSetPetAvatarCommand>
 {
-    public CompleteSetAvatarValidator()
+    public CompleteSetPetAvatarValidator()
     {
         RuleFor(ap => ap.VolunteerId)
             .NotNull()

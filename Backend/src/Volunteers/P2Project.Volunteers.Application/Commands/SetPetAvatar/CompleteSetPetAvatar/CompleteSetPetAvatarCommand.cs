@@ -1,8 +1,8 @@
 using P2Project.Core.Interfaces.Commands;
 
-namespace P2Project.Volunteers.Application.Commands.SetAvatar.CompleteSetAvatar;
+namespace P2Project.Volunteers.Application.Commands.SetPetAvatar.CompleteSetPetAvatar;
 
-public record CompleteSetAvatarCommand(
+public record CompleteSetPetAvatarCommand(
     Guid VolunteerId,
     Guid PetId,
     string FileName,

@@ -9,21 +9,21 @@ using P2Project.Core.Interfaces.Commands;
 using P2Project.SharedKernel.Errors;
 using P2Project.SharedKernel.IDs;
 
-namespace P2Project.Volunteers.Application.Commands.SetAvatar.UploadAvatar;
+namespace P2Project.Volunteers.Application.Commands.SetPetAvatar.UploadPetAvatar;
 
-public class UploadAvatarHandler :
-    ICommandHandler<UploadFileResponse, UploadAvatarCommand>
+public class UploadPetAvatarHandler :
+    ICommandHandler<UploadFileResponse, UploadPetAvatarCommand>
 {
-    private readonly IValidator<UploadAvatarCommand> _validator;
+    private readonly IValidator<UploadPetAvatarCommand> _validator;
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly IFilesHttpClient _httpClient;
-    private readonly ILogger<UploadAvatarHandler> _logger;
+    private readonly ILogger<UploadPetAvatarHandler> _logger;
 
-    public UploadAvatarHandler(
-        IValidator<UploadAvatarCommand> validator,
+    public UploadPetAvatarHandler(
+        IValidator<UploadPetAvatarCommand> validator,
         IVolunteersRepository volunteersRepository,
         IFilesHttpClient httpClient,
-        ILogger<UploadAvatarHandler> logger)
+        ILogger<UploadPetAvatarHandler> logger)
     {
         _validator = validator;
         _volunteersRepository = volunteersRepository;
@@ -32,7 +32,7 @@ public class UploadAvatarHandler :
     }
 
     public async Task<Result<UploadFileResponse, ErrorList>> Handle(
-        UploadAvatarCommand command,
+        UploadPetAvatarCommand command,
         CancellationToken cancellationToken)
     {
         var validationResult = await _validator.ValidateAsync(

@@ -1,7 +1,4 @@
-﻿using Amazon.S3;
-using Amazon.S3.Model;
-using CSharpFunctionalExtensions;
-using FilesService.Application.Interfaces;
+﻿using CSharpFunctionalExtensions;
 using FilesService.Core.Dtos;
 using FilesService.Core.Interfaces;
 using FilesService.Core.Models;
@@ -9,6 +6,7 @@ using FilesService.Core.Requests.AmazonS3;
 using FilesService.Core.Requests.Minio;
 using FilesService.Core.ValueObjects;
 using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using P2Project.Core;
@@ -18,6 +16,7 @@ using P2Project.Core.Interfaces.Commands;
 using P2Project.SharedKernel;
 using P2Project.SharedKernel.Errors;
 using P2Project.SharedKernel.IDs;
+using P2Project.Volunteers.Domain.Events;
 
 namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
 {
@@ -31,6 +30,7 @@ namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<AddPetPhotosHandler> _logger;
         private readonly IMessageQueue<IEnumerable<FileInfoDto>> _messageQueue;
+        private readonly IPublisher _publisher;
 
         public AddPetPhotosHandler(
             IValidator<AddPetPhotosCommand> validator,
@@ -39,7 +39,8 @@ namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
             IFilesHttpClient httpClient,
             [FromKeyedServices(Modules.Volunteers)] IUnitOfWork unitOfWork,
             ILogger<AddPetPhotosHandler> logger,
-            IMessageQueue<IEnumerable<FileInfoDto>> messageQueue)
+            IMessageQueue<IEnumerable<FileInfoDto>> messageQueue,
+            IPublisher publisher)
         {
             _validator = validator;
             _fileProvider = fileProvider;
@@ -48,6 +49,7 @@ namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
             _unitOfWork = unitOfWork;
             _logger = logger;
             _messageQueue = messageQueue;
+            _publisher = publisher;
         }
 
         public async Task<Result<List<string>, ErrorList>> Handle(
@@ -136,6 +138,9 @@ namespace P2Project.Volunteers.Application.Commands.AddPetPhotos
                 await _unitOfWork.SaveChanges(cancellationToken);
                 
                 transaction.Commit();
+
+                await _publisher.Publish(new PetWasChangedEvent(), cancellationToken);
+
 
                 _logger.LogInformation(
                     "Photos for pet with ID: {petId} updated successfully",

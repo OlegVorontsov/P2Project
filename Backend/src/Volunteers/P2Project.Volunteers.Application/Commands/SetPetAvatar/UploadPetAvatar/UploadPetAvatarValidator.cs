@@ -3,12 +3,12 @@ using P2Project.Core.Dtos.Validators;
 using P2Project.Core.Validation;
 using P2Project.SharedKernel.Errors;
 
-namespace P2Project.Volunteers.Application.Commands.SetAvatar.UploadAvatar;
+namespace P2Project.Volunteers.Application.Commands.SetPetAvatar.UploadPetAvatar;
 
-public class UploadAvatarValidator :
-    AbstractValidator<UploadAvatarCommand>
+public class UploadPetAvatarValidator :
+    AbstractValidator<UploadPetAvatarCommand>
 {
-    public UploadAvatarValidator()
+    public UploadPetAvatarValidator()
     {
         RuleFor(u => u.VolunteerId)
             .NotNull()

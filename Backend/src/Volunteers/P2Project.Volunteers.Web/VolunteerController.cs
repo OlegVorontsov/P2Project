@@ -15,7 +15,8 @@ using P2Project.Volunteers.Application.Commands.Create;
 using P2Project.Volunteers.Application.Commands.DeletePetPhotos;
 using P2Project.Volunteers.Application.Commands.HardDelete;
 using P2Project.Volunteers.Application.Commands.HardDeletePet;
-using P2Project.Volunteers.Application.Commands.SetAvatar.UploadAvatar;
+using P2Project.Volunteers.Application.Commands.SetPetAvatar.CompleteSetPetAvatar;
+using P2Project.Volunteers.Application.Commands.SetPetAvatar.UploadPetAvatar;
 using P2Project.Volunteers.Application.Commands.SoftDelete;
 using P2Project.Volunteers.Application.Commands.SoftDeletePet;
 using P2Project.Volunteers.Application.Commands.UpdateMainInfo;
@@ -24,8 +25,6 @@ using P2Project.Volunteers.Application.Commands.UpdatePhoneNumbers;
 using P2Project.Volunteers.Application.Queries.Volunteers.GetFilteredVolunteersWithPagination;
 using P2Project.Volunteers.Application.Queries.Volunteers.GetVolunteerById;
 using P2Project.Volunteers.Web.Requests;
-using CompleteSetAvatarCommand = P2Project.Volunteers.Application.Commands.SetAvatar.CompleteSetAvatar.CompleteSetAvatarCommand;
-using CompleteSetAvatarHandler = P2Project.Volunteers.Application.Commands.SetAvatar.CompleteSetAvatar.CompleteSetAvatarHandler;
 
 namespace P2Project.Volunteers.Web
 {
@@ -284,7 +283,7 @@ namespace P2Project.Volunteers.Web
             [FromRoute] Guid volunteerId,
             [FromRoute] Guid petId,
             IFormFile avatarFile,
-            [FromServices] UploadAvatarHandler handler,
+            [FromServices] UploadPetAvatarHandler handler,
             CancellationToken cancellationToken)
         {
             var fileBytesArrayResult = await avatarFile.ToByteArrayAsync();
@@ -292,7 +291,7 @@ namespace P2Project.Volunteers.Web
                 return fileBytesArrayResult.Error.ToResponse();
         
             var result = await handler.Handle(
-                new UploadAvatarCommand(
+                new UploadPetAvatarCommand(
                     volunteerId,
                     petId,
                     fileBytesArrayResult.Value,
@@ -315,11 +314,11 @@ namespace P2Project.Volunteers.Web
             [FromRoute] Guid volunteerId,
             [FromRoute] Guid petId,
             [FromBody] CompletePetSetAvatarRequest request,
-            [FromServices] CompleteSetAvatarHandler handler,
+            [FromServices] CompleteSetPetAvatarHandler handler,
             CancellationToken cancellationToken)
         {
             var result = await handler.Handle(
-                new CompleteSetAvatarCommand(
+                new CompleteSetPetAvatarCommand(
                     volunteerId,
                     petId,
                     request.FileName,

@@ -2,6 +2,7 @@ using CSharpFunctionalExtensions;
 using FilesService.Core.Interfaces;
 using FilesService.Core.Models;
 using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using P2Project.Core;
@@ -11,6 +12,7 @@ using P2Project.Core.Interfaces.Commands;
 using P2Project.SharedKernel;
 using P2Project.SharedKernel.Errors;
 using P2Project.SharedKernel.IDs;
+using P2Project.Volunteers.Domain.Events;
 
 namespace P2Project.Volunteers.Application.Commands.HardDeletePet;
 
@@ -22,19 +24,22 @@ public class HardDeletePetHandler :
     private readonly IFileProvider _fileProvider;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<HardDeletePetHandler> _logger;
+    private readonly IPublisher _publisher;
 
     public HardDeletePetHandler(
         IValidator<HardDeletePetCommand> validator,
         IVolunteersRepository volunteersRepository,
         IFileProvider fileProvider,
         [FromKeyedServices(Modules.Volunteers)] IUnitOfWork unitOfWork,
-        ILogger<HardDeletePetHandler> logger)
+        ILogger<HardDeletePetHandler> logger,
+        IPublisher publisher)
     {
         _validator = validator;
         _volunteersRepository = volunteersRepository;
         _fileProvider = fileProvider;
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _publisher = publisher;
     }
 
     public async Task<Result<Guid, ErrorList>> Handle(
@@ -77,6 +82,13 @@ public class HardDeletePetHandler :
         }
 
         await _unitOfWork.SaveChanges(cancellationToken);
+
+        await _publisher.Publish(new PetWasChangedEvent(), cancellationToken);
+
+        _logger.LogInformation(
+            "Successfully hard deleted volunteer's (id = {vId}) pet (id = {pId})",
+            volunteerId,
+            petId);
 
         return volunteerResult.Value.Id.Value;
     }

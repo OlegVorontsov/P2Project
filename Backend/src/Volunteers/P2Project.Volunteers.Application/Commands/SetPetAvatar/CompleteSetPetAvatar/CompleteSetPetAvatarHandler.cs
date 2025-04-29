@@ -4,6 +4,7 @@ using FilesService.Core.Models;
 using FilesService.Core.Requests.AmazonS3;
 using FilesService.Core.Responses.AmazonS3;
 using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using P2Project.Core;
@@ -12,34 +13,38 @@ using P2Project.Core.Interfaces;
 using P2Project.Core.Interfaces.Commands;
 using P2Project.SharedKernel.Errors;
 using P2Project.SharedKernel.IDs;
+using P2Project.Volunteers.Domain.Events;
 
-namespace P2Project.Volunteers.Application.Commands.SetAvatar.CompleteSetAvatar;
+namespace P2Project.Volunteers.Application.Commands.SetPetAvatar.CompleteSetPetAvatar;
 
-public class CompleteSetAvatarHandler :
-    ICommandHandler<FileLocationResponse, CompleteSetAvatarCommand>
+public class CompleteSetPetAvatarHandler :
+    ICommandHandler<FileLocationResponse, CompleteSetPetAvatarCommand>
 {
-    private readonly IValidator<CompleteSetAvatarCommand> _validator;
+    private readonly IValidator<CompleteSetPetAvatarCommand> _validator;
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly IFilesHttpClient _httpClient;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly ILogger<CompleteSetAvatarHandler> _logger;
+    private readonly ILogger<CompleteSetPetAvatarHandler> _logger;
+    private readonly IPublisher _publisher;
 
-    public CompleteSetAvatarHandler(
-        IValidator<CompleteSetAvatarCommand> validator,
+    public CompleteSetPetAvatarHandler(
+        IValidator<CompleteSetPetAvatarCommand> validator,
         IVolunteersRepository volunteersRepository,
         IFilesHttpClient httpClient,
         [FromKeyedServices(Modules.Volunteers)] IUnitOfWork unitOfWork,
-        ILogger<CompleteSetAvatarHandler> logger)
+        ILogger<CompleteSetPetAvatarHandler> logger,
+        IPublisher publisher)
     {
         _validator = validator;
         _volunteersRepository = volunteersRepository;
         _httpClient = httpClient;
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _publisher = publisher;
     }
 
     public async Task<Result<FileLocationResponse, ErrorList>> Handle(
-        CompleteSetAvatarCommand command,
+        CompleteSetPetAvatarCommand command,
         CancellationToken cancellationToken)
     {
         var validationResult = await _validator.ValidateAsync(
@@ -84,7 +89,9 @@ public class CompleteSetAvatarHandler :
         petResult.SetAvatar(mediaFile);
         await _unitOfWork.SaveChanges(cancellationToken);
         transaction.Commit();
-        
+
+        await _publisher.Publish(new PetWasChangedEvent(), cancellationToken);
+
         _logger.LogInformation("Set avatar for volunteer's {volunteerId} pet {petId}",
             command.VolunteerId,
             command.PetId);

@@ -15,6 +15,7 @@ using P2Project.Core.MessageQueues;
 using P2Project.Core.Options;
 using P2Project.SharedKernel;
 using P2Project.Volunteers.Application;
+using P2Project.Volunteers.Application.EventHandlers.PetWasChanged;
 using P2Project.Volunteers.Infrastructure.BackgroundServices;
 using P2Project.Volunteers.Infrastructure.DbContexts;
 
@@ -27,10 +28,11 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         services.AddRepositories()
-            .AddDataBase(configuration)
-            .AddUnitOfWork()
-            .AddHostedServices()
-            .AddMinioVault(configuration);
+                .AddDataBase(configuration)
+                .AddUnitOfWork()
+                .AddHostedServices()
+                .AddMinioVault(configuration)
+                .AddMediatR();
 
         services.AddScoped<IFilesCleanerService, FilesCleanerService>();
         services.AddScoped<DeleteExpiredSoftDeletedEntityService>();
@@ -101,6 +103,17 @@ public static class DependencyInjection
         });
 
         services.AddScoped<IFileProvider, MinioProvider>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddMediatR(this IServiceCollection services)
+    {
+        services.AddMediatR(
+            cfg =>
+            {
+                cfg.RegisterServicesFromAssembly(typeof(CacheInvalidation).Assembly);
+            });
 
         return services;
     }
