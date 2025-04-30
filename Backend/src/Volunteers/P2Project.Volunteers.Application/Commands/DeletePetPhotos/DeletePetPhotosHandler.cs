@@ -2,6 +2,7 @@ using CSharpFunctionalExtensions;
 using FilesService.Core.Interfaces;
 using FilesService.Core.Models;
 using FluentValidation;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -12,6 +13,7 @@ using P2Project.Core.Interfaces.Commands;
 using P2Project.SharedKernel;
 using P2Project.SharedKernel.Errors;
 using P2Project.SharedKernel.IDs;
+using P2Project.Volunteers.Domain.Events;
 
 namespace P2Project.Volunteers.Application.Commands.DeletePetPhotos;
 
@@ -24,6 +26,7 @@ public class DeletePetPhotosHandler :
     private readonly IFileProvider _fileProvider;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<DeletePetPhotosHandler> _logger;
+    private readonly IPublisher _publisher;
 
     public DeletePetPhotosHandler(
         IValidator<DeletePetPhotosCommand> validator,
@@ -31,13 +34,15 @@ public class DeletePetPhotosHandler :
         IVolunteersReadDbContext readDbContext,
         IFileProvider fileProvider,
         [FromKeyedServices(Modules.Volunteers)] IUnitOfWork unitOfWork,
-        ILogger<DeletePetPhotosHandler> logger)
+        ILogger<DeletePetPhotosHandler> logger,
+        IPublisher publisher)
     {
         _validator = validator;
         _volunteersRepository = volunteersRepository;
         _readDbContext = readDbContext;
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _publisher = publisher;
         _fileProvider = fileProvider;
     }
 
@@ -80,7 +85,9 @@ public class DeletePetPhotosHandler :
                 _logger.LogError("Error occured while deleting file with name {name} from storage",
                     filePath);
         }
-        
+
+        await _publisher.Publish(new PetWasChangedEvent(), cancellationToken);
+
         _logger.LogInformation(
             "Successfully deleted all pet photos of pet with id {petId}",
             petId);

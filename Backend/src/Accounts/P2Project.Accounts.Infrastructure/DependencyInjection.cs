@@ -1,6 +1,7 @@
 using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using P2Project.Accounts.Application.EventHandlers.UserWasChanged;
 using P2Project.Accounts.Application.Interfaces;
 using P2Project.Accounts.Infrastructure.Admin;
 using P2Project.Accounts.Infrastructure.Consumers;
@@ -21,10 +22,13 @@ public static class DependencyInjection
             configuration.GetSection(JwtOptions.NAME));
         services.Configure<AdminOptions>(
             configuration.GetSection(AdminOptions.NAME));
+        services.Configure<RefreshSessionOptions>(
+            configuration.GetSection(RefreshSessionOptions.REFRESH_SESSION));
         
         services.AddDataBase(configuration)
                 .AddUnitOfWork()
-                .AddMessageBus(configuration);
+                .AddMessageBus(configuration)
+                .AddMediatR();
         
         return services;
     }
@@ -81,6 +85,17 @@ public static class DependencyInjection
                 cfg.ConfigureEndpoints(context);
             });
         });
+
+        return services;
+    }
+
+    private static IServiceCollection AddMediatR(this IServiceCollection services)
+    {
+        services.AddMediatR(
+            cfg =>
+            {
+                cfg.RegisterServicesFromAssembly(typeof(CacheInvalidation).Assembly);
+            });
 
         return services;
     }

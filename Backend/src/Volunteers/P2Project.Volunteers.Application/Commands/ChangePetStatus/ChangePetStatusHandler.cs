@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using P2Project.Core;
@@ -8,6 +9,7 @@ using P2Project.Core.Interfaces;
 using P2Project.Core.Interfaces.Commands;
 using P2Project.SharedKernel.Errors;
 using P2Project.SharedKernel.IDs;
+using P2Project.Volunteers.Domain.Events;
 using P2Project.Volunteers.Domain.ValueObjects.Pets;
 
 namespace P2Project.Volunteers.Application.Commands.ChangePetStatus;
@@ -19,17 +21,20 @@ public class ChangePetStatusHandler :
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<ChangePetStatusHandler> _logger;
+    private readonly IPublisher _publisher;
 
     public ChangePetStatusHandler(
         IValidator<ChangePetStatusCommand> validator,
         IVolunteersRepository volunteersRepository,
         [FromKeyedServices(Modules.Volunteers)] IUnitOfWork unitOfWork,
-        ILogger<ChangePetStatusHandler> logger)
+        ILogger<ChangePetStatusHandler> logger,
+        IPublisher publisher)
     {
         _validator = validator;
         _volunteersRepository = volunteersRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _publisher = publisher;
     }
 
     public async Task<Result<Guid, ErrorList>> Handle(
@@ -58,6 +63,8 @@ public class ChangePetStatusHandler :
             return changeResult.Error.ToErrorList();
 
         await _unitOfWork.SaveChanges(cancellationToken);
+
+        await _publisher.Publish(new PetWasChangedEvent(), cancellationToken);
 
         _logger.LogInformation(
             "Successfully changed volunteer's (id = {vId}) pet's (id = {pId}) status to {newStatus}",

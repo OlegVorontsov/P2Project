@@ -3,28 +3,28 @@ using Microsoft.EntityFrameworkCore;
 using P2Project.Accounts.Application.Interfaces;
 using P2Project.Accounts.Domain;
 using P2Project.Accounts.Infrastructure.DbContexts;
+using P2Project.Core.Interfaces.Caching;
+using P2Project.SharedKernel;
 using P2Project.SharedKernel.Errors;
 
 namespace P2Project.Accounts.Infrastructure.Managers;
 
 public class RefreshSessionManager(
-    AccountsWriteDbContext writeDbContext) : IRefreshSessionManager
+    ICacheService _cacheService) : IRefreshSessionManager
 {
     public async Task<Result<RefreshSession, Error>> GetByRefreshToken(
         Guid refreshToken, CancellationToken cancellationToken)
     {
-        var refreshSession = await writeDbContext.RefreshSessions
-            .Include(r => r.User)
-            .FirstOrDefaultAsync(t => t.RefreshToken == refreshToken, cancellationToken);
-        
-        if(refreshSession is null)
-            return Errors.General.NotFound(refreshToken);
-        
-        return refreshSession;
+        var key = Constants.CacheConstants.REFRESH_SESSIONS_PREFIX + refreshToken;
+        var session = await _cacheService.GetAsync<RefreshSession>(key, cancellationToken);
+
+        return session ?? Result.Failure<RefreshSession, Error>(Errors.General.NotFound(refreshToken));
     }
-    
-    public void Delete(RefreshSession refreshSession)
+
+    public async Task<Guid> DeleteAsync(RefreshSession refreshSession, CancellationToken cancellationToken)
     {
-        writeDbContext.RefreshSessions.Remove(refreshSession);
+        var key = Constants.CacheConstants.REFRESH_SESSIONS_PREFIX + refreshSession.RefreshToken;
+        await _cacheService.RemoveAsync(key, cancellationToken);
+        return refreshSession.RefreshToken;
     }
 }

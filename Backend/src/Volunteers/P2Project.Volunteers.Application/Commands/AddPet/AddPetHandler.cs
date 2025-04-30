@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using P2Project.Core;
@@ -10,34 +11,35 @@ using P2Project.SharedKernel.Errors;
 using P2Project.SharedKernel.IDs;
 using P2Project.SharedKernel.ValueObjects;
 using P2Project.Species.Agreements;
-using P2Project.Volunteers.Application.Commands.Create;
 using P2Project.Volunteers.Domain.Entities;
+using P2Project.Volunteers.Domain.Events;
 using P2Project.Volunteers.Domain.ValueObjects.Pets;
 
 namespace P2Project.Volunteers.Application.Commands.AddPet
 {
     public class AddPetHandler : ICommandHandler<Guid, AddPetCommand>
     {
-        private const string BUCKET_NAME = "photos";
-
         private readonly IValidator<AddPetCommand> _validator;
         private readonly ISpeciesAgreement _speciesAgreement;
         private readonly IVolunteersRepository _volunteersRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<AddPetHandler> _petLogger;
+        private readonly IPublisher _publisher;
 
         public AddPetHandler(
             IValidator<AddPetCommand> validator,
             ISpeciesAgreement speciesAgreement,
             IVolunteersRepository volunteersRepository,
             [FromKeyedServices(Modules.Volunteers)] IUnitOfWork unitOfWork,
-            ILogger<AddPetHandler> petLogger)
+            ILogger<AddPetHandler> petLogger,
+            IPublisher publisher)
         {
             _validator = validator;
             _speciesAgreement = speciesAgreement;
             _volunteersRepository = volunteersRepository;
             _unitOfWork = unitOfWork;
             _petLogger = petLogger;
+            _publisher = publisher;
             _speciesAgreement = speciesAgreement;
         }
         public async Task<Result<Guid, ErrorList>> Handle(
@@ -124,6 +126,8 @@ namespace P2Project.Volunteers.Application.Commands.AddPet
             _volunteersRepository.Save(volunteerResult.Value);
 
             await _unitOfWork.SaveChanges(cancellationToken);
+
+            await _publisher.Publish(new PetWasChangedEvent(), cancellationToken);
 
             _petLogger.LogInformation("Pet added with id: {PetId}.",
                 newPet.Id.Value);

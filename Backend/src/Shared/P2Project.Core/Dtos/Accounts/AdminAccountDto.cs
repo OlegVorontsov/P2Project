@@ -2,6 +2,6 @@ namespace P2Project.Core.Dtos.Accounts;
 
 public class AdminAccountDto
 {
-    public Guid AdminAccountId { get; init; }
-    public Guid UserId { get; init; }
+    public Guid AdminAccountId { get; set; }
+    public Guid UserId { get; set; }
 }

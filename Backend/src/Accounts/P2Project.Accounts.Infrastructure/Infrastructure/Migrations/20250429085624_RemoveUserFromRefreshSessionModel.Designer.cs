@@ -3,18 +3,21 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using P2Project.Accounts.Infrastructure.DbContexts;
 
 #nullable disable
 
-namespace P2Project.Accounts.Infrastructure.Migrations
+namespace P2Project.Accounts.Infrastructure.Infrastructure.Migrations
 {
     [DbContext(typeof(AccountsWriteDbContext))]
-    partial class AccountsWriteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250429085624_RemoveUserFromRefreshSessionModel")]
+    partial class RemoveUserFromRefreshSessionModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

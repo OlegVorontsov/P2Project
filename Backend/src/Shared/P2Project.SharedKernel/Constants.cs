@@ -42,5 +42,13 @@ namespace P2Project.SharedKernel
             public const string USER_NOT_IN = "User isn't in discussion";
             public const string NOT_USERS_MESSAGE = "Can't manage with not yours message";
         }
+
+        public static class CacheConstants
+        {
+            public const string USERS_PREFIX = "users_";
+            public const string PETS_PREFIX = "pets_";
+            public const string REFRESH_SESSIONS_PREFIX = "refresh_sessions_";
+            public const int DEFAULT_EXPIRATION_MINUTES = 5;
+        }
     }
 }

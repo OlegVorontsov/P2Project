@@ -1,8 +1,10 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using P2Project.Accounts.Agreements;
+using P2Project.Accounts.Domain.Events;
 using P2Project.Core;
 using P2Project.Core.Extensions;
 using P2Project.Core.Interfaces;
@@ -18,17 +20,20 @@ public class UnbanHandler :
     private readonly IAccountsAgreements _accountsAgreements;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<UnbanHandler> _logger;
+    private readonly IPublisher _publisher;
 
     public UnbanHandler(
         IValidator<UnbanCommand> validator,
         IAccountsAgreements accountsAgreements,
         [FromKeyedServices(Modules.Accounts)] IUnitOfWork unitOfWork,
-        ILogger<UnbanHandler> logger)
+        ILogger<UnbanHandler> logger,
+        IPublisher publisher)
     {
         _validator = validator;
         _accountsAgreements = accountsAgreements;
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _publisher = publisher;
     }
 
     public async Task<Result<Guid, ErrorList>> Handle(
@@ -43,8 +48,10 @@ public class UnbanHandler :
         await _accountsAgreements.UnbanUser(command.UserId, cancellationToken);
         
         await _unitOfWork.SaveChanges(cancellationToken);
-        
-        _logger.LogInformation("User {userId} unbanned for requests",
+
+        await _publisher.Publish(new UserWasChangedEvent(), cancellationToken);
+
+        _logger.LogInformation("User {userId} unbanned for volunteer requests",
             command.UserId);
 
         return command.UserId;

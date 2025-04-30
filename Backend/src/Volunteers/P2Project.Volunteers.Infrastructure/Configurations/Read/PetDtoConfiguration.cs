@@ -30,11 +30,11 @@ namespace P2Project.Volunteers.Infrastructure.Configurations.Read
             {
                 ab.ToJson("avatar");
                 
-                ab.Property(a => a.Key)
+                ab.Property(a => a.FileKey)
                     .IsRequired()
                     .HasColumnName("key");
 
-                ab.Property(a => a.Type)
+                ab.Property(a => a.FileType)
                     .HasConversion<string>()
                     .IsRequired()
                     .HasColumnName("type");

@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using P2Project.Core;
@@ -12,6 +13,7 @@ using P2Project.SharedKernel.ValueObjects;
 using P2Project.Species.Agreements;
 using P2Project.Volunteers.Application.Commands.AddPet;
 using P2Project.Volunteers.Application.Commands.Create;
+using P2Project.Volunteers.Domain.Events;
 using P2Project.Volunteers.Domain.ValueObjects.Pets;
 
 namespace P2Project.Volunteers.Application.Commands.UpdatePet;
@@ -23,19 +25,22 @@ public class UpdatePetHandler : ICommandHandler<Guid, UpdatePetCommand>
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<AddPetHandler> _petLogger;
+    private readonly IPublisher _publisher;
     
     public UpdatePetHandler(
         IValidator<UpdatePetCommand> validator,
         ISpeciesAgreement speciesAgreement,
         IVolunteersRepository volunteersRepository,
         [FromKeyedServices(Modules.Volunteers)] IUnitOfWork unitOfWork,
-        ILogger<AddPetHandler> petLogger)
+        ILogger<AddPetHandler> petLogger,
+        IPublisher publisher)
     {
         _validator = validator;
         _speciesAgreement = speciesAgreement;
         _volunteersRepository = volunteersRepository;
         _unitOfWork = unitOfWork;
         _petLogger = petLogger;
+        _publisher = publisher;
     }
 
     public async Task<Result<Guid, ErrorList>> Handle(
@@ -115,8 +120,10 @@ public class UpdatePetHandler : ICommandHandler<Guid, UpdatePetCommand>
 
         await _unitOfWork.SaveChanges(cancellationToken);
 
+        await _publisher.Publish(new PetWasChangedEvent(), cancellationToken);
+
         _petLogger.LogInformation(
-            "Succsessfully updated pet with id {petId}", petId);
+            "Successfully updated pet with id {petId}", petId);
 
         return petId.Value;
     }
