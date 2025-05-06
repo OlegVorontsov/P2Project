@@ -25,6 +25,7 @@ public static class ApplicationDependencyInjection
         return services.Scan(scan => scan.FromAssemblies(_assembly)
             .AddClasses(c => c
                 .AssignableToAny(
+                    typeof(Base.Abstractions.Command.ICommandHandler<,>),
                     typeof(ICommandHandler<,>),
                     typeof(ICommandHandler<>),
                     typeof(ICommandVoidHandler<>),
