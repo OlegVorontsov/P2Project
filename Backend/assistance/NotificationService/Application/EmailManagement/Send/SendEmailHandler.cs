@@ -1,7 +1,7 @@
+using Base.Abstractions.Command;
 using CSharpFunctionalExtensions;
 using NotificationService.Infrastructure.EmailNotification.EmailManagerImplementations;
-using P2Project.Core.Interfaces.Commands;
-using P2Project.SharedKernel.Errors;
+using SharedKernel.Errors;
 
 namespace NotificationService.Application.EmailManagement.Send;
 

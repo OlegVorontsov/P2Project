@@ -1,4 +1,4 @@
-using P2Project.Core.Interfaces.Commands;
+using Base.Abstractions.Command;
 
 namespace NotificationService.Application.EmailManagement.Send;
 
