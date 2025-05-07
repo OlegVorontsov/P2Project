@@ -9,6 +9,7 @@ using P2Project.Core.Interfaces;
 using P2Project.Core.Interfaces.Commands;
 using P2Project.SharedKernel.Errors;
 using P2Project.VolunteerRequests.Application.Interfaces;
+using P2Project.VolunteerRequests.Domain.Enums;
 
 namespace P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Commands.SetApprovedStatus;
 
@@ -33,6 +34,9 @@ public class SetApprovedStatusHandler(
             command.RequestId, cancellationToken);
         if (existedRequest.IsFailure)
             return Errors.General.NotFound(command.RequestId).ToErrorList();
+        
+        if (existedRequest.Value.Status == RequestStatus.Approved)
+            return Errors.General.Failure("Already approved").ToErrorList();
         
         existedRequest.Value.SetApprovedStatus(command.AdminId, command.Comment);
         

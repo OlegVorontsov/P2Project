@@ -57,6 +57,11 @@ public class VolunteerRequestConfiguration :
             .HasColumnName("status")
             .IsRequired();
         
+        builder.Property(v => v.Gender)
+            .HasConversion<string>()
+            .HasColumnName("gender")
+            .IsRequired();
+        
         builder.Property(v => v.CreatedAt)
             .IsRequired()
             .HasColumnName("created_at");

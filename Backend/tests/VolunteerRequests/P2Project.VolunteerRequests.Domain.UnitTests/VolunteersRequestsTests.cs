@@ -2,6 +2,7 @@ using P2Project.SharedKernel.ValueObjects;
 using P2Project.VolunteerRequests.Domain.Enums;
 using P2Project.VolunteerRequests.Domain.ValueObjects;
 using P2Project.VolunteerRequests.UnitTestsFabrics;
+using P2Project.Volunteers.Domain;
 
 namespace P2Project.VolunteerRequests.Domain.UnitTests;
 
@@ -17,7 +18,7 @@ public class VolunteersRequestsTests
         
         // Act
         var request = VolunteerRequest.Create(
-            Guid.NewGuid(), userId, fullName, volunteerInfo);
+            Guid.NewGuid(), userId, fullName, volunteerInfo, Gender.Male);
         
         //Assert
         Assert.NotNull(request);

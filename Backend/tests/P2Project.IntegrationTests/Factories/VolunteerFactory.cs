@@ -2,6 +2,7 @@ using AutoFixture;
 using Microsoft.Extensions.DependencyInjection;
 using P2Project.IntegrationTests.Extensions;
 using P2Project.Volunteers.Application;
+using P2Project.Volunteers.Application.Interfaces;
 using P2Project.Volunteers.Infrastructure.DbContexts;
 using _Species = P2Project.Species.Domain.Species;
 

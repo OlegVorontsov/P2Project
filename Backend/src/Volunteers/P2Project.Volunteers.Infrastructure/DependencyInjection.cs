@@ -2,6 +2,7 @@ using FilesService.Communication;
 using FilesService.Core.Dtos;
 using FilesService.Core.Interfaces;
 using FilesService.Core.Options;
+using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Minio;
@@ -16,7 +17,9 @@ using P2Project.Core.Options;
 using P2Project.SharedKernel;
 using P2Project.Volunteers.Application;
 using P2Project.Volunteers.Application.EventHandlers.PetWasChanged;
+using P2Project.Volunteers.Application.Interfaces;
 using P2Project.Volunteers.Infrastructure.BackgroundServices;
+using P2Project.Volunteers.Infrastructure.Consumers;
 using P2Project.Volunteers.Infrastructure.DbContexts;
 
 namespace P2Project.Volunteers.Infrastructure;
@@ -32,7 +35,8 @@ public static class DependencyInjection
                 .AddUnitOfWork()
                 .AddHostedServices()
                 .AddMinioVault(configuration)
-                .AddMediatR();
+                .AddMediatR()
+                .AddMessageBus(configuration);
 
         services.AddScoped<IFilesCleanerService, FilesCleanerService>();
         services.AddScoped<DeleteExpiredSoftDeletedEntityService>();
@@ -114,6 +118,43 @@ public static class DependencyInjection
             {
                 cfg.RegisterServicesFromAssembly(typeof(CacheInvalidation).Assembly);
             });
+
+        return services;
+    }
+
+    private static IServiceCollection AddMessageBus(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.AddMassTransit<IVolunteersMessageBus>(configure =>
+        {
+            var options = configuration
+                .GetSection(RabbitMqOptions.SECTION_NAME)
+                .Get<RabbitMqOptions>()!;
+
+            configure.SetKebabCaseEndpointNameFormatter();
+
+            configure.AddConsumer<CreateVolunteerConsumer>();
+
+            configure.AddConfigureEndpointsCallback((context, name, cfg) =>
+            {
+                cfg.UseDelayedRedelivery(r => r.Intervals(
+                    TimeSpan.FromSeconds(5),
+                    TimeSpan.FromSeconds(10),
+                    TimeSpan.FromSeconds(15)));
+            });
+
+            configure.UsingRabbitMq((context, cfg) =>
+            {
+                cfg.Host(new Uri(options.Host), h =>
+                {
+                    h.Username(options.Username);
+                    h.Password(options.Password);
+                });
+
+                cfg.ConfigureEndpoints(context);
+            });
+        });
 
         return services;
     }

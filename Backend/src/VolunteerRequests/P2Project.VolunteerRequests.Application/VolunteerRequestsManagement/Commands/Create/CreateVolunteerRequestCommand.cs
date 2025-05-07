@@ -6,4 +6,5 @@ namespace P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Co
 public record CreateVolunteerRequestCommand(
     Guid UserId,
     FullNameDto FullName,
-    VolunteerInfoDto VolunteerInfo) : ICommand;
+    VolunteerInfoDto VolunteerInfo,
+    string Gender) : ICommand;

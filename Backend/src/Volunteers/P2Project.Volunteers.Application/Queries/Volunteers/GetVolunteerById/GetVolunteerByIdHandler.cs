@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using P2Project.Core.Dtos.Volunteers;
 using P2Project.Core.Interfaces.Queries;
 using P2Project.SharedKernel.Errors;
+using P2Project.Volunteers.Application.Interfaces;
 
 namespace P2Project.Volunteers.Application.Queries.Volunteers.GetVolunteerById;
 

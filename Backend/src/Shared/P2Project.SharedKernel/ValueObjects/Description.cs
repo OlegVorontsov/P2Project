@@ -11,13 +11,7 @@ namespace P2Project.SharedKernel.ValueObjects
             Value = value;
         }
         public string? Value { get; } = default!;
-        public static Result<Description, Error> Create(string? value)
-        {
-            if (string.IsNullOrWhiteSpace(value))
-                return Errors.Errors.General.ValueIsInvalid(nameof(Description));
-
-            return new Description(value);;
-        }
+        public static Result<Description, Error> Create(string? value) => new Description(value);
         protected override IEnumerable<IComparable> GetEqualityComponents()
         {
             yield return Value;

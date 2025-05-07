@@ -7,10 +7,12 @@ namespace P2Project.VolunteerRequests.Web.Requests;
 public record CreateVolunteerRequestRequest(
     Guid UserId,
     FullNameDto FullName,
-    VolunteerInfoDto VolunteerInfo)
+    VolunteerInfoDto VolunteerInfo,
+    string Gender)
 {
     public CreateVolunteerRequestCommand ToCommand() =>
         new(UserId,
             FullName,
-            VolunteerInfo);
+            VolunteerInfo,
+            Gender);
 }

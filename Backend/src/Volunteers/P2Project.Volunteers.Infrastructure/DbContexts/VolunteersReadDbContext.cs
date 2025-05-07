@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using P2Project.Core.Dtos.Pets;
 using P2Project.Core.Dtos.Volunteers;
 using P2Project.Volunteers.Application;
+using P2Project.Volunteers.Application.Interfaces;
 
 namespace P2Project.Volunteers.Infrastructure.DbContexts
 {

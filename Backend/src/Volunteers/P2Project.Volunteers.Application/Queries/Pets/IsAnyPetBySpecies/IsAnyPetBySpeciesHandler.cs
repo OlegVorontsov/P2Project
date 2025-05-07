@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using P2Project.Core.Interfaces.Queries;
+using P2Project.Volunteers.Application.Interfaces;
 
 namespace P2Project.Volunteers.Application.Queries.Pets.IsAnyPetBySpecies;
 

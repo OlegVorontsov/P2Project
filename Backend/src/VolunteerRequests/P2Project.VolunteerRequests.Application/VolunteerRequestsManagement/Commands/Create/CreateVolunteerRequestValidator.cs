@@ -2,6 +2,7 @@ using FluentValidation;
 using P2Project.Core.Validation;
 using P2Project.SharedKernel.Errors;
 using P2Project.SharedKernel.ValueObjects;
+using P2Project.Volunteers.Domain;
 
 namespace P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Commands.Create;
 
@@ -20,5 +21,8 @@ public class CreateVolunteerRequestValidator :
         
         RuleFor(vr => vr.VolunteerInfo).MustBeValueObject(vi =>
             VolunteerInfo.Create(vi.Age, vi.Grade));
+        
+        RuleFor(c => c.Gender).IsEnumName(typeof(Gender))
+            .WithError(Errors.General.ValueIsInvalid("Gender"));
     }
 }

@@ -9,6 +9,7 @@ using P2Project.Core.Interfaces.Commands;
 using P2Project.SharedKernel.Errors;
 using P2Project.SharedKernel.IDs;
 using P2Project.SharedKernel.ValueObjects;
+using P2Project.Volunteers.Application.Interfaces;
 using P2Project.Volunteers.Domain;
 
 namespace P2Project.Volunteers.Application.Commands.Create
@@ -31,6 +32,7 @@ namespace P2Project.Volunteers.Application.Commands.Create
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
+
         public async Task<Result<Guid, ErrorList>> Handle(
             CreateCommand command,
             CancellationToken cancellationToken = default)

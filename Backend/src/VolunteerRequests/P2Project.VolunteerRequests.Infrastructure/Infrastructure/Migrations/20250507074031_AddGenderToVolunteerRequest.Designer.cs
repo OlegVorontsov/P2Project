@@ -3,18 +3,21 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using P2Project.VolunteerRequests.Infrastructure.DbContexts;
 
 #nullable disable
 
-namespace P2Project.VolunteerRequests.Infrastructure.Migrations
+namespace P2Project.VolunteerRequests.Infrastructure.Infrastructure.Migrations
 {
     [DbContext(typeof(VolunteerRequestsWriteDbContext))]
-    partial class VolunteerRequestsWriteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250507074031_AddGenderToVolunteerRequest")]
+    partial class AddGenderToVolunteerRequest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

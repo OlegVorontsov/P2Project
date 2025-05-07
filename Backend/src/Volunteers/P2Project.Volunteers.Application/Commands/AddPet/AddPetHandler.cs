@@ -11,6 +11,7 @@ using P2Project.SharedKernel.Errors;
 using P2Project.SharedKernel.IDs;
 using P2Project.SharedKernel.ValueObjects;
 using P2Project.Species.Agreements;
+using P2Project.Volunteers.Application.Interfaces;
 using P2Project.Volunteers.Domain.Entities;
 using P2Project.Volunteers.Domain.Events;
 using P2Project.Volunteers.Domain.ValueObjects.Pets;

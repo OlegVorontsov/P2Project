@@ -3,7 +3,7 @@ using P2Project.SharedKernel.Errors;
 using P2Project.SharedKernel.IDs;
 using P2Project.Volunteers.Domain;
 
-namespace P2Project.Volunteers.Application
+namespace P2Project.Volunteers.Application.Interfaces
 {
     public interface IVolunteersRepository
     {

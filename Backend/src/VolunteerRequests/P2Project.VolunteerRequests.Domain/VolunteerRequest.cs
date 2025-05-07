@@ -5,6 +5,7 @@ using P2Project.SharedKernel.Errors;
 using P2Project.SharedKernel.ValueObjects;
 using P2Project.VolunteerRequests.Domain.Enums;
 using P2Project.VolunteerRequests.Domain.ValueObjects;
+using P2Project.Volunteers.Domain;
 
 namespace P2Project.VolunteerRequests.Domain;
 
@@ -18,12 +19,14 @@ public class VolunteerRequest : DomainEntity<VolunteerRequestId>
     public RequestStatus Status { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public RejectionComment? RejectionComment { get; private set; }
-    
+    public Gender Gender { get; private set; }
+
     private VolunteerRequest(
         VolunteerRequestId requestId,
         Guid userId,
         FullName fullName,
-        VolunteerInfo volunteerInfo) : base(requestId)
+        VolunteerInfo volunteerInfo,
+        Gender gender) : base(requestId)
     {
         Id = requestId;
         UserId = userId;
@@ -31,17 +34,16 @@ public class VolunteerRequest : DomainEntity<VolunteerRequestId>
         Status = RequestStatus.Submitted;
         FullName = fullName;
         VolunteerInfo = volunteerInfo;
+        Gender = gender;
     }
     
     public static Result<VolunteerRequest, Error> Create(
         VolunteerRequestId requestId,
         Guid userId,
         FullName fullName,
-        VolunteerInfo volunteerInfo)
-    {
-        var request = new VolunteerRequest(requestId, userId, fullName, volunteerInfo);
-        return request;
-    }
+        VolunteerInfo volunteerInfo,
+        Gender gender) =>
+        new VolunteerRequest(requestId, userId, fullName, volunteerInfo, gender);
     
     public void TakeInReview(Guid adminId)
     {
@@ -63,7 +65,8 @@ public class VolunteerRequest : DomainEntity<VolunteerRequestId>
     {
         Status = RequestStatus.Approved;
         RejectionComment = null;
-        AddDomainEvent(new ApprovedEvent(UserId, FullName.FirstName));
+        AddDomainEvent(new ApprovedEvent(
+            UserId, FullName.FirstName, VolunteerInfo.Age, VolunteerInfo.Grade, Gender.ToString()));
         AddDomainEvent(new CreateMessageEvent(Id, adminId, UserId, FullName.FirstName, comment));
     }
     

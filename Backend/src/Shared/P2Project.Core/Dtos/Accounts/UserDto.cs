@@ -1,4 +1,3 @@
-using FilesService.Core.Models;
 using P2Project.Core.Dtos.Common;
 using P2Project.Core.Dtos.Volunteers;
 
@@ -20,5 +19,5 @@ public class UserDto
     public IReadOnlyList<MediaFileDto> Photos { get; set; } = default!;
     public AdminAccountDto? AdminAccount { get; init; }
     public VolunteerAccountDto? VolunteerAccount { get; init; }
-    public ParticipantAccountDto? ParticipantAccount { get; init; } = null!;
+    public ParticipantAccountDto? ParticipantAccount { get; init; }
 }

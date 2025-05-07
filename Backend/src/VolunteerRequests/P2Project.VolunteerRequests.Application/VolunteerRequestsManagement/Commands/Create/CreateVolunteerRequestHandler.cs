@@ -12,6 +12,7 @@ using P2Project.SharedKernel.ValueObjects;
 using P2Project.VolunteerRequests.Application.Interfaces;
 using P2Project.VolunteerRequests.Domain;
 using P2Project.VolunteerRequests.Domain.ValueObjects;
+using P2Project.Volunteers.Domain;
 
 namespace P2Project.VolunteerRequests.Application.VolunteerRequestsManagement.Commands.Create;
 
@@ -62,9 +63,11 @@ public class CreateVolunteerRequestHandler :
             command.VolunteerInfo.Age,
             command.VolunteerInfo.Grade).Value;
         
+        var gender = Enum.Parse<Gender>(command.Gender);
+        
         var newVolunteerRequest = VolunteerRequest.Create(
             requestId,
-            command.UserId, fullName, volunteerInfo).Value;
+            command.UserId, fullName, volunteerInfo, gender).Value;
 
         await _volunteerRequestsRepository.Add(newVolunteerRequest, cancellationToken);
         await _unitOfWork.SaveChanges(cancellationToken);

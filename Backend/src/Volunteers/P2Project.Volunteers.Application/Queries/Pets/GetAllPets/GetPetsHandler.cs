@@ -9,6 +9,7 @@ using P2Project.Core.Interfaces.Queries;
 using P2Project.Core.Models;
 using P2Project.SharedKernel;
 using P2Project.SharedKernel.Errors;
+using P2Project.Volunteers.Application.Interfaces;
 
 namespace P2Project.Volunteers.Application.Queries.Pets.GetAllPets
 {

@@ -9,6 +9,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\Shared\P2Project.Core\P2Project.Core.csproj" />
       <ProjectReference Include="..\..\Shared\P2Project.SharedKernel\P2Project.SharedKernel.csproj" />
+      <ProjectReference Include="..\..\Volunteers\P2Project.Volunteers.Domain\P2Project.Volunteers.Domain.csproj" />
     </ItemGroup>
 
 </Project>

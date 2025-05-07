@@ -1,9 +1,7 @@
 using MediatR;
 using P2Project.Core.Events;
-using P2Project.Core.Interfaces;
 using P2Project.Core.Interfaces.Outbox;
 using P2Project.Core.Outbox.Messages.VolunteerRequests;
-using P2Project.VolunteerRequests.Application.Interfaces;
 
 namespace P2Project.VolunteerRequests.Application.EventHandlers;
 
@@ -16,8 +14,12 @@ public class ApprovedHandler(
         CancellationToken cancellationToken)
     {
         var integrationEvent = new CreateVolunteerAccountEvent(
-            domainEvent.UserId, domainEvent.UserName);
-        
+            domainEvent.UserId,
+            domainEvent.UserName,
+            domainEvent.Age,
+            domainEvent.Grade,
+            domainEvent.Gender);
+
         await outboxRepository.Add(
             integrationEvent, cancellationToken);
     }

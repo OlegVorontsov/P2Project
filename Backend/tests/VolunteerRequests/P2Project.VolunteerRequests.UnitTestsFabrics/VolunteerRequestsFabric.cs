@@ -1,6 +1,7 @@
 using P2Project.SharedKernel;
 using P2Project.SharedKernel.ValueObjects;
 using P2Project.VolunteerRequests.Domain;
+using P2Project.Volunteers.Domain;
 
 namespace P2Project.VolunteerRequests.UnitTestsFabrics;
 
@@ -19,7 +20,7 @@ public static class VolunteerRequestsFabric
         var userId = Guid.NewGuid();
         
         var request = VolunteerRequest.Create(
-            Guid.NewGuid(), userId, fullName, volunteerInfo);
+            Guid.NewGuid(), userId, fullName, volunteerInfo, Gender.Male);
         
         return request.Value;
     }

@@ -18,6 +18,7 @@ using P2Project.API;
 using P2Project.Species.Application;
 using P2Project.Species.Infrastructure.DbContexts;
 using P2Project.Volunteers.Application;
+using P2Project.Volunteers.Application.Interfaces;
 using P2Project.Volunteers.Infrastructure.DbContexts;
 using Respawn;
 using Testcontainers.PostgreSql;

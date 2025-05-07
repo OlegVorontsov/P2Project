@@ -8,6 +8,7 @@ using P2Project.Core.Interfaces;
 using P2Project.Core.Interfaces.Commands;
 using P2Project.SharedKernel.Errors;
 using P2Project.SharedKernel.IDs;
+using P2Project.Volunteers.Application.Interfaces;
 
 namespace P2Project.Volunteers.Application.Commands.SoftDelete
 {
